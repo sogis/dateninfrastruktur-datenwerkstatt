@@ -106,8 +106,16 @@ Feldnamen. Deaktivierte und schreibgeschützte Werte bleiben lesbar.
 - Modal: nativer Dialog mit Kopf, Inhalt, Fuss, Fokusfang und Fokusrückgabe.
   Bestehende Sperren beim laufenden Vorgang bleiben wirksam.
 - ActionMenu: Tastaturöffnung, Pfeiltasten, Home/End, Escape und Fokusrückgabe.
-- Tooltip: auf Hover und Fokus; Escape blendet aus. Der Auslöser hat selbst
-  einen zugänglichen Namen. Tooltip ersetzt keine Beschriftung in Formularen.
+- Tooltip: Hover zeigt ihn nach 250 ms, Tastaturfokus (`:focus-visible`) sofort;
+  Mausfokus allein zeigt keinen Tooltip. Rechts mit 8 px Abstand und vertikal
+  mittig zum Auslöser, bei fehlendem Platz links; innerhalb des Viewports mit
+  8 px Rand. Vor Anzeige vollständig messen, bei Scrollen, Fenster- und
+  Grössenänderungen neu positionieren. Pro Dokument höchstens ein Tooltip;
+  Escape, Klick, Fokusverlust oder vollständiges Verlassen des Viewports
+  schliessen ihn. Verlassen bei Hover und Unmount brechen wartende Timer ab.
+  Geschlossene Tooltips erscheinen erst bei einem neuen Hover-/Tastaturfokusbeginn.
+  Der Auslöser hat selbst einen zugänglichen Namen; Tooltip und
+  `aria-describedby` ergänzen ihn und ersetzen keine Formularbeschriftung.
 - StatusBadge/Notice: nicht interaktiver Zustand bzw. erklärende Meldung.
 - NavigationItem/PanelHeader/EmptyState und Tabellenstil: gemeinsame Struktur.
 

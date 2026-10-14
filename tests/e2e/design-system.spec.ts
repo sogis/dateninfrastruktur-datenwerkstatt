@@ -2,6 +2,30 @@ import {test, expect} from '../persistentBrowser';
 import {mkdir, writeFile} from 'node:fs/promises';
 import type {Locator, Page} from '@playwright/test';
 const evidence = 'docs/verification/design-system';
+const tooltipEvidence = 'docs/verification/tooltips';
+async function tooltipGeometry(trigger: Locator) {
+  return trigger.evaluate((control) => {
+    const tooltip = control.parentElement!.querySelector<HTMLElement>('[role="tooltip"]')!;
+    const anchor = control.getBoundingClientRect();
+    const tip = tooltip.getBoundingClientRect();
+    return {
+      anchor: {left: anchor.left, right: anchor.right, top: anchor.top, bottom: anchor.bottom},
+      tip: {left: tip.left, right: tip.right, top: tip.top, bottom: tip.bottom},
+      viewport: {width: innerWidth, height: innerHeight},
+    };
+  });
+}
+async function expectRightCentered(trigger: Locator) {
+  await expect
+    .poll(async () => {
+      const {anchor, tip} = await tooltipGeometry(trigger);
+      return (
+        Math.abs(tip.left - anchor.right - 8) +
+        Math.abs((tip.top + tip.bottom - anchor.top - anchor.bottom) / 2)
+      );
+    })
+    .toBeLessThan(0.005);
+}
 // DOMRect subtraction in Firefox can differ by less than 0.0001 CSS px.
 // Assert geometry to 0.005 px; the CSS spacing contract stays exactly 8 px.
 async function gaps(group: Locator) {
@@ -105,6 +129,249 @@ test('UI components: labels, native submit, checkbox, errors, busy state, menu a
   ).toEqual([]);
   expect(requests.filter((url) => /duckdb|webr\/|workspaceService/.test(url))).toEqual([]);
   await capture(page, `components-${info.project.name}`);
+});
+test('UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmount', async ({
+  page,
+  browserName,
+}) => {
+  // macOS WebKit's native full keyboard navigation uses Option+Tab for buttons.
+  const optionTab = browserName === 'webkit' && process.platform === 'darwin';
+  const backTab = optionTab ? 'Alt+Shift+Tab' : 'Shift+Tab';
+  const forwardTab = optionTab ? 'Alt+Tab' : 'Tab';
+  await page.clock.install();
+  await page.goto('/tests/design-system/');
+  await page.evaluate(() => document.fonts.ready);
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
+  const sql = page.getByRole('button', {name: 'SQL', exact: true});
+  const r = page.getByRole('button', {name: 'R', exact: true});
+  const visible = page.locator('[role="tooltip"]:visible');
+  await sql.hover();
+  await page.clock.runFor(249);
+  await expect(visible).toHaveCount(0);
+  await page.clock.runFor(1);
+  await expect(visible).toHaveText('SQL · DuckDB');
+  await expect(sql).toHaveAccessibleDescription('SQL · DuckDB');
+  await page.mouse.move(600, 100);
+  await expect(visible).toHaveCount(0);
+  await r.hover();
+  await page.clock.runFor(200);
+  await page.mouse.move(600, 100);
+  await page.clock.runFor(300);
+  await expect(visible).toHaveCount(0);
+  await sql.hover();
+  await page.clock.runFor(100);
+  await page.keyboard.press('Escape');
+  await page.clock.runFor(300);
+  await expect(visible).toHaveCount(0);
+  await page.mouse.move(600, 100);
+  await sql.hover();
+  await page.clock.runFor(100);
+  await r.hover();
+  await page.clock.runFor(249);
+  await expect(visible).toHaveCount(0);
+  await page.clock.runFor(1);
+  await expect(visible).toHaveText('R · webR');
+  // Escape also dismisses hover when keyboard focus is outside the host.
+  await page.keyboard.press('Escape');
+  await page.clock.runFor(300);
+  await expect(visible).toHaveCount(0);
+  await page.mouse.move(600, 100);
+  await r.hover();
+  await page.clock.runFor(250);
+  await r.click();
+  await page.clock.runFor(300);
+  await expect(visible).toHaveCount(0);
+  await r.press(backTab);
+  await expect(sql).toBeFocused();
+  await expect(visible).toHaveText('SQL · DuckDB');
+  await page.mouse.move(600, 100);
+  await r.hover();
+  await expect(visible).toHaveCount(0);
+  await page.clock.runFor(250);
+  await expect(visible).toHaveText('R · webR');
+  await page.keyboard.press('Escape');
+  await sql.press(forwardTab);
+  await expect(r).toBeFocused();
+  await expect(visible).toHaveText('R · webR');
+  await page.getByRole('textbox', {name: 'Projektname', exact: true}).focus();
+  await expect(visible).toHaveCount(0);
+
+  const toggle = page.getByRole('button', {name: 'Tooltip-Auslöser umschalten (100 ms)'});
+  const options = page.getByRole('button', {name: 'Optionen', exact: true});
+  await toggle.click();
+  await options.hover();
+  await page.clock.runFor(100);
+  await expect(options).toHaveCount(0);
+  await page.clock.runFor(300);
+  await expect(visible).toHaveCount(0);
+  await toggle.click();
+  await page.clock.runFor(100);
+  await expect(options).toBeVisible();
+  await toggle.click();
+  await toggle.press(backTab);
+  await expect(options).toBeFocused();
+  await expect(visible).toHaveText('Optionen der Arbeitsfläche');
+  await page.clock.runFor(100);
+  await expect(options).toHaveCount(0);
+  await expect(visible).toHaveCount(0);
+  await sql.hover();
+  await page.clock.runFor(250);
+  await expect(visible).toHaveText('SQL · DuckDB');
+  await page.clock.resume();
+});
+test('UI tooltips: no misplaced frames, collapsed/expanded navigation, scroll and resize', async ({
+  page,
+}, info) => {
+  await page.goto('/workspaces');
+  await page.getByLabel('Name des neuen Arbeitsbereichs').fill('Tooltip-Geometrie');
+  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await expect(page.getByRole('heading', {name: 'Tooltip-Geometrie', exact: true})).toBeVisible();
+  await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(() => {
+    const probe = {stopped: false, frames: [] as {count: number; invalid: boolean}[]};
+    Reflect.set(window, '__tooltipFrames', probe);
+    const sample = () => {
+      if (probe.stopped) return;
+      const visible = [...document.querySelectorAll<HTMLElement>('[role="tooltip"]')].filter(
+        (tip) => {
+          const style = getComputedStyle(tip);
+          return style.display !== 'none' && style.visibility !== 'hidden';
+        },
+      );
+      probe.frames.push({
+        count: visible.length,
+        invalid: visible.some((tip) => {
+          const rect = tip.getBoundingClientRect();
+          const anchor = tip.parentElement!.firstElementChild!.getBoundingClientRect();
+          return (
+            rect.left < 8 ||
+            rect.top < 8 ||
+            Math.abs(rect.left - anchor.right - 8) > 0.005 ||
+            Math.abs((rect.top + rect.bottom - anchor.top - anchor.bottom) / 2) > 0.005
+          );
+        }),
+      });
+      if (!probe.stopped) requestAnimationFrame(sample);
+    };
+    document.addEventListener('pointerover', sample, {once: true, capture: true});
+    requestAnimationFrame(sample);
+  });
+  const sql = page.getByRole('button', {name: 'SQL', exact: true});
+  const r = page.getByRole('button', {name: 'R', exact: true});
+  const visible = page.locator('[role="tooltip"]:visible');
+  const measurements = [];
+  await mkdir(tooltipEvidence, {recursive: true});
+  for (const viewport of [
+    {width: 1440, height: 900},
+    {width: 1280, height: 800},
+  ]) {
+    await page.setViewportSize(viewport);
+    await sql.hover();
+    await expect(visible).toHaveText('SQL · DuckDB');
+    await expectRightCentered(sql);
+    measurements.push({viewport, expanded: false, geometry: await tooltipGeometry(sql)});
+    await page.getByRole('button', {name: 'Navigation ausklappen', exact: true}).click();
+    await expect(visible).toHaveCount(0);
+    await sql.hover();
+    await expect(visible).toHaveText('SQL · DuckDB');
+    await expectRightCentered(sql);
+    measurements.push({viewport, expanded: true, geometry: await tooltipGeometry(sql)});
+    await page.screenshot({
+      path: `${tooltipEvidence}/navigation-${info.project.name}-${viewport.width}.png`,
+    });
+    await r.hover();
+    await expect(visible).toHaveText('R · webR');
+    await expectRightCentered(r);
+    await page.getByRole('button', {name: 'Navigation einklappen', exact: true}).click();
+    await expect(visible).toHaveCount(0);
+  }
+  const frames = await page.evaluate(() => {
+    const probe = Reflect.get(window, '__tooltipFrames') as {
+      stopped: boolean;
+      frames: {count: number; invalid: boolean}[];
+    };
+    probe.stopped = true;
+    return probe.frames;
+  });
+  expect(frames.some((frame) => frame.count === 1)).toBe(true);
+  expect(frames.filter((frame) => frame.count > 1 || frame.invalid)).toEqual([]);
+
+  await page.getByRole('button', {name: 'Navigation ausklappen', exact: true}).click();
+  await sql.hover();
+  await expect(visible).toHaveText('SQL · DuckDB');
+  await page.setViewportSize({width: 720, height: 300});
+  await expectRightCentered(sql);
+  const narrow = await tooltipGeometry(sql);
+  expect(narrow.tip.bottom).toBeLessThanOrEqual(292);
+  expect(narrow.tip.right).toBeLessThanOrEqual(712);
+  measurements.push({viewport: {width: 720, height: 300}, expanded: true, geometry: narrow});
+  await page.setViewportSize({width: 720, height: 450});
+  await page.keyboard.press('Tab');
+  await sql.focus();
+  await page.mouse.move(600, 100);
+  await expect(visible).toHaveText('SQL · DuckDB');
+  const beforeScroll = await tooltipGeometry(sql);
+  await page.evaluate(() => window.scrollBy(0, 100));
+  await expectRightCentered(sql);
+  const afterScroll = await tooltipGeometry(sql);
+  expect(afterScroll.anchor.top).toBeLessThan(beforeScroll.anchor.top);
+  expect(afterScroll.tip.top).toBeLessThan(beforeScroll.tip.top);
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await expect(visible).toHaveCount(0);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect(visible).toHaveCount(0);
+  await writeFile(
+    `${tooltipEvidence}/navigation-${info.project.name}.json`,
+    JSON.stringify({measurements, frames}, null, 2),
+  );
+});
+test('UI tooltips: shared IconButton flips at viewport edge and follows measured size', async ({
+  page,
+}, info) => {
+  await page.goto('/tests/design-system/');
+  await page.evaluate(() => document.fonts.ready);
+  const options = page.getByRole('button', {name: 'Optionen', exact: true});
+  await options.evaluate((button) =>
+    Object.assign(button.parentElement!.style, {position: 'fixed', right: '8px', top: '200px'}),
+  );
+  await options.hover();
+  const visible = page.locator('[role="tooltip"]:visible');
+  await expect(visible).toHaveText('Optionen der Arbeitsfläche');
+  await page.keyboard.press('Tab');
+  await options.focus();
+  await page.mouse.move(200, 100);
+  for (const viewport of [
+    {width: 1440, height: 900},
+    {width: 720, height: 450},
+  ]) {
+    await page.setViewportSize(viewport);
+    await expect
+      .poll(async () => {
+        const {anchor, tip} = await tooltipGeometry(options);
+        return (
+          Math.abs(anchor.left - tip.right - 8) +
+          Math.abs((tip.top + tip.bottom - anchor.top - anchor.bottom) / 2)
+        );
+      })
+      .toBeLessThan(0.005);
+  }
+  await visible.evaluate((tip) => {
+    tip.style.fontSize = '28px';
+  });
+  await expect
+    .poll(async () => {
+      const {anchor, tip} = await tooltipGeometry(options);
+      return (
+        Math.abs(anchor.left - tip.right - 8) +
+        Math.abs((tip.top + tip.bottom - anchor.top - anchor.bottom) / 2)
+      );
+    })
+    .toBeLessThan(0.005);
+  const geometry = await tooltipGeometry(options);
+  expect(geometry.tip.left).toBeGreaterThanOrEqual(8);
+  expect(geometry.tip.right).toBeLessThanOrEqual(712);
+  await mkdir(tooltipEvidence, {recursive: true});
+  await page.screenshot({path: `${tooltipEvidence}/icon-button-${info.project.name}.png`});
 });
 test('UI geometry: 8 px wrapped actions, form labels, narrow/zoom equivalent and failed local font', async ({
   page,

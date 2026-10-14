@@ -1,0 +1,7 @@
+Command: npm run assets:prepare
+Exit status: 1
+
+Local webR 0.6.0 and 4 DuckDB extensions prepared.
+Error: Locked WebR package bit64 expected 4.8.2, found 4.8.6.
+
+The existing mirror script rejects the current upstream index before publishing the package mirror.

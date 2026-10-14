@@ -261,7 +261,7 @@
 .dw-tooltip {
   position: fixed;
   z-index: 60;
-  display: none;
+  display: block;
   width: max-content;
   max-width: min(240px, calc(100vw - 16px));
   pointer-events: none;
@@ -272,9 +272,8 @@
   font: 400 14px/1.4 var(--dw-font-sans);
   box-shadow: var(--dw-shadow-overlay);
 }
-.dw-tooltip-host:hover > .dw-tooltip:not([hidden]),
-.dw-tooltip-host:focus-within > .dw-tooltip:not([hidden]) {
-  display: block;
+.dw-tooltip[hidden] {
+  display: none;
 }
 .dw-menu {
   position: relative;

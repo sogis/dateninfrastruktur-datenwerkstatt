@@ -1,0 +1,11 @@
+{
+  "baseRevision": "45de19b4181983ea53cad27eab93a1aabbc7f6b9",
+  "files": {
+    "src/ui/Controls.tsx": "209606db677a285ae37b95a881e08cbf9d9d58119aba19d3c8b29abc4cdc6f6a",
+    "src/styles/components.css": "c0c00a31180599145ce381bc3760db285c115652bda92f49429da58f2406d5e7",
+    "src/styles/app.css": "93e0091c426746e78f634e46ab263fc898a891fa90a8be44e8971786e6c96f16",
+    "tests/design-system/reference.tsx": "665a91775c15430c6cf3197ee80dd35bb390c005e6824a078321187edac1d33b",
+    "tests/e2e/design-system.spec.ts": "8a6dc8f3968e9784ac1436e74bbdd9335db82b84dd508cbe2002f21fc73f74b3"
+  },
+  "matchedAfterTests": true
+}

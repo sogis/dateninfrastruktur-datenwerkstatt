@@ -464,3 +464,91 @@ Erneuter Hashabgleich: alle 196 geprüften Code-/Test-/Fixture-Dateien unveränd
 Die oben dokumentierten erfolgreichen Tests gelten damit weiterhin; kein
 zusätzlicher Testlauf behauptet. Commit umfasst Designsystem, UI-Migration,
 Originalassets, Herkunfts-/Lizenzdokumentation und getrennte Prüfbelege.
+
+### UI-Fix — SQL-/R-Navigation linksbündig (14. Oktober 2026)
+
+**Geliefert und verifiziert:** `src/styles/app.css` setzt für
+`.sidebar.expanded .dw-nav-item` explizit `justify-content: flex-start` und
+`text-align: left`. SQL/R-Buttons übernehmen damit nicht mehr die Zentrierung
+des allgemeinen Button-Stils. Bezug: Navigation aus REQ-061/066/067 und
+Designsystem, gezielte Geometrie-/Semantikregression zu AT-054/055/058.
+
+Prüfstand: Basis **45de19b4181983ea53cad27eab93a1aabbc7f6b9**, uncommittierte
+CSS-Korrektur; SHA-256 von `src/styles/app.css`:
+`93e0091c426746e78f634e46ab263fc898a891fa90a8be44e8971786e6c96f16`.
+Node **22.23.1**, npm **11.18.0**. Echte ausgeführte Befehle:
+
+- Aus `/tmp/datenwerkstatt-nav-align-H75tmU`:
+  `DW_REUSE_DEV_SERVER=1 node /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/node_modules/@playwright/test/cli.js test --config=/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/playwright.config.ts --project=chromium --project=firefox --project=webkit --reporter=list /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts`
+  **Exit 0, 9/9 Tests bestanden**. Derselbe lokale Vite-Arbeitsbaum wurde
+  wiederverwendet; Screenshots/JSON gingen ins temporäre Verzeichnis,
+  historische Abnahmebelege blieben unverändert.
+- Dort `node navigation-geometry.mjs` **Exit 0, 6/6 Prüfungen bestanden**:
+  Chromium/Firefox/WebKit bei **1440×900** und **1280×800**. Alle sechs
+  Navigationseinträge: Icon links bei **15 px**, Text links bei **43 px**,
+  Sidebar **212 px**. Ohne die neue Regel wurde die vorherige SQL-/R-Zentrierung
+  reproduziert. Eingeklappte Sidebar **52 px** und Iconpositionen exakt
+  unverändert. PNGs erstellt; Chromium/1440 und WebKit/1280 visuell geprüft.
+  Der erste Messlauf hatte **Exit 1**, weil der Prüfcode eingeklappte mit
+  ausgeklappten Positionen verglich; Vergleich auf eingeklappt vor/nach
+  Entfernen der neuen Regel korrigiert, Produktcode unverändert.
+- `npm run typecheck && npm run lint && npx prettier --check src/styles/app.css && git diff --check`
+  **Exit 0**.
+
+Temporäre Logs, Messskript, JSON und Screenshots:
+`/tmp/datenwerkstatt-nav-align-H75tmU`. Keine neuen Repositorytests oder
+Dependencies. `npm run verify`, Deployment-/Engine-/Ressourcenprüfungen und
+nativer Safari-Smoke für diesen kleinen CSS-Fix **nicht erneut ausgeführt**;
+keine neue vollständige V1-Abnahme behauptet. Keine Blocker. Nächster Schritt:
+reguläre gestalterische Durchsicht gemäss Designsystem-Abnahme; der angeforderte
+Navigationsfix ist abgeschlossen.
+
+### UI-Fix — Tooltip-Position und Flackern (14. Oktober 2026)
+
+**Geliefert und für Tooltips verifiziert:** REQ-061/066/067, gezielte Regression
+zu AT-054/055/058. `src/ui/Controls.tsx` steuert Sichtbarkeit nach abgeschlossener
+Messung, 250-ms-Hover, sofortigen Tastaturfokus, Escape/Klick/Fokusverlust,
+abbrechbare Timer und einen aktiven Auslöser pro Dokument. Rechte Platzierung
+mit 8 px Abstand und vertikaler Zentrierung, Links-Ausweichung und Viewportrand;
+Scroll-/Resize-/Grössenänderungen aktualisieren die Position. CSS zeigt keine
+Tooltips mehr selbstständig durch Hover oder Mausfokus.
+
+Implementiert: `src/ui/Controls.tsx`, `src/styles/components.css`; echte
+Browserregressionen in `tests/e2e/design-system.spec.ts`, Unmount-Prüfmöglichkeit
+ausschliesslich in der enginefreien Entwicklungsreferenz. Gestaltungsvertrag
+aktualisiert. SQL-/R-Linksbündigkeit unverändert. Basis
+**45de19b4181983ea53cad27eab93a1aabbc7f6b9**, uncommittierter Arbeitsbaum;
+[Dateihashes und Abgleich nach Testende](verification/tooltips/code-fingerprint.json)
+belegen den geprüften Code. Node 22.23.1, npm 11.18.0.
+
+Ausgeführte Befehle, aus `/tmp/datenwerkstatt-tooltips-chZKkC` mit
+`DW_REPO=/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt`:
+
+- `DW_REUSE_DEV_SERVER=1 node "$DW_REPO/node_modules/@playwright/test/cli.js" test --config="$DW_REPO/playwright.config.ts" --project=chromium --project=firefox --project=webkit --reporter=list "$DW_REPO/tests/e2e/design-system.spec.ts"`
+  **Exit 0, 18/18 bestanden**. [Finaler Log](verification/tooltips/design-system-final.log).
+- Derselbe Aufruf mit zusätzlich `"$DW_REPO/tests/e2e/p7-ui.spec.ts"`:
+  **Exit 1, 27 bestanden / 3 gescheitert**.
+  [Breitere Matrix](verification/tooltips/browser-matrix-second.log).
+  Reale SQL-Ausführung, Auswahl-Snapshot, Routen/Viewzustand und die Tooltipfälle
+  bestanden; die drei SQL/R-Geometriefälle scheitern erst beim R-Start.
+- Aus dem Repository: `npm run assets:prepare` **Exit 1**. Basis-DuckDB/webR
+  und geprüfte DuckDB-Erweiterungen vorbereitet; Paketmirror lehnt Upstream-Index
+  ab: `bit64` erwartet **4.8.2**, gefunden **4.8.6**. Pins/Prüfsummen/Skripte
+  unverändert. [Console-Ausgabe](verification/tooltips/assets-prepare.log),
+  [R-Fehlerdiagnose](verification/tooltips/r-init-failure.md).
+- `npm run typecheck && npm run lint && npx prettier --check src/ui/Controls.tsx src/styles/components.css tests/e2e/design-system.spec.ts tests/design-system/reference.tsx docs/DESIGN_SYSTEM.md && git diff --check`
+  **Exit 0**. Prettier auf denselben Dateien mit `--write` **Exit 0**.
+
+Die separaten [Tooltip-Belege](verification/tooltips/README.md) enthalten
+Screenshots, Geometrie, Frames und fehlgeschlagene Zwischenläufe mit deren
+Korrekturen. Kein erfasster Frame mit falscher Position oder mehreren Tooltips.
+Hover-/Timer-/Unmount-/Escape-/Fokusfälle in allen drei Browsern bestanden;
+WebKit auf macOS mit nativer Option+Tab-Bedienung. Zielviewports 1440×900 und
+1280×800 sowie enge Ansichten 720×300/450. Neue PNGs visuell geprüft;
+historische Belege unverändert.
+
+**Verbleibende Abnahmegrenze:** R-Paketmirror fehlt wegen des Indexkonflikts;
+keine vollständige P7-Matrix bestanden. Nächster konkreter Schritt für diese
+Abnahme: passenden gepinnten Mirror wiederherstellen und die drei R-Geometriefälle
+erneut ausführen. `npm run verify`, Deployment-/Ressourcenprüfungen und nativer
+Safari-Smoke **nicht erneut ausgeführt**. Kein neuer V1-Release-Nachweis.

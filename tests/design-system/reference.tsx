@@ -40,7 +40,8 @@ function FontStatus({font, weight = 400}: {font: string; weight?: number}) {
 function Reference() {
   const [modal, setModal] = useState(false),
     [submitted, setSubmitted] = useState(0),
-    [action, setAction] = useState('Keine Aktion');
+    [action, setAction] = useState('Keine Aktion'),
+    [tooltipControl, setTooltipControl] = useState(true);
   return (
     <main className="reference">
       <h1>Komponentenreferenz</h1>
@@ -55,7 +56,12 @@ function Reference() {
           ))}
           <Button disabled>Deaktiviert</Button>
           <Button busy>Wird gespeichert</Button>
-          <IconButton icon="gear" label="Optionen" tooltip="Optionen der Arbeitsfläche" />
+          {tooltipControl && (
+            <IconButton icon="gear" label="Optionen" tooltip="Optionen der Arbeitsfläche" />
+          )}
+          <Button onClick={() => setTimeout(() => setTooltipControl((shown) => !shown), 100)}>
+            Tooltip-Auslöser umschalten (100 ms)
+          </Button>
         </ActionGroup>
         <Toolbar>
           <Button variant="primary" icon="play-fill">

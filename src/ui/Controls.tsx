@@ -1,6 +1,8 @@
 import {
   cloneElement,
+  useCallback,
   useId,
+  useLayoutEffect,
   useRef,
   useState,
   type ButtonHTMLAttributes,
@@ -50,6 +52,11 @@ export function Button({
     </button>
   );
 }
+type TooltipState =
+  | {phase: 'closed' | 'waiting' | 'measuring'}
+  | {phase: 'open'; left: number; top: number};
+// UI-only ownership, scoped to each document; also owns pending hover timers.
+const activeTooltips = new WeakMap<Document, () => void>();
 export function Tooltip({
   text,
   children,
@@ -58,29 +65,168 @@ export function Tooltip({
   children: ReactElement<{'aria-describedby'?: string | undefined}>;
 }) {
   const id = useId();
-  const [dismissed, setDismissed] = useState(false);
-  const [position, setPosition] = useState({left: 8, top: 8});
-  const reveal = (host: HTMLElement) => {
-    const rect = host.getBoundingClientRect();
-    setPosition({
-      left: Math.max(8, Math.min(rect.right + 8, window.innerWidth - 248)),
-      top: Math.max(8, Math.min(rect.bottom + 8, window.innerHeight - 80)),
-    });
-    setDismissed(false);
-  };
+  const host = useRef<HTMLSpanElement>(null);
+  const tooltip = useRef<HTMLSpanElement>(null);
+  const ownerDocument = useRef<Document | null>(null);
+  const timer = useRef<number | null>(null);
+  const generation = useRef(0);
+  const source = useRef<'hover' | 'keyboard' | null>(null);
+  const [state, setState] = useState<TooltipState>({phase: 'closed'});
+  const cancelPending = useCallback(() => {
+    generation.current++;
+    if (timer.current !== null) {
+      ownerDocument.current?.defaultView?.clearTimeout(timer.current);
+      timer.current = null;
+    }
+  }, []);
+  const close = useCallback(() => {
+    cancelPending();
+    source.current = null;
+    const doc = ownerDocument.current;
+    if (doc && activeTooltips.get(doc) === close) activeTooltips.delete(doc);
+    setState({phase: 'closed'});
+  }, [cancelPending]);
+  const reveal = useCallback(
+    (delay: number) => {
+      close();
+      const doc = host.current?.ownerDocument;
+      const win = doc?.defaultView;
+      if (!doc || !win) return;
+      activeTooltips.get(doc)?.();
+      activeTooltips.set(doc, close);
+      ownerDocument.current = doc;
+      source.current = delay === 0 ? 'keyboard' : 'hover';
+      const ticket = generation.current;
+      if (delay === 0) {
+        setState({phase: 'measuring'});
+      } else {
+        setState({phase: 'waiting'});
+        timer.current = win.setTimeout(() => {
+          timer.current = null;
+          if (ticket === generation.current && activeTooltips.get(doc) === close)
+            setState({phase: 'measuring'});
+        }, delay);
+      }
+    },
+    [close],
+  );
+  useLayoutEffect(() => {
+    if (state.phase !== 'measuring' && state.phase !== 'open') return;
+    const wrapper = host.current;
+    const trigger = wrapper?.firstElementChild;
+    const tip = tooltip.current;
+    const doc = host.current?.ownerDocument;
+    const win = doc?.defaultView;
+    if (!wrapper || !trigger || !tip || !doc || !win) return;
+    const measure = () => {
+      if (activeTooltips.get(doc) !== close) return;
+      const rect = trigger.getBoundingClientRect();
+      if (
+        !trigger.isConnected ||
+        rect.width === 0 ||
+        rect.height === 0 ||
+        rect.right <= 0 ||
+        rect.left >= win.innerWidth ||
+        rect.bottom <= 0 ||
+        rect.top >= win.innerHeight
+      ) {
+        close();
+        return;
+      }
+      const {width, height} = tip.getBoundingClientRect();
+      const right = rect.right + 8;
+      const preferredLeft = right + width <= win.innerWidth - 8 ? right : rect.left - width - 8;
+      const left = Math.max(8, Math.min(preferredLeft, win.innerWidth - width - 8));
+      const top = Math.max(
+        8,
+        Math.min(rect.top + (rect.height - height) / 2, win.innerHeight - height - 8),
+      );
+      setState((current) =>
+        current.phase === 'open' && current.left === left && current.top === top
+          ? current
+          : {phase: 'open', left, top},
+      );
+    };
+    measure();
+    let frame: number | null = null;
+    const schedule = () => {
+      if (frame !== null) return;
+      frame = win.requestAnimationFrame(() => {
+        frame = null;
+        measure();
+      });
+    };
+    const observer = new ResizeObserver(schedule);
+    observer.observe(wrapper);
+    observer.observe(trigger);
+    observer.observe(tip);
+    doc.addEventListener('scroll', schedule, true);
+    win.addEventListener('resize', schedule);
+    return () => {
+      observer.disconnect();
+      doc.removeEventListener('scroll', schedule, true);
+      win.removeEventListener('resize', schedule);
+      if (frame !== null) win.cancelAnimationFrame(frame);
+    };
+  }, [close, state.phase, text]);
+  useLayoutEffect(() => {
+    if (state.phase === 'closed') return;
+    const doc = ownerDocument.current;
+    if (!doc) return;
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') close();
+    };
+    doc.addEventListener('pointerdown', close, true);
+    doc.addEventListener('keydown', escape, true);
+    return () => {
+      doc.removeEventListener('pointerdown', close, true);
+      doc.removeEventListener('keydown', escape, true);
+    };
+  }, [close, state.phase]);
+  useLayoutEffect(
+    () => () => {
+      cancelPending();
+      const doc = ownerDocument.current;
+      if (doc && activeTooltips.get(doc) === close) activeTooltips.delete(doc);
+    },
+    [cancelPending, close],
+  );
   return (
     <span
+      ref={host}
       className="dw-tooltip-host"
-      onPointerEnter={(e) => reveal(e.currentTarget)}
-      onFocus={(e) => reveal(e.currentTarget)}
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') setDismissed(true);
+      onPointerEnter={(e) => {
+        if (e.pointerType !== 'touch' && source.current !== 'keyboard') reveal(250);
+      }}
+      onPointerLeave={() => {
+        if (source.current !== 'keyboard') close();
+      }}
+      onPointerDown={close}
+      onClick={close}
+      onFocus={(e) => {
+        if (e.target.matches(':focus-visible')) {
+          reveal(0);
+        }
+      }}
+      onBlur={() => {
+        close();
       }}
     >
       {cloneElement(children, {
         'aria-describedby': [children.props['aria-describedby'], id].filter(Boolean).join(' '),
       })}
-      <span id={id} role="tooltip" className="dw-tooltip" style={position} hidden={dismissed}>
+      <span
+        ref={tooltip}
+        id={id}
+        role="tooltip"
+        className="dw-tooltip"
+        hidden={state.phase === 'closed' || state.phase === 'waiting'}
+        style={{
+          left: state.phase === 'open' ? state.left : 0,
+          top: state.phase === 'open' ? state.top : 0,
+          visibility: state.phase === 'open' ? 'visible' : 'hidden',
+        }}
+      >
         {text}
       </span>
     </span>
