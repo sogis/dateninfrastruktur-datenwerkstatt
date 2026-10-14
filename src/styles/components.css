@@ -225,7 +225,6 @@
   padding: 12px 16px;
   background: var(--dw-tone-bg);
   color: var(--dw-tone);
-  border-inline-start: 3px solid var(--dw-tone);
   border-radius: var(--dw-radius);
   overflow-wrap: anywhere;
 }

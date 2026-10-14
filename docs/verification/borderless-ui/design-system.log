@@ -1,0 +1,31 @@
+[WebServer] (node:74108) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 18 tests using 1 worker
+
+(node:74109) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:43:1 › UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard (1.5s)
+  ✓   2 [chromium] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:133:1 › UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmount (1.1s)
+  ✓   3 [chromium] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:222:1 › UI tooltips: no misplaced frames, collapsed/expanded navigation, scroll and resize (3.4s)
+  ✓   4 [chromium] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:328:1 › UI tooltips: shared IconButton flips at viewport edge and follows measured size (1.1s)
+  ✓   5 [chromium] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:376:1 › UI geometry: 8 px wrapped actions, form labels, narrow/zoom equivalent and failed local font (550ms)
+  ✓   6 [chromium] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:454:1 › UI screens: project actions, forms, navigation and settings at target viewports (1.0s)
+(node:74201) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [firefox] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:43:1 › UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard (2.6s)
+  ✓   8 [firefox] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:133:1 › UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmount (2.2s)
+  ✓   9 [firefox] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:222:1 › UI tooltips: no misplaced frames, collapsed/expanded navigation, scroll and resize (4.7s)
+  ✓  10 [firefox] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:328:1 › UI tooltips: shared IconButton flips at viewport edge and follows measured size (1.9s)
+  ✓  11 [firefox] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:376:1 › UI geometry: 8 px wrapped actions, form labels, narrow/zoom equivalent and failed local font (1.5s)
+  ✓  12 [firefox] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:454:1 › UI screens: project actions, forms, navigation and settings at target viewports (1.9s)
+(node:74263) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [webkit] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:43:1 › UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard (2.0s)
+  ✓  14 [webkit] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:133:1 › UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmount (1.5s)
+  ✓  15 [webkit] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:222:1 › UI tooltips: no misplaced frames, collapsed/expanded navigation, scroll and resize (3.8s)
+  ✓  16 [webkit] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:328:1 › UI tooltips: shared IconButton flips at viewport edge and follows measured size (1.6s)
+  ✓  17 [webkit] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:376:1 › UI geometry: 8 px wrapped actions, form labels, narrow/zoom equivalent and failed local font (1.0s)
+  ✓  18 [webkit] › ../../../Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:454:1 › UI screens: project actions, forms, navigation and settings at target viewports (1.2s)
+
+  18 passed (35.3s)

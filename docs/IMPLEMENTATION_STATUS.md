@@ -552,3 +552,38 @@ keine vollständige P7-Matrix bestanden. Nächster konkreter Schritt für diese
 Abnahme: passenden gepinnten Mirror wiederherstellen und die drei R-Geometriefälle
 erneut ausführen. `npm run verify`, Deployment-/Ressourcenprüfungen und nativer
 Safari-Smoke **nicht erneut ausgeführt**. Kein neuer V1-Release-Nachweis.
+
+### UI-Fix — Linke Akzentstriche entfernt (14. Oktober 2026)
+
+**Geliefert und verifiziert:** gestalterische Präzisierung zu REQ-065/066/067,
+gezielte UI-Prüfung zu AT-054/055/058. `src/styles/components.css` entfernt den
+linken Rahmen aller Notice-Töne; `src/styles/app.css` entfernt den Rahmen der
+Fehlerbanner und das Pseudoelement der aktiven Navigation. Getönte Flächen,
+Text-/Iconfarben, Innenabstände, Abrundungen, Meldungstexte, Rollen,
+`aria-current` und Tastaturfokus erhalten. Gestaltungsvertrag aktualisiert;
+keine API-/Domain-/Engine-/Speicheränderung und keine neuen Repositorytests.
+
+Prüfstand: Basis **2d3632ae0ad971462a60058c94052327ced83563**, uncommittierte
+CSS-Korrektur mit [Dateihashes](verification/borderless-ui/code-fingerprint.json).
+Echte ausgeführte Befehle:
+
+- Aus `/tmp/datenwerkstatt-borderless-yRXOu4`, mit
+  `DW_REPO=/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt`:
+  `DW_REUSE_DEV_SERVER=1 node "$DW_REPO/node_modules/@playwright/test/cli.js" test --config="$DW_REPO/playwright.config.ts" --project=chromium --project=firefox --project=webkit --reporter=list "$DW_REPO/tests/e2e/design-system.spec.ts"`
+  **Exit 0, 18/18 Tests bestanden**.
+- Dort `node verify-borderless.mjs` **Exit 0, 18/18 Layoutszenarien bestanden**:
+  vier Meldungstöne und tatsächlicher globaler Namensfehler, aktive Navigation
+  eingeklappt/ausgeklappt, 1440×900/1280×800, Chromium/Firefox/WebKit. Linke
+  Rahmenbreiten 0 px, kein erzeugter Navigationsmarker; Farben und Padding wie
+  zuvor, Fokus 3 px blau. Erster Messlauf **Exit 1** wegen fehlendem Blur im
+  Prüfablauf; Fokuswechsel ergänzt, Sollwerte und Produktcode unverändert.
+- `npm run typecheck && npm run lint && npx prettier --check src/styles/app.css src/styles/components.css docs/DESIGN_SYSTEM.md && git diff --check`
+  **Exit 0**.
+
+[Prüfbericht, JSON und neue Screenshots](verification/borderless-ui/README.md)
+liegen separat von historischen Belegen. Alle 18 Ansichten visuell in der
+Übersicht geprüft; Chromium/1440 zusätzlich in Originalgrösse. Keine offenen
+Punkte für diesen CSS-Fix. Nächster konkreter Schritt: reguläre gestalterische
+Durchsicht; die zuvor dokumentierte R-Mirror-Abhängigkeit bleibt separat offen.
+`npm run verify`, Engine-/Deployment-/Ressourcenprüfungen und nativer Safari-Smoke
+für diesen Fix **nicht erneut ausgeführt**; keine neue V1-Fertigmeldung.

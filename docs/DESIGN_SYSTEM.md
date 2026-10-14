@@ -102,6 +102,8 @@ Feldnamen. Deaktivierte und schreibgeschützte Werte bleiben lesbar.
   Primary für Neuer Arbeitsbereich/Ausführen/abschliessende Bestätigung.
   Sekundäraktionen neutral, destruktive Aktionen räumlich getrennt.
 - ActionGroup/Toolbar: gemeinsame Abstände, Reihenfolge und Umbruch.
+- Notice/Fehlermeldung: Text und getönte Fläche kennzeichnen Information,
+  Erfolg, Warnung und Fehler. Kein dekorativer linker Rahmen oder Akzentstrich.
 - FormField/Input/Select/Textarea: native Semantik, Label, Hinweis, Fehler.
 - Modal: nativer Dialog mit Kopf, Inhalt, Fuss, Fokusfang und Fokusrückgabe.
   Bestehende Sperren beim laufenden Vorgang bleiben wirksam.
@@ -140,7 +142,8 @@ aria-hidden und focusable=false; zugänglicher Name am Auslöser.
 
 20×20 px Icons auf mindestens 40×40 px Navigationsflächen. Eingeklappt Tooltip,
 ausgeklappt zusätzlich Label. SQL und R behalten ihre Namen; Tooltip ergänzt
-DuckDB bzw. webR. Aktives Ziel: rote Tönung, seitlicher Marker, aria-current.
+DuckDB bzw. webR. Aktives Ziel: rote Icon-/Textfarbe, getönte Fläche und
+aria-current, ohne seitlichen Marker.
 
 ## Arbeitsflächen und Anordnung
 

@@ -147,14 +147,6 @@ main {
   background: var(--dw-color-selected);
   color: var(--dw-color-accent);
 }
-.dw-nav-item[aria-current='page']::before {
-  content: '';
-  position: absolute;
-  inset: 8px auto 8px 0;
-  width: 3px;
-  border-radius: 2px;
-  background: var(--dw-color-accent);
-}
 .workspace-content {
   flex: 1;
   min-width: 0;
@@ -226,7 +218,6 @@ main {
 .error {
   padding: 12px 24px;
   background: var(--dw-color-danger-bg);
-  border-inline-start: 3px solid var(--dw-color-danger);
   color: var(--dw-color-danger);
   display: flex;
   flex-wrap: wrap;

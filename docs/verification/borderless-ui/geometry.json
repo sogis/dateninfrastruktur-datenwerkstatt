@@ -1,0 +1,728 @@
+[
+  {
+    "browser": "chromium",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "notices": [
+      {
+        "text": "Information: Die Vorschau zeigt die ersten 200 Zeilen.",
+        "role": "status",
+        "className": "dw-notice dw-tone-info ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(45, 95, 135)",
+        "background": "rgb(232, 242, 251)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Erfolg: Lokal gespeichert.",
+        "role": "status",
+        "className": "dw-notice dw-tone-success ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(47, 125, 78)",
+        "background": "rgb(231, 246, 236)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Warnung: Nur in dieser Sitzung verfügbar.",
+        "role": "status",
+        "className": "dw-notice dw-tone-warning ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(138, 90, 0)",
+        "background": "rgb(255, 243, 224)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Fehler: Die Datei konnte nicht gelesen werden. Diese lange Meldung muss umbrechen und darf keine Aktionen verdecken.",
+        "role": "alert",
+        "className": "dw-notice dw-tone-danger ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      }
+    ]
+  },
+  {
+    "browser": "chromium",
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "notices": [
+      {
+        "text": "Information: Die Vorschau zeigt die ersten 200 Zeilen.",
+        "role": "status",
+        "className": "dw-notice dw-tone-info ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(45, 95, 135)",
+        "background": "rgb(232, 242, 251)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Erfolg: Lokal gespeichert.",
+        "role": "status",
+        "className": "dw-notice dw-tone-success ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(47, 125, 78)",
+        "background": "rgb(231, 246, 236)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Warnung: Nur in dieser Sitzung verfügbar.",
+        "role": "status",
+        "className": "dw-notice dw-tone-warning ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(138, 90, 0)",
+        "background": "rgb(255, 243, 224)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Fehler: Die Datei konnte nicht gelesen werden. Diese lange Meldung muss umbrechen und darf keine Aktionen verdecken.",
+        "role": "alert",
+        "className": "dw-notice dw-tone-danger ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      }
+    ]
+  },
+  {
+    "browser": "chromium",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "expanded": false,
+    "errors": [
+      {
+        "text": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"inclusive\": true,\n    \"path\": [],\n    \"message\": \"Too small: expected string to have >=1 characters\"\n  }\n]Hinweis schliessen",
+        "role": "alert",
+        "className": "error",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 24px",
+        "borderRadius": "0px"
+      }
+    ],
+    "navigation": {
+      "borderLeft": "0px",
+      "borderStart": "0px",
+      "pseudoContent": "none",
+      "color": "rgb(210, 10, 17)",
+      "background": "rgb(253, 235, 236)",
+      "current": "page"
+    },
+    "outline": {
+      "visible": true,
+      "width": "3px",
+      "color": "rgb(11, 95, 255)"
+    }
+  },
+  {
+    "browser": "chromium",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "expanded": true,
+    "errors": [
+      {
+        "text": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"inclusive\": true,\n    \"path\": [],\n    \"message\": \"Too small: expected string to have >=1 characters\"\n  }\n]Hinweis schliessen",
+        "role": "alert",
+        "className": "error",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 24px",
+        "borderRadius": "0px"
+      }
+    ],
+    "navigation": {
+      "borderLeft": "0px",
+      "borderStart": "0px",
+      "pseudoContent": "none",
+      "color": "rgb(210, 10, 17)",
+      "background": "rgb(253, 235, 236)",
+      "current": "page"
+    },
+    "outline": {
+      "visible": true,
+      "width": "3px",
+      "color": "rgb(11, 95, 255)"
+    }
+  },
+  {
+    "browser": "chromium",
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "expanded": false,
+    "errors": [
+      {
+        "text": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"inclusive\": true,\n    \"path\": [],\n    \"message\": \"Too small: expected string to have >=1 characters\"\n  }\n]Hinweis schliessen",
+        "role": "alert",
+        "className": "error",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 24px",
+        "borderRadius": "0px"
+      }
+    ],
+    "navigation": {
+      "borderLeft": "0px",
+      "borderStart": "0px",
+      "pseudoContent": "none",
+      "color": "rgb(210, 10, 17)",
+      "background": "rgb(253, 235, 236)",
+      "current": "page"
+    },
+    "outline": {
+      "visible": true,
+      "width": "3px",
+      "color": "rgb(11, 95, 255)"
+    }
+  },
+  {
+    "browser": "chromium",
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "expanded": true,
+    "errors": [
+      {
+        "text": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"inclusive\": true,\n    \"path\": [],\n    \"message\": \"Too small: expected string to have >=1 characters\"\n  }\n]Hinweis schliessen",
+        "role": "alert",
+        "className": "error",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 24px",
+        "borderRadius": "0px"
+      }
+    ],
+    "navigation": {
+      "borderLeft": "0px",
+      "borderStart": "0px",
+      "pseudoContent": "none",
+      "color": "rgb(210, 10, 17)",
+      "background": "rgb(253, 235, 236)",
+      "current": "page"
+    },
+    "outline": {
+      "visible": true,
+      "width": "3px",
+      "color": "rgb(11, 95, 255)"
+    }
+  },
+  {
+    "browser": "firefox",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "notices": [
+      {
+        "text": "Information: Die Vorschau zeigt die ersten 200 Zeilen.",
+        "role": "status",
+        "className": "dw-notice dw-tone-info ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(45, 95, 135)",
+        "background": "rgb(232, 242, 251)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Erfolg: Lokal gespeichert.",
+        "role": "status",
+        "className": "dw-notice dw-tone-success ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(47, 125, 78)",
+        "background": "rgb(231, 246, 236)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Warnung: Nur in dieser Sitzung verfügbar.",
+        "role": "status",
+        "className": "dw-notice dw-tone-warning ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(138, 90, 0)",
+        "background": "rgb(255, 243, 224)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Fehler: Die Datei konnte nicht gelesen werden. Diese lange Meldung muss umbrechen und darf keine Aktionen verdecken.",
+        "role": "alert",
+        "className": "dw-notice dw-tone-danger ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "notices": [
+      {
+        "text": "Information: Die Vorschau zeigt die ersten 200 Zeilen.",
+        "role": "status",
+        "className": "dw-notice dw-tone-info ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(45, 95, 135)",
+        "background": "rgb(232, 242, 251)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Erfolg: Lokal gespeichert.",
+        "role": "status",
+        "className": "dw-notice dw-tone-success ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(47, 125, 78)",
+        "background": "rgb(231, 246, 236)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Warnung: Nur in dieser Sitzung verfügbar.",
+        "role": "status",
+        "className": "dw-notice dw-tone-warning ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(138, 90, 0)",
+        "background": "rgb(255, 243, 224)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Fehler: Die Datei konnte nicht gelesen werden. Diese lange Meldung muss umbrechen und darf keine Aktionen verdecken.",
+        "role": "alert",
+        "className": "dw-notice dw-tone-danger ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "expanded": false,
+    "errors": [
+      {
+        "text": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"inclusive\": true,\n    \"path\": [],\n    \"message\": \"Too small: expected string to have >=1 characters\"\n  }\n]Hinweis schliessen",
+        "role": "alert",
+        "className": "error",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 24px",
+        "borderRadius": "0px"
+      }
+    ],
+    "navigation": {
+      "borderLeft": "0px",
+      "borderStart": "0px",
+      "pseudoContent": "none",
+      "color": "rgb(210, 10, 17)",
+      "background": "rgb(253, 235, 236)",
+      "current": "page"
+    },
+    "outline": {
+      "visible": true,
+      "width": "3px",
+      "color": "rgb(11, 95, 255)"
+    }
+  },
+  {
+    "browser": "firefox",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "expanded": true,
+    "errors": [
+      {
+        "text": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"inclusive\": true,\n    \"path\": [],\n    \"message\": \"Too small: expected string to have >=1 characters\"\n  }\n]Hinweis schliessen",
+        "role": "alert",
+        "className": "error",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 24px",
+        "borderRadius": "0px"
+      }
+    ],
+    "navigation": {
+      "borderLeft": "0px",
+      "borderStart": "0px",
+      "pseudoContent": "none",
+      "color": "rgb(210, 10, 17)",
+      "background": "rgb(253, 235, 236)",
+      "current": "page"
+    },
+    "outline": {
+      "visible": true,
+      "width": "3px",
+      "color": "rgb(11, 95, 255)"
+    }
+  },
+  {
+    "browser": "firefox",
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "expanded": false,
+    "errors": [
+      {
+        "text": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"inclusive\": true,\n    \"path\": [],\n    \"message\": \"Too small: expected string to have >=1 characters\"\n  }\n]Hinweis schliessen",
+        "role": "alert",
+        "className": "error",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 24px",
+        "borderRadius": "0px"
+      }
+    ],
+    "navigation": {
+      "borderLeft": "0px",
+      "borderStart": "0px",
+      "pseudoContent": "none",
+      "color": "rgb(210, 10, 17)",
+      "background": "rgb(253, 235, 236)",
+      "current": "page"
+    },
+    "outline": {
+      "visible": true,
+      "width": "3px",
+      "color": "rgb(11, 95, 255)"
+    }
+  },
+  {
+    "browser": "firefox",
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "expanded": true,
+    "errors": [
+      {
+        "text": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"inclusive\": true,\n    \"path\": [],\n    \"message\": \"Too small: expected string to have >=1 characters\"\n  }\n]Hinweis schliessen",
+        "role": "alert",
+        "className": "error",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 24px",
+        "borderRadius": "0px"
+      }
+    ],
+    "navigation": {
+      "borderLeft": "0px",
+      "borderStart": "0px",
+      "pseudoContent": "none",
+      "color": "rgb(210, 10, 17)",
+      "background": "rgb(253, 235, 236)",
+      "current": "page"
+    },
+    "outline": {
+      "visible": true,
+      "width": "3px",
+      "color": "rgb(11, 95, 255)"
+    }
+  },
+  {
+    "browser": "webkit",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "notices": [
+      {
+        "text": "Information: Die Vorschau zeigt die ersten 200 Zeilen.",
+        "role": "status",
+        "className": "dw-notice dw-tone-info ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(45, 95, 135)",
+        "background": "rgb(232, 242, 251)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Erfolg: Lokal gespeichert.",
+        "role": "status",
+        "className": "dw-notice dw-tone-success ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(47, 125, 78)",
+        "background": "rgb(231, 246, 236)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Warnung: Nur in dieser Sitzung verfügbar.",
+        "role": "status",
+        "className": "dw-notice dw-tone-warning ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(138, 90, 0)",
+        "background": "rgb(255, 243, 224)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Fehler: Die Datei konnte nicht gelesen werden. Diese lange Meldung muss umbrechen und darf keine Aktionen verdecken.",
+        "role": "alert",
+        "className": "dw-notice dw-tone-danger ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      }
+    ]
+  },
+  {
+    "browser": "webkit",
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "notices": [
+      {
+        "text": "Information: Die Vorschau zeigt die ersten 200 Zeilen.",
+        "role": "status",
+        "className": "dw-notice dw-tone-info ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(45, 95, 135)",
+        "background": "rgb(232, 242, 251)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Erfolg: Lokal gespeichert.",
+        "role": "status",
+        "className": "dw-notice dw-tone-success ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(47, 125, 78)",
+        "background": "rgb(231, 246, 236)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Warnung: Nur in dieser Sitzung verfügbar.",
+        "role": "status",
+        "className": "dw-notice dw-tone-warning ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(138, 90, 0)",
+        "background": "rgb(255, 243, 224)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      },
+      {
+        "text": "Fehler: Die Datei konnte nicht gelesen werden. Diese lange Meldung muss umbrechen und darf keine Aktionen verdecken.",
+        "role": "alert",
+        "className": "dw-notice dw-tone-danger ",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 16px",
+        "borderRadius": "4px"
+      }
+    ]
+  },
+  {
+    "browser": "webkit",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "expanded": false,
+    "errors": [
+      {
+        "text": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"inclusive\": true,\n    \"path\": [],\n    \"message\": \"Too small: expected string to have >=1 characters\"\n  }\n]Hinweis schliessen",
+        "role": "alert",
+        "className": "error",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 24px",
+        "borderRadius": "0px"
+      }
+    ],
+    "navigation": {
+      "borderLeft": "0px",
+      "borderStart": "0px",
+      "pseudoContent": "none",
+      "color": "rgb(210, 10, 17)",
+      "background": "rgb(253, 235, 236)",
+      "current": "page"
+    },
+    "outline": {
+      "visible": true,
+      "width": "3px",
+      "color": "rgb(11, 95, 255)"
+    }
+  },
+  {
+    "browser": "webkit",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "expanded": true,
+    "errors": [
+      {
+        "text": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"inclusive\": true,\n    \"path\": [],\n    \"message\": \"Too small: expected string to have >=1 characters\"\n  }\n]Hinweis schliessen",
+        "role": "alert",
+        "className": "error",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 24px",
+        "borderRadius": "0px"
+      }
+    ],
+    "navigation": {
+      "borderLeft": "0px",
+      "borderStart": "0px",
+      "pseudoContent": "none",
+      "color": "rgb(210, 10, 17)",
+      "background": "rgb(253, 235, 236)",
+      "current": "page"
+    },
+    "outline": {
+      "visible": true,
+      "width": "3px",
+      "color": "rgb(11, 95, 255)"
+    }
+  },
+  {
+    "browser": "webkit",
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "expanded": false,
+    "errors": [
+      {
+        "text": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"inclusive\": true,\n    \"path\": [],\n    \"message\": \"Too small: expected string to have >=1 characters\"\n  }\n]Hinweis schliessen",
+        "role": "alert",
+        "className": "error",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 24px",
+        "borderRadius": "0px"
+      }
+    ],
+    "navigation": {
+      "borderLeft": "0px",
+      "borderStart": "0px",
+      "pseudoContent": "none",
+      "color": "rgb(210, 10, 17)",
+      "background": "rgb(253, 235, 236)",
+      "current": "page"
+    },
+    "outline": {
+      "visible": true,
+      "width": "3px",
+      "color": "rgb(11, 95, 255)"
+    }
+  },
+  {
+    "browser": "webkit",
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "expanded": true,
+    "errors": [
+      {
+        "text": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"inclusive\": true,\n    \"path\": [],\n    \"message\": \"Too small: expected string to have >=1 characters\"\n  }\n]Hinweis schliessen",
+        "role": "alert",
+        "className": "error",
+        "borderLeft": "0px",
+        "borderStart": "0px",
+        "color": "rgb(184, 15, 23)",
+        "background": "rgb(253, 235, 236)",
+        "padding": "12px 24px",
+        "borderRadius": "0px"
+      }
+    ],
+    "navigation": {
+      "borderLeft": "0px",
+      "borderStart": "0px",
+      "pseudoContent": "none",
+      "color": "rgb(210, 10, 17)",
+      "background": "rgb(253, 235, 236)",
+      "current": "page"
+    },
+    "outline": {
+      "visible": true,
+      "width": "3px",
+      "color": "rgb(11, 95, 255)"
+    }
+  }
+]

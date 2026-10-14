@@ -1,0 +1,4 @@
+chromium: notices, error banner and both navigation modes verified at 1440×900 and 1280×800
+firefox: notices, error banner and both navigation modes verified at 1440×900 and 1280×800
+webkit: notices, error banner and both navigation modes verified at 1440×900 and 1280×800
+18/18 layout scenarios passed
