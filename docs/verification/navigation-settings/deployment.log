@@ -1,0 +1,42 @@
+[WebServer] (node:80815) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:80873) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] tar: public/vendor/webr-packages/bin/emscripten/contrib/4.6/R6_2.6.1.tgz: m: No such file or directory
+[WebServer] node:internal/errors:983
+[WebServer]   const err = new Error(message);
+[WebServer]               ^
+[WebServer] 
+[WebServer] Error: Command failed: tar -tzf public/vendor/webr-packages/bin/emscripten/contrib/4.6/R6_2.6.1.tgz
+[WebServer] tar: public/vendor/webr-packages/bin/emscripten/contrib/4.6/R6_2.6.1.tgz: m: No such file or directory
+[WebServer] 
+[WebServer]     at genericNodeError (node:internal/errors:983:15)
+[WebServer]     at wrappedFn (node:internal/errors:537:14)
+[WebServer]     at checkExecSyncError (node:child_process:916:11)
+[WebServer]     at execFileSync (node:child_process:952:15)
+[WebServer]     at file:///Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/scripts/license-inventory.mjs:55:17 {
+[WebServer]   status: 1,
+[WebServer]   signal: null,
+[WebServer]   output: [
+[WebServer]     null,
+[WebServer]     '',
+[WebServer]     'tar: public/vendor/webr-packages/bin/emscripten/contrib/4.6/R6_2.6.1.tgz: m: No such file or directory\n'
+[WebServer]   ],
+[WebServer]   pid: 80957,
+[WebServer]   stdout: '',
+[WebServer]   stderr: 'tar: public/vendor/webr-packages/bin/emscripten/contrib/4.6/R6_2.6.1.tgz: m: No such file or directory\n'
+[WebServer] }
+[WebServer] 
+[WebServer] Node.js v22.23.1
+[WebServer] Error: node failed: 1
+[WebServer]     at run (file:///Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/scripts/test-deployment.mjs:7:34)
+[WebServer]     at file:///Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/scripts/test-deployment.mjs:29:7
+[WebServer] (node:80804) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+Error: Process from config.webServer was not able to start. Exit code: 1
+

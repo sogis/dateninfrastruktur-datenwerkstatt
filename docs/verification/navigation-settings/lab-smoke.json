@@ -1,0 +1,44 @@
+[
+  {
+    "browser": "chromium",
+    "version": "153.0.8010.12",
+    "status": "passed",
+    "checks": [
+      "direct /lab/settings",
+      "reload",
+      "global sidebar",
+      "project sidebar",
+      "blue SVG dismissal of real error",
+      "settings link retains base",
+      "no workers or pageerrors"
+    ]
+  },
+  {
+    "browser": "firefox",
+    "version": "155.0",
+    "status": "passed",
+    "checks": [
+      "direct /lab/settings",
+      "reload",
+      "global sidebar",
+      "project sidebar",
+      "blue SVG dismissal of real error",
+      "settings link retains base",
+      "no workers or pageerrors"
+    ]
+  },
+  {
+    "browser": "webkit",
+    "version": "26.6",
+    "status": "passed",
+    "checks": [
+      "direct /lab/settings",
+      "reload",
+      "global sidebar",
+      "project sidebar",
+      "blue SVG dismissal of real error",
+      "settings link retains base",
+      "no workers or pageerrors"
+    ]
+  }
+]

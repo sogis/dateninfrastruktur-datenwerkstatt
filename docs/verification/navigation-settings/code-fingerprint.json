@@ -1,0 +1,12 @@
+{
+  "gitBase": "b117b80ffcc644d662582ef92461d0ad769e28e1",
+  "node": "v22.23.1",
+  "files": {
+    "src/app/router.tsx": "88b52a0b5d14b183b02216f841e508aed9d54a944240e8ba52a71e74cdc48199",
+    "src/styles/app.css": "04c0049c5b502cab68a086651f005d09a4f79c86190aa5b429ef9d173eff26c9",
+    "tests/e2e/navigation.spec.ts": "f31bf9836d1a5bbf53d0237caf2fbd287446ac55aa2889dfc78f48e6565229ca",
+    "tests/e2e/design-system.spec.ts": "90aba16474c203ceea7bc0aff1dbb8180bb2c596607c6e38055b81a5ff95337b",
+    "tests/deployment/static.spec.ts": "52e19d78f0c4c40184bbe53ae392a74bb270ee24d6161b8c2c6b6d470cd87e2e",
+    "docs/DESIGN_SYSTEM.md": "dc0302c758d60ac418b18e22448ffe1af588ec5037b559c72539b69262a4a336"
+  }
+}

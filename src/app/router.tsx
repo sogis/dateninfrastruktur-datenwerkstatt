@@ -1,11 +1,11 @@
-import {Button, Input, Select, FormField, Notice} from '../ui/Controls';
+import {Button, IconButton, Input, Select, FormField, Notice} from '../ui/Controls';
 import {NavigationItem} from '../ui/NavigationItem';
 import {StorageSettings} from '../features/workspaces/StorageSettings';
 import {WorkspaceViewController} from '../state/workspaceView';
 import {failureMessage} from '../application/errors';
 import {RWorkbench} from '../features/r/RWorkbench';
 import {PortalOpen} from '../features/catalog/PortalImport';
-import {createContext, useContext, useEffect, useMemo, useState} from 'react';
+import {createContext, useContext, useEffect, useMemo, useState, type ReactNode} from 'react';
 import {
   createRootRoute,
   createRoute,
@@ -125,6 +125,12 @@ declare module '@tanstack/react-router' {
 }
 function Shell() {
   const error = useStore(appStore, (s) => s.error);
+  const defaultCollapsed = useStore(appStore, (s) => s.settings.sidebarCollapsed);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>();
+  const expanded = !(sidebarCollapsed ?? defaultCollapsed);
+  const inWorkspace = useRouterState({
+    select: (s) => s.matches.some((match) => match.routeId === workspaceRoute.id),
+  });
   useEffect(() => {
     void services.settings
       .load()
@@ -143,16 +149,68 @@ function Shell() {
             ? 'Nur diese Sitzung · Verlust bei Reload'
             : 'Entwicklungsstand · nicht abgenommen'}
         </span>
-        <Link to="/settings">Einstellungen</Link>
       </header>
       {error && (
-        <div role="alert" className="error">
+        <div role="alert" className="error app-error">
           <strong>{error}</strong>
-          <Button onClick={() => appStore.setState({error: null})}>Hinweis schliessen</Button>
+          <IconButton
+            icon="x-lg"
+            label="Hinweis schliessen"
+            variant="ghost"
+            onClick={() => appStore.setState({error: null})}
+          />
         </div>
       )}
-      <Outlet />
+      {inWorkspace ? (
+        <Outlet />
+      ) : (
+        <div className="workspace-layout">
+          <AppNavigation expanded={expanded} onToggle={() => setSidebarCollapsed(expanded)} />
+          <section className="workspace-content">
+            <Outlet />
+          </section>
+        </div>
+      )}
     </>
+  );
+}
+function AppNavigation({
+  expanded,
+  onToggle,
+  children,
+}: {
+  expanded: boolean;
+  onToggle: () => void;
+  children?: ReactNode;
+}) {
+  const routeId = useRouterState({select: (s) => s.matches.at(-1)?.routeId});
+  return (
+    <nav className={expanded ? 'sidebar expanded' : 'sidebar'} aria-label="Hauptnavigation">
+      <NavigationItem
+        icon="layout-sidebar"
+        label={expanded ? 'Navigation einklappen' : 'Navigation ausklappen'}
+        expanded={expanded}
+      >
+        <Button onClick={onToggle} />
+      </NavigationItem>
+      <NavigationItem
+        icon="collection"
+        label="Arbeitsbereiche"
+        expanded={expanded}
+        current={routeId === listRoute.id}
+      >
+        <Link to="/workspaces" activeOptions={{exact: true}} />
+      </NavigationItem>
+      {children}
+      <NavigationItem
+        icon="gear"
+        label="Einstellungen"
+        expanded={expanded}
+        current={routeId === settingsRoute.id}
+      >
+        <Link to="/settings" activeOptions={{exact: true}} />
+      </NavigationItem>
+    </nav>
   );
 }
 interface Context {
@@ -235,17 +293,10 @@ function WorkspaceProvider() {
   return (
     <workspaceContext.Provider value={ctx}>
       <div className="workspace-layout">
-        <nav className={expanded ? 'sidebar expanded' : 'sidebar'} aria-label="Arbeitsbereich">
-          <NavigationItem
-            icon="layout-sidebar"
-            label={expanded ? 'Navigation einklappen' : 'Navigation ausklappen'}
-            expanded={expanded}
-          >
-            <Button onClick={() => ctx.view.patch({sidebarCollapsed: expanded})} />
-          </NavigationItem>
-          <NavigationItem icon="collection" label="Arbeitsbereiche" expanded={expanded}>
-            <Link to="/workspaces" activeOptions={{exact: true}} />
-          </NavigationItem>
+        <AppNavigation
+          expanded={expanded}
+          onToggle={() => ctx.view.patch({sidebarCollapsed: expanded})}
+        >
           <NavigationItem
             icon="folder2-open"
             label="Projektübersicht"
@@ -288,7 +339,7 @@ function WorkspaceProvider() {
           >
             <Button onClick={() => openAnalysis('r')} />
           </NavigationItem>
-        </nav>
+        </AppNavigation>
         <section className="workspace-content" data-analysis={/\/(sql|r)\//.test(path)}>
           <div className="save-status" aria-live="polite">
             {session.readOnly

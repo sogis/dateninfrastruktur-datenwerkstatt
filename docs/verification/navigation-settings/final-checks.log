@@ -1,0 +1,11 @@
+
+> datenwerkstatt@0.1.0 typecheck
+> tsc --noEmit
+
+
+> datenwerkstatt@0.1.0 lint
+> eslint . && node scripts/check-boundaries.mjs
+
+Module boundaries checked.
+Checking formatting...
+All matched files use Prettier code style!

@@ -119,9 +119,12 @@ test('UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices unde
       external.push(r.url());
   });
   await page.goto(`${baseURL}workspaces`);
+  const nav = page.getByRole('navigation', {name: 'Hauptnavigation'});
+  await expect(nav.locator('.dw-nav-item')).toHaveCount(3);
+  await expect(page.locator('header').getByRole('link', {name: 'Einstellungen'})).toHaveCount(0);
   await page.getByLabel('Name des neuen Arbeitsbereichs').fill('Lokale UI-Assets');
   await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
-  await expect(page.locator('.sidebar svg')).toHaveCount(6);
+  await expect(page.locator('.sidebar svg')).toHaveCount(7);
   await page.getByRole('button', {name: 'SQL', exact: true}).click();
   await expect(page.locator('.monaco-editor')).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
@@ -178,5 +181,17 @@ test('UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices unde
         .map((font) => font.status),
     ),
   ).toEqual(['error', 'error']);
+  await nav.getByRole('link', {name: 'Einstellungen', exact: true}).click();
+  await expect(page).toHaveURL(`${baseURL}settings`);
+  await expect(nav.getByRole('link', {name: 'Einstellungen', exact: true})).toHaveAttribute(
+    'aria-current',
+    'page',
+  );
+  await expect(nav.locator('.dw-nav-item')).toHaveCount(3);
+  await page.reload();
+  await expect(nav.getByRole('link', {name: 'Einstellungen', exact: true})).toHaveAttribute(
+    'aria-current',
+    'page',
+  );
   expect(external).toEqual([]);
 });

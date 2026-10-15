@@ -1,0 +1,112 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(locator).toContainText(expected) failed
+
+Locator: getByRole('alert')
+Timeout: 5000ms
+- Expected substring  -  1
++ Received string     + 10
+
+- Too small
++ [
++   {
++     "origin": "string",
++     "code": "too_small",
++     "minimum": 1,
++     "inclusive": true,
++     "path": [],
++     "message": "Invalid input"
++   }
++ ]Hinweis schliessen
+
+Call log:
+  - Expect "toContainText" getByRole('alert') with timeout 5000ms
+  - waiting for getByRole('alert')
+    14 × locator resolved to <div role="alert" class="error app-error">…</div>
+       - unexpected value "[
+  {
+    "origin": "string",
+    "code": "too_small",
+    "minimum": 1,
+    "inclusive": true,
+    "path": [],
+    "message": "Invalid input"
+  }
+]Hinweis schliessen"
+
+    at captureRawStack (/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+    at callMatcherAsStep (/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/node_modules/playwright/lib/matchers/expect.js:13310:57)
+    at Object.toContainText (/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/node_modules/playwright/lib/matchers/expect.js:13302:23)
+    at /private/tmp/datenwerkstatt-navigation-foqrul/lab-smoke.mjs:38:43 {
+  matcherResult: {
+    name: 'toContainText',
+    expected: 'Too small',
+    message: 'expect(locator).toContainText(expected) failed\n' +
+      '\n' +
+      "Locator: getByRole('alert')\n" +
+      'Timeout: 5000ms\n' +
+      '- Expected substring  -  1\n' +
+      '+ Received string     + 10\n' +
+      '\n' +
+      '- Too small\n' +
+      '+ [\n' +
+      '+   {\n' +
+      '+     "origin": "string",\n' +
+      '+     "code": "too_small",\n' +
+      '+     "minimum": 1,\n' +
+      '+     "inclusive": true,\n' +
+      '+     "path": [],\n' +
+      '+     "message": "Invalid input"\n' +
+      '+   }\n' +
+      '+ ]Hinweis schliessen\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toContainText" getByRole('alert') with timeout 5000ms\n` +
+      "  - waiting for getByRole('alert')\n" +
+      '    14 × locator resolved to <div role="alert" class="error app-error">…</div>\n' +
+      '       - unexpected value "[\n' +
+      '  {\n' +
+      '    "origin": "string",\n' +
+      '    "code": "too_small",\n' +
+      '    "minimum": 1,\n' +
+      '    "inclusive": true,\n' +
+      '    "path": [],\n' +
+      '    "message": "Invalid input"\n' +
+      '  }\n' +
+      ']Hinweis schliessen"\n',
+    pass: false,
+    actual: '[\n' +
+      '  {\n' +
+      '    "origin": "string",\n' +
+      '    "code": "too_small",\n' +
+      '    "minimum": 1,\n' +
+      '    "inclusive": true,\n' +
+      '    "path": [],\n' +
+      '    "message": "Invalid input"\n' +
+      '  }\n' +
+      ']Hinweis schliessen',
+    log: [
+      `  - Expect "toContainText" getByRole('alert') with timeout 5000ms`,
+      "  - waiting for getByRole('alert')",
+      '    14 × locator resolved to <div role="alert" class="error app-error">…</div>',
+      '       - unexpected value "[\n' +
+        '  {\n' +
+        '    "origin": "string",\n' +
+        '    "code": "too_small",\n' +
+        '    "minimum": 1,\n' +
+        '    "inclusive": true,\n' +
+        '    "path": [],\n' +
+        '    "message": "Invalid input"\n' +
+        '  }\n' +
+        ']Hinweis schliessen"'
+    ],
+    timeout: 5000,
+    ariaSnapshot: '- alert:\n' +
+      '  - strong: "[ { \\"origin\\": \\"string\\", \\"code\\": \\"too_small\\", \\"minimum\\": 1, \\"inclusive\\": true, \\"path\\": [], \\"message\\": \\"Invalid input\\" } ]"\n' +
+      '  - button "Hinweis schliessen"'
+  }
+}
+
+Node.js v22.23.1

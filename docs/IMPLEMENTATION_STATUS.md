@@ -587,3 +587,68 @@ Punkte für diesen CSS-Fix. Nächster konkreter Schritt: reguläre gestalterisch
 Durchsicht; die zuvor dokumentierte R-Mirror-Abhängigkeit bleibt separat offen.
 `npm run verify`, Engine-/Deployment-/Ressourcenprüfungen und nativer Safari-Smoke
 für diesen Fix **nicht erneut ausgeführt**; keine neue V1-Fertigmeldung.
+
+### UI — Einstellungen links und Schliessen-SVG (14. Oktober 2026)
+
+**Geliefert, gezielte UI-Prüfungen bestanden:** REQ-061/064–067, Regression zu
+AT-054/055/057/058. `src/app/router.tsx` verwendet eine gemeinsame Navigation
+auf Arbeitsbereichsliste, Einstellungen, Portaleinstieg und im Projekt.
+Einstellungen mit vorhandenem Gear-SVG direkt nach R; im Header entfernt.
+Ohne geöffnetes Projekt erscheinen nur globale Ziele. Einklappen, aktive Route,
+Tooltip und gespeicherte Projektansichten erhalten; globales Umschalten bleibt
+sitzungslokal. Der globale Fehlerhinweis nutzt den vorhandenen IconButton mit
+x-lg-SVG, blau, 40×40 px, rechts und auch bei mehrzeiligem Text vertikal mittig.
+Layout in `src/styles/app.css`, Gestaltungsvertrag aktualisiert; keine neuen
+Dependencies, öffentlichen Schnittstellen oder Speicherformate.
+
+Neue Browserregressionen in `tests/e2e/navigation.spec.ts`, zusätzliche
+Navigationseinträge in bestehender Designsystem-/Deploymentprüfung berücksichtigt.
+Prüfstand: Basis **b117b80ffcc644d662582ef92461d0ad769e28e1**, uncommittierter
+Arbeitsbaum; [Hashes, tatsächliche Befehle und Belege](verification/navigation-settings/README.md).
+Node **22.23.1**, npm **11.18.0**:
+
+- `npm run verify` **Exit 1**: Typecheck, Lint/Modulgrenzen und **40 Unit-Tests**
+  bestanden; Build stoppt beim bekannten Paketmirror-Konflikt bit64
+  **4.8.2 erwartet / 4.8.6 gefunden**. Integrations-/E2E-Stufen nicht erreicht.
+- Playwright mit `navigation.spec.ts`, `design-system.spec.ts`, `workspaces.spec.ts`
+  und `p7-ui.spec.ts` über Chromium/Firefox/WebKit **Exit 1**:
+  **51 bestanden / 3 gescheitert**. Alle **9 neuen UI-Fälle** bestanden;
+  die drei SQL/R-Geometriefälle scheitern beim R-Start am fehlenden Mirror-Lock-JSON.
+  Historische PNGs/JSON unverändert; neue Nachweise separat gespeichert.
+- Betroffene reguläre Deploymenttests **Exit 1 vor Browserstart**:
+  Lizenzinventar kann das fehlende gepinnte R6-Archiv nicht lesen; Tests nicht ausgeführt.
+- Zusätzlicher Frontendbuild unter `/lab/` **Exit 0** und gebündelter
+  Navigations-/Schliessen-Smoke **3/3 Browser bestanden, Exit 0**. Direktaufruf,
+  Reload und Basispfade geprüft; kein Ersatz für Container-/CSP-Abnahme.
+- Abschliessender Typecheck, Lint/Modulgrenzen, Prettier der geänderten Code-/
+  Gestaltungs-/Testdateien sowie des neuen Berichts und `git diff --check`
+  **Exit 0**. Paket-/Dokumentlinkprüfung **Exit 0**;
+  Dateihashabgleich nach Testende **Exit 0**.
+
+1440×900, 1280×800 und CSS-Zoom 200 % geprüft. Zwölf Geometriefälle bestätigen
+Zentrierung, 40×40-px-Bedienfläche, Farbe und Textumbruch ohne Überbreite.
+Vorprüfung der neuen Tastaturfälle wurde von programmatischem Fokus auf echte
+Tab-Navigation korrigiert; vollständige Einordnung im verlinkten Bericht.
+Kein neuer vollständiger Engine-/Ressourcenlauf oder nativer Safari-Smoke.
+Der beauftragte UI-Umfang ist umgesetzt. Nächster technischer Abnahmeschritt:
+gepinnten Mirror wiederherstellen und die blockierten Gesamt-/Deployment- und
+R-Geometrieprüfungen erneut ausführen. Kein Commit, Push oder Release ausgeführt.
+
+### Commit-/Push-Vorbereitung (15. Oktober 2026)
+
+Der Nutzer hat Commit und Push dieses UI-Abschnitts ausdrücklich beauftragt.
+Ziel: bestehender Branch `main`, `origin` unter
+`sogis/dateninfrastruktur-datenwerkstatt`. `git fetch origin` und
+`git diff --check` **Exit 0**; keine Divergenz zu `origin/main`.
+Hashabgleich aller sechs Dateien des geprüften Produkt-/Testkandidaten
+**Exit 0, unverändert**. Deshalb keine erneuten Engine-/Browserläufe für die
+Commitvorbereitung; die oben dokumentierte webR-Mirror-Abhängigkeit und die
+fehlgeschlagenen Gesamt-/Deploymentprüfungen bleiben bestehen.
+
+`git diff --cached --check` **Exit 2** ausschliesslich wegen Whitespace in den
+drei unveränderten Originalausgaben `browser-matrix.log`, `deployment.log` und
+`lab-build.log`. Derselbe Check mit genau diesen drei Rohlogs ausgeschlossen
+**Exit 0**; Prüfbelege werden nicht nachträglich umgeschrieben.
+`python3 tools/verify-package.py --report /tmp/datenwerkstatt-navigation-commit-package-check.json`
+**Exit 0**. Commit enthält UI, Regressionstests, Dokumentation und separate
+Prüfbelege; der anschliessende Push ist keine Produktivbereitstellung.

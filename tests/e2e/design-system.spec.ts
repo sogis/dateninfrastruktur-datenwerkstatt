@@ -482,7 +482,7 @@ test('UI screens: project actions, forms, navigation and settings at target view
     await capture(page, `import-${info.project.name}-${size.width}`);
     await page.keyboard.press('Escape');
   }
-  await expect(page.locator('.sidebar svg')).toHaveCount(6);
+  await expect(page.locator('.sidebar svg')).toHaveCount(7);
   await page.getByRole('button', {name: 'Navigation ausklappen'}).click();
   expect((await page.locator('.sidebar').boundingBox())!.width).toBe(212);
   await page.getByRole('link', {name: 'Einstellungen', exact: true}).click();

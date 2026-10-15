@@ -1,0 +1,29 @@
+vite v8.1.2 building client environment for production...
+[2Ktransforming...✓ 1413 modules transformed.
+
+(!) outDir /tmp/datenwerkstatt-navigation-foqrul/lab-dist is not inside project root and will not be emptied.
+Use --emptyOutDir to override.
+
+rendering chunks...
+computing gzip size...
+../../../../../tmp/datenwerkstatt-navigation-foqrul/lab-dist/index.html                                       0.36 kB │ gzip:   0.26 kB
+../../../../../tmp/datenwerkstatt-navigation-foqrul/lab-dist/.vite/manifest.json                              2.04 kB │ gzip:   0.54 kB
+../../../../../tmp/datenwerkstatt-navigation-foqrul/lab-dist/assets/kanton-solothurn-DOpJ_x8i.svg             4.52 kB │ gzip:   1.75 kB
+../../../../../tmp/datenwerkstatt-navigation-foqrul/lab-dist/assets/FrutigerLTW05-75Black-DMqR_y8m.woff2     25.68 kB
+../../../../../tmp/datenwerkstatt-navigation-foqrul/lab-dist/assets/FrutigerLTW05-55Roman-Cg8J5uP1.woff2     25.76 kB
+../../../../../tmp/datenwerkstatt-navigation-foqrul/lab-dist/assets/JetBrainsMono-Regular-BQaDgvhP.woff2     92.16 kB
+../../../../../tmp/datenwerkstatt-navigation-foqrul/lab-dist/assets/codicon-ngg6Pgfi.ttf                    121.97 kB
+../../../../../tmp/datenwerkstatt-navigation-foqrul/lab-dist/licenses/npm-bundle.json                       161.40 kB │ gzip:  25.79 kB
+../../../../../tmp/datenwerkstatt-navigation-foqrul/lab-dist/assets/editor.worker-Cn2oRESe.js               279.94 kB
+../../../../../tmp/datenwerkstatt-navigation-foqrul/lab-dist/assets/index-C-J0jiKw.css                       18.75 kB │ gzip:   4.63 kB
+../../../../../tmp/datenwerkstatt-navigation-foqrul/lab-dist/assets/CodeEditorImpl-B3IiO00J.css             145.99 kB │ gzip:  22.62 kB
+../../../../../tmp/datenwerkstatt-navigation-foqrul/lab-dist/assets/sql-NEE52Syq.js                           8.84 kB │ gzip:   3.73 kB
+../../../../../tmp/datenwerkstatt-navigation-foqrul/lab-dist/assets/index-ZgTxEahP.js                       934.84 kB │ gzip: 275.91 kB
+../../../../../tmp/datenwerkstatt-navigation-foqrul/lab-dist/assets/CodeEditorImpl-Cm9VsUsa.js            3,629.73 kB │ gzip: 925.20 kB
+
+✓ built in 712ms
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

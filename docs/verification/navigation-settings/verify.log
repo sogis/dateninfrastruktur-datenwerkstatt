@@ -1,0 +1,48 @@
+
+> datenwerkstatt@0.1.0 verify
+> npm run typecheck && npm run lint && npm run test:unit && npm run build && npm run test:integration && npm run test:e2e
+
+
+> datenwerkstatt@0.1.0 typecheck
+> tsc --noEmit
+
+
+> datenwerkstatt@0.1.0 lint
+> eslint . && node scripts/check-boundaries.mjs
+
+Module boundaries checked.
+
+> datenwerkstatt@0.1.0 test:unit
+> vitest run
+
+
+ RUN  v4.1.11 /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt
+
+
+ Test Files  9 passed (9)
+      Tests  40 passed (40)
+   Start at  21:36:07
+   Duration  558ms (transform 1.03s, setup 0ms, import 1.69s, tests 219ms, environment 1ms)
+
+
+> datenwerkstatt@0.1.0 build
+> npm run assets:prepare && vite build && node scripts/license-inventory.mjs
+
+
+> datenwerkstatt@0.1.0 assets:prepare
+> node scripts/prepare-assets.mjs
+
+Local webR 0.6.0 and 4 DuckDB extensions prepared.
+file:///Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/scripts/mirrorWebRPackages.mjs:154
+      throw new Error(`Locked WebR package ${packageName} expected ${expectedVersion}, found ${record.Version}.`);
+            ^
+
+Error: Locked WebR package bit64 expected 4.8.2, found 4.8.6.
+    at file:///Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/scripts/mirrorWebRPackages.mjs:154:13
+    at Array.map (<anonymous>)
+    at selectLockedRecords (file:///Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/scripts/mirrorWebRPackages.mjs:147:34)
+    at mirrorWebRPackages (file:///Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/scripts/mirrorWebRPackages.mjs:44:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/scripts/prepare-r-packages.mjs:16:14
+
+Node.js v22.23.1

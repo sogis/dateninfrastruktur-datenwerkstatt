@@ -104,6 +104,10 @@ Feldnamen. Deaktivierte und schreibgeschützte Werte bleiben lesbar.
 - ActionGroup/Toolbar: gemeinsame Abstände, Reihenfolge und Umbruch.
 - Notice/Fehlermeldung: Text und getönte Fläche kennzeichnen Information,
   Erfolg, Warnung und Fehler. Kein dekorativer linker Rahmen oder Akzentstrich.
+  Globale Fehlerhinweise haben rechts einen transparenten IconButton mit
+  lokalem `x-lg`, blau (#0B5FFF), 40×40 px und dem zugänglichen Namen/Tooltip
+  „Hinweis schliessen“. Das Icon bleibt auch bei mehrzeiligem Text vertikal
+  zur gesamten Meldung zentriert; der Text darf umbrechen.
 - FormField/Input/Select/Textarea: native Semantik, Label, Hinweis, Fehler.
 - Modal: nativer Dialog mit Kopf, Inhalt, Fuss, Fokusfang und Fokusrückgabe.
   Bestehende Sperren beim laufenden Vorgang bleiben wirksam.
@@ -139,11 +143,20 @@ aria-hidden und focusable=false; zugänglicher Name am Auslöser.
 | Daten                 | table          |
 | SQL / DuckDB          | database       |
 | R / webR              | bar-chart-line |
+| Einstellungen         | gear           |
 
 20×20 px Icons auf mindestens 40×40 px Navigationsflächen. Eingeklappt Tooltip,
 ausgeklappt zusätzlich Label. SQL und R behalten ihre Namen; Tooltip ergänzt
 DuckDB bzw. webR. Aktives Ziel: rote Icon-/Textfarbe, getönte Fläche und
 aria-current, ohne seitlichen Marker.
+
+Die linke Navigation erscheint auch auf Arbeitsbereichsliste, Einstellungen und
+Portaleinstieg. Ohne geöffneten Arbeitsbereich zeigt sie Navigation umschalten,
+Arbeitsbereiche und Einstellungen. Im Arbeitsbereich stehen Projektübersicht,
+Daten, SQL und R dazwischen; Einstellungen folgt direkt nach R. Im Header gibt
+es keinen Einstellungslink. Ausserhalb eines Projekts gilt der persönliche
+Einklappstandard; manuelles Umschalten bleibt sitzungslokal. Projektansichten
+behalten ihren gespeicherten Einklappzustand.
 
 ## Arbeitsflächen und Anordnung
 

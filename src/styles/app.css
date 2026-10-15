@@ -228,6 +228,17 @@ main {
 .error .dw-button {
   margin-left: auto;
 }
+.app-error {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+.app-error > strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.app-error .dw-icon-button {
+  color: var(--dw-color-focus);
+}
 .analysis-area {
   display: flex;
   flex: 1;
