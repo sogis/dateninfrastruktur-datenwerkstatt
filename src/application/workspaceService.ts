@@ -495,13 +495,13 @@ export class WorkspaceService {
 
   private async openNext(id: WorkspaceId) {
     const initial = await this.deps.repository.load(id);
-    if (!initial) throw new AppFailure('REFERENCE_INVALID', 'Arbeitsbereich nicht gefunden.');
+    if (!initial) throw new AppFailure('REFERENCE_INVALID', 'Projekt nicht gefunden.');
     await this.active?.close();
     this.active = undefined;
     const lease = await this.deps.lock.acquire(id, new AbortController().signal);
     try {
       const latest = await this.deps.repository.load(id);
-      if (!latest) throw new AppFailure('REFERENCE_INVALID', 'Arbeitsbereich wurde entfernt.');
+      if (!latest) throw new AppFailure('REFERENCE_INVALID', 'Projekt wurde entfernt.');
       let integrity: ArtifactReferenceCheck | undefined, integrityError: string | undefined;
       if (this.deps.artifacts)
         try {

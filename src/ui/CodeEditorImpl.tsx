@@ -14,7 +14,7 @@ export interface CodeEditorProps {
   wordWrap: boolean;
   lineNumbers: boolean;
 }
-export function CodeEditor(props: CodeEditorProps) {
+export function CodeEditor(props: CodeEditorProps & {initialFocusOrigin: Element | null}) {
   const host = useRef<HTMLDivElement>(null);
   const change = useRef(props.onChange);
   change.current = props.onChange;
@@ -47,7 +47,13 @@ export function CodeEditor(props: CodeEditorProps) {
     });
     const view = props.models.view(props.id);
     if (view) instance.restoreViewState(view);
-    instance.focus();
+    // Restore navigation focus unless another control was focused while the module loaded.
+    if (
+      document.activeElement === props.initialFocusOrigin ||
+      document.activeElement === document.body ||
+      host.current?.contains(document.activeElement)
+    )
+      instance.focus();
     const subscription = model.onDidChangeContent(() => change.current(model.getValue()));
     instance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
       instance.pushUndoStop();

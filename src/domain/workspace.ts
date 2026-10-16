@@ -385,7 +385,7 @@ export function parseWorkspace(raw: unknown): WorkspaceDocument {
       if (key !== entity.id)
         fail(`${collection}.${key}.id`, 'Schlüssel und ID stimmen nicht überein.');
       if (entity.workspaceId !== d.workspace.id)
-        fail(`${collection}.${key}.workspaceId`, 'Fremder Workspace.');
+        fail(`${collection}.${key}.workspaceId`, 'Fremdes Projekt.');
     }
   }
   const tableRef = (id: string, path: string) => {

@@ -51,9 +51,10 @@ test('P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/C
   expect(wasm.headers()['content-range']).toMatch(/^bytes 0-15\//);
   expect(wasm.headers()['cache-control']).toContain('immutable');
   expect((await wasm.body()).length).toBe(16);
-  await page.goto(`${baseURL}workspaces`);
-  await page.getByLabel('Name des neuen Arbeitsbereichs').fill('Statische Prüfung');
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await page.goto(`${baseURL}projects`);
+  await page.getByLabel('Name des neuen Projekts').fill('Statische Prüfung');
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await code(page, 'SELECT 42 AS wert');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
@@ -65,7 +66,7 @@ test('P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/C
   await page.reload();
   await expect(page.locator('.result-grid tbody td')).toHaveText(['42']);
   expect(page.url()).toBe(url);
-  await page.getByRole('link', {name: 'Projektübersicht', exact: true}).click();
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neues R-Skript', exact: true}).click();
   await code(
     page,
@@ -100,11 +101,9 @@ test('P7 AT-067: invalid operator config fails closed before any runtime', async
   await page.route('**/runtime-config.json', (route) =>
     route.fulfill({json: {formatVersion: 99, allowedDataOrigins: ['*']}}),
   );
-  await page.goto(`${baseURL}workspaces`);
+  await page.goto(`${baseURL}projects`);
   await expect(page.getByText(/Konfiguration ungültig/)).toBeVisible();
-  await expect(page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true})).toHaveCount(
-    0,
-  );
+  await expect(page.getByRole('button', {name: 'Neues Projekt', exact: true})).toHaveCount(0);
   expect(workers).toEqual([]);
 });
 
@@ -118,12 +117,12 @@ test('UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices unde
     if (/^https?:/.test(r.url()) && new URL(r.url()).origin !== new URL(baseURL!).origin)
       external.push(r.url());
   });
-  await page.goto(`${baseURL}workspaces`);
+  await page.goto(`${baseURL}projects`);
   const nav = page.getByRole('navigation', {name: 'Hauptnavigation'});
   await expect(nav.locator('.dw-nav-item')).toHaveCount(3);
   await expect(page.locator('header').getByRole('link', {name: 'Einstellungen'})).toHaveCount(0);
-  await page.getByLabel('Name des neuen Arbeitsbereichs').fill('Lokale UI-Assets');
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await page.getByLabel('Name des neuen Projekts').fill('Lokale UI-Assets');
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await expect(page.locator('.sidebar svg')).toHaveCount(7);
   await page.getByRole('button', {name: 'SQL', exact: true}).click();
   await expect(page.locator('.monaco-editor')).toBeVisible();

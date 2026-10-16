@@ -1,0 +1,77 @@
+{
+  "firefoxWebkitE2E": {
+    "commandExitCode": 0,
+    "stats": {
+      "startTime": "2026-10-16T04:46:48.039Z",
+      "duration": 408386.794,
+      "expected": 74,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "passedByProject": {
+      "firefox": 37,
+      "webkit": 37
+    },
+    "source": "browser-matrix.json"
+  },
+  "deployment": {
+    "commandExitCode": 0,
+    "stats": {
+      "startTime": "2026-10-16T04:59:19.365Z",
+      "duration": 1219867.236,
+      "expected": 63,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "passedByProject": {
+      "chromium-0": 7,
+      "chromium-1": 7,
+      "chromium-2": 7,
+      "firefox-0": 7,
+      "firefox-1": 7,
+      "firefox-2": 7,
+      "webkit-0": 7,
+      "webkit-1": 7,
+      "webkit-2": 7
+    },
+    "source": "deployment.json"
+  },
+  "deploymentRoutesFocused": {
+    "commandExitCode": 0,
+    "stats": {
+      "startTime": "2026-10-16T04:57:57.802Z",
+      "duration": 17962.631999999998,
+      "expected": 2,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "passedByProject": {
+      "chromium-0": 1,
+      "chromium-1": 1
+    },
+    "source": "deployment-routes-focused.json"
+  },
+  "verify": {
+    "command": "DW_REUSE_DEV_SERVER=1 npm run verify",
+    "commandExitCode": 0,
+    "unitPassed": 47,
+    "chromiumIntegrationPassed": 43,
+    "chromiumE2EPassed": 37,
+    "source": "verify.log"
+  },
+  "focusedEditorChecks": {
+    "commandExitCode": 0,
+    "passed": 9,
+    "source": "editor-focus-intent-regression.log"
+  },
+  "totalE2EPassed": 111,
+  "typecheckAndLintAfterDeploymentTestCorrections": {
+    "command": "npm run typecheck && npm run lint",
+    "commandExitCode": 0,
+    "lintSource": "final-lint.log"
+  },
+  "candidateSha256": "45dae17f976e1d77d4df5a42398463bc5fd11ef70997d16e3a816659c0b0b96a"
+}

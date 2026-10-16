@@ -1,6 +1,6 @@
 # Datenwerkstatt V1 — Implementierungsspezifikation für einen LLM-Coding-Agenten
 
-**Spezifikationsversion:** 1.0.0 · **Datum:** 3. Oktober 2026  
+**Spezifikationsversion:** 1.1.0 · **Datum:** 16. Oktober 2026
 **Auftrag:** Eigenständige Browseranwendung aus dem SQL-/R-Lab von `sogis/datenportal-sodata` entwickeln.  
 **Status:** Verbindlicher vorgeschlagener Implementierungsvertrag für V1, keine Behauptung über bereits implementierte Funktionen.
 
@@ -12,27 +12,27 @@ Zuerst `AGENTS.md`, dann diese Spezifikation, `contracts/`, `ACCEPTANCE_TESTS.md
 
 Rangfolge bei Unterschieden: ausdrückliche neue Nutzerentscheidung → diese Spezifikation → Domain-/Schnittstellenverträge → Abnahmetests → Implementierungsplan → ältere Architektur und Mockups. Ein entdeckter innerer Widerspruch wird nicht still durch Ignorieren eines Tests gelöst: minimalen, mit dem fachlichen Ziel verträglichen Entscheid dokumentieren, Vertrag und Test konsistent korrigieren. Grössere Umfangsänderungen nicht eigenmächtig vornehmen.
 
-**REQ-001 — Fertig ist ein nachgewiesener Arbeitsablauf, nicht eine überzeugende Oberfläche.** Zielablauf: Arbeitsbereich erstellen → lokale Datei und öffentliche Portalquelle hinzufügen → SQL speichern und ausführen → das vollständige bezeichnete Ergebnis nach R übernehmen → R-Tabelle zurück nach SQL übernehmen → notwendige Daten sichern → Browser neu starten → Projekt mit nachvollziehbarer Herkunft wieder öffnen. Während der Implementierung entstehen keine Fake-Erfolge, fest eingebauten Ergebniszahlen oder Produktionspfade mit Mock-Engines.
+**REQ-001 — Fertig ist ein nachgewiesener Arbeitsablauf, nicht eine überzeugende Oberfläche.** Zielablauf: Projekt erstellen → lokale Datei und öffentliche Portalquelle hinzufügen → SQL speichern und ausführen → das vollständige bezeichnete Ergebnis nach R übernehmen → R-Tabelle zurück nach SQL übernehmen → notwendige Daten sichern → Browser neu starten → Projekt mit nachvollziehbarer Herkunft wieder öffnen. Während der Implementierung entstehen keine Fake-Erfolge, fest eingebauten Ergebniszahlen oder Produktionspfade mit Mock-Engines.
 
 **REQ-002 — Quellenbaseline.** Gelesener Ausgangsstand ist `sogis/datenportal-sodata` Commit `6b45fc4e22116fba8fc00bd48175e347aa740562`. Vor einer Übernahme Arbeitsbaum und tatsächlich verfügbaren Stand prüfen. Ein neuerer Stand darf nach dokumentierter Diff-Prüfung verwendet werden; nicht ungeprüft Quellcode unterschiedlicher Stände mischen. Das Quellrepository bleibt ohne gesonderten Änderungsauftrag unverändert. [S01–S05]
 
 ## 1. Produktziel und Umfang
 
-Die Datenwerkstatt ist ein lokal arbeitendes Analysewerkzeug. Ein Arbeitsbereich ist ein Projekt mit benannten Dateneinbindungen, SQL-/R-Analysen und ausgewählten Ergebnissen. Er ist weder eine Datenbankverbindung noch ein Benutzerkonto. Das Datenportal bleibt Katalog und Datenlieferant, nicht die Grenze des Analyseprojekts.
+Die Datenwerkstatt ist ein lokal arbeitendes Analysewerkzeug. Ein Projekt enthält benannte Dateneinbindungen, SQL-/R-Analysen und ausgewählte Ergebnisse. In der Oberfläche wird ausschliesslich „Projekt“ verwendet; `Workspace` bleibt der technische Name derselben Entität. „Arbeitsfläche“ bezeichnet den Editor- und Ergebnisbereich. Er ist weder eine Datenbankverbindung noch ein Benutzerkonto. Das Datenportal bleibt Katalog und Datenlieferant, nicht die Grenze des Analyseprojekts.
 
 **REQ-003 — V1-Umfang.** Vollständig implementieren:
 
-| Funktion | Verbindlicher Umfang |
-|---|---|
-| Arbeitsbereiche | Erstellen, öffnen, umbenennen, beschreiben, duplizieren, löschen, exportieren/importieren |
-| Daten | Mehrere Tabellen; lokale UTF-8-CSV und Parquet; öffentliche Parquet-Quellen aus dem Portal |
-| SQL | Gespeicherte benannte Abfragen, Parameter, Ausführung, Abbruch, stabile Resultate |
-| R | Gespeicherte Skripte, explizite Eingaben, Konsole als Ausgabe, Grafiken, Objektliste, Reset |
-| Austausch | SQL-Ergebnis → R-Dataframe; ausgewählter R-Dataframe → Datensatz im Workspace |
-| Ergebnisse | Tabelle, PNG-Plot, einfache Diagrammkonfiguration, Aufbewahren, CSV/Parquet/PNG-Export |
-| Speicherung | Projektmetadaten in IndexedDB; Dateien/Artefakte in OPFS; Recovery und Export |
-| Oberfläche | Arbeitsbereiche, Daten, SQL, R, kleine persönliche Einstellungen |
-| Betrieb | Statischer Build, Container, Runtime-Konfiguration, automatische Tests, Release-Nachweise |
+| Funktion    | Verbindlicher Umfang                                                                        |
+| ----------- | ------------------------------------------------------------------------------------------- |
+| Projekte    | Erstellen, öffnen, umbenennen, beschreiben, duplizieren, löschen, exportieren/importieren   |
+| Daten       | Mehrere Tabellen; lokale UTF-8-CSV und Parquet; öffentliche Parquet-Quellen aus dem Portal  |
+| SQL         | Gespeicherte benannte Abfragen, Parameter, Ausführung, Abbruch, stabile Resultate           |
+| R           | Gespeicherte Skripte, explizite Eingaben, Konsole als Ausgabe, Grafiken, Objektliste, Reset |
+| Austausch   | SQL-Ergebnis → R-Dataframe; ausgewählter R-Dataframe → Datensatz im Workspace               |
+| Ergebnisse  | Tabelle, PNG-Plot, einfache Diagrammkonfiguration, Aufbewahren, CSV/Parquet/PNG-Export      |
+| Speicherung | Projektmetadaten in IndexedDB; Dateien/Artefakte in OPFS; Recovery und Export               |
+| Oberfläche  | Projekte, Daten, SQL, R, kleine persönliche Einstellungen                                   |
+| Betrieb     | Statischer Build, Container, Runtime-Konfiguration, automatische Tests, Release-Nachweise   |
 
 **REQ-004 — Nicht in V1.** Kein Login, Benutzerprofil, Besitzer-/Rollenmodell, Freigaben, Kollaboration, KI, ClickHouse-Ausführung, privater S3-Browser, serverseitige R-Ausführung, Notebook/Canvas, Dashboard-Builder, Echtzeit-Sync, Plugin-Marktplatz oder allgemeiner Workflow-Designer. Keine funktionslosen Menüpunkte dafür. Excel-Import, Geometrie-Editor und vollständige Offline-PWA sind ebenfalls nicht zugesichert. Ein nicht unterstütztes Format bekommt eine verständliche Meldung, keine heimliche Konvertierung.
 
@@ -46,19 +46,19 @@ Eine kopierte Quellfunktion darf für den V1-Vertrag begrenzt werden, wenn die B
 
 Geprüfte Ausgangsabhängigkeiten aus dem Portal-Frontend (keine Aussage, dies seien jeweils die neuesten Veröffentlichungen):
 
-| Bibliothek | Baseline |
-|---|---|
-| React / React DOM | 19.2.7 |
-| SQLRooms-Pakete | 0.28.0 |
-| DuckDB-WASM | 1.33.1-dev57.0 |
-| webR | 0.6.0 |
-| Apache Arrow JS | 17.0.0 |
-| Monaco | 0.55.1 |
-| react-resizable-panels | 3.0.6 |
-| Zod | 4.4.3 |
-| TypeScript | 6.0.3 |
-| Vite | 8.1.2 |
-| Vitest | 4.1.9 |
+| Bibliothek             | Baseline       |
+| ---------------------- | -------------- |
+| React / React DOM      | 19.2.7         |
+| SQLRooms-Pakete        | 0.28.0         |
+| DuckDB-WASM            | 1.33.1-dev57.0 |
+| webR                   | 0.6.0          |
+| Apache Arrow JS        | 17.0.0         |
+| Monaco                 | 0.55.1         |
+| react-resizable-panels | 3.0.6          |
+| Zod                    | 4.4.3          |
+| TypeScript             | 6.0.3          |
+| Vite                   | 8.1.2          |
+| Vitest                 | 4.1.9          |
 
 **REQ-007 — Versionsdisziplin.** Bestehenden Lockfile-Stand soweit möglich übernehmen. Neue Abhängigkeiten wie Router, Dexie, Playwright, Archivbibliothek und direkte Zustand-Abhängigkeit passend zu Peer-Dependencies auswählen, exakt fixieren und im Lockfile dokumentieren. Kein `latest`, kein ungeprüftes Major-Upgrade während der Herauslösung. Node-Version an den tatsächlich installierten Vite-/Toolchain-Engines ausrichten und in `.node-version` sowie CI fixieren; mindestens die dokumentierten Baseline-Anforderungen prüfen. Nicht allein wegen vorhandener globaler Tools unbemerkt auf eine andere Compiler-Version wechseln.
 
@@ -96,15 +96,15 @@ docs/{adr,verification}/
 
 **REQ-010 — Zuständigkeiten.**
 
-| Einheit | Verantwortung |
-|---|---|
-| WorkspaceService | Projekt-CRUD, Öffnen, Klonen, Archivoperationen |
-| DatasetService | Import, Namen, Schemata, Versionen, Quelle entfernen/ersetzen |
-| AnalysisService | Gespeicherter Code, Snapshot, Laufstart/-ende/-abbruch |
-| ResultService | Ergebnisregister, Paging, Aufbewahren, Diagramm/Export |
-| TableTransferService | Transferplan, Typkonversion, Freigabe und SQL–R-Rundlauf |
+| Einheit                | Verantwortung                                                   |
+| ---------------------- | --------------------------------------------------------------- |
+| WorkspaceService       | Projekt-CRUD, Öffnen, Klonen, Archivoperationen                 |
+| DatasetService         | Import, Namen, Schemata, Versionen, Quelle entfernen/ersetzen   |
+| AnalysisService        | Gespeicherter Code, Snapshot, Laufstart/-ende/-abbruch          |
+| ResultService          | Ergebnisregister, Paging, Aufbewahren, Diagramm/Export          |
+| TableTransferService   | Transferplan, Typkonversion, Freigabe und SQL–R-Rundlauf        |
 | PersistenceCoordinator | Autosave, Generationen, Dateiveröffentlichung, Commit, Recovery |
-| WorkspaceSession | Ein Store, Engines, Scheduler, Handles, laufende Operationen |
+| WorkspaceSession       | Ein Store, Engines, Scheduler, Handles, laufende Operationen    |
 
 Keine abstrakten Fabriken/Interfaces für jede kleine Hilfsfunktion. Die Ports sind technische Grenzen, kein Auftrag zum Bau eines allgemeinen Frameworks.
 
@@ -112,29 +112,31 @@ Keine abstrakten Fabriken/Interfaces für jede kleine Hilfsfunktion. Die Ports s
 
 **REQ-011 — Kanonisches Dokument.** `WorkspaceDocument` unter `contracts/domain.ts` ist die gespeicherte Projektdefinition. `formatVersion`, Speicherrevision, Analyserevision und Datensatzversion haben verschiedene Aufgaben. Alle fachlichen Entitäten liegen als ID-indizierte Records vor. Bytes, Zeilenarrays, Worker, Verbindungen, R-Proxies und Arrow-Objekte gehören nicht hinein.
 
-| Entität | Regeln |
-|---|---|
-| Workspace | Name, Beschreibung, Zeitstempel; kein Eigentümer in V1 |
-| Dataset | Benannte Dateneinbindung; gehört genau einem Workspace; stabiler SQL-Name |
-| DatasetVersion | Unveränderlicher Metadatensatz mit Schema, Herkunft und Datenverweis |
-| Analysis | Veränderlicher benannter Code; SQL oder R; gehört genau einem Workspace |
-| ExecutionRun | Konkreter Lauf mit eingefrorenem Snapshot und veränderlichem Laufstatus |
-| Result | Konkretes Tabellen- oder PNG-Ergebnis eines Laufes |
-| Visualization | Kleine Darstellungsdefinition auf einem konkreten TableResult |
-| Artifact | Unveränderliche Bytes in OPFS mit Hash, Grösse und generiertem Pfad |
+| Entität                              | Regeln                                                                    |
+| ------------------------------------ | ------------------------------------------------------------------------- |
+| Projekt (`Workspace`)                | Name, Beschreibung, Zeitstempel; kein Eigentümer in V1                    |
+| Datensatz (`Dataset`)                | Benannte Dateneinbindung; gehört genau einem Workspace; stabiler SQL-Name |
+| Datenstand (`DatasetVersion`)        | Unveränderlicher Metadatensatz mit Schema, Herkunft und Datenverweis      |
+| Analyse (`Analysis`)                 | Veränderlicher benannter Code; SQL oder R; gehört genau einem Workspace   |
+| Lauf (`ExecutionRun`)                | Konkreter Lauf mit eingefrorenem Snapshot und veränderlichem Laufstatus   |
+| Ergebnis (`Result`)                  | Konkretes Tabellen- oder PNG-Ergebnis eines Laufes                        |
+| Diagrammdefinition (`Visualization`) | Kleine Darstellungsdefinition auf einem konkreten TableResult             |
+| Artefakt (`Artifact`)                | Unveränderliche Bytes in OPFS mit Hash, Grösse und generiertem Pfad       |
 
 **REQ-012 — Referenzintegrität.** Jede ID ist eine von der App erzeugte UUID. Record-Schlüssel müssen den Objekt-IDs entsprechen. Jede Referenz bleibt innerhalb desselben Workspace. `Dataset.currentVersionId` verweist auf eine Version genau dieses Datensatzes. Eingabereferenzen auf Ergebnisse müssen Tabellen sein. `Result.runId` und `Run.resultIds` müssen übereinstimmen. Diagramme dürfen nur auf TableResults zeigen. URLs sind keine Objekt-IDs. Keine fachlichen IDs aus Tabellenzellen als interne Primärschlüssel verwenden.
 
 Die Zuordnung ist:
 
 ```text
-Workspace 1 -> 0..* Dataset -> 1..* DatasetVersion
-Workspace 1 -> 0..* Analysis -> 0..* ExecutionRun
-Workspace 1 -> 0..* ExecutionRun -> 0..* Result
-Workspace 1 -> 0..* Visualization -> 1 TableResult
-ExecutionSnapshot -> konkrete DatasetVersion / TableResult
-DatasetVersion.origin(result) -> 1 TableResult
+Projekt 1 -> 0..* Datensatz -> 1..* Datenstand
+Projekt 1 -> 0..* Analyse -> 0..* Lauf
+Projekt 1 -> 0..* Lauf -> 0..* Ergebnis
+Projekt 1 -> 0..* Diagrammkonfiguration -> 1 Tabellenergebnis
+Laufsnapshot -> konkreter Datenstand / Tabellenergebnis
+Datenstand.Herkunft(Ergebnis) -> 1 Tabellenergebnis
 ```
+
+In der Oberfläche entsprechen `Workspace`, `Dataset`, `DatasetVersion`, `Analysis`, `ExecutionRun` und `Result` den Begriffen Projekt, Datensatz, Datenstand, Analyse, Lauf und Ergebnis. Diagrammdefinitionen beziehen sich auf konkrete Tabellenergebnisse; Artefakte beschreiben die gespeicherten Bytes. Eine zusätzliche Ebene zwischen Projekt und Workspace existiert nicht.
 
 Ein Capture-Lauf eines bestehenden R-Objekts darf ohne neue gespeicherte Analyse existieren. Eine Analyse darf null Eingaben haben (`SELECT 1`). Resultate können wieder Eingaben sein. Ein PlotResult und eine gespeicherte Diagrammkonfiguration sind unterschiedliche Dinge.
 
@@ -219,7 +221,7 @@ Bestätigte CSV wird in einen kanonischen Parquet-Datenstand überführt; option
 
 Ein Betreiber kann den Index aus dem PublishedCatalog/Publikationsprozess liefern. V1 der Werkstatt braucht keinen neuen Katalogserver. Mitgelieferte Testindexdatei ist synthetisch. Ein Generator für den konkreten produktiven PublishedCatalog kann separat ergänzt werden; er ist nicht Voraussetzung des fertigen URL-/Deep-Link-Datenzugriffs. Produktive Einträge niemals aus Mockups erfinden.
 
-**REQ-032 — Portal-Deep-Link.** Route `/open` nimmt `provider`, entweder `dataset` oder `series` + `issue` und optional `table` an. `issue=current` ist nur beim Einstieg erlaubt und wird vor Speicherung aufgelöst. Keine SQL-/R-Code-Parameter, kein URL-basiertes Auto-Run, keine Tokens. Vorschau zeigt gefundene Tabellen und Auswahl „Neuer Arbeitsbereich“/bestehender Workspace. Nach Hinzufügen per History-Replacement auf Workspace-Route wechseln, sodass Reload nicht erneut importiert. CORS-/404-/leerer Kontext ergibt eine konkrete Meldung; vorhandenes Projekt bleibt unverändert.
+**REQ-032 — Portal-Deep-Link.** Route `/open` nimmt `provider`, entweder `dataset` oder `series` + `issue` und optional `table` an. `issue=current` ist nur beim Einstieg erlaubt und wird vor Speicherung aufgelöst. Keine SQL-/R-Code-Parameter, kein URL-basiertes Auto-Run, keine Tokens. Vorschau zeigt gefundene Tabellen und Auswahl „Neues Projekt“/bestehender Workspace. Nach Hinzufügen per History-Replacement auf Workspace-Route wechseln, sodass Reload nicht erneut importiert. CORS-/404-/leerer Kontext ergibt eine konkrete Meldung; vorhandenes Projekt bleibt unverändert.
 
 **REQ-033 — URL- und Netzvertrag.** Portalbasis ist Betreiberkonfiguration. Unbekannte Provider und unerlaubte Daten-Origins werden abgelehnt. HTTPS in Produktion; HTTP nur explizite localhost-Test-/Entwicklungsprofile. Kein `javascript:`, `file:`, URL-Userinfo oder mitgelieferter Login-Cookie. App-Fetch verwendet `credentials: 'omit'`. Redirects nicht pauschal verfolgen: innerhalb expliziter freigegebener Origins prüfen beziehungsweise ablehnen. Tokenähnliche temporäre URLs nicht in Workspace-Archiven speichern. Bei einer eigenen Origin muss der Betreiber CORS/Range-Zugriff bereitstellen; Clientcode löst fehlende Serverheader nicht durch „no-cors“.
 
@@ -300,21 +302,21 @@ Ist der letzte erfolgreich ausgewertete Ausdruck ein Dataframe, darf er als temp
 
 **REQ-054 — Typvertrag.** Transportiert werden spaltenorientierte Daten plus vollständiges Schema und Missing-Maske. `validity=0` heisst NULL/NA; `validity=1` kann gültiges NaN oder Infinity enthalten. Vorhandener JSON-Mapper ist Ausgangsbasis/Regressionstest, aber die V1-Zielimplementierung muss die folgenden Regeln erfüllen. Arrow IPC direkt in R ist ausdrücklich keine V1-Voraussetzung. Explizite R-Konstruktoren/vektorisierte Konvertierung benutzen und anhand des tatsächlich verfügbaren webR-Builds prüfen. [S12]
 
-| Eingabetyp | R-Repräsentation / Rückweg |
-|---|---|
-| BOOL | logical mit echtem NA |
-| int8/int16/int32 ohne R-NA-Sonderwert | integer |
-| int32-Wert −2147483648 | numeric oder schemaerhaltender Text; niemals NA erzeugen |
-| uint32 / int64 | numeric nur bei nachgewiesener exakter Darstellbarkeit aller Werte bis ±(2^53−1); sonst character mit Herkunftstyp |
-| uint64/hugeint | character, ausser explizit sicher nachgewiesener kleiner Wertebereich |
-| DECIMAL(p,s) | verlustfreie Dezimalzeichenkette + Schema; kein stilles double |
-| VARCHAR/Identifier | character, führende Nullen/Unicode/Leerstring erhalten |
-| DOUBLE/FLOAT | numeric, NA getrennt von NaN/±Inf |
-| DATE | R Date, taggenau, keine lokale Zeitzonenverschiebung |
-| TIMESTAMP/TIMESTAMPTZ | POSIXct UTC nur bei verlustfreiem erforderlichem Wertebereich/Precision; sonst ISO-Text + Schema + Warnung |
-| R factor | Werte als VARCHAR; Levels/ordered in Schema-Metadaten erhalten |
-| R Date / POSIXct | DATE / geeigneter TIMESTAMP; UTC/Einheit explizit |
-| BLOB, Listen, Structs, komplexe Geometrie, R complex | in V1-R-Transfer ablehnen mit Spaltenliste; gezieltes Weglassen/Casten durch Nutzer möglich |
+| Eingabetyp                                           | R-Repräsentation / Rückweg                                                                                         |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| BOOL                                                 | logical mit echtem NA                                                                                              |
+| int8/int16/int32 ohne R-NA-Sonderwert                | integer                                                                                                            |
+| int32-Wert −2147483648                               | numeric oder schemaerhaltender Text; niemals NA erzeugen                                                           |
+| uint32 / int64                                       | numeric nur bei nachgewiesener exakter Darstellbarkeit aller Werte bis ±(2^53−1); sonst character mit Herkunftstyp |
+| uint64/hugeint                                       | character, ausser explizit sicher nachgewiesener kleiner Wertebereich                                              |
+| DECIMAL(p,s)                                         | verlustfreie Dezimalzeichenkette + Schema; kein stilles double                                                     |
+| VARCHAR/Identifier                                   | character, führende Nullen/Unicode/Leerstring erhalten                                                             |
+| DOUBLE/FLOAT                                         | numeric, NA getrennt von NaN/±Inf                                                                                  |
+| DATE                                                 | R Date, taggenau, keine lokale Zeitzonenverschiebung                                                               |
+| TIMESTAMP/TIMESTAMPTZ                                | POSIXct UTC nur bei verlustfreiem erforderlichem Wertebereich/Precision; sonst ISO-Text + Schema + Warnung         |
+| R factor                                             | Werte als VARCHAR; Levels/ordered in Schema-Metadaten erhalten                                                     |
+| R Date / POSIXct                                     | DATE / geeigneter TIMESTAMP; UTC/Einheit explizit                                                                  |
+| BLOB, Listen, Structs, komplexe Geometrie, R complex | in V1-R-Transfer ablehnen mit Spaltenliste; gezieltes Weglassen/Casten durch Nutzer möglich                        |
 
 Tabelle ist Codec-Vertrag, keine Behauptung, R unterstütze alle DuckDB-Typen nativ. Schemaannotationen sind kein Freipass für einen Blind-Cast zurück: hat R einen character-Wert einer DECIMAL-/Integer-Spalte geändert, muss jeder Rückwert validiert werden. Ungültig bedeutet Ablehnung oder ausdrücklich bestätigte Rückübernahme als VARCHAR, nicht NULL und nicht Rundung. Precision-Loss standardmässig abgelehnt; V1 braucht keinen „trotzdem ungenau“-Modus. Warnungen bei sicherer Repräsentationsänderung sind zulässig. Nullable, Zeilenreihenfolge, Spaltenreihenfolge sowie Tabellen mit null Zeilen müssen erhalten bleiben.
 
@@ -328,7 +330,7 @@ Reset-Button bestätigt bei vorhandenen ungesicherten Objekten und beendet nur R
 
 ## 12. Frontendzustand und Sitzung
 
-**REQ-058 — Ein Domainzustand.** Kleiner AppStore für Einstellungen und Projektübersicht; genau ein WorkspaceStore mit eigenen Slices `workspace`, `data`, `analyses`, `executions`, `results`, `ui` plus benötigten SQLRooms-Slices. Gespeicherter Code gehört der eigenen Domain. Kein paralleler unabhängiger SQLRooms-Queryspeicher. Runtime-Handles in einem SessionResultRegistry, nicht im persistenten Store. Komponenten abonnieren kleine Selektoren; Tippen im Editor rendert nicht das komplette Datengrid neu.
+**REQ-058 — Ein Domainzustand.** Kleiner AppStore für Einstellungen und Übersicht; genau ein WorkspaceStore mit eigenen Slices `workspace`, `data`, `analyses`, `executions`, `results`, `ui` plus benötigten SQLRooms-Slices. Gespeicherter Code gehört der eigenen Domain. Kein paralleler unabhängiger SQLRooms-Queryspeicher. Runtime-Handles in einem SessionResultRegistry, nicht im persistenten Store. Komponenten abonnieren kleine Selektoren; Tippen im Editor rendert nicht das komplette Datengrid neu.
 
 **REQ-059 — Session-Lebensdauer.** Ein WorkspaceProvider oberhalb der Unterrouten besitzt die Sitzung. Aktiver Workspace pro Tab maximal einer; Liste/Startseite startet keine Engines für alle Projekte. Bei Workspacewechsel: laufenden Job sichtbar abbrechen/bestätigen → Flush → Dispose → neue Session-ID → neue Verbindung nach Bedarf. Antworten tragen Session-ID/Epoch/Run-ID; späte Ergebnisse alter Sitzungen werden ignoriert und freigegeben. Bei erfolglosem Flush nicht trotzdem navigieren. Vorangekündigtes Verwerfen bleibt explizite Nutzeraktion.
 
@@ -339,33 +341,39 @@ React-Effekt-Cleanup, Routerwechsel, Retry und Reset müssen idempotent sein. Fe
 **REQ-060 — Routen.**
 
 ```text
-/                              -> /workspaces
-/workspaces
-/workspaces/:workspaceId
-/workspaces/:workspaceId/data
-/workspaces/:workspaceId/sql/:analysisId
-/workspaces/:workspaceId/r/:analysisId
+/                              -> /projects
+/projects
+/projects/:workspaceId
+/projects/:workspaceId/data
+/projects/:workspaceId/sql/:analysisId
+/projects/:workspaceId/r/:analysisId
 /settings
 /open                          # Portal-Einstieg
 ```
 
+Die bisherigen `/workspaces`-Routen entfallen ohne Aliase oder Weiterleitungen; das statische Deployment liefert dafür 404. Interne Links verwenden ausschliesslich `/projects`. Speicherpfade, Domain-IDs und Projektformat bleiben unverändert.
+
 Falsche Kombination Workspace/Analysis oder SQL-/R-Typ ergibt kontrollierte Nichtgefunden-Seite; nicht ein anderes Projekt laden. IDs in URLs, Anzeigenamen nicht als Identität. Browser Back/Forward erhält Sitzung, solange Workspace-ID gleich bleibt. Detaillinks unter konfiguriertem Base-Path funktionieren nach Reload.
 
-**REQ-061 — Workspace-Übersicht.** Standard ist eine einfache Liste mit Name, Daten/Analysenzahl, zuletzt bearbeitet und Kontextmenü. Primäre Aktion „Neuer Arbeitsbereich“, sekundär „Projekt öffnen“. Keine identische zweite Liste „Zuletzt geöffnet“ direkt darunter. Ein leerer Zustand erklärt in einem Satz die zwei nächsten Aktionen. Keine Demo-Projekte automatisch in produktivem Profil. Eine Datenimportaktion in der Übersicht legt nach bewusster Auswahl einen neuen Workspace an oder verlangt einen Zielworkspace, nicht einen globalen unsichtbaren Datenspeicher.
+**REQ-061 — Projekte, Übersicht und Daten.** Standard ist eine einfache Liste mit Name, Daten/Analysenzahl, zuletzt bearbeitet und Kontextmenü. Primäre Aktion „Neues Projekt“, sekundär „Projekt öffnen“. Keine identische zweite Liste „Zuletzt geöffnet“ direkt darunter. Ein leerer Zustand erklärt in einem Satz die zwei nächsten Aktionen. Keine Demo-Projekte automatisch in produktivem Profil. Der externe Portaleinstieg verlangt ein bewusst gewähltes Zielprojekt oder legt nach bewusster Auswahl ein neues Projekt an; kein globaler unsichtbarer Datenspeicher.
 
-Workspace-Detail enthält Datenliste und gespeicherte Analysen, keine Status-/Besitzer-/Aktiv-Kacheln ohne fachlichen Zweck. „Daten hinzufügen“ bietet Datei oder Portal. Neu SQL/R öffnet einen benannten Entwurf im Workspace. Kontextabhängige Navigation SQL/R öffnet zuletzt verwendete Analyse oder legt eine an. Ohne aktiven Workspace sind diese Ziele nicht scheinbar globale Editoren.
+Die Projektübersicht enthält Name/Beschreibung, gespeicherte Analysen und eine kompakte lesende Datenliste mit Link „Daten verwalten“. Projektdatei-/Speicheraktionen folgen unterhalb der fachlichen Inhalte, lokale Diagnose bleibt eingeklappt. Die eigene Datenseite bietet Datei-/Portalimport sowie Vorschau, Umbenennen, Ersetzen, Export, Sichern und Entfernen. Beide Routen verwenden unterschiedliche Seiten. Keine Status-/Besitzer-/Aktiv-Kacheln ohne fachlichen Zweck. Neu SQL/R öffnet einen benannten Entwurf im Workspace. Kontextabhängige Navigation SQL/R öffnet zuletzt verwendete Analyse oder legt eine an. Ohne aktiven Workspace sind diese Ziele nicht scheinbar globale Editoren.
+
+Die Datenseite zeigt pro Datensatz eingeklappt „Datenstände und Herkunft“: alle gespeicherten Versionen, neueste zuerst, aktueller Stand markiert, Zeitpunkt/Quelle/Schema/Umfang/Nachweis/Verfügbarkeit. Datei-, Portal- und Ergebnisherkunft sind lesbar; R-Capture benötigt keine gespeicherte Analyse. Fehlende Daten, externe Referenzen und ungeprüfte Nachweise sind ausdrücklich bezeichnet. Historienlesen führt keine Engineoperation aus und bietet keine Versionswiederherstellung.
 
 **REQ-062 — SQL-Arbeitsfläche.** Eine kompakte Zeile mit Analysename/Speicherzustand, Toolbar „Ausführen“, „Speichern“, weitere Aktionen im Menü. Daten-/Schemapanel einklappbar; keine ständige rechte Abfrageinfo-Spalte. Editor oben, Ergebnistabelle unten, Trennbalken vertikal verstellbar. Statuszeile fasst Laufzeit, tatsächliche Zeilen und Begrenzung zusammen. Ergebnisaktionen „Aufbewahren“, „In R“, „Exportieren“ am Resultat. Metadaten/Parameter in Drawer oder einblendbarem Abschnitt, nicht dauerhaft neben der Arbeit.
 
 **REQ-063 — R-Arbeitsfläche.** Editor und Plot/Tabelle nebeneinander, Breite verstellbar; Konsole unten einklappbar. Objekt-/Inputliste als schmaler ausblendbarer Bereich. Bindungen, Scope, Datenstand und Reset erreichbar, aber keine grosse „Aktiver Dataframe“-Kachel. Auswahl eines Objekts zeigt echten Zustand. Plot-Vollbild und Download verfügbar. Kein separater KI-/Hilfepanel in V1.
 
+SQL und R behalten ihre Laufauswahl und verwenden gemeinsame lesbare Laufdetails: Zeit/Status/Analyserevision, eingefrorener Code, Parameter, konkrete Eingaben und Ergebnisse mit Art/Umfang/Aufbewahrung. SQL-Snapshots nennen verfügbare Quellen ohne Behauptung tatsächlicher Verwendung. R-Sitzungsobjekte bleiben von gespeicherten Ergebnissen unterscheidbar; technische Details stehen untergeordnet. Das Öffnen der Details führt keinen Code aus.
+
 **REQ-064 — Einstellungen.** Nur Editor-Schriftgrösse (12–22 px), Zeilennummern, Zeilenumbruch, Standard-Seitenleistenstatus; Speicherverbrauch/Status anzeigen sowie bewusste Projekt-/Cachebereinigung. Helles Theme ist V1-Standard. Kein allgemeiner Security-Schalter, keine Benachrichtigungsplattform, keine ClickHouse-Loginmaske. Nicht implementierte Theme-/Profileoptionen nicht anbieten. Layoutzustand separat von Workspace-Domain speichern.
 
 ## 14. Visueller und Bedienvertrag
 
-**REQ-065 — Arbeitsfläche vor Dekoration.** Kein Hero-/Skylinebild, keine Slogans, keine Eyebrow-Überschrift „KANTON SOLOTHURN“ über dem Inhalt, keine dauerhafte Erklärung „Was ist ein Arbeitsbereich?“. Offizielles Logo als Original-Asset aus dem vorhandenen kantonalen Assetbestand verwenden, nicht aus generierten Mockups nachzeichnen. Proportionen und Schutzraum wahren. Schrift nur mit zulässigem Asset/License-Kontext, sonst seriöser Systemfont-Fallback; keine Fontdateien aus diesem Spezifikationspaket erwarten. Die Mockups sind Ideen, nicht die Quelle für echte Logos oder echte Daten.
+**REQ-065 — Arbeitsfläche vor Dekoration.** Kein Hero-/Skylinebild, keine Slogans, keine Eyebrow-Überschrift „KANTON SOLOTHURN“ über dem Inhalt, keine dauerhafte Erklärung „Was ist ein Projekt?“. Offizielles Logo als Original-Asset aus dem vorhandenen kantonalen Assetbestand verwenden, nicht aus generierten Mockups nachzeichnen. Proportionen und Schutzraum wahren. Schrift nur mit zulässigem Asset/License-Kontext, sonst seriöser Systemfont-Fallback; keine Fontdateien aus diesem Spezifikationspaket erwarten. Die Mockups sind Ideen, nicht die Quelle für echte Logos oder echte Daten.
 
-**REQ-066 — Geometrie bei 1440×900 CSS-Pixeln.** Browser-Chrome nicht Teil der Messung. Kompakte App-Kopfzeile Ziel 56 px; Analysentabs/Toolbar zusammen höchstens weitere 88 px, ausser notwendiger zugänglicher Zoomansicht. Sidebar einklappbar, collapsed 48–56 px, expanded 200–224 px. Auf SQL/R beim ersten Öffnen collapsed. Mit geschlossenem Schema-/Info-Panel stehen mindestens 90 % der Breite rechts neben der Iconleiste dem Arbeitsbereich zur Verfügung. Editor+Ergebnis beziehungsweise Editor+Plot+Konsole belegen mindestens 75 % der Viewporthöhe. Keine ständige rechte Infospalte zur Erfüllung künstlicher Dashboard-Symmetrie.
+**REQ-066 — Geometrie bei 1440×900 CSS-Pixeln.** Browser-Chrome nicht Teil der Messung. Kompakte App-Kopfzeile Ziel 56 px; Analysentabs/Toolbar zusammen höchstens weitere 88 px, ausser notwendiger zugänglicher Zoomansicht. Sidebar einklappbar, collapsed 48–56 px, expanded 200–224 px. Auf SQL/R beim ersten Öffnen collapsed. Mit geschlossenem Schema-/Info-Panel stehen mindestens 90 % der Breite rechts neben der Iconleiste der Arbeitsfläche zur Verfügung. Editor+Ergebnis beziehungsweise Editor+Plot+Konsole belegen mindestens 75 % der Viewporthöhe. Keine ständige rechte Infospalte zur Erfüllung künstlicher Dashboard-Symmetrie.
 
 Panels besitzen sinnvolle Minima (SQL-Editor 180 px, Resultat 220 px bei 900px-Höhe), User-Anpassung und „Arbeitsfläche zurücksetzen“. Bei kleineren Höhen Scrollen/Tabansichten anbieten statt Inhalte zu überlagern. Am 1280×800-Test kein horizontaler Seiten-Scrollbar durch App-Chrome; innerhalb des Code-/Tabellengitters zulässig. Tabellenzeilen nicht als grossflächige Karten gestalten. Ruhige Grautöne, Weiss, kantonales Rot sparsam für primäre Aktionen/Auswahl.
 

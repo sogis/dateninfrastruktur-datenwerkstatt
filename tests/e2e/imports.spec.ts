@@ -1,12 +1,13 @@
 import {expect, test} from '../persistentBrowser';
 import type {Page} from '@playwright/test';
 async function create(page: Page) {
-  await page.goto('/workspaces');
-  await page.getByLabel('Name des neuen Arbeitsbereichs').fill('Importprojekt');
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await page.goto('/projects');
+  await page.getByLabel('Name des neuen Projekts').fill('Importprojekt');
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await expect(page.getByRole('heading', {name: 'Importprojekt', exact: true})).toBeVisible();
 }
 async function importCsv(page: Page) {
+  await page.getByRole('link', {name: 'Daten', exact: true}).click();
   await page.getByRole('button', {name: 'Datei hinzufügen', exact: true}).click();
   await page
     .getByLabel('Datei (CSV oder Parquet, maximal 128 MiB)')
@@ -29,7 +30,8 @@ test('P2 / AT-008 AT-010 AT-018: confirmed import, reload, data preview, indepen
   await expect(page.getByRole('cell', {name: 'erste Zeile zweite Zeile'})).toBeVisible();
   await expect(page.getByRole('cell', {name: 'Leerstring', exact: true})).toHaveCount(2);
   await page.getByLabel('Anzeigename csv_edge_cases', {exact: true}).fill('Öffentliche Übersicht');
-  await page.getByRole('button', {name: 'Speichern', exact: true}).click();
+  await page.getByLabel('Anzeigename csv_edge_cases', {exact: true}).press('Tab');
+  await expect(page.getByText('Lokal gespeichert · kein Backup', {exact: true})).toBeVisible();
   await expect(page.getByText('data.csv_edge_cases', {exact: true})).toBeVisible();
   const downloading = page.waitForEvent('download');
   await page.getByRole('button', {name: 'Parquet exportieren', exact: true}).click();
@@ -38,6 +40,7 @@ test('P2 / AT-008 AT-010 AT-018: confirmed import, reload, data preview, indepen
   expect(await download.failure()).toBeNull();
   const path = await download.path();
   expect(path).toBeTruthy();
+  await page.getByRole('link', {name: 'Daten', exact: true}).click();
   await page.getByRole('button', {name: 'Datei hinzufügen', exact: true}).click();
   await page.getByLabel('Datei (CSV oder Parquet, maximal 128 MiB)').setInputFiles({
     name: 'csv-edge-cases.parquet',
@@ -61,14 +64,12 @@ test('P2 / AT-016: denied OPFS requires explicit temporary mode and never claims
       },
     });
   });
-  await page.goto('/workspaces');
+  await page.goto('/projects');
   await expect(page.getByRole('button', {name: 'Nur diese Sitzung verwenden'})).toBeVisible();
-  await expect(page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true})).toHaveCount(
-    0,
-  );
+  await expect(page.getByRole('button', {name: 'Neues Projekt', exact: true})).toHaveCount(0);
   await page.getByRole('button', {name: 'Nur diese Sitzung verwenden'}).click();
-  await page.getByLabel('Name des neuen Arbeitsbereichs').fill('Temporär');
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await page.getByLabel('Name des neuen Projekts').fill('Temporär');
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await importCsv(page);
   await expect(page.getByText('Lokal gespeichert · kein Backup', {exact: true})).toHaveCount(0);
   await expect(page.getByText('Nur diese Sitzung · kein Backup', {exact: true})).toBeVisible();
@@ -81,6 +82,7 @@ test('P2 / AT-013: real import surfaces OPFS quota failure without publishing pa
 }) => {
   await create(page);
   await importCsv(page);
+  await page.getByRole('link', {name: 'Daten', exact: true}).click();
   await page.getByRole('button', {name: 'Datei hinzufügen', exact: true}).click();
   await page
     .getByLabel('Datei (CSV oder Parquet, maximal 128 MiB)')
@@ -140,16 +142,18 @@ test('P2 / AT-002 AT-024 partial: one import worker survives routes and closes b
   await create(page);
   await importCsv(page);
   expect(await engineCount()).toBe(1);
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
-  await page.getByRole('link', {name: 'Projektübersicht', exact: true}).click();
+  await page.getByRole('link', {name: 'Daten', exact: true}).click();
   await page.getByRole('button', {name: 'Daten ansehen', exact: true}).click();
   await expect(page.getByRole('cell', {name: '001', exact: true})).toBeVisible();
   expect(await engineCount()).toBe(1);
-  await page.getByRole('link', {name: 'Arbeitsbereiche', exact: true}).click();
+  await page.getByRole('link', {name: 'Projekte', exact: true}).click();
   await expect.poll(() => workers[0]?.closed).toBe(true);
-  await page.getByLabel('Name des neuen Arbeitsbereichs').fill('Leeres Projekt B');
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
-  await expect(page.getByText('Noch keine Dateneinbindungen.', {exact: true})).toBeVisible();
+  await page.getByLabel('Name des neuen Projekts').fill('Leeres Projekt B');
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
+  await page.getByRole('link', {name: 'Daten', exact: true}).click();
+  await expect(page.getByText('Noch keine Datensätze.', {exact: true})).toBeVisible();
   await expect(page.getByText('data.csv_edge_cases', {exact: true})).toHaveCount(0);
   expect(await engineCount()).toBe(1);
 });

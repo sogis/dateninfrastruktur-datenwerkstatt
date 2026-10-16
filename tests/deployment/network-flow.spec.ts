@@ -28,9 +28,10 @@ test('P7 AT-056 AT-068: static public/local → SQL → R → SQL → PNG/archiv
     if (/^https?:/.test(r.url())) network.push(r.url());
   });
   page.on('pageerror', (e) => errors.push(e.message));
-  await page.goto(`${baseURL}workspaces`);
-  await page.getByLabel('Name des neuen Arbeitsbereichs').fill('Netzwerk Rundlauf');
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await page.goto(`${baseURL}projects`);
+  await page.getByLabel('Name des neuen Projekts').fill('Netzwerk Rundlauf');
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
+  await page.getByRole('link', {name: 'Daten', exact: true}).click();
   await page.getByRole('button', {name: 'Datei hinzufügen', exact: true}).click();
   await page.getByLabel('Datei (CSV oder Parquet, maximal 128 MiB)').setInputFiles({
     name: 'lokal.csv',
@@ -40,6 +41,7 @@ test('P7 AT-056 AT-068: static public/local → SQL → R → SQL → PNG/archiv
   await page.getByRole('button', {name: 'Vorschau laden', exact: true}).click();
   await page.getByRole('button', {name: 'Import bestätigen', exact: true}).click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
   const sqlUrl = page.url();
   await code(page, 'SELECT * FROM lokal');
@@ -54,7 +56,7 @@ test('P7 AT-056 AT-068: static public/local → SQL → R → SQL → PNG/archiv
     true,
   );
   try {
-    await page.getByRole('link', {name: 'Projektübersicht', exact: true}).click();
+    await page.getByRole('link', {name: 'Daten', exact: true}).click();
     await page.getByRole('button', {name: 'Aus Portal hinzufügen', exact: true}).click();
     await page.getByLabel('Dataset-ID oder Portal-URL').fill(key);
     await page.getByRole('button', {name: 'Kontext laden', exact: true}).click();
@@ -101,19 +103,17 @@ test('P7 AT-056 AT-068: static public/local → SQL → R → SQL → PNG/archiv
     await page.getByRole('button', {name: 'Diagramm', exact: true}).click();
     await page.getByRole('button', {name: 'Diagramm speichern', exact: true}).click();
     await expect(page.getByText('1 Diagramm(e) gespeichert', {exact: true})).toBeVisible();
-    await page.getByRole('link', {name: 'Projektübersicht', exact: true}).click();
+    await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
     await page.getByRole('button', {name: 'Projekt exportieren', exact: true}).click();
     await page.getByLabel('Externe Quellen ebenfalls sichern').check();
     const archiveDownload = page.waitForEvent('download');
     await page.getByRole('button', {name: 'Archiv herunterladen', exact: true}).click();
     const archive = await readFile((await (await archiveDownload).path())!);
-    await page.getByRole('link', {name: 'Arbeitsbereiche', exact: true}).click();
+    await page.getByRole('link', {name: 'Projekte', exact: true}).click();
     await page
       .getByLabel('Projektdatei importieren')
       .setInputFiles({name: 'netzwerk.dwproj', mimeType: 'application/zip', buffer: archive});
-    await page
-      .getByRole('button', {name: 'Als neuen Arbeitsbereich importieren', exact: true})
-      .click();
+    await page.getByRole('button', {name: 'Als neues Projekt importieren', exact: true}).click();
     await expect(page.getByRole('heading', {name: 'Netzwerk Rundlauf', exact: true})).toBeVisible();
     await page.getByRole('link', {name: 'Neue SQL-Abfrage', exact: true}).click();
     await expect(page.locator('.result-grid tbody td')).toHaveText(['2', '60.0']);

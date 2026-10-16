@@ -1,8 +1,14 @@
 # Datenwerkstatt V1 — technisch geprüftes Testprofil
 
-Dieses Repository enthält die verbindliche V1-Spezifikation und die eigenständige Anwendung. **P0–P8 sind für die dokumentierte Testkonfiguration technisch abgenommen; die produktive Veröffentlichung ist nicht freigegeben.** Implementiert sind lokale Arbeitsbereiche, bestätigte CSV-/Parquet- und Portalimporte, echte SQL-/R-Läufe, vollständiger SQL→R→SQL-Transfer, stabile Resultate/Paging, Aufbewahren, Daten-/Grafikexport und Projektarchive. Archivimport, Duplizieren, Recovery und Mehrtab-Schreibschutz erhalten Code und historische Herkunft. SQL und Dateiimport teilen einen sessioneigenen DuckDB-Connector; R startet lazy pro Workspace. P0–P8 sind geprüft. Statisches Deployment, gemessene Arbeitsflächen und Betriebsfunktionen sind geliefert; P8 weist 198 funktionale Browserfälle und 45 Deploymentfälle nach. Der echte Safari-Pilot einschliesslich vollständigem Prozessneustart ist bestanden. Vor produktiver Veröffentlichung bleiben bestätigte Portal-/Ingresskonfiguration und Distributionspflichten zu erfüllen.
+Dieses Repository enthält die verbindliche V1-Spezifikation und die eigenständige Anwendung. **P0–P8 sind für die dokumentierte Testkonfiguration technisch abgenommen; die produktive Veröffentlichung ist nicht freigegeben.** Implementiert sind lokale Projekte, bestätigte CSV-/Parquet- und Portalimporte, echte SQL-/R-Läufe, vollständiger SQL→R→SQL-Transfer, stabile Resultate/Paging, Aufbewahren, Daten-/Grafikexport und Projektarchive. Archivimport, Duplizieren, Recovery und Mehrtab-Schreibschutz erhalten Code und historische Herkunft. SQL und Dateiimport teilen einen sessioneigenen DuckDB-Connector; R startet lazy pro Workspace. P0–P8 sind geprüft. Statisches Deployment, gemessene Arbeitsflächen und Betriebsfunktionen sind geliefert; P8 weist 198 funktionale Browserfälle und 45 Deploymentfälle nach. Der echte Safari-Pilot einschliesslich vollständigem Prozessneustart ist bestanden. Vor produktiver Veröffentlichung bleiben bestätigte Portal-/Ingresskonfiguration und Distributionspflichten zu erfüllen.
 
 Der genaue Stand, tatsächliche Befehle/Fehlläufe und offene Abnahmen stehen in [docs/IMPLEMENTATION_STATUS.md](docs/IMPLEMENTATION_STATUS.md) und [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md).
+
+## Projekte und Daten
+
+Der Einstieg liegt unter `/projects`. Ein Projekt enthält Datensätze mit unveränderlichen Datenständen und gespeicherte SQL-/R-Analysen. Die Übersicht zeigt Projektangaben, Analysen und eine kompakte Datenliste; die Datenseite bietet Import und Verwaltung sowie eingeklappte Datenstände und Herkunft. SQL/R zeigen lesbare eingefrorene Läufe mit ihren Eingaben und konkreten Ergebnissen. Alte `/workspaces`-URLs entfallen ohne Weiterleitung. Bestehende IDs, Browserdaten und Projektdateien bleiben erhalten.
+
+Die neuen Prüfbelege stehen im [Bericht zu Projekten und Beziehungen](docs/verification/projects/README.md).
 
 ## Designsystem
 
@@ -35,24 +41,24 @@ Quellbaseline und Entscheidungen: [docs/BASELINE.md](docs/BASELINE.md), [docs/MI
 
 Paket in das autorisierte neue Zielrepository übernehmen. Vorhandene Dateien/Anweisungen nicht überschreiben, sondern zusammenführen. Den Text aus [PROMPT.md](PROMPT.md) an den Coding-Agenten geben.
 
-| Datei | Zweck |
-|---|---|
-| [AGENTS.md](AGENTS.md) | Arbeitsregeln und Qualitätsgrenzen für den Agenten |
-| [SPEC.md](SPEC.md) | Verbindlicher Produkt-, Architektur-, Daten-, UI- und Betriebsvertrag |
-| [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) | Reihenfolge P0–P8, konkrete Lieferobjekte und Phasengates |
-| [ACCEPTANCE_TESTS.md](ACCEPTANCE_TESTS.md) | Nachprüfbare Szenarien und Requirement-Zuordnung |
-| [contracts/domain.ts](contracts/domain.ts) | Serialisierbares Fachmodell |
-| [contracts/ports.ts](contracts/ports.ts) | Eigene Infrastruktur-/Runtime-Schnittstellen |
-| [contracts/catalog.ts](contracts/catalog.ts) | Katalogindex und aufgelöste Quellen |
-| [contracts/archive.ts](contracts/archive.ts) | .dwproj-Projektarchiv |
-| [contracts/runtime-config.ts](contracts/runtime-config.ts) | Betreiberkonfiguration und Pilotlimits |
-| [fixtures/README.md](fixtures/README.md) | Testdaten, genaue Schemata und erwarteter SQL–R–SQL-Ablauf |
-| [docs/SOURCES.md](docs/SOURCES.md) | Quellcodebaseline und offizielle technische Referenzen |
-| [docs/VERIFICATION.md](docs/VERIFICATION.md) | Was am Spezifikationspaket tatsächlich geprüft wurde |
+| Datei                                                      | Zweck                                                                 |
+| ---------------------------------------------------------- | --------------------------------------------------------------------- |
+| [AGENTS.md](AGENTS.md)                                     | Arbeitsregeln und Qualitätsgrenzen für den Agenten                    |
+| [SPEC.md](SPEC.md)                                         | Verbindlicher Produkt-, Architektur-, Daten-, UI- und Betriebsvertrag |
+| [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)           | Reihenfolge P0–P8, konkrete Lieferobjekte und Phasengates             |
+| [ACCEPTANCE_TESTS.md](ACCEPTANCE_TESTS.md)                 | Nachprüfbare Szenarien und Requirement-Zuordnung                      |
+| [contracts/domain.ts](contracts/domain.ts)                 | Serialisierbares Fachmodell                                           |
+| [contracts/ports.ts](contracts/ports.ts)                   | Eigene Infrastruktur-/Runtime-Schnittstellen                          |
+| [contracts/catalog.ts](contracts/catalog.ts)               | Katalogindex und aufgelöste Quellen                                   |
+| [contracts/archive.ts](contracts/archive.ts)               | .dwproj-Projektarchiv                                                 |
+| [contracts/runtime-config.ts](contracts/runtime-config.ts) | Betreiberkonfiguration und Pilotlimits                                |
+| [fixtures/README.md](fixtures/README.md)                   | Testdaten, genaue Schemata und erwarteter SQL–R–SQL-Ablauf            |
+| [docs/SOURCES.md](docs/SOURCES.md)                         | Quellcodebaseline und offizielle technische Referenzen                |
+| [docs/VERIFICATION.md](docs/VERIFICATION.md)               | Was am Spezifikationspaket tatsächlich geprüft wurde                  |
 
 ## Abgrenzung
 
-V1: lokale Arbeitsbereiche, mehrere Datenquellen, SQL, R, Austausch, Speicherung und Projektarchive. Keine KI, Anmeldung, Freigaben, ClickHouse-Ausführung, Notebook-/Canvas-Plattform oder allgemeine Pluginarchitektur.
+V1: lokale Projekte, mehrere Datenquellen, SQL, R, Austausch, Speicherung und Projektarchive. Keine KI, Anmeldung, Freigaben, ClickHouse-Ausführung, Notebook-/Canvas-Plattform oder allgemeine Pluginarchitektur.
 
 Der Portaladapter nutzt die bereits vorhandenen `explore/context.json`-Endpunkte. Ein optionaler kleiner Suchindex ist ausdrücklich ein neuer Vertrag. Das Portal muss für den ersten funktionierenden URL-/Deep-Link-Einstieg nicht als Anwendung umgebaut werden.
 

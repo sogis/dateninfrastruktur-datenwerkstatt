@@ -29,7 +29,7 @@ export function StorageSettings() {
       </p>
       <ActionGroup>
         <Button onClick={refresh}>Speicherstatus aktualisieren</Button>
-        <Link to="/workspaces">Projekte verwalten und gezielt löschen</Link>
+        <Link to="/projects">Projekte verwalten und gezielt löschen</Link>
         <Button disabled={busy} onClick={() => setConfirm(true)}>
           Nicht referenzierte Projektreste bereinigen
         </Button>

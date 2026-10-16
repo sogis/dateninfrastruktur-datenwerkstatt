@@ -2,9 +2,9 @@ import {test, expect} from '../persistentBrowser';
 import {mkdir, writeFile} from 'node:fs/promises';
 import type {Page} from '@playwright/test';
 async function create(page: Page) {
-  await page.goto('/workspaces');
-  await page.getByLabel('Name des neuen Arbeitsbereichs').fill('P7 Arbeitsfläche');
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await page.goto('/projects');
+  await page.getByLabel('Name des neuen Projekts').fill('P7 Arbeitsfläche');
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
 }
 async function enter(page: Page, text: string) {
   await page.locator('.monaco-editor').click();
@@ -18,6 +18,7 @@ test('P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layou
 }, info) => {
   await page.setViewportSize({width: 1440, height: 900});
   await create(page);
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await enter(page, 'SELECT 77 AS wert');
   await page.getByRole('textbox', {name: 'Analysecode'}).press('ControlOrMeta+Enter');
@@ -94,9 +95,9 @@ test('P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layou
         expect(box.output.height).toBeGreaterThanOrEqual(220);
       }
       geometry.push(box);
-      await mkdir('docs/verification/design-system', {recursive: true});
+      await mkdir('docs/verification/projects', {recursive: true});
       await page.screenshot({
-        path: `docs/verification/design-system/p7-${kind}-${info.project.name}-${size.width}.png`,
+        path: `docs/verification/projects/p7-${kind}-${info.project.name}-${size.width}.png`,
       });
     }
     const splitter = page.getByRole('separator', {
@@ -112,7 +113,7 @@ test('P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layou
     await expect
       .poll(() =>
         page.evaluate(async (kind) => {
-          const p = '/src/app/services.ts';
+          const p = '/tests/spike/appServices.ts';
           const {services} = (await import(p)) as typeof import('../../src/app/services');
           const id = location.pathname.split(
             '/',
@@ -129,7 +130,7 @@ test('P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layou
     await expect(splitter).toHaveAttribute('aria-valuenow', kind === 'sql' ? '45' : '50');
   }
   await writeFile(
-    `docs/verification/design-system/p7-geometry-${info.project.name}.json`,
+    `docs/verification/projects/p7-geometry-${info.project.name}.json`,
     JSON.stringify(geometry, null, 2),
   );
   await page.getByRole('button', {name: 'Konsole', exact: true}).click();
@@ -143,6 +144,7 @@ test('P7 AT-055–057: native focus trap/return, settings, storage cleanup and d
   page,
 }) => {
   await create(page);
+  await page.getByRole('link', {name: 'Daten', exact: true}).click();
   const open = page.getByRole('button', {name: 'Datei hinzufügen', exact: true});
   await open.click();
   const dialog = page.getByRole('dialog', {name: 'Datei importieren'});
@@ -154,9 +156,10 @@ test('P7 AT-055–057: native focus trap/return, settings, storage cleanup and d
   await page.keyboard.press('Escape');
   await expect(dialog).toHaveCount(0);
   await expect(open).toBeFocused();
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await enter(page, "SELECT 'PRIVATE_CODE_MARKER' AS wert");
-  await page.getByRole('link', {name: 'Projektübersicht', exact: true}).click();
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByText('Lokale Diagnose', {exact: true}).click();
   let downloaded = page.waitForEvent('download');
   await page.getByRole('button', {name: 'Diagnosebericht herunterladen'}).click();
@@ -189,6 +192,7 @@ test('P7 AT-025 AT-055 AT-056: selected SQL is snapshotted and cell markup remai
   page,
 }) => {
   await create(page);
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await enter(page, 'SELECT absent FROM absent_table;\nSELECT 42 AS selected');
   const editor = page.getByRole('textbox', {name: 'Analysecode'});
@@ -198,7 +202,7 @@ test('P7 AT-025 AT-055 AT-056: selected SQL is snapshotted and cell markup remai
   await editor.press('ControlOrMeta+Enter');
   await expect(page.locator('.result-grid tbody td')).toHaveText(['42']);
   const snapshot = await page.evaluate(async () => {
-    const p = '/src/app/services.ts';
+    const p = '/tests/spike/appServices.ts';
     const {services} = (await import(p)) as typeof import('../../src/app/services');
     const session = await services.workspaces.open(location.pathname.split('/')[2]!);
     return Object.values(session.document.runs).at(-1)!.snapshot.code;
@@ -216,6 +220,7 @@ test('P7 AT-058: browser history restores the analysis cursor and layout does no
   page,
 }) => {
   await create(page);
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await enter(page, 'SELECT 11 AS wert');
   const sqlUrl = page.url();
@@ -250,7 +255,7 @@ test('P7 AT-058: browser history restores the analysis cursor and layout does no
   await expect(page).toHaveURL(sqlUrl);
   const state = () =>
     page.evaluate(async () => {
-      const p = '/src/app/services.ts';
+      const p = '/tests/spike/appServices.ts';
       const {services} = (await import(p)) as typeof import('../../src/app/services');
       const session = await services.workspaces.open(location.pathname.split('/')[2]!);
       await session.flush();

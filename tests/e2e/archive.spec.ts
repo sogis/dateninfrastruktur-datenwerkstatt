@@ -8,9 +8,9 @@ test('P6 AT-051 AT-053 AT-063: Golden archive in fresh profile, graph remap, rea
   playwright,
   browserName,
 }) => {
-  await page.goto('/workspaces');
-  await page.getByLabel('Name des neuen Arbeitsbereichs').fill('Archiv Golden');
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await page.goto('/projects');
+  await page.getByLabel('Name des neuen Projekts').fill('Archiv Golden');
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   const names = [
     'gemeinden.csv',
     'bevoelkerung.csv',
@@ -24,7 +24,7 @@ test('P6 AT-051 AT-053 AT-063: Golden archive in fresh profile, graph remap, rea
     await Promise.all(names.map(async (n) => [n, await readFile(`fixtures/${n}`, 'utf8')])),
   );
   const original = await page.evaluate(async (files) => {
-    const sp = '/src/app/services.ts',
+    const sp = '/tests/spike/appServices.ts',
       seed = '/tests/spike/seedGolden.ts';
     const {services} = (await import(sp)) as typeof import('../../src/app/services');
     const {seedGolden} = (await import(seed)) as typeof import('../spike/seedGolden');
@@ -45,16 +45,16 @@ test('P6 AT-051 AT-053 AT-063: Golden archive in fresh profile, graph remap, rea
     const imported = fresh.pages()[0] ?? (await fresh.newPage());
     const workers: string[] = [];
     imported.on('worker', (w) => workers.push(w.url()));
-    await imported.goto('/workspaces');
+    await imported.goto('/projects');
     await imported
       .getByLabel('Projektdatei importieren')
       .setInputFiles({name: 'rundlauf.dwproj', mimeType: 'application/zip', buffer: bytes});
     await expect(imported.getByRole('dialog')).toContainText('Enthält SQL-/R-Code');
-    await imported.getByRole('button', {name: 'Als neuen Arbeitsbereich importieren'}).click();
+    await imported.getByRole('button', {name: 'Als neues Projekt importieren'}).click();
     await expect(imported.getByRole('heading', {name: 'Archiv Golden', exact: true})).toBeVisible();
     expect(workers).toEqual([]);
     const proof = await imported.evaluate(async () => {
-      const path = '/src/app/services.ts';
+      const path = '/tests/spike/appServices.ts';
       const {services} = (await import(path)) as typeof import('../../src/app/services');
       const session = await services.workspaces.open(location.pathname.split('/')[2]!),
         d = session.document,
@@ -110,19 +110,17 @@ test('P6 AT-051 AT-053 AT-063: Golden archive in fresh profile, graph remap, rea
     expect(Object.keys(proof.after.artifacts)).toHaveLength(Object.keys(next.artifacts).length);
     expect(workers.filter((w) => w.includes('webr'))).toHaveLength(0);
     await imported.reload();
-    await imported.getByRole('button', {name: 'Arbeitsbereich duplizieren', exact: true}).click();
+    await imported.getByRole('button', {name: 'Projekt duplizieren', exact: true}).click();
     await expect(
       imported.getByRole('heading', {name: 'Archiv Golden (Kopie)', exact: true}),
     ).toBeVisible();
     const copyUrl = imported.url();
-    await imported.getByRole('link', {name: 'Arbeitsbereiche', exact: true}).click();
+    await imported.getByRole('link', {name: 'Projekte', exact: true}).click();
     await imported.getByRole('link', {name: 'Archiv Golden', exact: true}).click();
-    await imported.getByRole('button', {name: 'Arbeitsbereich löschen', exact: true}).click();
+    await imported.getByRole('button', {name: 'Projekt löschen', exact: true}).click();
     await expect(imported.getByRole('dialog')).toContainText('gesicherte Resultate');
     await imported.getByRole('button', {name: 'Endgültig löschen'}).click();
-    await expect(
-      imported.getByRole('heading', {name: 'Arbeitsbereiche', exact: true}),
-    ).toBeVisible();
+    await expect(imported.getByRole('heading', {name: 'Projekte', exact: true})).toBeVisible();
     await expect(imported.getByRole('link', {name: 'Archiv Golden', exact: true})).toHaveCount(0);
     await imported.goto(copyUrl);
     await imported.getByRole('link', {name: 'Rück-SQL', exact: true}).click();
@@ -143,12 +141,14 @@ test('P6 AT-059: recipe inspection/confirmation without engine or empty fake tab
 }) => {
   const workers: string[] = [];
   page.on('worker', (w) => workers.push(w.url()));
-  await page.goto('/workspaces');
+  await page.goto('/projects');
   await page.getByLabel('Projektdatei importieren').setInputFiles('fixtures/sample.dwproj');
   await expect(page.getByRole('dialog')).toContainText('3 Datenstände fehlen');
-  await page.getByRole('button', {name: 'Als neuen Arbeitsbereich importieren'}).click();
+  await page.getByRole('button', {name: 'Als neues Projekt importieren'}).click();
+  await page.getByRole('link', {name: 'Daten', exact: true}).click();
   await expect(page.locator('.dataset-list').getByText(/Zeilen · Nicht verfügbar/)).toHaveCount(3);
   expect(workers).toEqual([]);
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Projekt exportieren', exact: true}).click();
   await page.getByLabel('Archivmodus').selectOption('recipe');
   const download = page.waitForEvent('download');

@@ -7,13 +7,13 @@ test('Navigation: settings remain reachable on global pages, with session toggle
 }) => {
   const workers: string[] = [];
   page.on('worker', (worker) => workers.push(worker.url()));
-  await page.goto('/workspaces');
+  await page.goto('/projects');
   const nav = page.getByRole('navigation', {name: 'Hauptnavigation'});
   const settings = nav.getByRole('link', {name: 'Einstellungen', exact: true});
   await expect(page.getByRole('navigation')).toHaveCount(1);
   await expect(page.locator('header').getByRole('link', {name: 'Einstellungen'})).toHaveCount(0);
   await expect(nav.locator('.dw-nav-item')).toHaveCount(3);
-  await expect(nav.getByRole('link', {name: 'Arbeitsbereiche', exact: true})).toHaveAttribute(
+  await expect(nav.getByRole('link', {name: 'Projekte', exact: true})).toHaveAttribute(
     'aria-current',
     'page',
   );
@@ -28,13 +28,13 @@ test('Navigation: settings remain reachable on global pages, with session toggle
   await nav.getByRole('button', {name: 'Navigation ausklappen'}).press('Enter');
   await expect(nav).toHaveCSS('width', '212px');
   await expect(settings.locator('span')).toHaveText('Einstellungen');
-  await nav.getByRole('link', {name: 'Arbeitsbereiche', exact: true}).click();
-  await expect(page).toHaveURL(/\/workspaces$/);
+  await nav.getByRole('link', {name: 'Projekte', exact: true}).click();
+  await expect(page).toHaveURL(/\/projects$/);
   await expect(nav).toHaveCSS('width', '212px');
   await page.goBack();
   await expect(settings).toHaveAttribute('aria-current', 'page');
   await page.goForward();
-  await expect(nav.getByRole('link', {name: 'Arbeitsbereiche', exact: true})).toHaveAttribute(
+  await expect(nav.getByRole('link', {name: 'Projekte', exact: true})).toHaveAttribute(
     'aria-current',
     'page',
   );
@@ -45,7 +45,7 @@ test('Navigation: settings remain reachable on global pages, with session toggle
   await page.reload();
   await expect(nav).toHaveCSS('width', '212px');
   await nav.getByRole('button', {name: 'Navigation einklappen'}).click();
-  await nav.getByRole('link', {name: 'Arbeitsbereiche', exact: true}).click();
+  await nav.getByRole('link', {name: 'Projekte', exact: true}).click();
   await expect(nav).toHaveCSS('width', '52px');
   await page.reload();
   await expect(nav).toHaveCSS('width', '212px');
@@ -55,9 +55,9 @@ test('Navigation: settings remain reachable on global pages, with session toggle
 test('Navigation: settings follow R and leaving the workspace saves edits and its sidebar view', async ({
   page,
 }, info) => {
-  await page.goto('/workspaces');
-  await page.getByLabel('Name des neuen Arbeitsbereichs').fill('Navigation und Autosave');
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await page.goto('/projects');
+  await page.getByLabel('Name des neuen Projekts').fill('Navigation und Autosave');
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await expect(page.getByRole('heading', {name: 'Navigation und Autosave'})).toBeVisible();
   const nav = page.getByRole('navigation', {name: 'Hauptnavigation'});
   await expect(page.getByRole('navigation')).toHaveCount(1);
@@ -67,8 +67,8 @@ test('Navigation: settings follow R and leaving the workspace saves edits and it
       .evaluateAll((items) => items.map((item) => item.getAttribute('aria-label'))),
   ).toEqual([
     'Navigation ausklappen',
-    'Arbeitsbereiche',
-    'Projektübersicht',
+    'Projekte',
+    'Übersicht',
     'Daten',
     'SQL',
     'R',
@@ -149,7 +149,7 @@ test('Notices: real short and multiline errors have a centered blue SVG and keyb
   page,
   browserName,
 }, info) => {
-  await page.goto('/workspaces');
+  await page.goto('/projects');
   await page.getByLabel('Projektdatei importieren').setInputFiles({
     name: 'defekt.dwproj',
     mimeType: 'application/zip',
@@ -166,8 +166,8 @@ test('Notices: real short and multiline errors have a centered blue SVG and keyb
   }
   await close.click();
   await expect(page.getByRole('alert')).toHaveCount(0);
-  await page.getByLabel('Name des neuen Arbeitsbereichs').fill('Hinweisprüfung');
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await page.getByLabel('Name des neuen Projekts').fill('Hinweisprüfung');
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await expect(page.getByRole('heading', {name: 'Hinweisprüfung'})).toBeVisible();
   await page.getByLabel('Projektname', {exact: true}).fill('');
   await page.getByLabel('Beschreibung', {exact: true}).focus();

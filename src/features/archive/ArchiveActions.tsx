@@ -80,7 +80,7 @@ export function ArchiveImport() {
                     .then(async (d) => {
                       setCandidate(undefined);
                       await navigate({
-                        to: '/workspaces/$workspaceId',
+                        to: '/projects/$workspaceId',
                         params: {workspaceId: d.workspace.id},
                       });
                     })
@@ -88,7 +88,7 @@ export function ArchiveImport() {
                     .finally(() => setBusy(false));
                 }}
               >
-                Als neuen Arbeitsbereich importieren
+                Als neues Projekt importieren
               </Button>
             </>
           }
@@ -157,13 +157,13 @@ export function ArchiveActions({session}: {session: EditingSession}) {
                   new AbortController().signal,
                 );
                 await navigate({
-                  to: '/workspaces/$workspaceId',
+                  to: '/projects/$workspaceId',
                   params: {workspaceId: d.workspace.id},
                 });
               })
             }
           >
-            Arbeitsbereich duplizieren
+            Projekt duplizieren
           </Button>
           <Button
             disabled={busy}
@@ -189,7 +189,7 @@ export function ArchiveActions({session}: {session: EditingSession}) {
             })
           }
         >
-          Arbeitsbereich löschen
+          Projekt löschen
         </Button>
       </ActionGroup>
       {integrity && (
@@ -294,7 +294,7 @@ export function ArchiveActions({session}: {session: EditingSession}) {
       )}
       {dialog === 'delete' && (
         <Modal
-          title="Arbeitsbereich endgültig löschen?"
+          title="Projekt endgültig löschen?"
           onClose={() => {
             if (!busy) setDialog(undefined);
           }}
@@ -313,11 +313,11 @@ export function ArchiveActions({session}: {session: EditingSession}) {
                     if (failures.length)
                       report(
                         new Error(
-                          `Projekt gelöscht; ${failures.length} Dateireste sind über die Arbeitsbereichsliste bereinigbar.`,
+                          `Projekt gelöscht; ${failures.length} Dateireste sind über die Projektsliste bereinigbar.`,
                         ),
                       );
                     await routerApi.invalidate();
-                    await navigate({to: '/workspaces'});
+                    await navigate({to: '/projects'});
                   })
                 }
               >

@@ -27,7 +27,8 @@ import type {EditingSession} from '../application/workspaceService';
 import type {AnalysisId} from '../domain/model';
 import {checkedId} from '../domain/workspace';
 import {SqlWorkbench} from '../features/sql/SqlWorkbench';
-import {WorkspaceList, WorkspaceDetails} from '../features/workspaces/Workspaces';
+import {ProjectList, ProjectOverview} from '../features/workspaces/Workspaces';
+import {ProjectDataPage} from '../features/data/DataSection';
 function message(error: unknown) {
   return failureMessage(error);
 }
@@ -40,13 +41,13 @@ const rootRoute = createRootRoute({
     <div role="alert">
       <h1>Projekt konnte nicht geöffnet werden</h1>
       <p>{message(error)}</p>
-      <Link to="/workspaces">Arbeitsbereiche</Link>
+      <Link to="/projects">Projekte</Link>
     </div>
   ),
   notFoundComponent: () => (
     <main>
       <h1>Nicht gefunden</h1>
-      <Link to="/workspaces">Arbeitsbereiche</Link>
+      <Link to="/projects">Projekte</Link>
     </main>
   ),
 });
@@ -54,33 +55,33 @@ const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   beforeLoad: () => {
-    throw redirect({to: '/workspaces'});
+    throw redirect({to: '/projects'});
   },
 });
 export const listRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/workspaces',
+  path: '/projects',
   loader: async () => {
     await services.workspaces.close();
     return services.workspaces.list();
   },
-  component: WorkspaceList,
+  component: ProjectList,
 });
 export const workspaceRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/workspaces/$workspaceId',
+  path: '/projects/$workspaceId',
   loader: ({params}) => services.workspaces.open(params.workspaceId),
   component: WorkspaceProvider,
 });
 const detailRoute = createRoute({
   getParentRoute: () => workspaceRoute,
   path: '/',
-  component: WorkspaceDetails,
+  component: ProjectOverview,
 });
 const dataRoute = createRoute({
   getParentRoute: () => workspaceRoute,
   path: 'data',
-  component: WorkspaceDetails,
+  component: ProjectDataPage,
 });
 const sqlRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -141,7 +142,7 @@ function Shell() {
     <>
       <header className="app-header">
         <img src={logo} alt="Kanton Solothurn" />
-        <Link to="/workspaces" className="brand">
+        <Link to="/projects" className="brand">
           Datenwerkstatt
         </Link>
         <span className="build-status">
@@ -195,11 +196,11 @@ function AppNavigation({
       </NavigationItem>
       <NavigationItem
         icon="collection"
-        label="Arbeitsbereiche"
+        label="Projekte"
         expanded={expanded}
         current={routeId === listRoute.id}
       >
-        <Link to="/workspaces" activeOptions={{exact: true}} />
+        <Link to="/projects" activeOptions={{exact: true}} />
       </NavigationItem>
       {children}
       <NavigationItem
@@ -222,7 +223,7 @@ interface Context {
 const workspaceContext = createContext<Context | null>(null);
 export function useWorkspace() {
   const ctx = useContext(workspaceContext);
-  if (!ctx) throw Error('Workspace fehlt.');
+  if (!ctx) throw Error('Projekt fehlt.');
   return ctx;
 }
 function WorkspaceProvider() {
@@ -252,7 +253,8 @@ function WorkspaceProvider() {
   }, [ctx]);
   const state = useStore(ctx.state.store, (s) => s.saveState);
   const error = useStore(ctx.state.store, (s) => s.error);
-  const path = useRouterState({select: (s) => s.location.pathname});
+  const routeId = useRouterState({select: (s) => s.matches.at(-1)?.routeId});
+  const inAnalysis = routeId === sqlRoute.id || routeId === rRoute.id;
   const view = useStore(ctx.view.store, (s) => s.value);
   const expanded = !view.sidebarCollapsed;
   const openAnalysis = (kind: 'sql' | 'r') => {
@@ -269,8 +271,8 @@ function WorkspaceProvider() {
       .navigate({
         to:
           kind === 'sql'
-            ? '/workspaces/$workspaceId/sql/$analysisId'
-            : '/workspaces/$workspaceId/r/$analysisId',
+            ? '/projects/$workspaceId/sql/$analysisId'
+            : '/projects/$workspaceId/r/$analysisId',
         params: {workspaceId: session.document.workspace.id, analysisId: id},
       })
       .catch(report);
@@ -280,7 +282,14 @@ function WorkspaceProvider() {
     enableBeforeUnload: () =>
       session.persistence.generation !== session.persistence.savedGeneration,
     shouldBlockFn: async ({next}) => {
-      if (next.pathname.startsWith(`/workspaces/${session.document.workspace.id}`)) return false;
+      if (
+        [workspaceRoute.id, detailRoute.id, dataRoute.id, sqlRoute.id, rRoute.id].some(
+          (id) => id === next.routeId,
+        ) &&
+        'workspaceId' in next.params &&
+        next.params.workspaceId === session.document.workspace.id
+      )
+        return false;
       try {
         await session.flush();
         return false;
@@ -299,12 +308,12 @@ function WorkspaceProvider() {
         >
           <NavigationItem
             icon="folder2-open"
-            label="Projektübersicht"
+            label="Übersicht"
             expanded={expanded}
-            current={!/\/(data|sql|r)(\/|$)/.test(path)}
+            current={routeId === detailRoute.id}
           >
             <Link
-              to="/workspaces/$workspaceId"
+              to="/projects/$workspaceId"
               activeOptions={{exact: true}}
               params={{workspaceId: session.document.workspace.id}}
             />
@@ -313,10 +322,10 @@ function WorkspaceProvider() {
             icon="table"
             label="Daten"
             expanded={expanded}
-            current={path.endsWith('/data')}
+            current={routeId === dataRoute.id}
           >
             <Link
-              to="/workspaces/$workspaceId/data"
+              to="/projects/$workspaceId/data"
               activeOptions={{exact: true}}
               params={{workspaceId: session.document.workspace.id}}
             />
@@ -326,7 +335,7 @@ function WorkspaceProvider() {
             label="SQL"
             tooltip="SQL · DuckDB"
             expanded={expanded}
-            current={path.includes('/sql/')}
+            current={routeId === sqlRoute.id}
           >
             <Button onClick={() => openAnalysis('sql')} />
           </NavigationItem>
@@ -335,12 +344,12 @@ function WorkspaceProvider() {
             label="R"
             tooltip="R · webR"
             expanded={expanded}
-            current={path.includes('/r/')}
+            current={routeId === rRoute.id}
           >
             <Button onClick={() => openAnalysis('r')} />
           </NavigationItem>
         </AppNavigation>
-        <section className="workspace-content" data-analysis={/\/(sql|r)\//.test(path)}>
+        <section className="workspace-content" data-analysis={inAnalysis}>
           <div className="save-status" aria-live="polite">
             {session.readOnly
               ? 'Nur lesend · Schreibrecht liegt in einem anderen Tab oder Web Locks fehlen.'

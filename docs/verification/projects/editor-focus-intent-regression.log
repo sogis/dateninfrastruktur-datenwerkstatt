@@ -1,0 +1,22 @@
+[WebServer] (node:27497) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 9 tests using 1 worker
+
+(node:27498) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/p7-ui.spec.ts:16:1 › P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layout reset and reload (16.6s)
+  ✓  2 [chromium] › tests/e2e/p7-ui.spec.ts:219:1 › P7 AT-058: browser history restores the analysis cursor and layout does not edit the domain (2.3s)
+  ✓  3 [chromium] › tests/e2e/projects.spec.ts:71:1 › Projects: a late real editor module preserves toolbar menu focus and its reset action (2.2s)
+(node:27565) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [firefox] › tests/e2e/p7-ui.spec.ts:16:1 › P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layout reset and reload (16.2s)
+  ✓  5 [firefox] › tests/e2e/p7-ui.spec.ts:219:1 › P7 AT-058: browser history restores the analysis cursor and layout does not edit the domain (2.9s)
+  ✓  6 [firefox] › tests/e2e/projects.spec.ts:71:1 › Projects: a late real editor module preserves toolbar menu focus and its reset action (2.5s)
+(node:27649) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  7 [webkit] › tests/e2e/p7-ui.spec.ts:16:1 › P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layout reset and reload (16.2s)
+  ✓  8 [webkit] › tests/e2e/p7-ui.spec.ts:219:1 › P7 AT-058: browser history restores the analysis cursor and layout does not edit the domain (2.2s)
+  ✓  9 [webkit] › tests/e2e/projects.spec.ts:71:1 › Projects: a late real editor module preserves toolbar menu focus and its reset action (2.1s)
+
+  9 passed (1.1m)

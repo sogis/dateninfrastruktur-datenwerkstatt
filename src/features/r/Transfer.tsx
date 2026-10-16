@@ -111,7 +111,7 @@ export function TransferToR({
                   await session.getR().commitToR(plan.id, approved, new AbortController().signal);
                   onClose();
                   await navigate({
-                    to: '/workspaces/$workspaceId/r/$analysisId',
+                    to: '/projects/$workspaceId/r/$analysisId',
                     params: {workspaceId: session.document.workspace.id, analysisId},
                   });
                 })

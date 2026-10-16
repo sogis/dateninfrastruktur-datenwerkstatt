@@ -133,13 +133,13 @@ test('P6 AT-012 AT-015 AT-017 AT-061: tab death interrupts real query, saved res
   page,
   context,
 }) => {
-  await page.goto('/workspaces');
-  await page.getByLabel('Name des neuen Arbeitsbereichs').fill('Recovery');
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await page.goto('/projects');
+  await page.getByLabel('Name des neuen Projekts').fill('Recovery');
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await expect(page.getByRole('heading', {name: 'Recovery', exact: true})).toBeVisible();
   const url = page.url();
   const state = await page.evaluate(async () => {
-    const path = '/src/app/services.ts';
+    const path = '/tests/spike/appServices.ts';
     const {services} = (await import(path)) as typeof import('../../src/app/services');
     const session = await services.workspaces.open(location.pathname.split('/')[2]!);
     const a = session.createAnalysis('sql');
@@ -160,7 +160,7 @@ test('P6 AT-012 AT-015 AT-017 AT-061: tab death interrupts real query, saved res
   await expect
     .poll(() =>
       page.evaluate(async () => {
-        const path = '/src/app/services.ts';
+        const path = '/tests/spike/appServices.ts';
         const {services} = (await import(path)) as typeof import('../../src/app/services');
         const session = await services.workspaces.open(location.pathname.split('/')[2]!);
         const active = Object.values(session.document.runs).some((r) => r.status === 'running');
@@ -177,7 +177,7 @@ test('P6 AT-012 AT-015 AT-017 AT-061: tab death interrupts real query, saved res
   await reader.getByRole('button', {name: 'Schreibrecht erneut anfordern'}).click();
   await expect(reader.getByLabel('Beschreibung', {exact: true})).toBeEnabled();
   const recovered = await reader.evaluate(async (state) => {
-    const path = '/src/app/services.ts';
+    const path = '/tests/spike/appServices.ts';
     const {services} = (await import(path)) as typeof import('../../src/app/services');
     const s = await services.workspaces.open(location.pathname.split('/')[2]!);
     await s.flush();

@@ -99,7 +99,7 @@ Feldnamen. Deaktivierte und schreibgeschützte Werte bleiben lesbar.
 
 - Button/IconButton: primary, secondary, ghost, danger; default/compact.
   Button ist standardmässig type=button; Formular-Submit wird explizit gesetzt.
-  Primary für Neuer Arbeitsbereich/Ausführen/abschliessende Bestätigung.
+  Primary für Neues Projekt/Ausführen/abschliessende Bestätigung.
   Sekundäraktionen neutral, destruktive Aktionen räumlich getrennt.
 - ActionGroup/Toolbar: gemeinsame Abstände, Reihenfolge und Umbruch.
 - Notice/Fehlermeldung: Text und getönte Fläche kennzeichnen Information,
@@ -138,8 +138,8 @@ aria-hidden und focusable=false; zugänglicher Name am Auslöser.
 | Ziel                  | Icon           |
 | --------------------- | -------------- |
 | Navigation umschalten | layout-sidebar |
-| Arbeitsbereiche       | collection     |
-| Projektübersicht      | folder2-open   |
+| Projekte              | collection     |
+| Übersicht             | folder2-open   |
 | Daten                 | table          |
 | SQL / DuckDB          | database       |
 | R / webR              | bar-chart-line |
@@ -150,9 +150,9 @@ ausgeklappt zusätzlich Label. SQL und R behalten ihre Namen; Tooltip ergänzt
 DuckDB bzw. webR. Aktives Ziel: rote Icon-/Textfarbe, getönte Fläche und
 aria-current, ohne seitlichen Marker.
 
-Die linke Navigation erscheint auch auf Arbeitsbereichsliste, Einstellungen und
-Portaleinstieg. Ohne geöffneten Arbeitsbereich zeigt sie Navigation umschalten,
-Arbeitsbereiche und Einstellungen. Im Arbeitsbereich stehen Projektübersicht,
+Die linke Navigation erscheint auch auf Projektliste, Einstellungen und
+Portaleinstieg. Ohne geöffnetes Projekt zeigt sie Navigation umschalten,
+Projekte und Einstellungen. Im Projekt stehen Übersicht,
 Daten, SQL und R dazwischen; Einstellungen folgt direkt nach R. Im Header gibt
 es keinen Einstellungslink. Ausserhalb eines Projekts gilt der persönliche
 Einklappstandard; manuelles Umschalten bleibt sitzungslokal. Projektansichten
@@ -188,3 +188,11 @@ Lokale Fonts/SVGs unter /lab/, Fontfehler/Fallback und kein externer Abruf.
 Abschluss: npm run verify, E2E zusätzlich Firefox/WebKit, betroffene statische
 Deploymentchecks, Dokumentlinks und nativer Safari-UI-Smoke. Nicht ausgeführte
 Prüfungen ausdrücklich dokumentieren.
+
+## Projekte und nachvollziehbare Beziehungen
+
+Benutzerseitig heisst die gespeicherte Einheit Projekt; `Workspace*` bleibt ein technischer Name. Navigation: global Projekte/Einstellungen, innerhalb eines Projekts Übersicht/Daten/SQL/R. Kanonische Routen liegen unter `/projects`; bisherige `/workspaces`-Routen entfallen.
+
+Die Übersicht zeigt Projektangaben, gespeicherte Analysen und eine kompakte lesende Datenliste mit „Daten verwalten“. Vollständige Datenaktionen gehören ausschliesslich auf die Datenseite. Projektdatei-/Speicheraktionen folgen unten; Diagnose bleibt eingeklappt.
+
+Datenstände und Herkunft werden je Datensatz eingeklappt dargestellt. Der aktuelle Stand ist markiert; Quelle, Umfang, Schema, Nachweis und Verfügbarkeit bleiben unterscheidbar. SQL/R teilen lesbare Laufdetails, die Analyse, eingefrorene Eingaben und konkrete Ergebnisse zuordnen. Technische IDs und Rohdaten gehören in untergeordnete Details. Kein zusätzliches Dashboard und keine automatische Ausführung beim Lesen.

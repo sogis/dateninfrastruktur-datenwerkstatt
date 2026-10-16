@@ -38,7 +38,7 @@ function Boot() {
               variant="primary"
               onClick={async () => {
                 useTemporaryServices();
-                await router.navigate({to: '/workspaces', replace: true});
+                await router.navigate({to: '/projects', replace: true});
                 setResult({...result, ready: true});
               }}
             >

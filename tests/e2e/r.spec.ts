@@ -18,9 +18,10 @@ test('P5 AT-040 AT-042 AT-046 AT-048: complete UI transfer, lazy worker survives
       record.closed = true;
     });
   });
-  await page.goto('/workspaces');
-  await page.getByLabel('Name des neuen Arbeitsbereichs').fill('R Rundlauf');
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await page.goto('/projects');
+  await page.getByLabel('Name des neuen Projekts').fill('R Rundlauf');
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
   const sqlUrl = page.url();
   await code(page, 'SELECT i::INTEGER AS id FROM range(350) t(i)');
@@ -48,8 +49,14 @@ test('P5 AT-040 AT-042 AT-046 AT-048: complete UI transfer, lazy worker survives
   await page.getByRole('button', {name: 'Objekt als Datensatz', exact: true}).click();
   await page.getByRole('button', {name: 'Datensatz übernehmen', exact: true}).click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
+  await page.getByRole('link', {name: 'Daten', exact: true}).click();
+  await page.getByText('Datenstände und Herkunft (1)', {exact: true}).click();
+  await expect(page.locator('.dataset-history')).toContainText(
+    'R-Objektübernahme ohne gespeicherte Analyse',
+  );
+  await expect(page.locator('.dataset-history')).toContainText('Ergebnis · vergleich');
   // Internal navigation preserves the WorkspaceSession and its live R objects.
-  await page.getByRole('link', {name: 'Projektübersicht', exact: true}).click();
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.locator(`a[href="${new URL(sqlUrl).pathname}"]`).click();
   await expect(
     page.getByText('350 Zeilen · vollständig · aufbewahrt', {exact: true}),
@@ -57,7 +64,7 @@ test('P5 AT-040 AT-042 AT-046 AT-048: complete UI transfer, lazy worker survives
   await code(page, 'SELECT n FROM vergleich');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.result-grid tbody td')).toHaveText(['350']);
-  await page.getByRole('link', {name: 'Projektübersicht', exact: true}).click();
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.locator(`a[href="${new URL(rUrl).pathname}"]`).click();
   await expect(page.getByRole('button', {name: /x · numeric/})).toBeVisible();
   expect(workers.filter((w) => w.url.includes('webr'))).toHaveLength(1);
@@ -70,13 +77,13 @@ test('P5 AT-040 AT-042 AT-046 AT-048: complete UI transfer, lazy worker survives
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.run-status')).toContainText('R ausführen', {timeout: 60000});
   // Running snapshot appears only after initialization and before evaluating the loop.
-  await expect(page.locator('.run-status option').filter({hasText: 'running'})).toHaveCount(1, {
+  await expect(page.locator('.run-status option').filter({hasText: 'Läuft'})).toHaveCount(1, {
     timeout: 60000,
   });
   await page.getByRole('button', {name: 'Abbrechen', exact: true}).click();
   await expect(page.getByRole('alert').filter({hasText: 'CANCELLED'})).toBeVisible();
   await expect.poll(() => workers.filter((w) => w.url.includes('webr') && w.closed).length).toBe(2);
-  await page.getByRole('link', {name: 'Projektübersicht', exact: true}).click();
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.locator(`a[href="${new URL(sqlUrl).pathname}"]`).click();
   await expect(page.locator('.result-grid tbody td')).toHaveText(['350']);
 });

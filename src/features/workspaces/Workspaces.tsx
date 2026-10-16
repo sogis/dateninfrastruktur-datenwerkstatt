@@ -15,15 +15,14 @@ import {Link, useNavigate} from '@tanstack/react-router';
 import {useStore} from 'zustand';
 import {listRoute, useWorkspace, report} from '../../app/router';
 import {services} from '../../app/services';
-import {DataSection} from '../data/DataSection';
-export function WorkspaceList() {
+export function ProjectList() {
   const workspaces = listRoute.useLoaderData();
   const [name, setName] = useState('');
   const [busy, setBusy] = useState(false);
   const navigate = useNavigate();
   return (
     <main>
-      <h1>Arbeitsbereiche</h1>
+      <h1>Projekte</h1>
       <form
         className="create-workspace"
         onSubmit={(e) => {
@@ -32,13 +31,13 @@ export function WorkspaceList() {
           void services.workspaces
             .create(name)
             .then((d) =>
-              navigate({to: '/workspaces/$workspaceId', params: {workspaceId: d.workspace.id}}),
+              navigate({to: '/projects/$workspaceId', params: {workspaceId: d.workspace.id}}),
             )
             .catch(report)
             .finally(() => setBusy(false));
         }}
       >
-        <FormField label={<>Name des neuen Arbeitsbereichs</>}>
+        <FormField label={<>Name des neuen Projekts</>}>
           <Input value={name} onChange={(e) => setName(e.target.value)} required maxLength={120} />
         </FormField>
         <Button
@@ -48,14 +47,14 @@ export function WorkspaceList() {
           busy={busy}
           disabled={busy || !services.workspaces.canCreate}
         >
-          Neuer Arbeitsbereich
+          Neues Projekt
         </Button>
       </form>
       <p className="dw-required-note">* Pflichtfeld</p>
       <ArchiveImport />
       {workspaces.length === 0 ? (
         <EmptyState>
-          Noch kein Arbeitsbereich. Lege ein Projekt an oder öffne eine Projektdatei.
+          Noch kein Projekt. Lege ein Projekt an oder öffne eine Projektdatei.
         </EmptyState>
       ) : (
         <table className="workspace-list">
@@ -71,7 +70,7 @@ export function WorkspaceList() {
             {workspaces.map((w) => (
               <tr key={w.id}>
                 <td>
-                  <Link to="/workspaces/$workspaceId" params={{workspaceId: w.id}}>
+                  <Link to="/projects/$workspaceId" params={{workspaceId: w.id}}>
                     {w.name}
                   </Link>
                 </td>
@@ -86,10 +85,12 @@ export function WorkspaceList() {
     </main>
   );
 }
-export function WorkspaceDetails() {
+export function ProjectOverview() {
   const {session, state} = useWorkspace();
   const doc = useStore(state.store, (s) => s.document);
   const [name, setName] = useState(doc.workspace.name);
+  const datasets = Object.values(doc.datasets).filter((dataset) => !dataset.removedAt);
+  const analyses = Object.values(doc.analyses).filter((analysis) => !analysis.archivedAt);
   const navigate = useNavigate();
   const create = (kind: 'sql' | 'r') => {
     try {
@@ -97,8 +98,8 @@ export function WorkspaceDetails() {
       void navigate({
         to:
           kind === 'sql'
-            ? '/workspaces/$workspaceId/sql/$analysisId'
-            : '/workspaces/$workspaceId/r/$analysisId',
+            ? '/projects/$workspaceId/sql/$analysisId'
+            : '/projects/$workspaceId/r/$analysisId',
         params: {workspaceId: doc.workspace.id, analysisId: id},
       }).catch(report);
     } catch (error) {
@@ -106,7 +107,7 @@ export function WorkspaceDetails() {
     }
   };
   return (
-    <div className="project-details">
+    <div className="project-details project-overview">
       <h1>{doc.workspace.name}</h1>
       <div className="form-fields">
         <FormField label={<>Projektname</>}>
@@ -152,9 +153,35 @@ export function WorkspaceDetails() {
           Speichern
         </Button>
       </ActionGroup>
-      <ArchiveActions session={session} />
-      <Diagnostics session={session} />
-      <DataSection />
+      <section aria-label="Datenübersicht">
+        <PanelHeader title="Daten">
+          <Link to="/projects/$workspaceId/data" params={{workspaceId: doc.workspace.id}}>
+            Daten verwalten
+          </Link>
+        </PanelHeader>
+        {datasets.length === 0 ? (
+          <EmptyState>
+            Noch keine Daten. Unter „Daten“ kannst du eine Datei oder eine Portalquelle hinzufügen.
+          </EmptyState>
+        ) : (
+          <ul className="project-data-summary">
+            {datasets.map((dataset) => {
+              const version = doc.datasetVersions[dataset.currentVersionId]!;
+              return (
+                <li key={dataset.id}>
+                  <strong>{dataset.name}</strong>
+                  <code>data.{dataset.sqlName}</code>
+                  <span>
+                    {version.rowCount === undefined
+                      ? 'Zeilenanzahl nicht ermittelt'
+                      : `${version.rowCount} Zeilen`}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
       <section>
         <PanelHeader title="Analysen">
           <ActionGroup>
@@ -166,52 +193,55 @@ export function WorkspaceDetails() {
             </Button>
           </ActionGroup>
         </PanelHeader>
+        {analyses.length === 0 && (
+          <EmptyState>Noch keine Analysen. Erstelle eine SQL-Abfrage oder ein R-Skript.</EmptyState>
+        )}
         <ul className="analysis-list">
-          {Object.values(doc.analyses)
-            .filter((a) => !a.archivedAt)
-            .map((a) => (
-              <li key={a.id}>
-                <Link
-                  to={
-                    a.kind === 'sql'
-                      ? '/workspaces/$workspaceId/sql/$analysisId'
-                      : '/workspaces/$workspaceId/r/$analysisId'
-                  }
-                  params={{workspaceId: doc.workspace.id, analysisId: a.id}}
+          {analyses.map((a) => (
+            <li key={a.id}>
+              <Link
+                to={
+                  a.kind === 'sql'
+                    ? '/projects/$workspaceId/sql/$analysisId'
+                    : '/projects/$workspaceId/r/$analysisId'
+                }
+                params={{workspaceId: doc.workspace.id, analysisId: a.id}}
+              >
+                {a.name}
+              </Link>
+              <StatusBadge>{a.kind.toUpperCase()}</StatusBadge>
+              <ActionGroup>
+                <Button
+                  disabled={session.readOnly}
+                  onClick={() => {
+                    try {
+                      session.duplicateAnalysis(a.id);
+                    } catch (e) {
+                      report(e);
+                    }
+                  }}
                 >
-                  {a.name}
-                </Link>
-                <StatusBadge>{a.kind.toUpperCase()}</StatusBadge>
-                <ActionGroup>
-                  <Button
-                    disabled={session.readOnly}
-                    onClick={() => {
-                      try {
-                        session.duplicateAnalysis(a.id);
-                      } catch (e) {
-                        report(e);
-                      }
-                    }}
-                  >
-                    Duplizieren
-                  </Button>
-                  <Button
-                    disabled={session.readOnly}
-                    onClick={() => {
-                      try {
-                        session.archiveAnalysis(a.id);
-                      } catch (e) {
-                        report(e);
-                      }
-                    }}
-                  >
-                    Archivieren
-                  </Button>
-                </ActionGroup>
-              </li>
-            ))}
+                  Duplizieren
+                </Button>
+                <Button
+                  disabled={session.readOnly}
+                  onClick={() => {
+                    try {
+                      session.archiveAnalysis(a.id);
+                    } catch (e) {
+                      report(e);
+                    }
+                  }}
+                >
+                  Archivieren
+                </Button>
+              </ActionGroup>
+            </li>
+          ))}
         </ul>
       </section>
+      <ArchiveActions session={session} />
+      <Diagnostics session={session} />
     </div>
   );
 }

@@ -1,0 +1,336 @@
+{
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "namespace": "datenwerkstatt-test-qa-4b1bbeca-b2dc-4589-a1fd-5dbcd2656407",
+  "consoleErrors": [],
+  "pageErrors": [],
+  "screenshots": [
+    "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/docs/verification/projects/chromium-sql-details-visible.png",
+    "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/docs/verification/projects/chromium-r-details-visible.png"
+  ],
+  "geometry": {
+    "sqlClosed": {
+      "editor": {
+        "x": 52,
+        "y": 165,
+        "width": 1388,
+        "height": 327.59375,
+        "bottom": 492.59375,
+        "scrollHeight": 328,
+        "clientHeight": 328,
+        "scrollTop": 0
+      },
+      "output": {
+        "x": 52,
+        "y": 499.59375,
+        "width": 1388,
+        "height": 400.40625,
+        "bottom": 900,
+        "scrollHeight": 400,
+        "clientHeight": 400,
+        "scrollTop": 0
+      },
+      "details": {
+        "x": 52,
+        "y": 863,
+        "width": 1388,
+        "height": 37,
+        "bottom": 900,
+        "scrollHeight": 37,
+        "clientHeight": 37,
+        "scrollTop": 0
+      },
+      "body": {
+        "x": 64,
+        "y": 892,
+        "width": 1364,
+        "height": 912,
+        "bottom": 1804,
+        "scrollHeight": 912,
+        "clientHeight": 912,
+        "scrollTop": 0
+      },
+      "status": null,
+      "page": {
+        "height": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900
+      }
+    },
+    "sqlOpen": {
+      "editor": {
+        "x": 52,
+        "y": 165,
+        "width": 1388,
+        "height": 327.59375,
+        "bottom": 492.59375,
+        "scrollHeight": 328,
+        "clientHeight": 328,
+        "scrollTop": 0
+      },
+      "output": {
+        "x": 52,
+        "y": 499.59375,
+        "width": 1388,
+        "height": 400.40625,
+        "bottom": 900,
+        "scrollHeight": 1262,
+        "clientHeight": 400,
+        "scrollTop": 342
+      },
+      "details": {
+        "x": 52,
+        "y": 470.59375,
+        "width": 1388,
+        "height": 949,
+        "bottom": 1419.59375,
+        "scrollHeight": 949,
+        "clientHeight": 949,
+        "scrollTop": 0
+      },
+      "body": {
+        "x": 64,
+        "y": 499.59375,
+        "width": 1364,
+        "height": 912,
+        "bottom": 1411.59375,
+        "scrollHeight": 912,
+        "clientHeight": 912,
+        "scrollTop": 0
+      },
+      "status": null,
+      "page": {
+        "height": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900
+      }
+    },
+    "sqlEnd": {
+      "editor": {
+        "x": 52,
+        "y": 165,
+        "width": 1388,
+        "height": 327.59375,
+        "bottom": 492.59375,
+        "scrollHeight": 328,
+        "clientHeight": 328,
+        "scrollTop": 0
+      },
+      "output": {
+        "x": 52,
+        "y": 499.59375,
+        "width": 1388,
+        "height": 400.40625,
+        "bottom": 900,
+        "scrollHeight": 1262,
+        "clientHeight": 400,
+        "scrollTop": 862
+      },
+      "details": {
+        "x": 52,
+        "y": -49.40625,
+        "width": 1388,
+        "height": 949,
+        "bottom": 899.59375,
+        "scrollHeight": 949,
+        "clientHeight": 949,
+        "scrollTop": 0
+      },
+      "body": {
+        "x": 64,
+        "y": -20.40625,
+        "width": 1364,
+        "height": 912,
+        "bottom": 891.59375,
+        "scrollHeight": 912,
+        "clientHeight": 912,
+        "scrollTop": 0
+      },
+      "status": null,
+      "page": {
+        "height": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900
+      }
+    },
+    "rClosed": {
+      "editor": {
+        "x": 242,
+        "y": 172,
+        "width": 595.5,
+        "height": 540.75,
+        "bottom": 712.75,
+        "scrollHeight": 541,
+        "clientHeight": 541,
+        "scrollTop": 0
+      },
+      "output": {
+        "x": 844.5,
+        "y": 172,
+        "width": 595.5,
+        "height": 540.75,
+        "bottom": 712.75,
+        "scrollHeight": 541,
+        "clientHeight": 541,
+        "scrollTop": 0
+      },
+      "details": {
+        "x": 568.828125,
+        "y": 143,
+        "width": 212.765625,
+        "height": 18,
+        "bottom": 161,
+        "scrollHeight": 18,
+        "clientHeight": 18,
+        "scrollTop": 0
+      },
+      "body": {
+        "x": 568.828125,
+        "y": 161,
+        "width": 212.765625,
+        "height": 1144,
+        "bottom": 1305,
+        "scrollHeight": 1144,
+        "clientHeight": 1144,
+        "scrollTop": 0
+      },
+      "status": {
+        "x": 52,
+        "y": 132,
+        "width": 1388,
+        "height": 40,
+        "bottom": 172,
+        "scrollHeight": 40,
+        "clientHeight": 40,
+        "scrollTop": 0
+      },
+      "page": {
+        "height": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900
+      }
+    },
+    "rOpen": {
+      "editor": {
+        "x": 242,
+        "y": 424,
+        "width": 595.5,
+        "height": 351.75,
+        "bottom": 775.75,
+        "scrollHeight": 352,
+        "clientHeight": 352,
+        "scrollTop": 0
+      },
+      "output": {
+        "x": 844.5,
+        "y": 424,
+        "width": 595.5,
+        "height": 351.75,
+        "bottom": 775.75,
+        "scrollHeight": 352,
+        "clientHeight": 352,
+        "scrollTop": 0
+      },
+      "details": {
+        "x": 64,
+        "y": 180,
+        "width": 1364,
+        "height": 240,
+        "bottom": 420,
+        "scrollHeight": 748,
+        "clientHeight": 240,
+        "scrollTop": 0
+      },
+      "body": {
+        "x": 64,
+        "y": 198,
+        "width": 1364,
+        "height": 730,
+        "bottom": 928,
+        "scrollHeight": 730,
+        "clientHeight": 730,
+        "scrollTop": 0
+      },
+      "status": {
+        "x": 52,
+        "y": 132,
+        "width": 1388,
+        "height": 292,
+        "bottom": 424,
+        "scrollHeight": 292,
+        "clientHeight": 292,
+        "scrollTop": 0
+      },
+      "page": {
+        "height": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900
+      }
+    },
+    "rEnd": {
+      "editor": {
+        "x": 242,
+        "y": 424,
+        "width": 595.5,
+        "height": 351.75,
+        "bottom": 775.75,
+        "scrollHeight": 352,
+        "clientHeight": 352,
+        "scrollTop": 0
+      },
+      "output": {
+        "x": 844.5,
+        "y": 424,
+        "width": 595.5,
+        "height": 351.75,
+        "bottom": 775.75,
+        "scrollHeight": 352,
+        "clientHeight": 352,
+        "scrollTop": 0
+      },
+      "details": {
+        "x": 64,
+        "y": 180,
+        "width": 1364,
+        "height": 240,
+        "bottom": 420,
+        "scrollHeight": 748,
+        "clientHeight": 240,
+        "scrollTop": 508
+      },
+      "body": {
+        "x": 64,
+        "y": -310,
+        "width": 1364,
+        "height": 730,
+        "bottom": 420,
+        "scrollHeight": 730,
+        "clientHeight": 730,
+        "scrollTop": 0
+      },
+      "status": {
+        "x": 52,
+        "y": 132,
+        "width": 1388,
+        "height": 292,
+        "bottom": 424,
+        "scrollHeight": 292,
+        "clientHeight": 292,
+        "scrollTop": 0
+      },
+      "page": {
+        "height": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900
+      }
+    }
+  },
+  "sqlEndVisible": true,
+  "rEndVisible": true,
+  "readable": {
+    "sql": true,
+    "r": true
+  }
+}

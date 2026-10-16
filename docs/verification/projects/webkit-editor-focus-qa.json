@@ -1,0 +1,162 @@
+{
+  "browser": "webkit",
+  "namespace": "datenwerkstatt-test-focus-0087553b-327f-4189-9c33-3115a69bfbe8",
+  "errors": [],
+  "scenarios": [
+    {
+      "kind": "unmodified-delayed-mount",
+      "request": {
+        "url": "http://127.0.0.1:4173/src/ui/CodeEditorImpl.tsx"
+      },
+      "before": {
+        "active": {
+          "tag": "BUTTON",
+          "role": "menuitem",
+          "label": null,
+          "text": "Arbeitsfläche zurücksetzen"
+        },
+        "menuCount": 1,
+        "menuExpanded": "true",
+        "editorCount": 0,
+        "focusEvents": [
+          {
+            "event": "focusin",
+            "at": 257,
+            "tag": "INPUT",
+            "role": null,
+            "label": null,
+            "text": ""
+          },
+          {
+            "event": "focusout",
+            "at": 299,
+            "tag": "INPUT",
+            "role": null,
+            "label": null,
+            "text": ""
+          },
+          {
+            "event": "focusin",
+            "at": 449,
+            "tag": "BUTTON",
+            "role": "menuitem",
+            "label": null,
+            "text": "Arbeitsfläche zurücksetzen"
+          }
+        ]
+      },
+      "after": {
+        "active": {
+          "tag": "TEXTAREA",
+          "role": "textbox",
+          "label": "Analysecode",
+          "text": ""
+        },
+        "menuCount": 0,
+        "menuExpanded": "false",
+        "editorCount": 1,
+        "focusEvents": [
+          {
+            "event": "focusin",
+            "at": 257,
+            "tag": "INPUT",
+            "role": null,
+            "label": null,
+            "text": ""
+          },
+          {
+            "event": "focusout",
+            "at": 299,
+            "tag": "INPUT",
+            "role": null,
+            "label": null,
+            "text": ""
+          },
+          {
+            "event": "focusin",
+            "at": 449,
+            "tag": "BUTTON",
+            "role": "menuitem",
+            "label": null,
+            "text": "Arbeitsfläche zurücksetzen"
+          },
+          {
+            "event": "focusout",
+            "at": 846,
+            "tag": "BUTTON",
+            "role": "menuitem",
+            "label": null,
+            "text": "Arbeitsfläche zurücksetzen",
+            "related": "TEXTAREA"
+          },
+          {
+            "event": "focusin",
+            "at": 846,
+            "tag": "TEXTAREA",
+            "role": "textbox",
+            "label": "Analysecode",
+            "text": "",
+            "related": "BUTTON"
+          },
+          {
+            "event": "focusin",
+            "at": 854,
+            "tag": "TEXTAREA",
+            "role": "textbox",
+            "label": "Analysecode",
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "kind": "temporary-response-only-guard",
+      "request": {
+        "url": "http://127.0.0.1:4173/src/ui/CodeEditorImpl.tsx"
+      },
+      "before": {
+        "active": {
+          "tag": "BUTTON",
+          "role": "menuitem",
+          "label": null,
+          "text": "Arbeitsfläche zurücksetzen"
+        },
+        "menuCount": 1,
+        "menuExpanded": "true",
+        "editorCount": 0,
+        "focusEvents": [
+          {
+            "event": "focusin",
+            "at": 219,
+            "tag": "BUTTON",
+            "role": "menuitem",
+            "label": null,
+            "text": "Arbeitsfläche zurücksetzen"
+          }
+        ]
+      },
+      "after": {
+        "active": {
+          "tag": "BUTTON",
+          "role": "menuitem",
+          "label": null,
+          "text": "Arbeitsfläche zurücksetzen"
+        },
+        "menuCount": 1,
+        "menuExpanded": "true",
+        "editorCount": 1,
+        "focusEvents": [
+          {
+            "event": "focusin",
+            "at": 219,
+            "tag": "BUTTON",
+            "role": "menuitem",
+            "label": null,
+            "text": "Arbeitsfläche zurücksetzen"
+          }
+        ]
+      },
+      "resetSplitterValue": "45"
+    }
+  ]
+}

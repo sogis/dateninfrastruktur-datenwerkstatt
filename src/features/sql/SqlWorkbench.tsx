@@ -8,7 +8,6 @@ import {useEffect, useRef, useState, useSyncExternalStore} from 'react';
 import {Panel, PanelGroup, PanelResizeHandle} from 'react-resizable-panels';
 import type {
   Analysis,
-  ExecutionRun,
   ParameterValue,
   SqlAnalysis,
   TableResult,
@@ -25,6 +24,7 @@ import {useStore} from 'zustand';
 import {usePanelHeight} from '../../ui/PanelLayout';
 import type {ImperativePanelGroupHandle} from 'react-resizable-panels';
 import {Chart} from './chart';
+import {RunDetails, runStatusText, runTimeText} from '../results/RunDetails';
 
 export function SqlWorkbench({
   session,
@@ -198,14 +198,15 @@ export function SqlWorkbench({
                     <option value="latest">Letzter Lauf</option>
                     {runs.map((r) => (
                       <option key={r.id} value={r.id}>
-                        {r.queuedAt} · Revision {r.snapshot.analysisRevision} · {statusText(r)}
+                        {runTimeText(r.queuedAt)} · Revision {r.snapshot.analysisRevision} ·{' '}
+                        {runStatusText(r)}
                       </option>
                     ))}
                   </Select>
                 </FormField>
                 {run && (
                   <span>
-                    {statusText(run)} · Revision {run.snapshot.analysisRevision} ·{' '}
+                    {runStatusText(run)} · Revision {run.snapshot.analysisRevision} ·{' '}
                     {run.durationMs ?? '–'} ms
                   </span>
                 )}
@@ -227,20 +228,16 @@ export function SqlWorkbench({
                 <TableView key={result.id} result={result} session={session} />
               )}
               {run && (
-                <details className="run-details">
-                  <summary>Laufdetails und eingefrorener Code</summary>
-                  <p>
-                    Lauf {run.id} · {run.snapshot.runtime.engineVersion} · UTC
-                  </p>
-                  <p>{run.snapshot.notes.join(' ')}</p>
-                  <pre>{run.snapshot.code}</pre>
-                  <pre>{JSON.stringify(run.snapshot.parameters, null, 2)}</pre>
-                  <pre>{JSON.stringify(run.snapshot.resolvedInputs, null, 2)}</pre>
-                  <details>
-                    <summary>Intern ausgeführter Wrapper</summary>
-                    <pre>{run.executedCode}</pre>
-                  </details>
-                </details>
+                <RunDetails
+                  run={run}
+                  workspaceDocument={session.document}
+                  availability={{
+                    mode: session.mode,
+                    missingArtifacts: session.integrity?.missing,
+                    integrity: session.integrity,
+                    hashesChecked: session.hashesChecked,
+                  }}
+                />
               )}
             </section>
           </Panel>
@@ -248,17 +245,6 @@ export function SqlWorkbench({
       </div>
     </div>
   );
-}
-function statusText(r: ExecutionRun) {
-  return {
-    queued: 'Wartet',
-    running: 'Läuft',
-    cancelling: 'Wird beendet',
-    succeeded: 'Erfolgreich',
-    failed: 'Fehlgeschlagen',
-    cancelled: 'Abgebrochen',
-    interrupted: 'Unterbrochen',
-  }[r.status];
 }
 type ParameterType =
   | 'string'
@@ -460,6 +446,9 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
   return (
     <>
       <Toolbar className="result-toolbar">
+        <span className="result-name">
+          Ergebnis: <strong>{result.name}</strong>
+        </span>
         <strong>
           {result.rowCount} Zeilen ·{' '}
           {result.coverage.kind === 'limited' ? 'begrenzt' : 'vollständig'} ·{' '}
@@ -662,6 +651,9 @@ function ChartControls({result, session}: {result: TableResult; session: Editing
   return (
     <div className="chart-area">
       <Toolbar className="result-toolbar">
+        <span className="chart-source">
+          Tabellenergebnis: <strong>{result.name}</strong> · {runTimeText(result.createdAt)}
+        </span>
         <FormField label={<>Diagrammtyp</>}>
           <Select
             value={spec.type}

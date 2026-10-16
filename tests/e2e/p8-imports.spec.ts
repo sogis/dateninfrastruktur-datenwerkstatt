@@ -27,9 +27,10 @@ test('P8 AT-019 AT-020: XLSX invalidates old preview, real over-limit file and v
     Object.entries(xml).map(([name, data]) => ({name, data: new TextEncoder().encode(data)})),
   );
   try {
-    await page.goto('/workspaces');
-    await page.getByLabel('Name des neuen Arbeitsbereichs').fill('Importgrenzen');
-    await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+    await page.goto('/projects');
+    await page.getByLabel('Name des neuen Projekts').fill('Importgrenzen');
+    await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
+    await page.getByRole('link', {name: 'Daten', exact: true}).click();
     await page.getByRole('button', {name: 'Datei hinzufügen', exact: true}).click();
     const input = page.getByLabel('Datei (CSV oder Parquet, maximal 128 MiB)');
     const csv = {name: 'daten.csv', mimeType: 'text/csv', buffer: Buffer.from('wert\n1\n')};

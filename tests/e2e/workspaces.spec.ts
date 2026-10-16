@@ -1,9 +1,9 @@
 import {expect, test} from '../persistentBrowser';
 import type {Page} from '@playwright/test';
 async function create(page: Page, name = 'Beispielanalyse') {
-  await page.goto('/workspaces');
-  await page.getByLabel('Name des neuen Arbeitsbereichs').fill(name);
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await page.goto('/projects');
+  await page.getByLabel('Name des neuen Projekts').fill(name);
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await expect(page.getByRole('heading', {name, exact: true})).toBeVisible();
 }
 test('AT-003: workspace metadata persists across reload without engine startup', async ({page}) => {
@@ -31,6 +31,7 @@ test('AT-005 AT-058: saved SQL and R, separate models, duplicate, archive, no co
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await create(page);
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await page.getByLabel('Analysename', {exact: true}).fill('Kennzahlen');
   await page.getByRole('button', {name: 'Speichern', exact: true}).click();
@@ -43,14 +44,14 @@ test('AT-005 AT-058: saved SQL and R, separate models, duplicate, archive, no co
   await expect(page.locator('.view-lines')).toHaveText(/^SELECT\s+42\s+AS\s+wert;$/);
   await code.press('ControlOrMeta+s');
   await expect(page.getByText('Lokal gespeichert · kein Backup', {exact: true})).toBeVisible();
-  await page.getByRole('link', {name: 'Projektübersicht', exact: true}).click();
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neues R-Skript', exact: true}).click();
   await page.locator('.monaco-editor').click();
   await page.getByRole('textbox', {name: 'Analysecode'}).press('ControlOrMeta+a');
   await expect(page.locator('.selected-text').first()).toBeVisible();
   await page.keyboard.insertText('stop("Dieser Code darf beim Öffnen nicht laufen")');
   await page.getByRole('textbox', {name: 'Analysecode'}).press('ControlOrMeta+s');
-  await page.getByRole('link', {name: 'Projektübersicht', exact: true}).click();
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('link', {name: 'Kennzahlen', exact: true}).click();
   await expect(page.locator('.monaco-editor')).toContainText('SELECT');
   await expect(page.locator('.monaco-editor')).toContainText('42');
@@ -77,7 +78,7 @@ test('AT-005 AT-058: saved SQL and R, separate models, duplicate, archive, no co
   await page.reload();
   await expect(page.locator('.monaco-editor')).toContainText('42');
   expect(page.url()).toBe(sqlUrl);
-  await page.getByRole('link', {name: 'Projektübersicht', exact: true}).click();
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   const item = page
     .locator('li')
     .filter({has: page.getByRole('link', {name: 'Kennzahlen', exact: true})});
@@ -111,6 +112,7 @@ test('AT-054 AT-057 partial: compact chrome and implemented settings persist', a
 }, info) => {
   await page.setViewportSize({width: 1440, height: 900});
   await create(page);
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await expect(page.locator('.code-editor')).toBeVisible();
   await expect(page.locator('.view-lines')).toContainText('SELECT');
@@ -144,7 +146,7 @@ test('AT-058 / REQ-060: invalid workspace/analysis route is controlled', async (
   const url = page.url();
   await page.goto(`${url}/sql/00000000-0000-4000-8000-000000000001`);
   await expect(page.getByRole('heading', {name: 'Analyse nicht gefunden'})).toBeVisible();
-  await page.goto('/workspaces/not-a-uuid');
+  await page.goto('/projects/not-a-uuid');
   await expect(
     page.getByRole('heading', {name: 'Projekt konnte nicht geöffnet werden'}),
   ).toBeVisible();

@@ -1,0 +1,15 @@
+{
+  "baseRevision": "f460278a351aedafe667990e6dbfd164105a1301",
+  "candidateSha256": "45dae17f976e1d77d4df5a42398463bc5fd11ef70997d16e3a816659c0b0b96a",
+  "fileCount": 169,
+  "checks": {
+    "baseRevisionUnchanged": true,
+    "fileSetAndHashesUnchangedSinceFinalTestsStarted": true,
+    "fingerprintMatches": true,
+    "contractsFixturesInfrastructureDependenciesUnchanged": true,
+    "historicalVerificationFilesUnchanged": true,
+    "historicalImplementationStatusPrefixUnchanged": true
+  },
+  "unexpectedProtectedDiff": [],
+  "historicalEvidenceDiff": []
+}

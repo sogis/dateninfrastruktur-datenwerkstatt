@@ -132,12 +132,12 @@ export function PortalImport({
                       throw Error(
                         'SOURCE_CHANGED: Quelle seit Vorschau geändert. Vorschau erneut laden.',
                       );
-                    const created = await services.workspaces.create('Portal-Arbeitsbereich');
+                    const created = await services.workspaces.create('Portal-Projekt');
                     chosen = await services.workspaces.open(created.workspace.id);
                     setTarget(created.workspace.id);
                     setActive(chosen);
                   }
-                  if (!chosen) throw Error('Zielarbeitsbereich fehlt.');
+                  if (!chosen) throw Error('Zielprojekt fehlt.');
                   let key = stage.current?.session === chosen ? stage.current.key : undefined;
                   if (!key) {
                     const p = await chosen
@@ -159,7 +159,7 @@ export function PortalImport({
                     );
                   stage.current = undefined;
                   await navigate({
-                    to: '/workspaces/$workspaceId/data',
+                    to: '/projects/$workspaceId/data',
                     params: {workspaceId: chosen.document.workspace.id},
                     replace: true,
                   });
@@ -259,7 +259,7 @@ export function PortalImport({
               </FormField>
               <p>{tables.find((t) => t.tableId === selected)?.license ?? 'Keine Lizenzangabe'}</p>
               {!session && (
-                <FormField label={<>Zielarbeitsbereich</>}>
+                <FormField label={<>Zielprojekt</>}>
                   <Select
                     disabled={busy}
                     value={target}
@@ -268,7 +268,7 @@ export function PortalImport({
                       setPreview(undefined);
                     }}
                   >
-                    <option value="new">Neuer Arbeitsbereich</option>
+                    <option value="new">Neues Projekt</option>
                     {workspaces.map((w) => (
                       <option key={w.id} value={w.id}>
                         {w.name}
@@ -339,7 +339,7 @@ export function PortalOpen() {
         <PortalImport
           initial={initial}
           onClose={(completed) => {
-            if (!completed) void navigate({to: '/workspaces', replace: true});
+            if (!completed) void navigate({to: '/projects', replace: true});
           }}
         />
       </main>

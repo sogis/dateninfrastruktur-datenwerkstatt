@@ -17,6 +17,7 @@ import {PreviewTable} from '../data/DataSection';
 import {useWorkspace} from '../../app/router';
 import {useStore} from 'zustand';
 import type {ImperativePanelGroupHandle} from 'react-resizable-panels';
+import {RunDetails, runStatusText, runTimeText} from '../results/RunDetails';
 export function RWorkbench({
   session,
   analysis,
@@ -164,7 +165,7 @@ export function RWorkbench({
                   })
                 }
               >
-                <option value="workspace-session">Workspace-Sitzung</option>
+                <option value="workspace-session">Projektsitzung</option>
                 <option value="fresh-environment">Frisches Environment</option>
               </Select>
             </FormField>
@@ -205,24 +206,28 @@ export function RWorkbench({
             <option value="latest">Letzter Lauf</option>
             {runs.map((r) => (
               <option key={r.id} value={r.id}>
-                {r.queuedAt} · {r.status}
+                {runTimeText(r.queuedAt)} · {runStatusText(r)}
               </option>
             ))}
           </Select>
         </FormField>
-        <span>
-          {busy ?? run?.status ?? 'Bereit'} · R-Epoche {service.epoch}
-        </span>
+        <span>{busy ?? (run ? runStatusText(run) : 'Bereit')}</span>
         {!service.scope && !busy && !session.readOnly && (
           <Button onClick={() => void service.activate(analysis.id).catch(report)}>
             R initialisieren
           </Button>
         )}
         {run && (
-          <details>
-            <summary>Laufdetails</summary>
-            <pre>{JSON.stringify(run.snapshot, null, 2)}</pre>
-          </details>
+          <RunDetails
+            run={run}
+            workspaceDocument={session.document}
+            availability={{
+              mode: session.mode,
+              missingArtifacts: session.integrity?.missing,
+              integrity: session.integrity,
+              hashesChecked: session.hashesChecked,
+            }}
+          />
         )}
       </div>
       {run?.error && (
@@ -253,8 +258,18 @@ export function RWorkbench({
           <div className="r-upper">
             {objectsOpen && (
               <aside className="r-objects">
-                <h3>Objekte</h3>
-                <small>Scope {service.scope?.key ?? 'nicht aktiv'}</small>
+                <h3>R-Sitzungsobjekte</h3>
+                <p>
+                  Objekte des angezeigten R-Sitzungsscopes. Eine Übernahme sichert ihren aktuellen
+                  Stand als Ergebnis und Datensatz.
+                </p>
+                <details>
+                  <summary>Technischer Sitzungsscope</summary>
+                  <p>
+                    Scope <code>{service.scope?.key ?? 'nicht aktiv'}</code> · R-Epoche{' '}
+                    {service.epoch}
+                  </p>
+                </details>
                 <ActionGroup>
                   {service.objectList.map((o) => (
                     <Button
@@ -336,8 +351,9 @@ export function RWorkbench({
                       plots.map((plot) => <Plot key={plot.id} session={session} result={plot} />)
                     ) : (
                       <p>
-                        Grafiken erscheinen nach einem erfolgreichen Lauf. Dataframes sind über die
-                        Objektliste erreichbar.
+                        Grafikergebnisse dieses Laufes erscheinen nach einer erfolgreichen
+                        Ausführung. Dataframes der R-Sitzung sind über die R-Sitzungsobjekte
+                        erreichbar.
                       </p>
                     )}
                   </div>

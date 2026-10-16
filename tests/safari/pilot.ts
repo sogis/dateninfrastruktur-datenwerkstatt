@@ -2,7 +2,7 @@ import {parseWorkspace, checkedId} from '../../src/domain/workspace';
 import type {WorkspaceDocument} from '../../src/domain/model';
 import {PortalAccess} from '../../src/infrastructure/catalog/portal';
 import {DuckDbFileImportEngine} from '../../src/infrastructure/sqlrooms/fileImportEngine';
-import {initializeServices, services} from '../../src/app/services';
+import {initializeServices, services} from '../spike/appServices';
 
 type Check = {name: string; at: string; evidence: unknown};
 type Report = {
@@ -307,11 +307,11 @@ async function start() {
   );
   link(
     'Gesichertes Rück-SQL in der Anwendung öffnen',
-    `/workspaces/${original.workspace.id}/sql/${returned}`,
+    `/projects/${original.workspace.id}/sql/${returned}`,
   );
   link(
     'Gesicherten R-Plot in der Anwendung öffnen',
-    `/workspaces/${original.workspace.id}/r/${plotAnalysis}`,
+    `/projects/${original.workspace.id}/r/${plotAnalysis}`,
   );
 }
 async function resume() {
@@ -418,7 +418,7 @@ async function resume() {
   });
   link(
     'Importiertes Rück-SQL in der Anwendung öffnen',
-    `/workspaces/${imported.workspace.id}/sql/${returnAnalysis.id}`,
+    `/projects/${imported.workspace.id}/sql/${returnAnalysis.id}`,
   );
 }
 async function run(work: () => Promise<void>) {

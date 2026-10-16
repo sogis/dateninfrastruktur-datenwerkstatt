@@ -176,7 +176,7 @@ test('P2 / AT-014 AT-017: reload finds true orphans, writer cleanup preserves re
   });
   await page.close();
   const reopened = await context.newPage();
-  await reopened.goto(`/workspaces/${setup.workspaceId}`);
+  await reopened.goto(`/projects/${setup.workspaceId}/data`);
   await expect(reopened.getByText('1 nicht referenzierte Dateien.', {exact: false})).toBeVisible();
   await reopened.getByRole('button', {name: 'Verwaiste Dateien bereinigen'}).click();
   await expect(reopened.getByText('1 verwaiste Dateien entfernt.', {exact: true})).toBeVisible();
@@ -187,6 +187,10 @@ test('P2 / AT-014 AT-017: reload finds true orphans, writer cleanup preserves re
     return text;
   });
   expect(proof).toBe('keep');
+  await reopened
+    .locator('.project-context')
+    .getByRole('link', {name: 'Crash-Probe', exact: true})
+    .click();
   await expect(reopened.getByRole('heading', {name: 'Crash-Probe', exact: true})).toBeVisible();
 });
 
@@ -229,9 +233,10 @@ test('P2 / AT-010: imported file survives browser process restart and removal of
       }
     }, csvText);
     await writeFile(source, new Uint8Array(parquet));
-    await page.goto('http://127.0.0.1:4173/workspaces');
-    await page.getByLabel('Name des neuen Arbeitsbereichs').fill('Neustart');
-    await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+    await page.goto('http://127.0.0.1:4173/projects');
+    await page.getByLabel('Name des neuen Projekts').fill('Neustart');
+    await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
+    await page.getByRole('link', {name: 'Daten', exact: true}).click();
     await page.getByRole('button', {name: 'Datei hinzufügen', exact: true}).click();
     await page.getByLabel('Datei (CSV oder Parquet, maximal 128 MiB)').setInputFiles(source);
     await page.getByRole('button', {name: 'Vorschau laden', exact: true}).click();

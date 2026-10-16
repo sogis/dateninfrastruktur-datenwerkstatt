@@ -19,7 +19,7 @@ Unterpfad und Kommunikationsprofil sind Buildentscheidungen:
 docker build -f deploy/Dockerfile --build-arg APP_BASE_PATH=/lab/ --build-arg WEBR_CHANNEL=post-message --build-arg BUILD_ID=pilot-lab -t datenwerkstatt:lab .
 ```
 
-`APP_BASE_PATH` muss in Vite, Runtime-JSON und Serverconfig übereinstimmen. Deep Links/Reload benutzen dieselbe Origin und denselben Pfad. `/workspaces`, `/sql`, `/r`, `/data`, `/settings` und `/open` sind begrenzte History-Routen. Unbekannte Assetpfade liefern echte 404, niemals HTML. JS/WASM erhalten richtige MIME-Typen; `.gz`/`.tgz` sind Dateiformate und werden ohne Content-Encoding ausgeliefert. Versionierte vendor-/gehashte assets-Dateien sind immutable, HTML/Runtime-JSON müssen revalidieren. Bei Assetänderungen Version/Pfad ändern.
+`APP_BASE_PATH` muss in Vite, Runtime-JSON und Serverconfig übereinstimmen. Deep Links/Reload benutzen dieselbe Origin und denselben Pfad. `/projects`, `/projects/:id`, `/projects/:id/data`, `/projects/:id/sql/:analysisId`, `/projects/:id/r/:analysisId`, `/settings` und `/open` sind begrenzte History-Routen. Alte `/workspaces`-URLs liefern 404; es gibt keine Weiterleitungen. Unbekannte Assetpfade liefern echte 404, niemals HTML. JS/WASM erhalten richtige MIME-Typen; `.gz`/`.tgz` sind Dateiformate und werden ohne Content-Encoding ausgeliefert. Versionierte vendor-/gehashte assets-Dateien sind immutable, HTML/Runtime-JSON müssen revalidieren. Bei Assetänderungen Version/Pfad ändern.
 
 ## Betreiberkonfiguration
 
@@ -37,7 +37,7 @@ Die Dokument-CSP erlaubt lokale Skripte, `wasm-unsafe-eval`, blob-Worker, lokale
 
 Asset-404/MIMEfehler werden konkret angezeigt. Init-Timeout beendet die Runtime, Retry startet eine neue. Ein defektes WASM darf keinen Dauerladezustand hinterlassen. Bei Quota-/Schreibfehlern bleibt der bisherige Stand erhalten; Speicherplatz prüfen, benötigte Projekte mit Daten exportieren und nur ausgewählte Projekte oder sicher erkannte verwaiste Dateien entfernen. Die Anwendung löscht nie global alle Browserdaten.
 
-Projektübersicht bietet expliziten Diagnoseexport: IDs, Zähler, Runtimeversionen und begrenzte lokale Phasenmessungen. Code ist standardmässig ausgeschlossen und nur nach Checkbox enthalten. Keine automatischen Tabellen-/Parameter-/Dateiwerte, keine Telemetrie. Die Speicherschätzung ist ein Browserwert und keine RAM-Garantie. Limits aus Runtime-JSON sind Sicherheits-/Pilotbudgets, keine zugesicherte Kapazität.
+Übersicht bietet expliziten Diagnoseexport: IDs, Zähler, Runtimeversionen und begrenzte lokale Phasenmessungen. Code ist standardmässig ausgeschlossen und nur nach Checkbox enthalten. Keine automatischen Tabellen-/Parameter-/Dateiwerte, keine Telemetrie. Die Speicherschätzung ist ein Browserwert und keine RAM-Garantie. Limits aus Runtime-JSON sind Sicherheits-/Pilotbudgets, keine zugesicherte Kapazität.
 
 `npm run verify` prüft Types/Lint/Units/Build/Chromium. `npx playwright test` prüft drei Browser; `npm run test:deployment` prüft Root, /lab/ und auto in echten nichtprivilegierten Containern. Beide Browserbefehle benötigen exklusiv ihre Ports 4173/4174 bzw. 4174/4180–4182. Die CI führt diese seriell aus. Playwright-WebKit ist kein tatsächlicher Safari-Pilot. Abnahmematrix und letzte Exitcodes sind in IMPLEMENTATION_STATUS.md und ACCEPTANCE_STATUS.md verlinkt.
 
@@ -45,10 +45,9 @@ Projektübersicht bietet expliziten Diagnoseexport: IDs, Zähler, Runtimeversion
 
 `npm run build` erzeugt `dist/licenses/`: npm-Inventar mit verfügbaren Lizenztexten, Bundleinventar, alle 40 kuratierten R-Paket-DESCRIPTION-/Lizenzdateien samt Hashes sowie Hinweise auf native Runtimeassets. Originalbranding und MIT-Quellportalhinweise bleiben erhalten; keine kantonalen Fonts werden ausgeliefert. Bei externer Distribution GPL-/sonstige Quellbereitstellung anhand des Inventars prüfen und die exakten entsprechenden Quellen beilegen/verfügbar machen. Ein automatischer Inventarlauf ersetzt keine externe Releasefreigabe.
 
-Im isolierten auto-Profil startet R technisch mit `interactive:true`, damit webR 0.6.0 nach einem SAB-Interrupt weitere Anfragen verarbeitet (ADR-008, direkter Vergleich mit anschliessendem 6*7-Nachweis). Das bietet keine interaktive REPL-/Eingabeoberfläche; ein auf Eingabe wartendes Skript kann weiterhin per Timeout/Reset beendet werden. PostMessage bleibt `interactive:false`. Skripte, die `interactive()` auswerten, können die beiden Profile unterscheiden.
+Im isolierten auto-Profil startet R technisch mit `interactive:true`, damit webR 0.6.0 nach einem SAB-Interrupt weitere Anfragen verarbeitet (ADR-008, direkter Vergleich mit anschliessendem 6\*7-Nachweis). Das bietet keine interaktive REPL-/Eingabeoberfläche; ein auf Eingabe wartendes Skript kann weiterhin per Timeout/Reset beendet werden. PostMessage bleibt `interactive:false`. Skripte, die `interactive()` auswerten, können die beiden Profile unterscheiden.
 
 Die 20 Ressourcenzyklen einschliesslich 10k/100k gehören zu `npm run test:resources` (`tests/benchmarks/`). Die CI führt sie zusätzlich zu Verify aus. Das trennt die länger laufende Messreihe von den funktionalen Integrationstests, ohne sie zu deaktivieren. `npx playwright test` enthält weiterhin auch diese Messreihe.
-
 
 ## Verifizierter Kandidat und Wiederholung
 

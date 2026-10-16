@@ -1,8 +1,8 @@
 import {test, expect} from '../persistentBrowser';
 import {mkdir, writeFile} from 'node:fs/promises';
 import type {Locator, Page} from '@playwright/test';
-const evidence = 'docs/verification/design-system';
-const tooltipEvidence = 'docs/verification/tooltips';
+const evidence = 'docs/verification/projects';
+const tooltipEvidence = 'docs/verification/projects/tooltips';
 async function tooltipGeometry(trigger: Locator) {
   return trigger.evaluate((control) => {
     const tooltip = control.parentElement!.querySelector<HTMLElement>('[role="tooltip"]')!;
@@ -222,9 +222,9 @@ test('UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmo
 test('UI tooltips: no misplaced frames, collapsed/expanded navigation, scroll and resize', async ({
   page,
 }, info) => {
-  await page.goto('/workspaces');
-  await page.getByLabel('Name des neuen Arbeitsbereichs').fill('Tooltip-Geometrie');
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await page.goto('/projects');
+  await page.getByLabel('Name des neuen Projekts').fill('Tooltip-Geometrie');
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await expect(page.getByRole('heading', {name: 'Tooltip-Geometrie', exact: true})).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
   await page.evaluate(() => {
@@ -454,8 +454,8 @@ test('UI geometry: 8 px wrapped actions, form labels, narrow/zoom equivalent and
 test('UI screens: project actions, forms, navigation and settings at target viewports', async ({
   page,
 }, info) => {
-  await page.goto('/workspaces');
-  await expect(page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true})).toHaveClass(
+  await page.goto('/projects');
+  await expect(page.getByRole('button', {name: 'Neues Projekt', exact: true})).toHaveClass(
     /dw-button--primary/,
   );
   await expect(page.getByRole('button', {name: 'Projekt öffnen', exact: true})).toHaveClass(
@@ -463,20 +463,22 @@ test('UI screens: project actions, forms, navigation and settings at target view
   );
   await capture(page, `overview-${info.project.name}`);
   await page
-    .getByLabel('Name des neuen Arbeitsbereichs')
+    .getByLabel('Name des neuen Projekts')
     .fill('Designsystem – Prüfung mit einem langen Projektnamen');
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   for (const size of [
     {width: 1440, height: 900},
     {width: 1280, height: 800},
   ]) {
     await page.setViewportSize(size);
     await expect(page.locator('.sidebar [aria-current="page"]')).toHaveCount(1);
+    await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
     const actions = await gaps(page.locator('.archive-actions > .dw-actions > .dw-actions'));
     for (let i = 1; i < actions.length; i++)
       if (actions[i]!.top === actions[i - 1]!.top)
         expect(actions[i]!.left - actions[i - 1]!.right).toBeCloseTo(8, 2);
     await capture(page, `project-${info.project.name}-${size.width}`);
+    await page.getByRole('link', {name: 'Daten', exact: true}).click();
     await page.getByRole('button', {name: 'Datei hinzufügen', exact: true}).click();
     await expect(page.getByRole('dialog')).toBeVisible();
     await capture(page, `import-${info.project.name}-${size.width}`);

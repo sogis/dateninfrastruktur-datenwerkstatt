@@ -139,3 +139,7 @@ Gate: REQ-061–067 / AT-054–058; 8px-Aktionsabstände, Labelsemantik, Fokus u
 Geometrie; verify, Firefox-/WebKit-E2E, statische Assetprüfung unter /lab/ und
 nativer Safari-Smoke. Befehle, Exitcodes, Revision und offene Abhängigkeiten
 stehen im Implementierungsstatus. Keine neue Domain-/Engine-/Speicherschnittstelle.
+
+## UI — Projekte und nachvollziehbare Beziehungen
+
+Nutzerentscheidung vom 15. Oktober 2026: durchgehend Projekt, ausschliesslich `/projects`-Routen ohne Legacy-Aliase, unveränderte Speicherverträge. Umsetzung in drei Abschnitten: (1) Begriffe/Routen/statisches Deployment, (2) Übersicht/Daten trennen, (3) Datenstände/Herkunft/gemeinsame Laufdetails. Abnahme: REQ-011–015/059–067, AT-006/018/054–058; bestehende Golden-/Archiv-/Multitab-Pfade erhalten. Verify, E2E-Dreiermatrix und Deployment ausführen; bekannte Paketmirrorblockade separat ausweisen, Pins nicht ändern. Historische Nachweise nicht überschreiben.

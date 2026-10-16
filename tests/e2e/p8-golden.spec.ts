@@ -35,7 +35,7 @@ async function editor(page: Page, code: string, name?: string) {
 }
 async function documentOf(page: Page) {
   return page.evaluate(async () => {
-    const p = '/src/app/services.ts';
+    const p = '/tests/spike/appServices.ts';
     const {services} = (await import(p)) as typeof import('../../src/app/services');
     const session = await services.workspaces.open(location.pathname.split('/')[2]!);
     await session.flush();
@@ -134,12 +134,13 @@ test('P8 AT-072: portal population + local CSV, unchanged Golden SQL/R, process 
     page.on('request', (r) => {
       if (/^https?:/.test(r.url())) network.push(r.url());
     });
-    await page.goto('/workspaces');
-    await page.getByLabel('Name des neuen Arbeitsbereichs').fill('P8 Golden');
-    await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+    await page.goto('/projects');
+    await page.getByLabel('Name des neuen Projekts').fill('P8 Golden');
+    await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
     await expect(page.getByRole('heading', {name: 'P8 Golden', exact: true})).toBeVisible();
     const workspaceUrl = page.url();
     for (const name of ['gemeinden', 'fahrzeuge']) {
+      await page.getByRole('link', {name: 'Daten', exact: true}).click();
       await page.getByRole('button', {name: 'Datei hinzufügen', exact: true}).click();
       await page
         .getByLabel('Datei (CSV oder Parquet, maximal 128 MiB)')
@@ -156,7 +157,7 @@ test('P8 AT-072: portal population + local CSV, unchanged Golden SQL/R, process 
     await page.getByLabel('Anzeigename', {exact: true}).fill('Bevölkerung aus Fixture-Portal');
     await page.getByRole('button', {name: 'Portalimport bestätigen', exact: true}).click();
     await expect(page.getByRole('dialog')).toHaveCount(0);
-    await page.getByRole('link', {name: 'Projektübersicht', exact: true}).click();
+    await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
     await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
     await editor(page, files['01-fahrzeuge-pro-1000.sql']!, 'Golden SQL');
     await page.getByText('Parameter (0)', {exact: true}).click();
@@ -187,7 +188,7 @@ test('P8 AT-072: portal population + local CSV, unchanged Golden SQL/R, process 
     await page.getByRole('button', {name: 'Objekt als Datensatz', exact: true}).click();
     await page.getByRole('button', {name: 'Datensatz übernehmen', exact: true}).click();
     await expect(page.getByRole('dialog')).toHaveCount(0);
-    await page.getByRole('link', {name: 'Projektübersicht', exact: true}).click();
+    await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
     await page.getByRole('button', {name: 'Neues R-Skript', exact: true}).click();
     await editor(page, files['02b-plot.R']!, 'Golden Plot');
     await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
@@ -201,7 +202,7 @@ test('P8 AT-072: portal population + local CSV, unchanged Golden SQL/R, process 
     expect((await readFile((await (await pngDownload).path())!)).subarray(1, 4).toString()).toBe(
       'PNG',
     );
-    await page.getByRole('link', {name: 'Projektübersicht', exact: true}).click();
+    await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
     await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
     await editor(page, files['03-klassifikation.sql']!, 'Rück-SQL');
     await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
@@ -211,9 +212,11 @@ test('P8 AT-072: portal population + local CSV, unchanged Golden SQL/R, process 
     await page.getByRole('button', {name: 'Diagramm', exact: true}).click();
     await page.getByRole('button', {name: 'Diagramm speichern', exact: true}).click();
     await expect(page.getByText('1 Diagramm(e) gespeichert', {exact: true})).toBeVisible();
-    await page.getByRole('link', {name: 'Projektübersicht', exact: true}).click();
+    await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
+    await page.getByRole('link', {name: 'Daten', exact: true}).click();
     await page.getByRole('button', {name: 'Lokal sichern', exact: true}).click();
     await expect(page.getByRole('button', {name: 'Lokal sichern', exact: true})).toHaveCount(0);
+    await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
     await page.getByRole('button', {name: 'Projekt exportieren', exact: true}).click();
     await page.getByLabel('Externe Quellen ebenfalls sichern').check();
     const archiveDownload = page.waitForEvent('download');
@@ -278,14 +281,12 @@ test('P8 AT-072: portal population + local CSV, unchanged Golden SQL/R, process 
     const importedWorkers: string[] = [];
     page.on('worker', (w) => importedWorkers.push(w.url()));
     await page.route('http://127.0.0.1:4174/**', (route) => route.abort());
-    await page.goto('/workspaces');
+    await page.goto('/projects');
     await expect(page.getByRole('link', {name: 'P8 Golden', exact: true})).toHaveCount(0);
     await page
       .getByLabel('Projektdatei importieren')
       .setInputFiles({name: 'golden.dwproj', mimeType: 'application/zip', buffer: archive});
-    await page
-      .getByRole('button', {name: 'Als neuen Arbeitsbereich importieren', exact: true})
-      .click();
+    await page.getByRole('button', {name: 'Als neues Projekt importieren', exact: true}).click();
     await expect(page.getByRole('heading', {name: 'P8 Golden', exact: true})).toBeVisible();
     expect(importedWorkers).toEqual([]);
     const imported = await documentOf(page);
@@ -318,12 +319,12 @@ test('P8 AT-072: portal population + local CSV, unchanged Golden SQL/R, process 
     await expect(page.locator('.result-grid tbody tr')).toHaveCount(3);
     expect(await tableRows(page, '.result-grid tbody tr', [])).toEqual(returned);
     expect(Object.keys((await documentOf(page)).runs)).toEqual(Object.keys(imported.runs));
-    await mkdir('docs/verification/design-system', {recursive: true});
+    await mkdir('docs/verification/projects', {recursive: true});
     await page.screenshot({
-      path: `docs/verification/design-system/p8-golden-${info.project.name}.png`,
+      path: `docs/verification/projects/p8-golden-${info.project.name}.png`,
     });
     await writeFile(
-      `docs/verification/design-system/p8-golden-${info.project.name}.json`,
+      `docs/verification/projects/p8-golden-${info.project.name}.json`,
       JSON.stringify(
         {
           browser: info.project.name,

@@ -10,9 +10,10 @@ async function editor(page: Page, code: string) {
   await input.press('ControlOrMeta+s');
 }
 async function workspace(page: Page) {
-  await page.goto('/workspaces');
-  await page.getByLabel('Name des neuen Arbeitsbereichs').fill('SQL Werkstatt');
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await page.goto('/projects');
+  await page.getByLabel('Name des neuen Projekts').fill('SQL Werkstatt');
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
 }
 test('P3 / AT-022 AT-027 AT-032 AT-049 AT-055 AT-058: SQL, paging, keep, exports, chart, resize and reload', async ({

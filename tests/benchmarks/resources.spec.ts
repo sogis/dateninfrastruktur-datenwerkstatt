@@ -15,7 +15,7 @@ test('AT-071 P7 prerequisite: 20 workspace/SQL/R-reset cycles and measured 10k/1
   });
   await page.goto('/tests/spike/index.html');
   await page.evaluate(async () => {
-    const path = '/src/app/services.ts';
+    const path = '/tests/spike/appServices.ts';
     const module = (await import(path)) as typeof import('../../src/app/services');
     const boot = await module.initializeServices();
     if (!boot.ready) throw Error(JSON.stringify(boot));

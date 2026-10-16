@@ -1,9 +1,9 @@
 import {test, expect} from './fixture';
 import type {Page} from '@playwright/test';
 async function start(page: Page, baseURL: string) {
-  await page.goto(`${baseURL}workspaces`);
-  await page.getByLabel('Name des neuen Arbeitsbereichs').fill('Fehler und Retry');
-  await page.getByRole('button', {name: 'Neuer Arbeitsbereich', exact: true}).click();
+  await page.goto(`${baseURL}projects`);
+  await page.getByLabel('Name des neuen Projekts').fill('Fehler und Retry');
+  await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
 }
 async function code(page: Page, text: string) {
   await page.locator('.monaco-editor').click();
@@ -35,6 +35,7 @@ test('P7 AT-069: missing/wrong MIME runtime assets fail explicitly; retry owns o
     else await route.continue();
   });
   await start(page, baseURL!);
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.getByRole('alert').filter({hasText: 'SOURCE_UNAVAILABLE'})).toContainText(
@@ -93,6 +94,7 @@ test('P7 AT-046 AT-068–069: R worker CSP failure times out, corrected retry an
     } else await route.continue();
   });
   await start(page, baseURL!);
+  await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neues R-Skript', exact: true}).click();
   await expect(page.getByRole('alert').filter({hasText: 'TIMEOUT'})).toBeVisible({timeout: 75000});
   await expect
@@ -104,7 +106,7 @@ test('P7 AT-046 AT-068–069: R worker CSP failure times out, corrected retry an
   await expect(page.locator('.run-status')).toContainText('Bereit', {timeout: 90000});
   await code(page, 'repeat { 1+1 }');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
-  await expect(page.locator('.run-status option').filter({hasText: 'running'})).toHaveCount(1);
+  await expect(page.locator('.run-status option').filter({hasText: 'Läuft'})).toHaveCount(1);
   // captureR buffers console output until completion. Allow the posted loop to enter
   // the worker before cancelling; cancelling the preceding metadata commit is different.
   await page.waitForTimeout(1000);

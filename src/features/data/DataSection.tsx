@@ -13,11 +13,13 @@ import {
 import {Modal} from '../../ui/Modal';
 import {PortalImport} from '../catalog/PortalImport';
 import {useEffect, useRef, useState} from 'react';
+import {Link} from '@tanstack/react-router';
 import {useStore} from 'zustand';
 import {useWorkspace, report} from '../../app/router';
 import type {CsvImportOptions, Dataset, DatasetId, TableSchema} from '../../domain/model';
 import type {ImportPreview} from '../../application/importPorts';
 import {downloadStream} from '../../app/download';
+import {DatasetHistory, datasetAvailability} from './DatasetHistory';
 const defaults = (): CsvImportOptions => ({
   encoding: 'utf-8',
   delimiter: ';',
@@ -78,6 +80,22 @@ export function PreviewTable({preview}: {preview: Pick<ImportPreview, 'schema' |
     </div>
   );
 }
+export function ProjectDataPage() {
+  const {state} = useWorkspace();
+  const project = useStore(state.store, (s) => s.document.workspace);
+  return (
+    <div className="project-details project-data-page">
+      <h1>Daten</h1>
+      <p className="project-context">
+        Projekt:{' '}
+        <Link to="/projects/$workspaceId" params={{workspaceId: project.id}}>
+          {project.name}
+        </Link>
+      </p>
+      <DataSection />
+    </div>
+  );
+}
 export function DataSection() {
   const {session, state} = useWorkspace();
   const doc = useStore(state.store, (s) => s.document);
@@ -104,9 +122,16 @@ export function DataSection() {
     return () => control.abort();
   }, [session, doc.revision]);
   const datasets = Object.values(doc.datasets).filter((d) => !d.removedAt);
+  const removedDatasets = Object.values(doc.datasets).filter((dataset) => dataset.removedAt);
+  const availability = {
+    mode: session.mode,
+    missingArtifacts: inventory?.missing,
+    integrity: session.integrity,
+    hashesChecked: session.hashesChecked,
+  };
   return (
     <section>
-      <PanelHeader title="Daten">
+      <PanelHeader title="Datensätze">
         <ActionGroup>
           <Button disabled={session.readOnly || busy} onClick={() => setImporting({})}>
             Datei hinzufügen
@@ -117,7 +142,7 @@ export function DataSection() {
         </ActionGroup>
       </PanelHeader>
       {datasets.length === 0 ? (
-        <EmptyState>Noch keine Dateneinbindungen.</EmptyState>
+        <EmptyState>Noch keine Datensätze.</EmptyState>
       ) : (
         <ul className="dataset-list">
           {datasets.map((dataset) => {
@@ -141,18 +166,11 @@ export function DataSection() {
                   </FormField>
                   <code>data.{dataset.sqlName}</code>
                   <span>
-                    {version.rowCount ?? '?'} Zeilen ·{' '}
-                    {version.backing.kind === 'artifact'
-                      ? !inventory
-                        ? 'Datei noch ungeprüft'
-                        : inventory.missing.includes(version.backing.artifactId)
-                          ? 'Nicht verfügbar · Datei fehlt'
-                          : session.mode === 'temporary'
-                            ? 'Nur diese Sitzung'
-                            : 'Lokal gesichert · Hash beim Import geprüft'
-                      : version.backing.kind === 'public-parquet'
-                        ? 'Referenz · Externer Stand nicht eingefroren'
-                        : 'Nicht verfügbar'}
+                    {version.rowCount === undefined
+                      ? 'Zeilenanzahl nicht ermittelt'
+                      : `${version.rowCount} Zeilen`}
+                    {' · '}
+                    {datasetAvailability(version, availability)}
                   </span>
                 </div>
                 <ActionGroup>
@@ -227,10 +245,41 @@ export function DataSection() {
                     Einbindung entfernen
                   </Button>
                 </ActionGroup>
+                <DatasetHistory
+                  dataset={dataset}
+                  workspaceDocument={doc}
+                  availability={availability}
+                />
               </li>
             );
           })}
         </ul>
+      )}
+      {removedDatasets.length > 0 && (
+        <details className="removed-datasets">
+          <summary>Entfernte Dateneinbindungen ({removedDatasets.length})</summary>
+          <ul className="dataset-list">
+            {removedDatasets.map((dataset) => (
+              <li key={dataset.id}>
+                <div>
+                  <strong>{dataset.name}</strong>
+                  <code>data.{dataset.sqlName}</code>
+                  <span>
+                    Entfernt am{' '}
+                    <time dateTime={dataset.removedAt}>
+                      {new Date(dataset.removedAt!).toLocaleString('de-CH')}
+                    </time>
+                  </span>
+                </div>
+                <DatasetHistory
+                  dataset={dataset}
+                  workspaceDocument={doc}
+                  availability={availability}
+                />
+              </li>
+            ))}
+          </ul>
+        </details>
       )}
       {inventory && inventory.orphans.length > 0 && (
         <p>

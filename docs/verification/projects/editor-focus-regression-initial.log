@@ -1,0 +1,61 @@
+[WebServer] (node:22150) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:22151) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/p7-ui.spec.ts:16:1 › P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layout reset and reload (16.6s)
+  ✓  2 [chromium] › tests/e2e/projects.spec.ts:71:1 › Projects: a late real editor module preserves toolbar menu focus and its reset action (2.1s)
+(node:22240) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [firefox] › tests/e2e/p7-ui.spec.ts:16:1 › P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layout reset and reload (16.2s)
+  ✘  4 [firefox] › tests/e2e/projects.spec.ts:71:1 › Projects: a late real editor module preserves toolbar menu focus and its reset action (12.7s)
+(node:22299) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [webkit] › tests/e2e/p7-ui.spec.ts:16:1 › P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layout reset and reload (16.6s)
+  ✓  6 [webkit] › tests/e2e/projects.spec.ts:71:1 › Projects: a late real editor module preserves toolbar menu focus and its reset action (1.7s)
+
+
+  1) [firefox] › tests/e2e/projects.spec.ts:71:1 › Projects: a late real editor module preserves toolbar menu focus and its reset action 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  getByRole('textbox', { name: 'Analysecode' })
+    Expected: visible
+    Received: hidden
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toBeVisible" getByRole('textbox', { name: 'Analysecode' }) with timeout 10000ms
+      - waiting for getByRole('textbox', { name: 'Analysecode' })
+        23 × locator resolved to <textarea wrap="off" tabindex="0" data-mprt="7" role="textbox" autocorrect="off" autocomplete="off" spellcheck="false" autocapitalize="off" aria-required="false" aria-multiline="true" aria-label="Analysecode" aria-autocomplete="both" aria-roledescription="editor" class="inputarea monaco-mouse-cursor-text"></textarea>
+           - unexpected value "hidden"
+
+
+      114 |
+      115 |     await expect(page.locator('.monaco-editor')).toBeVisible();
+    > 116 |     await expect(page.getByRole('textbox', {name: 'Analysecode'})).toBeVisible();
+          |                                                                    ^
+      117 |     await expect(page.getByText('Editor wird geladen …', {exact: true})).toHaveCount(0);
+      118 |     await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+      119 |     await expect(menu).toBeVisible();
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/projects.spec.ts:116:68
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/e2e-projects-Projects-a-la-f5233--focus-and-its-reset-action-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/e2e-projects-Projects-a-la-f5233--focus-and-its-reset-action-firefox/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/e2e-projects-Projects-a-la-f5233--focus-and-its-reset-action-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/e2e-projects-Projects-a-la-f5233--focus-and-its-reset-action-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [firefox] › tests/e2e/projects.spec.ts:71:1 › Projects: a late real editor module preserves toolbar menu focus and its reset action 
+  5 passed (1.1m)
