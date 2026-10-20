@@ -735,3 +735,306 @@ Abschliessende Dokument-/Formatkontrolle: `python3 tools/verify-package.py --rep
 Der Nutzer hat Commit und Push dieses Abschnitts ausdrücklich beauftragt. Ziel ist der bestehende Branch `main` auf `origin` (`sogis/dateninfrastruktur-datenwerkstatt`). `git fetch origin`, `git diff --check` und erneuter Hashabgleich des geprüften Code-/Testkandidaten **Exit 0**; `HEAD...origin/main` ohne Divergenz (0/0). Alle 169 Dateihashes stimmen weiterhin mit dem finalen Kandidaten `45dae17f976e1d77d4df5a42398463bc5fd11ef70997d16e3a816659c0b0b96a` überein. Die dokumentierten Verify-/E2E-/Deploymentnachweise bleiben gültig; für die reine Commitvorbereitung keine erneuten Engine-/Browserläufe. Historische Prüfbelege und Schutzbereiche unverändert.
 
 `git diff --cached --check` **Exit 2** ausschliesslich wegen Whitespace in 15 original generierten Rohlogs/Fehlerkontexten unter `docs/verification/projects/`. Derselbe Check mit genau diesen Dateien ausgeschlossen **Exit 0**; Rohbelege bleiben unverändert. `python3 tools/verify-package.py --report /tmp/dw-projects-commit-package-check.json` **Exit 0**. Lesender Review ohne Commit-Blocker; Commit enthält den gesamten fachlich abgeschlossenen Projekt-/Herkunftsabschnitt samt separaten Nachweisen. Der anschliessende Push ist keine Produktivbereitstellung.
+
+### UI — Fehlerhinweis: normale Schrift und rote Schliessen-Aktion (20. Oktober 2026)
+
+**Geliefert und gezielt verifiziert:** gestalterische Präzisierung zu REQ-065/066/067, Regression zu
+AT-054/055. Basis `1572f32e5fac65f737723e01db28974e21740d1e`, vor Beginn sauber;
+Node **22.23.1**, npm **11.18.0**. Nutzerentscheidung: Fehlertext in Schriftgewicht
+400, Schliessen-Icon in derselben Fehlerfarbe (#B80F17), transparente rote
+Hover-/Drückflächen mit 10 % bzw. 16 % Deckkraft.
+
+Implementiert in `src/app/router.tsx` und `src/styles/app.css`; Gestaltungsvertrag
+in `docs/DESIGN_SYSTEM.md` angepasst. Bestehende Regression in
+`tests/e2e/navigation.spec.ts` prüft Textgewicht, Text-/SVG-Farbgleichheit,
+Normal-/Hover-/Drückzustand, unveränderte Geometrie, Tooltip und Tastaturbedienung.
+Kurze und mehrzeilige reale Fehler werden bei 1440×900 und 1280×800 jeweils mit
+100 % und 200 % CSS-Zoom geprüft. Keine Schnittstellen-/Dependencyänderung.
+
+Vorprüfung der lokalen Browserinstallation **Exit 0**: Chromium **153.0.8010.12**,
+Firefox **155.0**, WebKit **26.6**; alle unterstützen die verwendete transparente
+Farbmischung. `node node_modules/prettier/bin/prettier.cjs --write
+src/app/router.tsx src/styles/app.css tests/e2e/navigation.spec.ts` **Exit 0**.
+
+Prüfstand: uncommittierter Stand auf der genannten Basis, Produkt-/Test-/Vertragsdateien
+über [SHA-256-Inventar](verification/error-notice/code-fingerprint.json) identifiziert.
+Tatsächlich ausgeführte Checks:
+
+- `npm run typecheck` **Exit 0**, [Log](verification/error-notice/typecheck.log).
+- `npm run lint` **Exit 0**, einschliesslich Modulgrenzen,
+  [Log](verification/error-notice/lint.log).
+- `npm run build` **Exit 0**, gepinnte lokale Runtime-/R-Pakete und Lizenzinventar
+  geprüft; bestehende Chunkgrössenwarnung, [Log](verification/error-notice/build.log).
+- `DW_REUSE_DEV_SERVER=1 PLAYWRIGHT_JSON_OUTPUT_FILE=docs/verification/error-notice/browser-matrix.json node node_modules/@playwright/test/cli.js test tests/e2e/navigation.spec.ts --grep 'Notices:' --project=chromium --project=firefox --project=webkit --output=test-results/error-notice --reporter=list,json`
+  **Exit 0, 3/3 bestanden**, keine Wiederholungen oder übersprungenen Fälle;
+  [Log](verification/error-notice/browser-matrix.log),
+  [JSON](verification/error-notice/browser-matrix.json).
+- `node node_modules/prettier/bin/prettier.cjs --check src/app/router.tsx src/styles/app.css tests/e2e/navigation.spec.ts`
+  **Exit 0**, [Log](verification/error-notice/format-check.log);
+  `git diff --check` **Exit 0**, [Log](verification/error-notice/diff-check.log).
+- `python3 tools/verify-package.py --report docs/verification/error-notice/package-check.json`
+  **Exit 0**: 80 Requirements, 72 Abnahmeszenarien, lokale Markdownlinks und
+  178 JSON-Dateien konsistent; [Bericht](verification/error-notice/package-check.json).
+
+Die drei Browser prüfen insgesamt **24 Geometriefälle** sowie je Normal-, Hover-
+und Drückzustand. [Messwerte](verification/error-notice/geometry.json) und visuell
+kontrollierte Screenshots für [Hover](verification/error-notice/chromium-notice-name-error-1440-zoom-1-hover.png)
+und [Drücken](verification/error-notice/chromium-notice-name-error-1440-zoom-1-active.png)
+sowie 200 % Zoom in [Firefox](verification/error-notice/firefox-notice-name-error-1280-zoom-2-hover.png)
+und [WebKit](verification/error-notice/webkit-notice-name-error-1280-zoom-2-hover.png)
+sind separat gespeichert. Der vorhandene Devserver im Zielrepository auf Port 4173
+wurde verwendet und beibehalten; Tests verwenden eigene Browserprofile und
+abgegrenzte OPFS-Verzeichnisse.
+
+Keine offenen Blocker im beauftragten Umfang. Vollständiges `npm run verify`,
+weitere Engine-/Deployment-/Ressourcentests und nativer Safari-Pilot für diesen
+lokalen Darstellungsfix **nicht erneut ausgeführt**. Nächster konkreter Schritt:
+reguläre UI-Durchsicht; keine neue P0–P8-Phase begonnen. Kein Commit, Push oder
+Release ausgeführt.
+
+
+### UI — Entwicklungs- und Speicherhinweis ersatzlos entfernen (20. Oktober 2026)
+
+**Status: bestanden im beauftragten Umfang.** Nutzerbeauftragte Darstellungsänderung zu
+REQ-019/065/066; Regressionen insbesondere AT-003/012/016/054/055/058/066–068.
+Basis `1572f32`, uncommittierter Arbeitsbaum; vorhandene Änderungen am
+Fehlerhinweis einschliesslich Designvertrag und bisherigen Nachweisen beibehalten.
+Node **22.23.1**, npm **11.18.0**, Playwright **1.63.0**;
+Chromium **153.0.8010.12**, Firefox **155.0**, WebKit **26.6**.
+
+`src/app/router.tsx` entfernt „Entwicklungsstand · nicht abgenommen“ aus dem
+normalen Header. Bei vollständig gespeicherten dauerhaften Projekten entfällt
+die gesamte Speicherstatuszeile samt Platzbedarf; kein Ersatztext oder Symbol.
+Temporärer Modus, Lesemodus, ungespeicherte Änderungen, laufendes Speichern und
+Fehler behalten ihre bisherigen Hinweise. Das unsichtbare `data-save-state`
+am vorhandenen Workspace-Container spiegelt den bestehenden PersistenceCoordinator;
+Speicherlogik, Domainverträge, Datenformate und Dependencies bleiben unverändert.
+
+Die bisherigen textabhängigen Persistenzbarrieren in sechs E2E-/Navigationsdateien
+und zwei Deploymentdateien warten jetzt auf diesen tatsächlichen Speicherzustand.
+Die Navigation prüft zusätzlich das Fehlen beider Texte und der Statuscontainer,
+keinen reservierten Raum und keinen horizontalen Überlauf in Übersicht, Daten,
+SQL und R bei 1440×900 sowie 1280×800. Browserfehler werden ebenfalls erfasst.
+
+Die erste statische Matrix hatte **Exit 1, 26/27 bestanden**:
+WebKit unter `/lab/` meldete beim Öffnen der SQL-Fläche einen
+`ResizeObserver loop completed with undelivered notifications.`
+[Originalausgabe](verification/removed-status/deployment-initial.log),
+[JSON](verification/removed-status/deployment-initial.json).
+Die unveränderte gezielte Wiederholung mit `--project=webkit-1 --repeat-each=3`
+hatte **Exit 1, 1/3 bestanden**, denselben Fehler zweimal reproduziert
+([Log](verification/removed-status/deployment-repro.log)).
+`src/ui/PanelLayout.tsx` verschiebt deshalb die durch Panelminima ausgelöste
+Höhenanpassung in `requestAnimationFrame`, bündelt Benachrichtigungen und
+beendet einen ausstehenden Frame beim Unmount. Keine Fehlermeldung wird gefiltert.
+Die unveränderte statische Wiederholung danach: **Exit 0, 3/3 bestanden**
+([Log](verification/removed-status/deployment-panel-fix.log),
+[JSON](verification/removed-status/deployment-panel-fix.json)).
+Ein zusätzlicher echter WebKit-Belastungslauf mit 30 SQL-Editorwechseln,
+Editieren/Speichern und wechselnden Fenstergrössen: **Exit 0, keine Browserfehler**
+([Log](verification/removed-status/panel-stress.log),
+[Messwerte](verification/removed-status/panel-stress.json)).
+Die bestehende P7-Flächenprüfung schreibt neue Bilder/Messwerte nun in ihr
+aktuelles Testausgabeverzeichnis, um historische Nachweise nicht zu überschreiben.
+
+Finaler Kandidat: [SHA-256-Inventar über 162 Dateien](verification/removed-status/code-fingerprint.json).
+Tatsächlich ausgeführte abschliessende Befehle:
+
+- `npm run typecheck` **Exit 0**, [Log](verification/removed-status/typecheck-final.log).
+- `npm run lint` **Exit 0**, einschliesslich Modulgrenzen,
+  [Log](verification/removed-status/lint-final.log).
+- `npm run build` **Exit 0**, einschliesslich lokaler Runtimeassets und
+  Lizenzinventar; bestehende Chunkgrössenwarnung, [Log](verification/removed-status/build.log).
+- `DW_REUSE_DEV_SERVER=1 DW_REUSE_TEST_PORTAL=1 PLAYWRIGHT_JSON_OUTPUT_FILE=docs/verification/removed-status/browser-matrix.json node node_modules/@playwright/test/cli.js test tests/e2e/navigation.spec.ts tests/e2e/workspaces.spec.ts tests/e2e/imports.spec.ts tests/e2e/multitab.spec.ts tests/e2e/projects.spec.ts tests/e2e/p7-ui.spec.ts --grep 'Navigation:|Notices:|AT-003:|AT-005 AT-058:|AT-012:|AT-054 AT-057 partial:|AT-058 / REQ-060:|P2 /|P6 AT-065:|Projects: a failed metadata save|P7 AT-058: browser history|measured SQL/R geometry' --project=chromium --project=firefox --project=webkit --output=test-results/removed-status-browser-complete --reporter=list,json` **Exit 0, 48/48 bestanden**, [Log](verification/removed-status/browser-matrix.log), [JSON](verification/removed-status/browser-matrix.json).
+- `DW_REUSE_TEST_PORTAL=1 PLAYWRIGHT_JSON_OUTPUT_FILE=docs/verification/removed-status/deployment.json npm run test:deployment -- tests/deployment/projects.spec.ts tests/deployment/static.spec.ts --grep 'Projects:|arbitrary UID static container|UI assets:' --output=test-results-deployment/removed-status-final --reporter=list,json` **Exit 0, 27/27 bestanden**, Chromium/Firefox/WebKit jeweils unter Root, `/lab/` mit PostMessage sowie `/lab/` isoliert mit Auto-Kanal; [Log](verification/removed-status/deployment.log), [JSON](verification/removed-status/deployment.json).
+- `node node_modules/prettier/bin/prettier.cjs --check src/app/router.tsx src/ui/PanelLayout.tsx tests/e2e/navigation.spec.ts tests/e2e/workspaces.spec.ts tests/e2e/imports.spec.ts tests/e2e/multitab.spec.ts tests/e2e/projects.spec.ts tests/e2e/p7-ui.spec.ts tests/deployment/projects.spec.ts tests/deployment/static.spec.ts` **Exit 0**, [Log](verification/removed-status/format-check.log). Ausschliesslich der neue Statusabschnitt wurde separat formatiert; historischer Präfix unverändert.
+- `python3 tools/verify-package.py --report docs/verification/removed-status/package-check.json` **Exit 0**: 80 Requirements, 72 Abnahmeszenarien, lokale Markdownlinks und 201 JSON-Dateien konsistent; [Log](verification/removed-status/package-check.log), [Bericht](verification/removed-status/package-check.json).
+- `git diff --check` **Exit 0**, [Log](verification/removed-status/diff-check.log).
+
+Frühere Testentwicklungsfehler bleiben dokumentiert: erster Typecheck **Exit 2**
+wegen fehlender Tupeltypisierung im neuen Testarray, mit `as const` korrigiert
+([Log](verification/removed-status/typecheck-initial.log)); erster Navigationslauf
+**Exit 1, 6/9 bestanden**, fehlende R-Bereitschaftsbarriere ergänzt
+([Log](verification/removed-status/navigation-initial.log)); erste E2E-Matrix
+**Exit 1, 42/45 bestanden**, neue App-Fehlerprüfung erfasste fälschlich Monacos
+unsichtbare Melderegionen und wurde auf tatsächliche App-Fehler begrenzt
+([Log](verification/removed-status/browser-matrix-initial.log)). Danach vor der
+Panelkorrektur **Exit 0, 45/45 bestanden**
+([Log](verification/removed-status/browser-matrix-before-panel-fix.log)).
+Keine bestehenden fachlichen Assertions entfernt oder abgeschwächt.
+
+Vollständiges `npm run verify`, Unit- und übrige Integrations-/Deploymenttests,
+Ressourcenbenchmark und nativer Safari-Pilot **nicht erneut ausgeführt**.
+Keine neue V1-Abnahme, kein Commit, Push oder Release.
+Keine offenen Blocker im beauftragten Umfang. Nächster konkreter Schritt: reguläre UI-Durchsicht; keine neue P0–P8-Phase begonnen.
+
+Finale Nachweise: **75/75 Browserfälle bestanden**, keine Flakes oder übersprungenen Fälle.
+24 neue [Abstands-/Höhenmessfälle](verification/removed-status/geometry.json) und
+12 bestehende SQL/R-Flächenmessfälle bestanden. Visuell kontrollierte Beispiele:
+[Übersicht 1440](verification/removed-status/chromium-overview-1440.png),
+[SQL 1280](verification/removed-status/firefox-sql-1280.png),
+[Daten 1280](verification/removed-status/webkit-data-1280.png),
+[SQL mit Ergebnis](verification/removed-status/p7-sql-chromium-1440.png) und
+[R mit Plot](verification/removed-status/p7-r-chromium-1280.png).
+Alle 162 Kandidatenhashes stimmen nach den Abschlussläufen überein.
+Der eigene Fixture-Server ist beendet; der vorhandene Nutzer-Devserver bleibt erhalten.
+
+## UI — Dateiname erst nach Dateiauswahl (20. Oktober 2026)
+
+**REQ-061 / Dateiwähler: bestanden.** In `src/ui/Controls.tsx` ist der
+gemeinsame `FileInput` zunächst leer; „Keine Datei ausgewählt“ entfällt
+ersatzlos. Das Dateinamenelement erscheint erst bei ausgewählter Datei.
+Der ausgewählte Name bleibt beim nativen Eingabe-Reset des Projektimports erhalten.
+
+Verifizierter Arbeitsstand: HEAD `1572f32e5fac65f737723e01db28974e21740d1e`
+mit dieser lokalen Änderung; SHA-256 von `src/ui/Controls.tsx`:
+`e67fed4e9f9ba8dfa48ee0b600f9c12d297ca0355e3b8b1ab75a56d3ff0642c0`.
+Vorhandene lokale Änderungen wurden erhalten.
+
+Tatsächlich ausgeführte Prüfungen:
+
+- `npm run typecheck`: **Exit 0**.
+- `node --experimental-strip-types --input-type=module` mit Inline-Playwright-Smoketest:
+  **Exit 0**, Chromium auf dem vorhandenen Devserver, eigenes temporäres Profil
+  und isoliertes OPFS. Auf `/projects` vor Auswahl kein Dateinamenelement oder
+  Ersatztext; nach Auswahl von `fixtures/sample.dwproj` sichtbarer Dateiname
+  trotz leerem nativen Input; nach Schliessen des Importdialogs und
+  `setInputFiles([])` wieder kein Dateinamenelement oder Ersatztext.
+  Testprofil und Test-OPFS anschliessend bereinigt.
+- `git diff --check`: **Exit 0**.
+
+Auf Nutzerwunsch nur diese gezielten Prüfungen; vollständige Suite, `verify`,
+Build, Lint und weitere Browser **nicht erneut ausgeführt**.
+Keine offenen Blocker. Nächster konkreter Schritt: reguläre UI-Durchsicht.
+
+## UI — Bereinigung ausschliesslich in den Einstellungen (20. Oktober 2026)
+
+**REQ-061/064/066/067, AT-055–057: umgesetzt und gezielt geprüft.**
+Der Bereich „Wartung“ samt doppelter Bereinigungsaktion entfällt auf der
+Projektliste. Unter Einstellungen → Browser-Speicher bleibt der vorhandene
+Button „Nicht referenzierte Projektreste bereinigen“ direkt sichtbar, ohne
+Aufklappbereich. Speicherstatus und Projektverwaltung verwenden einheitliche
+Buttonoptik mit 8 px Abstand; die Bereinigung folgt 16 px darunter.
+Die Projektverwaltung bleibt ein Navigationslink. Bestätigungsdialog und
+Bereinigungsservice sind unverändert. Der Hinweis nach unvollständiger
+Dateilöschung verweist jetzt auf die Einstellungen.
+
+Implementiert in `src/features/archive/ArchiveActions.tsx`,
+`src/features/workspaces/StorageSettings.tsx` und `src/styles/app.css`;
+Designvertrag in `docs/DESIGN_SYSTEM.md`, bestehende Regression in
+`tests/e2e/p7-ui.spec.ts` ergänzt. Vorhandene lokale Änderungen einschliesslich
+Dateiwähler und früherer UI-Korrekturen erhalten. Quellenbaseline am dokumentierten
+Commit im lokalen Quellrepository gelesen; dort keine Änderungen vorgenommen.
+
+Verifizierter Stand: HEAD `1572f32e5fac65f737723e01db28974e21740d1e` mit lokalen
+Änderungen; Node **22.23.1**, npm **11.18.0**. SHA-256 der geprüften Dateien:
+
+| Datei | SHA-256 |
+| --- | --- |
+| `src/features/archive/ArchiveActions.tsx` | `f1a3b1a9a1ef002abc37969150ad9261f1066185442ead428089f151c3b2b4a6` |
+| `src/features/workspaces/StorageSettings.tsx` | `062c5da5aacc993bcaaab7fc83f8ab56db5068413b5122b299d1753ea3928646` |
+| `src/styles/app.css` | `48bec4267441c3bbcd28c95d0f617af0ee4c4b93c2604769acfc33547ab41b67` |
+| `tests/e2e/p7-ui.spec.ts` | `8333d0d465486490faf9c3dbe53c5a57ed93e9387c7006152ec8dfede58c3990` |
+
+Tatsächlich ausgeführte Prüfungen:
+
+- `npm run typecheck`: **Exit 0**.
+- `node node_modules/eslint/bin/eslint.js src/features/archive/ArchiveActions.tsx src/features/workspaces/StorageSettings.tsx tests/e2e/p7-ui.spec.ts`: **Exit 0**.
+- `DW_REUSE_DEV_SERVER=1 node node_modules/@playwright/test/cli.js test tests/e2e/p7-ui.spec.ts --project=chromium --grep 'native focus trap/return' --reporter=list --output=/tmp/datenwerkstatt-settings-cleanup-20261020`:
+  **Exit 0, 1/1 bestanden**. Prüft fehlende Wartung auf der Projektliste,
+  weiterhin sichtbaren Projektimport, genau eine direkt zugängliche Bereinigung,
+  Dialog/Escape/Fokusrückgabe und Navigation zur Projektliste. Bei 1440×900 und
+  1280×800 gleiche Buttonhöhe, 8/16-px-Abstände und keinen horizontalen Überlauf
+  gemessen. Screenshot bei 1280×800 visuell kontrolliert. Eigenes Browserprofil
+  und isolierter OPFS; vorhandenen Devserver beibehalten, Testportal beendet.
+- `node node_modules/prettier/bin/prettier.cjs --write src/features/archive/ArchiveActions.tsx src/features/workspaces/StorageSettings.tsx tests/e2e/p7-ui.spec.ts`: **Exit 0**.
+- `git diff --check`: **Exit 0**.
+
+Auf ausdrücklichen Nutzerwunsch nur die gezielten Prüfungen; vollständiges
+`npm run verify`, Build, weitere Unit-/Integrations-/E2E-/Deploymenttests,
+Firefox/WebKit, Zoomprüfung und nativer Safari-Pilot **nicht erneut ausgeführt**.
+Keine offenen Blocker im beauftragten Umfang. Nächster konkreter Schritt:
+reguläre UI-Durchsicht; keine weitere P0–P8-Phase begonnen.
+Kein Commit, Push oder Release ausgeführt.
+
+## Review aller lokalen Änderungen und Commitvorbereitung (20. Oktober 2026)
+
+**Ergebnis: keine Commit-Blocker.** Der Nutzer hat die Analyse aller Änderungen,
+einen gemeinsamen Commit und den Push ausdrücklich beauftragt. Ziel ist `main`
+auf `origin` (`sogis/dateninfrastruktur-datenwerkstatt`). Basis des geprüften
+Arbeitsstands ist `1572f32e5fac65f737723e01db28974e21740d1e`; das
+[SHA-256-Inventar](verification/commit-review/code-fingerprint.json) identifiziert
+178 unveränderte Quell-, Test-, Vertrags- und Konfigurationsdateien samt beiden
+Designsystemdokumenten. `git fetch origin` und der anschliessende Vergleich
+`git rev-list --left-right --count HEAD...origin/main`: **Exit 0, 0/0**.
+
+Geprüfter Umfang: Fehlerhinweise mit normaler Schrift und roter Schliessen-Aktion,
+Entfall der normalen Entwicklungs-/Speicherstatuszeilen bei erhaltenen Ausnahme-
+und Fehlerzuständen, Dateinamen erst nach Auswahl, Bereinigung ausschliesslich in
+den Einstellungen und die entkoppelte Panelhöhenmessung. Betrifft insbesondere
+REQ-019–022/061/064–067 und AT-003/012/016/054–058/065–068. Relevante Dateien:
+`src/app/router.tsx`, `src/styles/app.css`, `src/ui/Controls.tsx`,
+`src/ui/PanelLayout.tsx`, `src/features/archive/ArchiveActions.tsx` und
+`src/features/workspaces/StorageSettings.tsx` sowie die geänderten E2E- und
+Deploymenttests. Die Speicherbarrieren lesen den bestehenden PersistenceCoordinator;
+Domain-/Engine-/Speicherverträge, Dependencies und Goldenwerte bleiben erhalten.
+Keine fachliche Codekorrektur aus dem Review erforderlich.
+
+`docs/DESIGN_SYSTEM_NEUTRAL.md` wird als ausdrücklich noch nicht implementierter
+Gestaltungsentwurf mit aufgenommen. Er ist kein Nachweis einer Theme-/Fontmigration.
+Die bisherigen Nachweise unter `error-notice/` und `removed-status/` sind historische
+Prüfstände vor den nachfolgenden UI-Änderungen; ihre Hashdifferenzen sind damit erklärt.
+Die Quellenbaseline wurde am dokumentierten Commit im lokalen Portalrepository
+gelesen, ohne dort Änderungen vorzunehmen.
+
+Tatsächlich ausgeführte Abschlussprüfungen auf macOS/ARM64 mit Node **22.23.1**,
+npm **11.18.0**, Chromium **153.0.8010.12**, Firefox **155.0**, WebKit **26.6**
+([Umgebung](verification/commit-review/environment.json)):
+
+- `DW_REUSE_DEV_SERVER=1 npm run verify`: **Exit 0**. Typecheck, Lint einschliesslich
+  Modulgrenzen, **47/47 Unit-, 43/43 Integrations- und 37/37 Chromium-E2E-Tests**
+  sowie Build mit lokalem Runtime-/Paket-/Lizenzinventar bestanden.
+  Enthält den echten Golden Path, Typrundlauf, Workerabbruch, Multitab,
+  Speicherfehler und Archive; [vollständiges Log](verification/commit-review/verify.log).
+  Die bekannte Chunkgrössenwarnung bleibt bestehen.
+- `DW_REUSE_DEV_SERVER=1 DW_REUSE_TEST_PORTAL=1 PLAYWRIGHT_JSON_OUTPUT_FILE=docs/verification/commit-review/browser-matrix.json node node_modules/@playwright/test/cli.js test tests/e2e/navigation.spec.ts tests/e2e/workspaces.spec.ts tests/e2e/imports.spec.ts tests/e2e/multitab.spec.ts tests/e2e/projects.spec.ts tests/e2e/p7-ui.spec.ts --project=firefox --project=webkit --output=test-results/commit-review --reporter=list,json`:
+  **Exit 0, 44/44 bestanden**, keine übersprungenen oder instabilen Fälle;
+  [Log](verification/commit-review/browser-matrix.log),
+  [JSON](verification/commit-review/browser-matrix.json).
+- `DW_REUSE_TEST_PORTAL=1 PLAYWRIGHT_JSON_OUTPUT_FILE=docs/verification/commit-review/deployment.json npm run test:deployment -- tests/deployment/projects.spec.ts tests/deployment/static.spec.ts --output=test-results-deployment/commit-review --reporter=list,json`:
+  **Exit 0, 36/36 bestanden**. Chromium/Firefox/WebKit jeweils mit Root,
+  `/lab/` PostMessage und `/lab/` isoliert/Auto; reale Engines, beliebige UID,
+  Routen/Reload, MIME/404/CSP, lokale Assets und ungültige Runtimekonfiguration;
+  [Log](verification/commit-review/deployment.log),
+  [JSON](verification/commit-review/deployment.json).
+- `node node_modules/prettier/bin/prettier.cjs --check` mit allen 14 geänderten
+  TS/TSX/CSS-Dateien: **Exit 0**; [Log](verification/commit-review/format-check.log).
+- `node --experimental-strip-types --input-type=module` mit Inline-Playwright-Smoke
+  für den Dateiwähler: **Exit 0**. Leerer Anfangszustand, Dateiname nach Auswahl
+  trotz nativem Input-Reset und erneutes Leeren geprüft, eigenes Profil/OPFS
+  anschliessend bereinigt; [Log](verification/commit-review/file-input.log).
+- `python3 tools/verify-package.py --report docs/verification/commit-review/package-check.json`:
+  **Exit 0**, Requirements/Abnahmeszenarien, Dokumentlinks, JSON-/Archivbeispiele
+  und lokale Assets konsistent; [Log](verification/commit-review/package-check.log),
+  [Bericht](verification/commit-review/package-check.json).
+- `git diff --cached --check -- src tests`: **Exit 0**.
+  Der vollständige Stagingcheck hat **Exit 2** ausschliesslich wegen Whitespace
+  in original generierten Rohlogs und den drei beabsichtigten Markdown-Hardbreaks
+  am Anfang des neutralen Designentwurfs; Inhalte bleiben unverändert.
+  Die genaue Abgrenzung steht im [Whitespacebericht](verification/commit-review/whitespace.json).
+
+Neue visuell kontrollierte Beispiele: [Speichereinstellungen bei 1280×800](verification/commit-review/settings-storage-chromium-1280.png)
+und [Firefox-Fehlerhinweis bei 200 % Zoom](verification/commit-review/notice-firefox-1280-zoom-2.png).
+Bestehende Tests schreiben teilweise noch in historische Belegpfade. Die 26 dabei
+erneuerten Dateien sind separat unter `verification/commit-review/rerun-artifacts/`
+gesichert; die ursprünglichen Dateien wurden bytegleich wiederhergestellt und
+per Hash geprüft ([Inventar](verification/commit-review/historical-evidence.json)).
+Alle 178 Kandidatenhashes stimmen nach den Browserläufen weiterhin überein.
+Der eigene Fixture-Server wurde beendet; der vorhandene Nutzer-Devserver bleibt erhalten.
+
+**Verbleibend:** nativer Safari-Pilot, Ressourcenbenchmark, die vollständige
+Firefox-/WebKit-Integrationsmatrix sowie die übrigen Deploymentdateien wurden
+für diesen Review nicht erneut ausgeführt. Keine neue V1-Gesamtabnahme und kein
+Release. Nächster konkreter Schritt nach dem beauftragten Commit/Push ist die
+reguläre UI-Durchsicht; eine Umsetzung des neutralen Designentwurfs ist ein
+separater Abschnitt.

@@ -334,7 +334,10 @@ test('Projects: a failed metadata save blocks external navigation and preserves 
     });
   }
   await page.getByRole('button', {name: 'Speichern erneut versuchen', exact: true}).click();
-  await expect(page.getByText('Lokal gespeichert · kein Backup', {exact: true})).toBeVisible();
+  await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
+    'data-save-state',
+    'saved',
+  );
   await page.getByRole('link', {name: 'Einstellungen', exact: true}).click();
   await expect(page).toHaveURL(/\/settings$/);
   await page.goBack();

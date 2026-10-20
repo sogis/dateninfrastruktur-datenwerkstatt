@@ -328,7 +328,7 @@ export function FileInput({
   ...props
 }: InputHTMLAttributes<HTMLInputElement> & {buttonLabel?: string}) {
   const ref = useRef<HTMLInputElement>(null);
-  const [fileName, setFileName] = useState('Keine Datei ausgewählt');
+  const [fileName, setFileName] = useState('');
   return (
     <span className="dw-file-input">
       <Input
@@ -338,7 +338,7 @@ export function FileInput({
         className="visually-hidden"
         tabIndex={-1}
         onChange={(e) => {
-          setFileName(e.target.files?.[0]?.name ?? 'Keine Datei ausgewählt');
+          setFileName(e.target.files?.[0]?.name ?? '');
           props.onChange?.(e);
         }}
       />
@@ -350,7 +350,7 @@ export function FileInput({
       >
         {buttonLabel}
       </Button>
-      <span className="dw-file-name">{fileName}</span>
+      {fileName && <span className="dw-file-name">{fileName}</span>}
     </span>
   );
 }

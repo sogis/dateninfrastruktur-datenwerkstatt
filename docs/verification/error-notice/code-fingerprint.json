@@ -1,0 +1,9 @@
+{
+  "baseRevision": "1572f32e5fac65f737723e01db28974e21740d1e",
+  "files": {
+    "src/app/router.tsx": "09bdca48088a4bbb5b68b5fe9e1f159fafcd9f3e06d2f5f4aaf016f4e4070281",
+    "src/styles/app.css": "8a66a27740cb51cd54911f5546d72bfe4fa3580f01ca4b92036e5af3a1091357",
+    "tests/e2e/navigation.spec.ts": "8932e5e61de9826680d77809be58cbc08f36c6a4a8fb8524948182c8db1e025b",
+    "docs/DESIGN_SYSTEM.md": "f4758f177000e71de147154af54a4fa242fb02c5399c4479902f72ec00c97d1f"
+  }
+}

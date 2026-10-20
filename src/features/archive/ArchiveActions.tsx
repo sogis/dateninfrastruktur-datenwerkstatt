@@ -9,8 +9,7 @@ import type {EditingSession} from '../../application/workspaceService';
 import type {ArchiveCandidate} from '../../application/workspaceArchive';
 export function ArchiveImport() {
   const [candidate, setCandidate] = useState<ArchiveCandidate>(),
-    [busy, setBusy] = useState(false),
-    [message, setMessage] = useState('');
+    [busy, setBusy] = useState(false);
   const navigate = useNavigate();
   return (
     <section className="archive-import">
@@ -25,7 +24,6 @@ export function ArchiveImport() {
             event.target.value = '';
             if (!file) return;
             setBusy(true);
-            setMessage('');
             void services.workspaces
               .getArchive()
               .inspect(file, new AbortController().signal)
@@ -35,30 +33,7 @@ export function ArchiveImport() {
           }}
         />
       </FormField>
-      <details className="maintenance">
-        <summary>Wartung</summary>
-        <ActionGroup>
-          <Button
-            disabled={busy}
-            onClick={() => {
-              setBusy(true);
-              void services.workspaces
-                .cleanAbandoned(new AbortController().signal)
-                .then((r) =>
-                  setMessage(
-                    `${r.removed.length} verwaiste Dateien aus entfernten/abgebrochenen Projekten bereinigt. ${r.failures.join('; ')}`,
-                  ),
-                )
-                .catch(report)
-                .finally(() => setBusy(false));
-            }}
-          >
-            Reste abgebrochener Projekte bereinigen
-          </Button>
-        </ActionGroup>
-      </details>
       {busy && <Notice tone="info">Archiv wird geprüft/verarbeitet …</Notice>}
-      {message && <Notice tone="info">{message}</Notice>}
       {candidate && (
         <Modal
           title="Projektimport bestätigen"
@@ -313,7 +288,7 @@ export function ArchiveActions({session}: {session: EditingSession}) {
                     if (failures.length)
                       report(
                         new Error(
-                          `Projekt gelöscht; ${failures.length} Dateireste sind über die Projektsliste bereinigbar.`,
+                          `Projekt gelöscht; ${failures.length} Dateireste sind in den Einstellungen unter „Browser-Speicher“ bereinigbar.`,
                         ),
                       );
                     await routerApi.invalidate();

@@ -16,7 +16,10 @@ test('AT-003: workspace metadata persists across reload without engine startup',
     .fill('Lokale Auswertung mit führenden Nullen.');
   await page.getByLabel('Projektname', {exact: true}).fill('Öffentliche Auswertung');
   await page.getByRole('button', {name: 'Speichern', exact: true}).click();
-  await expect(page.getByText('Lokal gespeichert · kein Backup', {exact: true})).toBeVisible();
+  await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
+    'data-save-state',
+    'saved',
+  );
   await page.reload();
   await expect(page.getByLabel('Beschreibung', {exact: true})).toHaveValue(
     'Lokale Auswertung mit führenden Nullen.',
@@ -43,7 +46,10 @@ test('AT-005 AT-058: saved SQL and R, separate models, duplicate, archive, no co
   await page.keyboard.insertText('SELECT 42 AS wert;');
   await expect(page.locator('.view-lines')).toHaveText(/^SELECT\s+42\s+AS\s+wert;$/);
   await code.press('ControlOrMeta+s');
-  await expect(page.getByText('Lokal gespeichert · kein Backup', {exact: true})).toBeVisible();
+  await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
+    'data-save-state',
+    'saved',
+  );
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neues R-Skript', exact: true}).click();
   await page.locator('.monaco-editor').click();
@@ -74,7 +80,10 @@ test('AT-005 AT-058: saved SQL and R, separate models, duplicate, archive, no co
   }
   await expect(page.locator('.view-lines')).toContainText(/SELECT\s+42\s+AS\s+wert;/);
   await page.getByRole('textbox', {name: 'Analysecode'}).press('ControlOrMeta+s');
-  await expect(page.getByText('Lokal gespeichert · kein Backup', {exact: true})).toBeVisible();
+  await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
+    'data-save-state',
+    'saved',
+  );
   await page.reload();
   await expect(page.locator('.monaco-editor')).toContainText('42');
   expect(page.url()).toBe(sqlUrl);
@@ -101,7 +110,10 @@ test('AT-012: another tab opens read-only and explicitly reacquires after writer
   await expect(other.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true})).toBeDisabled();
   await page.getByLabel('Beschreibung', {exact: true}).fill('Neuer Stand');
   await page.getByRole('button', {name: 'Speichern', exact: true}).click();
-  await expect(page.getByText('Lokal gespeichert · kein Backup', {exact: true})).toBeVisible();
+  await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
+    'data-save-state',
+    'saved',
+  );
   await page.close();
   await other.getByRole('button', {name: 'Schreibrecht erneut anfordern'}).click();
   await expect(other.getByLabel('Beschreibung', {exact: true})).toBeEnabled();

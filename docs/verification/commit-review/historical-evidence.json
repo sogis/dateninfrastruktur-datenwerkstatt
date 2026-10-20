@@ -1,0 +1,135 @@
+{
+  "restoredHistoricalFiles": [
+    {
+      "path": "docs/verification/projects/webkit-project-data-history.png",
+      "originalSha256": "99104c161a728882b207eaaa5ad0e6a0562587c5322b042e2efd78b52e4d395a",
+      "testSha256": "ccf40e59bcd874d73d8b353a003a3c5741923b07f39e322a37c695a004099227"
+    },
+    {
+      "path": "docs/verification/projects/chromium-project-data-history.png",
+      "originalSha256": "25d2f06cc9f17a3fb516acfdacd7db365083d9bca28874a65e0800d5df7ed1e7",
+      "testSha256": "5a179b83197848e3ac0427c1c869ea4c63dcfa39a53fb8807051816fbf8e68fa"
+    },
+    {
+      "path": "docs/verification/projects/p8-golden-chromium.json",
+      "originalSha256": "0e7f2e6adf7945433da915748b2761cf87316e56b0b113c9e2d33780b488e2b8",
+      "testSha256": "bdecad54de895d1b08cca344057c38cf4bc531227d31db161b94dc2bdc76cf20"
+    },
+    {
+      "path": "docs/verification/projects/components-chromium-1440-fallback.png",
+      "originalSha256": "93e0bc567e030cd161319cdcc82a69b9232835cdb6ce9b0846bec7869a837328",
+      "testSha256": "be6e7da6759b1d63b2363661cfd4ac761bc317d361f2aef18aeb589fd039ce64"
+    },
+    {
+      "path": "docs/verification/projects/import-chromium-1440.png",
+      "originalSha256": "0ac250ca1fe44ba8d9e14969facbd95e6a7125f1728bb320314cc47ad1957613",
+      "testSha256": "a86b47311daf9a068c16733adfe25433e33bdea48dda3d9696a9e921ff0e338a"
+    },
+    {
+      "path": "docs/verification/projects/webkit-project-overview.png",
+      "originalSha256": "34e8c35cf81a4e6c3ff89d16f1b08477e5814fdf5c22d691130a914fe36a41ac",
+      "testSha256": "b1b37fb3e9a1f6605c3e6302e10d5339506b6181f6c89cbe67b7c0ac16122b3e"
+    },
+    {
+      "path": "docs/verification/projects/import-chromium-1280.png",
+      "originalSha256": "4bd29263671c027be0c7b4b1bd214d59ccc221c51db3309d48cd47266f61e0bc",
+      "testSha256": "a0f93e6efd7f7ac42b2d2ec652d5cfc194dbd1f0b2dce0187f51f43441c9cd64"
+    },
+    {
+      "path": "docs/verification/projects/chromium-project-sql-history.png",
+      "originalSha256": "0c8abec61f1b452aabe51976ff95abcaa03a59a16d64a877f1a424fbc93c7023",
+      "testSha256": "468b2ac49a37e0e88078c0c38d1eff6e109492f5faa1f21817eb37fb746c21a7"
+    },
+    {
+      "path": "docs/verification/projects/firefox-project-sql-history.png",
+      "originalSha256": "e75a06660cd200dc79c4af954b206de09527635cf9fa7b82c3ef71d6cdae27aa",
+      "testSha256": "36a8f12177602b19833114d647a43d082abdde34e0107cb97231eb7def31e3fb"
+    },
+    {
+      "path": "docs/verification/projects/webkit-project-sql-history.png",
+      "originalSha256": "355bce0aad145406f8fdafb659304841f9800b68d8bf3701f92f887966eff819",
+      "testSha256": "093845257d1ba51c1033fb15229a5b98555f73fa937c1564b833f438d47ff870"
+    },
+    {
+      "path": "docs/verification/projects/p8-golden-chromium.png",
+      "originalSha256": "d443217ce4a6fec6c83bbc8e92c47c3c97c8f0b3548889385760f94ae7de2821",
+      "testSha256": "cd3e98a3a18a0a759366beced5507f82e87898cff6edab96a923056ecfb663f6"
+    },
+    {
+      "path": "docs/verification/projects/firefox-project-data-history.png",
+      "originalSha256": "f130ebaa0c4c06e23f152563a16c6c76622ae09d98a44e19787aa1d41dfc30da",
+      "testSha256": "ae6da91882f4cdf00c3400e02f494d8ae53c6cabeb77bc350cb2e61ace0b0fe0"
+    },
+    {
+      "path": "docs/verification/projects/components-chromium-720-fallback.png",
+      "originalSha256": "08b9b5e4cbc4e1e6f0c7d099f7d0615bcf7ca623c6fa672c5f466bcad80d8f08",
+      "testSha256": "fc63bd8195577de02a75def883e4b94b82862750151e140050d50b58af20adfb"
+    },
+    {
+      "path": "docs/verification/projects/project-chromium-1280.png",
+      "originalSha256": "ed3b8b481ba905d36827a710856f44c9a0ec0d5fc6a30a1e0801d124b9672e56",
+      "testSha256": "10efc66f6503fa1360f8371e896b9af5967f2e06ce8d5426fe4ef2d15ddb910e"
+    },
+    {
+      "path": "docs/verification/projects/project-chromium-1440.png",
+      "originalSha256": "2548f805486f53c162e04c8c2439d08761b0ce9c28d24c3d2840531452aba244",
+      "testSha256": "121890ec24b933196ce2f6c5d943efb5db070a37dcf4995ba5af984c50afe496"
+    },
+    {
+      "path": "docs/verification/projects/components-chromium-1280-fallback.png",
+      "originalSha256": "be6afcaf88ea26d3e297b6b811f29514ad60a92d3199f427a4b0c73d99419d4b",
+      "testSha256": "9630a6f80764929275e0eed0bff03b2512e3bf273c4b759c51fd0d8c109299c0"
+    },
+    {
+      "path": "docs/verification/projects/firefox-project-overview.png",
+      "originalSha256": "6bf4ffea5a751a24e8b7759b5b53a2efeca49a0d12cffa27089de9b164ec1cc9",
+      "testSha256": "01cdd68ba71345cffe6473b751427257ee02487ec721f991dba04fa03b0220cb"
+    },
+    {
+      "path": "docs/verification/projects/chromium-project-overview.png",
+      "originalSha256": "21d91a1821637cc364c01147f5a2bef692abefb1fb47f9f445c724009983c441",
+      "testSha256": "825be3209bfb51ad0cf75ab9debeb179dee74d036bf1377d9814e2862eaf6400"
+    },
+    {
+      "path": "docs/verification/projects/components-chromium.png",
+      "originalSha256": "a3c5af6b06e215522c50907a717894572996e1e0398c836a1d729166d53afa44",
+      "testSha256": "6e092464d7a70edd0b94e6ca4a556ac928987bd4679f3cf86ee6eb871f1fd00d"
+    },
+    {
+      "path": "docs/verification/projects/settings-chromium-1280.png",
+      "originalSha256": "17d8ce909bf754ed253a34276b59a8b32b6426f3c75fb209919599503fc013ff",
+      "testSha256": "c2879a43bac37a3b12478ce0c2bd08d6ece241c648cbaaffe77cac580165878e"
+    },
+    {
+      "path": "docs/verification/projects/settings-chromium-1440.png",
+      "originalSha256": "c82a9ac0e87223d782c3bc0e1c2dfe967ff8e34dd0db41dd0c2ea50fdfe10a40",
+      "testSha256": "ba1c0974cb789c1acc43ecd372f08a835fd0968988179c7596c566ac2e16575a"
+    },
+    {
+      "path": "docs/verification/projects/overview-chromium.png",
+      "originalSha256": "f29c12b851d412586dfdba08ea460f8beaf54a967c18018850236d8f7b72459c",
+      "testSha256": "bc3862ecbb773da4300e646fe3447b96deb55d0e84a35489756591ba03ef24c3"
+    },
+    {
+      "path": "docs/verification/projects/tooltips/navigation-chromium.json",
+      "originalSha256": "ebf52ad04eeabd773c8f1a7d284a619f2f72ca22ab7e4c837080b873dba1eed3",
+      "testSha256": "6018d8e5e77bb4005e01792d9f68ea52360c4d066989194a4e2ba71746973e8e"
+    },
+    {
+      "path": "docs/verification/projects/tooltips/icon-button-chromium.png",
+      "originalSha256": "1bb1cfb5a7f4a8333850a444ba565db8604d50ff24b5496b25d11a8fa1e88925",
+      "testSha256": "838e1c0b9846bfccac5d55340bd1a1e2682e35603a5007311cd1628845825ba8"
+    },
+    {
+      "path": "docs/verification/projects/tooltips/navigation-chromium-1440.png",
+      "originalSha256": "5a86db6c7965d2546ebf9ceb0ee33cee93e2fca1bf353ff48eaa12f07af8bf30",
+      "testSha256": "4f198c1123dcad4c691960f667aa3ddfa203a3e81299014484db84099ff28788"
+    },
+    {
+      "path": "docs/verification/projects/tooltips/navigation-chromium-1280.png",
+      "originalSha256": "9f17dbef638366a7aca16ed3354998e7bd970e6c5b50a593af05ae046d3ac9ee",
+      "testSha256": "2c29e7103557ea03dcc85babc19e730d2f8166a5880fe4b83c16ad6d1a4cfbe5"
+    }
+  ],
+  "newArtifacts": "rerun-artifacts/"
+}

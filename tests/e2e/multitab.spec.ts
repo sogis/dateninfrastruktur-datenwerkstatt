@@ -10,7 +10,10 @@ test('P6 AT-065: absent Web Locks permits existing project only as reader, archi
   const url = page.url();
   await page.getByLabel('Beschreibung', {exact: true}).fill('Dauerhafter Stand');
   await page.getByRole('button', {name: 'Speichern', exact: true}).click();
-  await expect(page.getByText('Lokal gespeichert · kein Backup', {exact: true})).toBeVisible();
+  await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
+    'data-save-state',
+    'saved',
+  );
   await context.addInitScript(() => {
     Object.defineProperty(navigator, 'locks', {value: undefined, configurable: true});
   });

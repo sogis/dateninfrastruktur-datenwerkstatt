@@ -31,7 +31,10 @@ test('P2 / AT-008 AT-010 AT-018: confirmed import, reload, data preview, indepen
   await expect(page.getByRole('cell', {name: 'Leerstring', exact: true})).toHaveCount(2);
   await page.getByLabel('Anzeigename csv_edge_cases', {exact: true}).fill('Öffentliche Übersicht');
   await page.getByLabel('Anzeigename csv_edge_cases', {exact: true}).press('Tab');
-  await expect(page.getByText('Lokal gespeichert · kein Backup', {exact: true})).toBeVisible();
+  await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
+    'data-save-state',
+    'saved',
+  );
   await expect(page.getByText('data.csv_edge_cases', {exact: true})).toBeVisible();
   const downloading = page.waitForEvent('download');
   await page.getByRole('button', {name: 'Parquet exportieren', exact: true}).click();

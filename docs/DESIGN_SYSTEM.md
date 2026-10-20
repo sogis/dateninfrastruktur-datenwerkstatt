@@ -104,9 +104,11 @@ Feldnamen. Deaktivierte und schreibgeschützte Werte bleiben lesbar.
 - ActionGroup/Toolbar: gemeinsame Abstände, Reihenfolge und Umbruch.
 - Notice/Fehlermeldung: Text und getönte Fläche kennzeichnen Information,
   Erfolg, Warnung und Fehler. Kein dekorativer linker Rahmen oder Akzentstrich.
-  Globale Fehlerhinweise haben rechts einen transparenten IconButton mit
-  lokalem `x-lg`, blau (#0B5FFF), 40×40 px und dem zugänglichen Namen/Tooltip
-  „Hinweis schliessen“. Das Icon bleibt auch bei mehrzeiligem Text vertikal
+  Globale Fehlerhinweise verwenden Schriftgewicht 400 und haben rechts einen
+  transparenten IconButton mit lokalem `x-lg` in derselben Fehlerfarbe wie der Text
+  (#B80F17), 40×40 px und dem zugänglichen Namen/Tooltip „Hinweis schliessen“.
+  Die Hoverfläche verwendet diese rote Farbe mit 10 % Deckkraft, der gedrückte
+  Zustand mit 16 % Deckkraft. Das Icon bleibt auch bei mehrzeiligem Text vertikal
   zur gesamten Meldung zentriert; der Text darf umbrechen.
 - FormField/Input/Select/Textarea: native Semantik, Label, Hinweis, Fehler.
 - Modal: nativer Dialog mit Kopf, Inhalt, Fuss, Fokusfang und Fokusrückgabe.
@@ -172,7 +174,10 @@ SQL/R: Analysename → Ausführen/Abbrechen → Speichern → Ansichtsaktionen �
 Aktionen. Layoutreset und R-Reset im Menü; Parameter/Optionen einblendbar.
 Ergebnis-, Paging- und Grafikaktionen am jeweiligen Ergebnis, mit ActionGroup.
 Tabellen bleiben Tabellen; Zahlen nach logischem Typ rechtsbündig, NULL explizit.
-Leere Zustände erläutern den nächsten Schritt. Wartung getrennt von Einstiegsaktionen.
+Leere Zustände erläutern den nächsten Schritt. Die Bereinigung abgebrochener oder
+gelöschter Projekte ist ausschliesslich unter Einstellungen → Browser-Speicher
+direkt zugänglich, ohne Aufklappbereich. Speicherstatus und Projektverwaltung
+bilden eine einheitliche Aktionsgruppe; die Bereinigung folgt mit 16 px Abstand.
 
 ## Referenz und Abnahme
 

@@ -1,0 +1,123 @@
+[WebServer] (node:50744) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 9 tests using 1 worker
+
+(node:50745) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/navigation.spec.ts:5:1 › Navigation: settings remain reachable on global pages, with session toggle and saved default (1.6s)
+  ✘  2 [chromium] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view (3.8s)
+(node:50798) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [chromium] › tests/e2e/navigation.spec.ts:215:1 › Notices: regular error text, matching red SVG and translucent interaction states with keyboard dismissal (9.4s)
+(node:50876) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [firefox] › tests/e2e/navigation.spec.ts:5:1 › Navigation: settings remain reachable on global pages, with session toggle and saved default (2.6s)
+  ✘  5 [firefox] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view (4.4s)
+(node:53254) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  6 [firefox] › tests/e2e/navigation.spec.ts:215:1 › Notices: regular error text, matching red SVG and translucent interaction states with keyboard dismissal (6.5s)
+(node:53278) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  7 [webkit] › tests/e2e/navigation.spec.ts:5:1 › Navigation: settings remain reachable on global pages, with session toggle and saved default (1.9s)
+  ✘  8 [webkit] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view (4.2s)
+(node:53322) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  9 [webkit] › tests/e2e/navigation.spec.ts:215:1 › Notices: regular error text, matching red SVG and translucent interaction states with keyboard dismissal (9.2s)
+
+
+  1) [chromium] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 56
+    Received: 120
+
+      119 |         overflow: document.documentElement.scrollWidth > innerWidth,
+      120 |       }));
+    > 121 |       expect(geometry.top).toBe(geometry.headerBottom);
+          |                            ^
+      122 |       expect(geometry.firstChildTop).toBe(geometry.top);
+      123 |       expect(geometry.overflow).toBe(false);
+      124 |       await writeFile(
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/navigation.spec.ts:121:28
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/removed-status-navigation/e2e-navigation-Navigation--798b4--edits-and-its-sidebar-view-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/removed-status-navigation/e2e-navigation-Navigation--798b4--edits-and-its-sidebar-view-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/removed-status-navigation/e2e-navigation-Navigation--798b4--edits-and-its-sidebar-view-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/removed-status-navigation/e2e-navigation-Navigation--798b4--edits-and-its-sidebar-view-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [firefox] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 56
+    Received: 120
+
+      119 |         overflow: document.documentElement.scrollWidth > innerWidth,
+      120 |       }));
+    > 121 |       expect(geometry.top).toBe(geometry.headerBottom);
+          |                            ^
+      122 |       expect(geometry.firstChildTop).toBe(geometry.top);
+      123 |       expect(geometry.overflow).toBe(false);
+      124 |       await writeFile(
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/navigation.spec.ts:121:28
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/removed-status-navigation/e2e-navigation-Navigation--798b4--edits-and-its-sidebar-view-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/removed-status-navigation/e2e-navigation-Navigation--798b4--edits-and-its-sidebar-view-firefox/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/removed-status-navigation/e2e-navigation-Navigation--798b4--edits-and-its-sidebar-view-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/removed-status-navigation/e2e-navigation-Navigation--798b4--edits-and-its-sidebar-view-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [webkit] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 56
+    Received: 120
+
+      119 |         overflow: document.documentElement.scrollWidth > innerWidth,
+      120 |       }));
+    > 121 |       expect(geometry.top).toBe(geometry.headerBottom);
+          |                            ^
+      122 |       expect(geometry.firstChildTop).toBe(geometry.top);
+      123 |       expect(geometry.overflow).toBe(false);
+      124 |       await writeFile(
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/navigation.spec.ts:121:28
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/removed-status-navigation/e2e-navigation-Navigation--798b4--edits-and-its-sidebar-view-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/removed-status-navigation/e2e-navigation-Navigation--798b4--edits-and-its-sidebar-view-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/removed-status-navigation/e2e-navigation-Navigation--798b4--edits-and-its-sidebar-view-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/removed-status-navigation/e2e-navigation-Navigation--798b4--edits-and-its-sidebar-view-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [chromium] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+    [firefox] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+    [webkit] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+  6 passed (45.5s)

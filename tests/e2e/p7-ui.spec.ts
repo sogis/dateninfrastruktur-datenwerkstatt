@@ -1,5 +1,5 @@
 import {test, expect} from '../persistentBrowser';
-import {mkdir, writeFile} from 'node:fs/promises';
+import {writeFile} from 'node:fs/promises';
 import type {Page} from '@playwright/test';
 async function create(page: Page) {
   await page.goto('/projects');
@@ -95,9 +95,8 @@ test('P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layou
         expect(box.output.height).toBeGreaterThanOrEqual(220);
       }
       geometry.push(box);
-      await mkdir('docs/verification/projects', {recursive: true});
       await page.screenshot({
-        path: `docs/verification/projects/p7-${kind}-${info.project.name}-${size.width}.png`,
+        path: info.outputPath(`p7-${kind}-${info.project.name}-${size.width}.png`),
       });
     }
     const splitter = page.getByRole('separator', {
@@ -130,7 +129,7 @@ test('P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layou
     await expect(splitter).toHaveAttribute('aria-valuenow', kind === 'sql' ? '45' : '50');
   }
   await writeFile(
-    `docs/verification/projects/p7-geometry-${info.project.name}.json`,
+    info.outputPath(`p7-geometry-${info.project.name}.json`),
     JSON.stringify(geometry, null, 2),
   );
   await page.getByRole('button', {name: 'Konsole', exact: true}).click();
@@ -142,7 +141,7 @@ test('P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layou
 });
 test('P7 AT-055–057: native focus trap/return, settings, storage cleanup and data-free diagnostics', async ({
   page,
-}) => {
+}, info) => {
   await create(page);
   await page.getByRole('link', {name: 'Daten', exact: true}).click();
   const open = page.getByRole('button', {name: 'Datei hinzufügen', exact: true});
@@ -179,13 +178,50 @@ test('P7 AT-055–057: native focus trap/return, settings, storage cleanup and d
   await expect(page.getByRole('status')).toHaveText('Einstellungen gespeichert');
   await page.reload();
   await expect(page.getByLabel('Seitenleiste standardmässig eingeklappt')).not.toBeChecked();
-  await page.getByRole('button', {name: 'Nicht referenzierte Projektreste bereinigen'}).click();
+  const storage = page.getByRole('region', {name: 'Browser-Speicher'});
+  const cleanup = storage.getByRole('button', {
+    name: 'Nicht referenzierte Projektreste bereinigen',
+  });
+  const manage = storage.getByRole('link', {name: 'Projekte verwalten und gezielt löschen'});
+  await expect(storage.locator('details')).toHaveCount(0);
+  await expect(cleanup).toHaveCount(1);
+  for (const viewport of [
+    {width: 1440, height: 900},
+    {width: 1280, height: 800},
+  ]) {
+    await page.setViewportSize(viewport);
+    const refreshBox = (await storage
+      .getByRole('button', {name: 'Speicherstatus aktualisieren'})
+      .boundingBox())!;
+    const manageBox = (await manage.boundingBox())!;
+    const cleanupBox = (await cleanup.boundingBox())!;
+    expect(refreshBox.height).toBeGreaterThanOrEqual(40);
+    expect(manageBox.height).toBe(refreshBox.height);
+    expect(manageBox.y).toBe(refreshBox.y);
+    expect(manageBox.x - refreshBox.x - refreshBox.width).toBeCloseTo(8);
+    expect(cleanupBox.y - refreshBox.y - refreshBox.height).toBeCloseTo(16);
+    expect(cleanupBox.x).toBe(refreshBox.x);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+    await page.screenshot({path: info.outputPath(`settings-storage-${viewport.width}.png`)});
+  }
+  await cleanup.click();
   await expect(page.getByRole('dialog')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(
     page.getByRole('button', {name: 'Nicht referenzierte Projektreste bereinigen'}),
   ).toBeFocused();
   await expect(page.getByText(/Login|ClickHouse|Freigaben|KI-Assistent/)).toHaveCount(0);
+  await manage.click();
+  await expect(page).toHaveURL(/\/projects$/);
+  await expect(page.getByText('Wartung', {exact: true})).toHaveCount(0);
+  await expect(
+    page.getByRole('button', {
+      name: /Reste abgebrochener Projekte|Nicht referenzierte Projektreste/,
+    }),
+  ).toHaveCount(0);
+  await expect(page.getByRole('button', {name: 'Projekt öffnen', exact: true})).toBeVisible();
 });
 
 test('P7 AT-025 AT-055 AT-056: selected SQL is snapshotted and cell markup remains text', async ({
@@ -248,7 +284,10 @@ test('P7 AT-058: browser history restores the analysis cursor and layout does no
   await editor.press('ControlOrMeta+z');
   await expect(page.locator('.view-lines')).toContainText(/SELECT\s+11\s+AS\s+wert/);
   await editor.press('ControlOrMeta+s');
-  await expect(page.getByText('Lokal gespeichert · kein Backup', {exact: true})).toBeVisible();
+  await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
+    'data-save-state',
+    'saved',
+  );
   await page.goForward();
   await expect(page).toHaveURL(rUrl);
   await page.goBack();

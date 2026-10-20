@@ -1,0 +1,10 @@
+{
+  "node": "22.23.1",
+  "platform": "darwin",
+  "arch": "arm64",
+  "browsers": {
+    "chromium": "153.0.8010.12",
+    "firefox": "155.0",
+    "webkit": "26.6"
+  }
+}

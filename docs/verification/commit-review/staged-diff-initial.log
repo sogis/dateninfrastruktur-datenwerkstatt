@@ -1,0 +1,293 @@
+docs/DESIGN_SYSTEM_NEUTRAL.md:3: trailing whitespace.
++**Version:** 1.1  
+docs/DESIGN_SYSTEM_NEUTRAL.md:4: trailing whitespace.
++**Stand:** 20. Oktober 2026  
+docs/DESIGN_SYSTEM_NEUTRAL.md:5: trailing whitespace.
++**Standardtheme:** `neutral-blue`  
+docs/verification/error-notice/build.log:31: trailing whitespace.
++[plugin builtin:vite-reporter] 
+docs/verification/error-notice/typecheck.log:4: new blank line at EOF.
+docs/verification/removed-status/browser-matrix-initial.log:65: trailing whitespace.
++  1) [chromium] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+docs/verification/removed-status/browser-matrix-initial.log:104: trailing whitespace.
++  2) [firefox] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+docs/verification/removed-status/browser-matrix-initial.log:143: trailing whitespace.
++  3) [webkit] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+docs/verification/removed-status/browser-matrix-initial.log:183: trailing whitespace.
++    [chromium] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+docs/verification/removed-status/browser-matrix-initial.log:184: trailing whitespace.
++    [firefox] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+docs/verification/removed-status/browser-matrix-initial.log:185: trailing whitespace.
++    [webkit] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+docs/verification/removed-status/build.log:31: trailing whitespace.
++[plugin builtin:vite-reporter] 
+docs/verification/removed-status/deployment-initial.log:9: trailing whitespace.
++[WebServer] [plugin builtin:vite-reporter] 
+docs/verification/removed-status/deployment-initial.log:15: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:19: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:22: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:26: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:30: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:34: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:37: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:40: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:43: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:46: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:62: trailing whitespace.
++[WebServer] [plugin builtin:vite-reporter] 
+docs/verification/removed-status/deployment-initial.log:68: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:72: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:75: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:79: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:83: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:87: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:90: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:93: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:96: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:99: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:112: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:116: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:119: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:123: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:127: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:131: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:134: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:137: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:140: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:143: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-initial.log:207: trailing whitespace.
++  1) [webkit-1] › tests/deployment/static.spec.ts:9:1 › P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R 
+docs/verification/removed-status/deployment-initial.log:243: trailing whitespace.
++    [webkit-1] › tests/deployment/static.spec.ts:9:1 › P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R 
+docs/verification/removed-status/deployment-panel-fix.log:9: trailing whitespace.
++[WebServer] [plugin builtin:vite-reporter] 
+docs/verification/removed-status/deployment-panel-fix.log:15: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:19: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:22: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:26: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:30: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:34: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:37: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:40: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:43: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:46: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:62: trailing whitespace.
++[WebServer] [plugin builtin:vite-reporter] 
+docs/verification/removed-status/deployment-panel-fix.log:68: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:72: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:75: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:79: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:83: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:87: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:90: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:93: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:96: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:99: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:112: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:116: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:119: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:123: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:127: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:131: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:134: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:137: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:140: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-panel-fix.log:143: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:9: trailing whitespace.
++[WebServer] [plugin builtin:vite-reporter] 
+docs/verification/removed-status/deployment-repro.log:15: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:19: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:22: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:26: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:30: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:34: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:37: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:40: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:43: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:57: trailing whitespace.
++[WebServer] [plugin builtin:vite-reporter] 
+docs/verification/removed-status/deployment-repro.log:63: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:67: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:70: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:74: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:78: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:82: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:85: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:88: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:91: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:102: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:106: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:109: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:113: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:117: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:121: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:124: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:127: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:130: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment-repro.log:154: trailing whitespace.
++  1) [webkit-1] › tests/deployment/static.spec.ts:9:1 › P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R 
+docs/verification/removed-status/deployment-repro.log:189: trailing whitespace.
++  2) [webkit-1] › tests/deployment/static.spec.ts:9:1 › P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R 
+docs/verification/removed-status/deployment-repro.log:225: trailing whitespace.
++    [webkit-1] › tests/deployment/static.spec.ts:9:1 › P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R 
+docs/verification/removed-status/deployment-repro.log:226: trailing whitespace.
++    [webkit-1] › tests/deployment/static.spec.ts:9:1 › P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R 
+docs/verification/removed-status/deployment.log:9: trailing whitespace.
++[WebServer] [plugin builtin:vite-reporter] 
+docs/verification/removed-status/deployment.log:15: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:19: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:22: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:26: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:30: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:34: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:37: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:40: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:43: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:57: trailing whitespace.
++[WebServer] [plugin builtin:vite-reporter] 
+docs/verification/removed-status/deployment.log:63: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:67: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:70: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:74: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:78: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:82: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:85: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:88: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:91: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:102: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:106: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:109: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:113: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:117: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:121: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:124: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:127: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/deployment.log:130: trailing whitespace.
++[WebServer] 
+docs/verification/removed-status/navigation-initial.log:29: trailing whitespace.
++  1) [chromium] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+docs/verification/removed-status/navigation-initial.log:59: trailing whitespace.
++  2) [firefox] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+docs/verification/removed-status/navigation-initial.log:89: trailing whitespace.
++  3) [webkit] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+docs/verification/removed-status/navigation-initial.log:120: trailing whitespace.
++    [chromium] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+docs/verification/removed-status/navigation-initial.log:121: trailing whitespace.
++    [firefox] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+docs/verification/removed-status/navigation-initial.log:122: trailing whitespace.
++    [webkit] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view 
+docs/verification/removed-status/typecheck-final.log:4: new blank line at EOF.
+docs/verification/removed-status/typecheck.log:4: new blank line at EOF.

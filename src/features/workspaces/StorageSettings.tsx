@@ -27,13 +27,19 @@ export function StorageSettings() {
         Geschätzter Verbrauch: {bytes(estimate?.usage)} · Browserbudget: {bytes(estimate?.quota)}.
         Die Schätzung reserviert keinen Speicher.
       </p>
-      <ActionGroup>
-        <Button onClick={refresh}>Speicherstatus aktualisieren</Button>
-        <Link to="/projects">Projekte verwalten und gezielt löschen</Link>
-        <Button disabled={busy} onClick={() => setConfirm(true)}>
-          Nicht referenzierte Projektreste bereinigen
-        </Button>
-      </ActionGroup>
+      <div className="storage-settings-actions">
+        <ActionGroup>
+          <Button onClick={refresh}>Speicherstatus aktualisieren</Button>
+          <Link to="/projects" className="dw-button dw-button--secondary">
+            Projekte verwalten und gezielt löschen
+          </Link>
+        </ActionGroup>
+        <ActionGroup>
+          <Button disabled={busy} onClick={() => setConfirm(true)}>
+            Nicht referenzierte Projektreste bereinigen
+          </Button>
+        </ActionGroup>
+      </div>
       {receipt && <Notice tone="info">{receipt}</Notice>}
       {confirm && (
         <Modal

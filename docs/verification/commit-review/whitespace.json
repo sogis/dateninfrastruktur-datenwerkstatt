@@ -1,0 +1,3252 @@
+{
+  "fullStagedCheckExitCode": 2,
+  "sourceAndTestsCheckExitCode": 0,
+  "allowedIssues": [
+    {
+      "path": "docs/DESIGN_SYSTEM_NEUTRAL.md",
+      "line": 3,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/DESIGN_SYSTEM_NEUTRAL.md",
+      "line": 4,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/DESIGN_SYSTEM_NEUTRAL.md",
+      "line": 5,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 9,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 15,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 19,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 22,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 26,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 30,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 34,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 37,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 40,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 43,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 46,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 62,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 68,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 72,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 75,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 79,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 83,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 87,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 90,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 93,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 96,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 99,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 112,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 116,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 119,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 123,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 127,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 131,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 134,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 137,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 140,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/deployment.log",
+      "line": 143,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 2,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 4,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 6,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 8,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 10,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 12,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 14,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 16,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 18,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 20,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 22,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 24,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 26,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 28,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 30,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 32,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 34,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 36,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 38,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 40,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 42,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 44,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 46,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 48,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 50,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 52,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 54,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 56,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 58,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 60,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 62,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 64,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 66,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 68,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 70,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 72,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 74,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 76,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 78,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 80,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 82,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 84,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 86,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 88,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 90,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 92,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 94,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 96,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 98,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 100,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 102,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 104,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 106,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 108,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 110,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 112,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 114,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 116,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 118,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 120,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 122,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 124,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 126,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 128,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 130,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 132,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 134,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 136,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 138,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 140,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 142,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 144,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 146,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 148,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 150,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 152,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 154,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 156,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 158,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 160,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 162,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 164,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 166,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 168,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 170,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 172,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 174,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 176,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 178,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 180,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 182,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 184,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 186,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 188,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 190,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 192,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 194,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 196,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 198,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 200,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 202,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 204,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 206,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 208,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 210,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 212,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 214,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 216,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 218,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 220,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 222,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 224,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 226,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 228,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 230,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 232,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 234,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 236,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 238,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 240,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 242,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 244,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 246,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 248,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 250,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 252,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 254,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 256,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 258,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 260,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 262,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 264,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 266,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 268,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 270,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 272,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 274,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 276,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 278,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 280,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 282,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 284,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 286,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 288,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 290,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 292,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 294,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 296,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 298,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 300,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 302,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 304,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 306,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 308,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 310,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 312,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 314,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 316,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 318,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 320,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 322,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 324,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 326,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 328,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 330,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 332,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 334,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 336,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 338,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 340,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 342,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 344,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 346,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 348,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 350,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 352,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 354,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 356,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 358,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 360,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 362,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 364,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 367,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 369,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 371,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 373,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 375,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 377,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 379,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 381,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 383,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 385,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 387,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 389,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 391,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 393,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 395,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 397,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 399,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 401,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 403,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 405,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 407,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 409,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 411,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 413,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 415,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 417,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 419,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 421,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 423,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 425,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 427,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 429,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 431,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 433,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 435,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 437,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 439,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 441,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 443,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 445,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 447,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 449,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 451,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 453,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 455,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 457,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 459,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 461,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 463,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 465,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 467,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 469,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 471,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 473,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 475,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 477,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 479,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 481,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 483,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 485,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 487,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 489,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 491,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 493,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 495,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 497,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 499,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 501,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 503,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 505,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 507,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 509,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 511,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 513,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 515,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 517,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 519,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 521,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 523,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 525,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 527,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 529,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 531,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 533,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 535,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 537,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 539,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 541,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 543,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 545,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 547,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 549,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 551,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 553,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 555,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 557,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 559,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 561,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 563,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 565,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 567,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 569,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 571,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 573,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 575,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 577,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 579,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 581,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 583,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 585,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 587,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 589,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 591,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 593,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 595,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 597,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 599,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 601,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 603,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 605,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 607,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 609,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 611,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 613,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 615,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 617,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 619,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 621,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 623,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 625,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 627,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 629,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 631,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 633,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 635,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 637,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 639,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 641,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 643,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 645,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-final.log",
+      "line": 647,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 2,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 4,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 6,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 8,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 11,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 13,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 15,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 17,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 19,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 21,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 23,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 25,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 27,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 29,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 31,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 33,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 35,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 37,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 39,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 41,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 43,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 45,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 47,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 49,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 51,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 53,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 55,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 57,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 59,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 61,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 63,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 65,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 67,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 69,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 71,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 73,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 75,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 77,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 79,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 81,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 83,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 85,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 87,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 89,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 91,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 93,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 95,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 97,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 99,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 101,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 103,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 105,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 107,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 109,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 111,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 113,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 115,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 117,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 119,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 121,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 123,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 125,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 127,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 129,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 131,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 133,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 135,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 137,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 139,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 141,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 143,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 145,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 147,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 149,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 151,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 153,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 155,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 157,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 159,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 161,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 163,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 165,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 167,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 169,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 171,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 173,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 175,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 177,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 179,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 181,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 183,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 185,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 187,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 189,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 191,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 193,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 195,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 197,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 199,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 201,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 203,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 205,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 207,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 209,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 211,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 213,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 215,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 217,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 219,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 221,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 223,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 225,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 227,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 229,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 231,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 233,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 235,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 237,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 239,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 241,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 243,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 245,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 247,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 249,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 251,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 253,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 255,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 257,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 259,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 261,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 263,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 265,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 267,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 269,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 271,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 273,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 275,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 277,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 279,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 281,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 283,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 285,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 287,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 289,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/staged-diff-initial.log",
+      "line": 291,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/commit-review/verify.log",
+      "line": 57,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/error-notice/build.log",
+      "line": 31,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/error-notice/typecheck.log",
+      "line": 4,
+      "kind": "new blank line at EOF"
+    },
+    {
+      "path": "docs/verification/removed-status/browser-matrix-initial.log",
+      "line": 65,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/browser-matrix-initial.log",
+      "line": 104,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/browser-matrix-initial.log",
+      "line": 143,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/browser-matrix-initial.log",
+      "line": 183,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/browser-matrix-initial.log",
+      "line": 184,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/browser-matrix-initial.log",
+      "line": 185,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/build.log",
+      "line": 31,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 9,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 15,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 19,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 22,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 26,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 30,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 34,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 37,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 40,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 43,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 46,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 62,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 68,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 72,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 75,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 79,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 83,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 87,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 90,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 93,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 96,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 99,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 112,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 116,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 119,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 123,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 127,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 131,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 134,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 137,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 140,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 143,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 207,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-initial.log",
+      "line": 243,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 9,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 15,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 19,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 22,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 26,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 30,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 34,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 37,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 40,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 43,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 46,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 62,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 68,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 72,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 75,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 79,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 83,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 87,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 90,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 93,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 96,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 99,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 112,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 116,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 119,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 123,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 127,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 131,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 134,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 137,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 140,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-panel-fix.log",
+      "line": 143,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 9,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 15,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 19,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 22,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 26,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 30,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 34,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 37,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 40,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 43,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 57,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 63,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 67,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 70,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 74,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 78,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 82,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 85,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 88,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 91,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 102,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 106,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 109,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 113,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 117,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 121,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 124,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 127,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 130,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 154,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 189,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 225,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment-repro.log",
+      "line": 226,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 9,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 15,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 19,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 22,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 26,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 30,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 34,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 37,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 40,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 43,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 57,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 63,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 67,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 70,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 74,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 78,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 82,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 85,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 88,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 91,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 102,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 106,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 109,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 113,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 117,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 121,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 124,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 127,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/deployment.log",
+      "line": 130,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/navigation-initial.log",
+      "line": 29,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/navigation-initial.log",
+      "line": 59,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/navigation-initial.log",
+      "line": 89,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/navigation-initial.log",
+      "line": 120,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/navigation-initial.log",
+      "line": 121,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/navigation-initial.log",
+      "line": 122,
+      "kind": "trailing whitespace"
+    },
+    {
+      "path": "docs/verification/removed-status/typecheck-final.log",
+      "line": 4,
+      "kind": "new blank line at EOF"
+    },
+    {
+      "path": "docs/verification/removed-status/typecheck.log",
+      "line": 4,
+      "kind": "new blank line at EOF"
+    }
+  ],
+  "reason": "Generated raw logs preserved byte-for-byte; three intentional Markdown hard breaks preserved."
+}

@@ -1,0 +1,213 @@
+
+> datenwerkstatt@0.1.0 test:deployment
+> playwright test -c playwright.deploy.config.ts tests/deployment/projects.spec.ts tests/deployment/static.spec.ts --output=test-results-deployment/commit-review --reporter=list,json
+
+[WebServer] (node:90480) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:90509) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] #0 building with "desktop-linux" instance using docker driver
+[WebServer] 
+[WebServer] #1 [internal] load build definition from Dockerfile
+[WebServer] #1 transferring dockerfile: 491B done
+[WebServer] #1 DONE 0.0s
+[WebServer] 
+[WebServer] #2 [internal] load metadata for docker.io/library/caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
+[WebServer] #2 DONE 0.8s
+[WebServer] 
+[WebServer] #3 [internal] load .dockerignore
+[WebServer] #3 transferring context: 2B done
+[WebServer] #3 DONE 0.0s
+[WebServer] 
+[WebServer] #4 [1/4] FROM docker.io/library/caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
+[WebServer] #4 resolve docker.io/library/caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648 done
+[WebServer] #4 DONE 0.0s
+[WebServer] 
+[WebServer] #5 [internal] load build context
+[WebServer] #5 transferring context: 238.96MB 1.8s done
+[WebServer] #5 DONE 1.8s
+[WebServer] 
+[WebServer] #4 [1/4] FROM docker.io/library/caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
+[WebServer] #4 CACHED
+[WebServer] 
+[WebServer] #6 [2/4] COPY dist /srv
+[WebServer] #6 DONE 0.8s
+[WebServer] 
+[WebServer] #7 [3/4] COPY Caddyfile /etc/caddy/Caddyfile
+[WebServer] #7 DONE 0.0s
+[WebServer] 
+[WebServer] #8 [4/4] RUN setcap -r /usr/bin/caddy
+[WebServer] #8 DONE 0.3s
+[WebServer] 
+[WebServer] #9 exporting to image
+[WebServer] #9 exporting layers
+[WebServer] #9 exporting layers 4.2s done
+[WebServer] #9 exporting manifest sha256:e5bd22a40de16b475e516feb7a7c658d59944049ce1628fc12dc96d230f53086 0.0s done
+[WebServer] #9 exporting config sha256:45865b7f3047ee1eb5d6d19cdfd8ae939e1633c88fef3e8f0e0645f8868e0b0d 0.0s done
+[WebServer] #9 exporting attestation manifest sha256:45357a53c7f6f6fb0590b44e307a3b0428621b8fe490cb62a192a1363477fdeb done
+[WebServer] #9 exporting manifest list sha256:722a3d755d40b70e84ab6687258c3bbf98449180322ddeb37ff0354a45ad550b done
+[WebServer] #9 naming to docker.io/library/datenwerkstatt-p7-test:0 done
+[WebServer] #9 unpacking to docker.io/library/datenwerkstatt-p7-test:0
+[WebServer] #9 unpacking to docker.io/library/datenwerkstatt-p7-test:0 2.2s done
+[WebServer] #9 DONE 6.5s
+[WebServer] (node:92980) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:93008) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] #0 building with "desktop-linux" instance using docker driver
+[WebServer] 
+[WebServer] #1 [internal] load build definition from Dockerfile
+[WebServer] #1 transferring dockerfile: 491B done
+[WebServer] #1 DONE 0.0s
+[WebServer] 
+[WebServer] #2 [internal] load metadata for docker.io/library/caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
+[WebServer] #2 DONE 0.0s
+[WebServer] 
+[WebServer] #3 [internal] load .dockerignore
+[WebServer] #3 transferring context: 2B done
+[WebServer] #3 DONE 0.0s
+[WebServer] 
+[WebServer] #4 [1/4] FROM docker.io/library/caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
+[WebServer] #4 resolve docker.io/library/caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648 done
+[WebServer] #4 DONE 0.0s
+[WebServer] 
+[WebServer] #5 [internal] load build context
+[WebServer] #5 transferring context: 238.96MB 2.5s done
+[WebServer] #5 DONE 2.5s
+[WebServer] 
+[WebServer] #4 [1/4] FROM docker.io/library/caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
+[WebServer] #4 CACHED
+[WebServer] 
+[WebServer] #6 [2/4] COPY dist /srv
+[WebServer] #6 DONE 0.8s
+[WebServer] 
+[WebServer] #7 [3/4] COPY Caddyfile /etc/caddy/Caddyfile
+[WebServer] #7 DONE 0.0s
+[WebServer] 
+[WebServer] #8 [4/4] RUN setcap -r /usr/bin/caddy
+[WebServer] #8 DONE 0.1s
+[WebServer] 
+[WebServer] #9 exporting to image
+[WebServer] #9 exporting layers
+[WebServer] #9 exporting layers 4.7s done
+[WebServer] #9 exporting manifest sha256:e9587476a8eb2ad45b87f237421f5d1cf6728556ea34ce7896b74a516c1b3100 0.0s done
+[WebServer] #9 exporting config sha256:ce520147458eae5f19753ec7b03cd747958b09977d7903332f9a0339edbc01d0 0.0s done
+[WebServer] #9 exporting attestation manifest sha256:432557ecd6c2b85cb5fc26f71536c25aa540fde56b674f2fb7279a1a5ac842f3 done
+[WebServer] #9 exporting manifest list sha256:e3197c5ff0461fd03574552c2acf1d4a073cdfe03970490b2fa0221f50b16271 done
+[WebServer] #9 naming to docker.io/library/datenwerkstatt-p7-test:1 done
+[WebServer] #9 unpacking to docker.io/library/datenwerkstatt-p7-test:1
+[WebServer] #9 unpacking to docker.io/library/datenwerkstatt-p7-test:1 1.0s done
+[WebServer] #9 DONE 5.8s
+[WebServer] #0 building with "desktop-linux" instance using docker driver
+[WebServer] 
+[WebServer] #1 [internal] load build definition from Dockerfile
+[WebServer] #1 transferring dockerfile: 491B done
+[WebServer] #1 DONE 0.0s
+[WebServer] 
+[WebServer] #2 [internal] load metadata for docker.io/library/caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
+[WebServer] #2 DONE 0.0s
+[WebServer] 
+[WebServer] #3 [internal] load .dockerignore
+[WebServer] #3 transferring context: 2B done
+[WebServer] #3 DONE 0.0s
+[WebServer] 
+[WebServer] #4 [1/4] FROM docker.io/library/caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
+[WebServer] #4 resolve docker.io/library/caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648 done
+[WebServer] #4 DONE 0.0s
+[WebServer] 
+[WebServer] #5 [internal] load build context
+[WebServer] #5 transferring context: 238.96MB 2.3s done
+[WebServer] #5 DONE 2.3s
+[WebServer] 
+[WebServer] #4 [1/4] FROM docker.io/library/caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
+[WebServer] #4 CACHED
+[WebServer] 
+[WebServer] #6 [2/4] COPY dist /srv
+[WebServer] #6 DONE 0.8s
+[WebServer] 
+[WebServer] #7 [3/4] COPY Caddyfile /etc/caddy/Caddyfile
+[WebServer] #7 DONE 0.0s
+[WebServer] 
+[WebServer] #8 [4/4] RUN setcap -r /usr/bin/caddy
+[WebServer] #8 DONE 0.2s
+[WebServer] 
+[WebServer] #9 exporting to image
+[WebServer] #9 exporting layers
+[WebServer] #9 exporting layers 4.2s done
+[WebServer] #9 exporting manifest sha256:99a4ebda934e954549372db0d154c62bda7728a6edf55f4b3a41003060e9680e done
+[WebServer] #9 exporting config sha256:0019a1749c3e71039c730def98a85598b42d5a05230a55bf70541f483eb9e598 done
+[WebServer] #9 exporting attestation manifest sha256:ab40c774f3dfd16738a2776375d55390b466f0a6abc4c58500a28bf9073b3af4 done
+[WebServer] #9 exporting manifest list sha256:078a95ccc7673af785038cdd7132506e6616636b64aae3a52736b6cedda57827 done
+[WebServer] #9 naming to docker.io/library/datenwerkstatt-p7-test:2 done
+[WebServer] #9 unpacking to docker.io/library/datenwerkstatt-p7-test:2
+[WebServer] #9 unpacking to docker.io/library/datenwerkstatt-p7-test:2 1.2s done
+[WebServer] #9 DONE 5.5s
+
+Running 36 tests using 1 worker
+
+(node:95562) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium-0] › tests/deployment/projects.spec.ts:3:1 › Projects: canonical deep routes reload under root/lab and retired workspace routes/assets return real 404 (2.7s)
+  ✓   2 [chromium-0] › tests/deployment/static.spec.ts:9:1 › P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R (15.6s)
+  ✓   3 [chromium-0] › tests/deployment/static.spec.ts:98:1 › P7 AT-067: invalid operator config fails closed before any runtime (307ms)
+  ✓   4 [chromium-0] › tests/deployment/static.spec.ts:113:1 › UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices under each deployment base (3.0s)
+(node:95627) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [chromium-1] › tests/deployment/projects.spec.ts:3:1 › Projects: canonical deep routes reload under root/lab and retired workspace routes/assets return real 404 (2.5s)
+  ✓   6 [chromium-1] › tests/deployment/static.spec.ts:9:1 › P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R (16.6s)
+  ✓   7 [chromium-1] › tests/deployment/static.spec.ts:98:1 › P7 AT-067: invalid operator config fails closed before any runtime (320ms)
+  ✓   8 [chromium-1] › tests/deployment/static.spec.ts:113:1 › UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices under each deployment base (3.0s)
+(node:95692) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [chromium-2] › tests/deployment/projects.spec.ts:3:1 › Projects: canonical deep routes reload under root/lab and retired workspace routes/assets return real 404 (2.7s)
+  ✓  10 [chromium-2] › tests/deployment/static.spec.ts:9:1 › P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R (16.2s)
+  ✓  11 [chromium-2] › tests/deployment/static.spec.ts:98:1 › P7 AT-067: invalid operator config fails closed before any runtime (324ms)
+  ✓  12 [chromium-2] › tests/deployment/static.spec.ts:113:1 › UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices under each deployment base (3.0s)
+(node:95783) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [firefox-0] › tests/deployment/projects.spec.ts:3:1 › Projects: canonical deep routes reload under root/lab and retired workspace routes/assets return real 404 (4.4s)
+  ✓  14 [firefox-0] › tests/deployment/static.spec.ts:9:1 › P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R (19.7s)
+  ✓  15 [firefox-0] › tests/deployment/static.spec.ts:98:1 › P7 AT-067: invalid operator config fails closed before any runtime (1.6s)
+  ✓  16 [firefox-0] › tests/deployment/static.spec.ts:113:1 › UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices under each deployment base (5.0s)
+(node:95924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  17 [firefox-1] › tests/deployment/projects.spec.ts:3:1 › Projects: canonical deep routes reload under root/lab and retired workspace routes/assets return real 404 (5.2s)
+  ✓  18 [firefox-1] › tests/deployment/static.spec.ts:9:1 › P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R (21.3s)
+  ✓  19 [firefox-1] › tests/deployment/static.spec.ts:98:1 › P7 AT-067: invalid operator config fails closed before any runtime (1.8s)
+  ✓  20 [firefox-1] › tests/deployment/static.spec.ts:113:1 › UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices under each deployment base (4.6s)
+(node:96126) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  21 [firefox-2] › tests/deployment/projects.spec.ts:3:1 › Projects: canonical deep routes reload under root/lab and retired workspace routes/assets return real 404 (5.5s)
+  ✓  22 [firefox-2] › tests/deployment/static.spec.ts:9:1 › P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R (19.2s)
+  ✓  23 [firefox-2] › tests/deployment/static.spec.ts:98:1 › P7 AT-067: invalid operator config fails closed before any runtime (1.7s)
+  ✓  24 [firefox-2] › tests/deployment/static.spec.ts:113:1 › UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices under each deployment base (4.4s)
+(node:96222) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  25 [webkit-0] › tests/deployment/projects.spec.ts:3:1 › Projects: canonical deep routes reload under root/lab and retired workspace routes/assets return real 404 (3.8s)
+  ✓  26 [webkit-0] › tests/deployment/static.spec.ts:9:1 › P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R (21.6s)
+  ✓  27 [webkit-0] › tests/deployment/static.spec.ts:98:1 › P7 AT-067: invalid operator config fails closed before any runtime (833ms)
+  ✓  28 [webkit-0] › tests/deployment/static.spec.ts:113:1 › UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices under each deployment base (3.8s)
+(node:96375) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  29 [webkit-1] › tests/deployment/projects.spec.ts:3:1 › Projects: canonical deep routes reload under root/lab and retired workspace routes/assets return real 404 (3.2s)
+  ✓  30 [webkit-1] › tests/deployment/static.spec.ts:9:1 › P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R (20.9s)
+  ✓  31 [webkit-1] › tests/deployment/static.spec.ts:98:1 › P7 AT-067: invalid operator config fails closed before any runtime (1.0s)
+  ✓  32 [webkit-1] › tests/deployment/static.spec.ts:113:1 › UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices under each deployment base (3.9s)
+(node:96572) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  33 [webkit-2] › tests/deployment/projects.spec.ts:3:1 › Projects: canonical deep routes reload under root/lab and retired workspace routes/assets return real 404 (4.0s)
+  ✓  34 [webkit-2] › tests/deployment/static.spec.ts:9:1 › P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R (15.9s)
+  ✓  35 [webkit-2] › tests/deployment/static.spec.ts:98:1 › P7 AT-067: invalid operator config fails closed before any runtime (818ms)
+  ✓  36 [webkit-2] › tests/deployment/static.spec.ts:113:1 › UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices under each deployment base (3.2s)
+
+  36 passed (4.7m)

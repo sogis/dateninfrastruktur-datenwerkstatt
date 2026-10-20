@@ -46,14 +46,9 @@ main {
   display: grid;
   gap: 16px;
 }
-.maintenance {
-  border-top: 1px solid var(--dw-color-line);
-  padding-top: 16px;
-  color: var(--dw-color-muted);
-  font-size: 14px;
-}
-.maintenance > .dw-actions {
-  margin-top: 12px;
+.storage-settings-actions {
+  display: grid;
+  gap: var(--dw-gap-groups);
 }
 .form-fields {
   display: grid;
@@ -313,12 +308,19 @@ main {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
 }
-.app-error > strong {
+.app-error-message {
   min-width: 0;
   overflow-wrap: anywhere;
+  font-weight: 400;
 }
 .app-error .dw-icon-button {
-  color: var(--dw-color-focus);
+  color: var(--dw-color-danger);
+}
+.app-error .dw-icon-button:hover:not(:disabled) {
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+.app-error .dw-icon-button:active:not(:disabled) {
+  background: color-mix(in srgb, currentColor 16%, transparent);
 }
 .analysis-area {
   display: flex;

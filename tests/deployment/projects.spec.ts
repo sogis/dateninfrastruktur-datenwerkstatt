@@ -21,7 +21,10 @@ test('Projects: canonical deep routes reload under root/lab and retired workspac
   const rUrl = page.url();
   // Persist both new drafts before testing full document navigation and reload.
   await page.getByRole('button', {name: 'Speichern', exact: true}).click();
-  await expect(page.getByText('Lokal gespeichert · kein Backup', {exact: true})).toBeVisible();
+  await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
+    'data-save-state',
+    'saved',
+  );
 
   for (const [url, selector] of [
     [overviewUrl, '.project-overview'],

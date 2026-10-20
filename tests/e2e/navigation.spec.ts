@@ -8,6 +8,7 @@ test('Navigation: settings remain reachable on global pages, with session toggle
   const workers: string[] = [];
   page.on('worker', (worker) => workers.push(worker.url()));
   await page.goto('/projects');
+  await expect(page.locator('.build-status')).toHaveCount(0);
   const nav = page.getByRole('navigation', {name: 'Hauptnavigation'});
   const settings = nav.getByRole('link', {name: 'Einstellungen', exact: true});
   await expect(page.getByRole('navigation')).toHaveCount(1);
@@ -23,6 +24,7 @@ test('Navigation: settings remain reachable on global pages, with session toggle
   await expect(page.getByRole('tooltip', {name: 'Einstellungen', exact: true})).toBeVisible();
   await settings.press('Enter');
   await expect(page).toHaveURL(/\/settings$/);
+  await expect(page.locator('.build-status')).toHaveCount(0);
   await expect(settings).toHaveAttribute('aria-current', 'page');
   await expect(nav.locator('[aria-current="page"]')).toHaveCount(1);
   await nav.getByRole('button', {name: 'Navigation ausklappen'}).press('Enter');
@@ -55,6 +57,8 @@ test('Navigation: settings remain reachable on global pages, with session toggle
 test('Navigation: settings follow R and leaving the workspace saves edits and its sidebar view', async ({
   page,
 }, info) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/projects');
   await page.getByLabel('Name des neuen Projekts').fill('Navigation und Autosave');
   await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
@@ -91,14 +95,51 @@ test('Navigation: settings follow R and leaving the workspace saves edits and it
     {width: 1280, height: 800},
   ]) {
     await page.setViewportSize(viewport);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
-      true,
-    );
-    await page.screenshot({path: info.outputPath(`navigation-${viewport.width}.png`)});
+    for (const [label, selector] of [
+      ['Übersicht', '.project-overview'],
+      ['Daten', '.project-data-page'],
+      ['SQL', '.sql-panels'],
+      ['R', '.r-workbench'],
+    ] as const) {
+      const item = nav.getByRole(label === 'SQL' || label === 'R' ? 'button' : 'link', {
+        name: label,
+        exact: true,
+      });
+      await item.click();
+      await expect(page.locator(selector)).toBeVisible();
+      const content = page.locator('.workspace-content[data-save-state]');
+      await expect(content).toHaveAttribute('data-save-state', 'saved');
+      if (label === 'R')
+        await expect(page.getByRole('button', {name: 'Ausführen', exact: true})).toBeEnabled({
+          timeout: 60000,
+        });
+      await expect(page.locator('.app-error, .workspace-content > .error')).toHaveCount(0);
+      await expect(page.locator('.build-status, .save-status')).toHaveCount(0);
+      await expect(
+        page.getByText('Entwicklungsstand · nicht abgenommen', {exact: true}),
+      ).toHaveCount(0);
+      await expect(page.getByText('Lokal gespeichert · kein Backup', {exact: true})).toHaveCount(0);
+      const geometry = await content.evaluate((section) => ({
+        headerBottom: document.querySelector('.app-header')!.getBoundingClientRect().bottom,
+        top: section.getBoundingClientRect().top,
+        firstChildTop: section.firstElementChild!.getBoundingClientRect().top,
+        overflow: document.documentElement.scrollWidth > innerWidth,
+      }));
+      expect(geometry.top).toBe(geometry.headerBottom);
+      expect(geometry.firstChildTop).toBe(geometry.top);
+      expect(geometry.overflow).toBe(false);
+      await writeFile(
+        info.outputPath(`navigation-${label}-${viewport.width}.json`),
+        JSON.stringify(geometry, null, 2),
+      );
+      await page.screenshot({path: info.outputPath(`navigation-${label}-${viewport.width}.png`)});
+    }
   }
+  expect(errors).toEqual([]);
 });
 
 async function noticeGeometry(page: Page, info: TestInfo, name: string) {
+  await page.mouse.move(0, 0);
   const close = page.getByRole('button', {name: 'Hinweis schliessen', exact: true});
   await expect(close).toBeVisible();
   await expect(close).toHaveText('');
@@ -106,7 +147,7 @@ async function noticeGeometry(page: Page, info: TestInfo, name: string) {
   await expect(close.locator('svg')).toHaveAttribute('focusable', 'false');
   const geometry = await close.evaluate((button) => {
     const banner = button.closest('.app-error')!;
-    const text = banner.querySelector('strong')!;
+    const text = banner.querySelector('.app-error-message')!;
     const rect = banner.getBoundingClientRect();
     const control = button.getBoundingClientRect();
     const icon = button.querySelector('svg')!.getBoundingClientRect();
@@ -120,8 +161,11 @@ async function noticeGeometry(page: Page, info: TestInfo, name: string) {
         right: label.right,
         height: label.height,
         lineHeight: getComputedStyle(text).lineHeight,
+        color: getComputedStyle(text).color,
+        fontWeight: getComputedStyle(text).fontWeight,
       },
       color: style.color,
+      iconColor: getComputedStyle(button.querySelector('svg')!).fill,
       background: style.backgroundColor,
       border: style.borderColor,
       width: style.width,
@@ -129,7 +173,10 @@ async function noticeGeometry(page: Page, info: TestInfo, name: string) {
       overflow: document.documentElement.scrollWidth > innerWidth,
     };
   });
-  expect(geometry.color).toBe('rgb(11, 95, 255)');
+  expect(geometry.text.fontWeight).toBe('400');
+  expect(geometry.text.color).toBe('rgb(184, 15, 23)');
+  expect(geometry.color).toBe(geometry.text.color);
+  expect(geometry.iconColor).toBe(geometry.text.color);
   expect(geometry.background).toBe('rgba(0, 0, 0, 0)');
   expect(geometry.border).toBe('rgba(0, 0, 0, 0)');
   expect(geometry.width).toBe('40px');
@@ -142,10 +189,38 @@ async function noticeGeometry(page: Page, info: TestInfo, name: string) {
   expect(geometry.overflow).toBe(false);
   await writeFile(info.outputPath(`${name}.json`), JSON.stringify(geometry, null, 2));
   await page.screenshot({path: info.outputPath(`${name}.png`)});
+  await close.hover();
+  try {
+    for (const [state, opacity] of [
+      ['hover', 0.1],
+      ['active', 0.16],
+    ] as const) {
+      if (state === 'active') await page.mouse.down();
+      await expect(close).toHaveCSS('color', geometry.text.color);
+      await expect(close.locator('svg')).toHaveCSS('fill', geometry.text.color);
+      // Normalize the browsers' different decimal precision for computed sRGB colors.
+      await expect
+        .poll(async () => {
+          const color = await close.evaluate((button) => getComputedStyle(button).backgroundColor);
+          return color
+            .match(/[\d.]+/g)
+            ?.map((channel, index) =>
+              index < 3 ? Math.round(Number(channel) * 255) : Number(channel),
+            );
+        })
+        .toEqual([184, 15, 23, opacity]);
+      await page.screenshot({path: info.outputPath(`${name}-${state}.png`)});
+    }
+  } finally {
+    // Release outside the button so checking :active does not dismiss the notice.
+    await page.mouse.move(0, 0);
+    await page.mouse.up();
+  }
+  await expect(close).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   return geometry;
 }
 
-test('Notices: real short and multiline errors have a centered blue SVG and keyboard dismissal', async ({
+test('Notices: regular error text, matching red SVG and translucent interaction states with keyboard dismissal', async ({
   page,
   browserName,
 }, info) => {
@@ -157,27 +232,47 @@ test('Notices: real short and multiline errors have a centered blue SVG and keyb
   });
   await expect(page.getByRole('alert')).toContainText('ARCHIVE_INVALID');
   const close = page.getByRole('button', {name: 'Hinweis schliessen', exact: true});
-  for (const viewport of [
+  const viewports = [
     {width: 1440, height: 900},
     {width: 1280, height: 800},
-  ]) {
+  ];
+  for (const viewport of viewports) {
     await page.setViewportSize(viewport);
-    await noticeGeometry(page, info, `notice-short-${viewport.width}`);
+    for (const zoom of [1, 2]) {
+      await page.evaluate((value) => {
+        document.documentElement.style.zoom = String(value);
+      }, zoom);
+      await noticeGeometry(page, info, `notice-short-${viewport.width}-zoom-${zoom}`);
+    }
   }
   await close.click();
   await expect(page.getByRole('alert')).toHaveCount(0);
+  await page.evaluate(() => {
+    document.documentElement.style.zoom = '1';
+  });
   await page.getByLabel('Name des neuen Projekts').fill('Hinweisprüfung');
   await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await expect(page.getByRole('heading', {name: 'Hinweisprüfung'})).toBeVisible();
   await page.getByLabel('Projektname', {exact: true}).fill('');
   await page.getByLabel('Beschreibung', {exact: true}).focus();
   await expect(page.getByRole('alert')).toContainText('Too small');
-  await noticeGeometry(page, info, 'notice-name-error');
-  await page.evaluate(() => {
-    document.documentElement.style.zoom = '2';
-  });
-  const zoomed = await noticeGeometry(page, info, 'notice-name-error-zoom-200');
-  expect(zoomed.text.height).toBeGreaterThan(2 * Number.parseFloat(zoomed.text.lineHeight));
+  for (const viewport of viewports) {
+    await page.setViewportSize(viewport);
+    for (const zoom of [1, 2]) {
+      await page.evaluate((value) => {
+        document.documentElement.style.zoom = String(value);
+      }, zoom);
+      const geometry = await noticeGeometry(
+        page,
+        info,
+        `notice-name-error-${viewport.width}-zoom-${zoom}`,
+      );
+      if (zoom === 2)
+        expect(geometry.text.height).toBeGreaterThan(
+          2 * Number.parseFloat(geometry.text.lineHeight),
+        );
+    }
+  }
   await close.focus();
   const optionTab = browserName === 'webkit' && process.platform === 'darwin';
   await close.press(optionTab ? 'Alt+Tab' : 'Tab');

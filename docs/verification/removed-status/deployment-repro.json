@@ -1,0 +1,406 @@
+{
+  "config": {
+    "argv": [
+      "/Users/stefan/Library/Application Support/fnm/node-versions/v22.23.1/installation/bin/node",
+      "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/node_modules/.bin/playwright",
+      "test",
+      "-c",
+      "playwright.deploy.config.ts",
+      "tests/deployment/static.spec.ts",
+      "--project=webkit-1",
+      "--grep",
+      "arbitrary UID static container",
+      "--repeat-each=3",
+      "--output=test-results-deployment/removed-status-repro",
+      "--reporter=list,json"
+    ],
+    "configFile": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/playwright.deploy.config.ts",
+    "rootDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results-deployment/removed-status-repro",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "profile": 0
+        },
+        "id": "chromium-0",
+        "name": "chromium-0",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results-deployment/removed-status-repro",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "profile": 1
+        },
+        "id": "chromium-1",
+        "name": "chromium-1",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results-deployment/removed-status-repro",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "profile": 2
+        },
+        "id": "chromium-2",
+        "name": "chromium-2",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results-deployment/removed-status-repro",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "profile": 0
+        },
+        "id": "firefox-0",
+        "name": "firefox-0",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results-deployment/removed-status-repro",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "profile": 1
+        },
+        "id": "firefox-1",
+        "name": "firefox-1",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results-deployment/removed-status-repro",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "profile": 2
+        },
+        "id": "firefox-2",
+        "name": "firefox-2",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results-deployment/removed-status-repro",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "profile": 0
+        },
+        "id": "webkit-0",
+        "name": "webkit-0",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results-deployment/removed-status-repro",
+        "repeatEach": 3,
+        "retries": 0,
+        "metadata": {
+          "profile": 1
+        },
+        "id": "webkit-1",
+        "name": "webkit-1",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results-deployment/removed-status-repro",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "profile": 2
+        },
+        "id": "webkit-2",
+        "name": "webkit-2",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 240000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "static.spec.ts",
+      "file": "static.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-1",
+              "projectName": "webkit-1",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 16304,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-20T18:41:09.939Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "network",
+                      "contentType": "application/json",
+                      "body": "WwogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3Byb2plY3RzIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi9hc3NldHMvaW5kZXgtRE41ZUgteXguanMiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL2Fzc2V0cy9pbmRleC1DWnl0cGRuUC5jc3MiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL2Fzc2V0cy9GcnV0aWdlckxUVzA1LTU1Um9tYW4tQ2c4SjV1UDEud29mZjIiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3J1bnRpbWUtY29uZmlnLmpzb24iLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL2Fzc2V0cy9rYW50b24tc29sb3RodXJuLURPcEpfeDhpLnN2ZyIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvYXNzZXRzL0ZydXRpZ2VyTFRXMDUtNzVCbGFjay1ETXFSX3k4bS53b2ZmMiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvYXNzZXRzL0NvZGVFZGl0b3JJbXBsLURCQkxxMnljLmpzIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi9hc3NldHMvQ29kZUVkaXRvckltcGwtQjNJaU8wMEouY3NzIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi9hc3NldHMvSmV0QnJhaW5zTW9uby1SZWd1bGFyLUJRYURndmhQLndvZmYyIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi9hc3NldHMvc3FsLU5FRTUyU3lxLmpzIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi9hc3NldHMvZWRpdG9yLndvcmtlci1DbjJvUkVTZS5qcyIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL2R1Y2tkYi8xLjMzLjEtZGV2NTcuMC9kdWNrZGItbXZwLndhc20iLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci9kdWNrZGIvMS4zMy4xLWRldjU3LjAvZHVja2RiLWJyb3dzZXItbXZwLndvcmtlci5qcyIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL2R1Y2tkYi8xLjMzLjEtZGV2NTcuMC9kdWNrZGItZWgud2FzbSIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL2R1Y2tkYi8xLjMzLjEtZGV2NTcuMC9kdWNrZGItYnJvd3Nlci1laC53b3JrZXIuanMiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci9kdWNrZGIvMS4zMy4xLWRldjU3LjAvZHVja2RiLWJyb3dzZXItZWgud29ya2VyLmpzIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3IvZHVja2RiLzEuMzMuMS1kZXY1Ny4wL2R1Y2tkYi1laC53YXNtIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3IvZHVja2RiLWV4dGVuc2lvbnMvdjEuNS40L3dhc21fZWgvaWN1LmR1Y2tkYl9leHRlbnNpb24ud2FzbSIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL2R1Y2tkYi1leHRlbnNpb25zL3YxLjUuNC93YXNtX2VoL2pzb24uZHVja2RiX2V4dGVuc2lvbi53YXNtIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3IvZHVja2RiLWV4dGVuc2lvbnMvdjEuNS40L3dhc21fZWgvcGFycXVldC5kdWNrZGJfZXh0ZW5zaW9uLndhc20iLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3Byb2plY3RzLzMzMzc3ZjZjLWE5ZDAtNDZmOS1iM2JkLWZkYzUyZTU3YjY3MS9zcWwvZWU4NTI3Y2UtNDZkMS00ODBhLWE4M2UtYzNlNWM2MmJiNTFhIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi9hc3NldHMvaW5kZXgtRE41ZUgteXguanMiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL2Fzc2V0cy9pbmRleC1DWnl0cGRuUC5jc3MiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3J1bnRpbWUtY29uZmlnLmpzb24iLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL2Fzc2V0cy9rYW50b24tc29sb3RodXJuLURPcEpfeDhpLnN2ZyIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvYXNzZXRzL0NvZGVFZGl0b3JJbXBsLURCQkxxMnljLmpzIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi9hc3NldHMvQ29kZUVkaXRvckltcGwtQjNJaU8wMEouY3NzIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi9hc3NldHMvc3FsLU5FRTUyU3lxLmpzIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi9hc3NldHMvZWRpdG9yLndvcmtlci1DbjJvUkVTZS5qcyIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL2R1Y2tkYi8xLjMzLjEtZGV2NTcuMC9kdWNrZGItbXZwLndhc20iLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci9kdWNrZGIvMS4zMy4xLWRldjU3LjAvZHVja2RiLWJyb3dzZXItbXZwLndvcmtlci5qcyIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL2R1Y2tkYi8xLjMzLjEtZGV2NTcuMC9kdWNrZGItZWgud2FzbSIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL2R1Y2tkYi8xLjMzLjEtZGV2NTcuMC9kdWNrZGItYnJvd3Nlci1laC53b3JrZXIuanMiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci9kdWNrZGIvMS4zMy4xLWRldjU3LjAvZHVja2RiLWJyb3dzZXItZWgud29ya2VyLmpzIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3IvZHVja2RiLzEuMzMuMS1kZXY1Ny4wL2R1Y2tkYi1laC53YXNtIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3IvZHVja2RiLWV4dGVuc2lvbnMvdjEuNS40L3dhc21fZWgvaWN1LmR1Y2tkYl9leHRlbnNpb24ud2FzbSIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL2R1Y2tkYi1leHRlbnNpb25zL3YxLjUuNC93YXNtX2VoL3BhcnF1ZXQuZHVja2RiX2V4dGVuc2lvbi53YXNtIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici8wLjYuMC93ZWJyLmpzIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici8wLjYuMC9SLndhc20iLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLzAuNi4wL3dlYnIuanMiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLzAuNi4wL3dlYnItd29ya2VyLmpzIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici8wLjYuMC9SLmpzIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici8wLjYuMC9SLndhc20iLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLzAuNi4wL2xpYlJibGFzLnNvIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici8wLjYuMC92ZnMvdXNyL2xpYi9SL2xpYnJhcnkvdHJhbnNsYXRpb25zL0RFU0NSSVBUSU9OIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici8wLjYuMC9saWJSbGFwYWNrLnNvIiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici1wYWNrYWdlcy9sb2NrLmpzb24iLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLXBhY2thZ2VzL2Jpbi9lbXNjcmlwdGVuL2NvbnRyaWIvNC42L1BBQ0tBR0VTLnJkcyIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnItcGFja2FnZXMvYmluL2Vtc2NyaXB0ZW4vY29udHJpYi80LjYvYml0XzQuNi4wLnRneiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnIvMC42LjAvdmZzL3Vzci9saWIvUi9zaGFyZS5qcy5tZXRhZGF0YSIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnIvMC42LjAvdmZzL3Vzci9saWIvUi9zaGFyZS5kYXRhLmd6IiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici1wYWNrYWdlcy9iaW4vZW1zY3JpcHRlbi9jb250cmliLzQuNi9jbGlfMy42LjYudGd6IiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici1wYWNrYWdlcy9iaW4vZW1zY3JpcHRlbi9jb250cmliLzQuNi9nZW5lcmljc18wLjEuNC50Z3oiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLXBhY2thZ2VzL2Jpbi9lbXNjcmlwdGVuL2NvbnRyaWIvNC42L2dsdWVfMS44LjEudGd6IiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici1wYWNrYWdlcy9iaW4vZW1zY3JpcHRlbi9jb250cmliLzQuNi9ybGFuZ18xLjIuMC50Z3oiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLXBhY2thZ2VzL2Jpbi9lbXNjcmlwdGVuL2NvbnRyaWIvNC42L2xpZmVjeWNsZV8xLjAuNS50Z3oiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLXBhY2thZ2VzL2Jpbi9lbXNjcmlwdGVuL2NvbnRyaWIvNC42L21hZ3JpdHRyXzIuMC41LnRneiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnItcGFja2FnZXMvYmluL2Vtc2NyaXB0ZW4vY29udHJpYi80LjYvdXRmOF8xLjIuNi50Z3oiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLXBhY2thZ2VzL2Jpbi9lbXNjcmlwdGVuL2NvbnRyaWIvNC42L3ZjdHJzXzAuNy4zLnRneiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnItcGFja2FnZXMvYmluL2Vtc2NyaXB0ZW4vY29udHJpYi80LjYvcGlsbGFyXzEuMTEuMS50Z3oiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLXBhY2thZ2VzL2Jpbi9lbXNjcmlwdGVuL2NvbnRyaWIvNC42L1I2XzIuNi4xLnRneiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnItcGFja2FnZXMvYmluL2Vtc2NyaXB0ZW4vY29udHJpYi80LjYvcGtnY29uZmlnXzIuMC4zLnRneiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnItcGFja2FnZXMvYmluL2Vtc2NyaXB0ZW4vY29udHJpYi80LjYvdGliYmxlXzMuMy4xLnRneiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnItcGFja2FnZXMvYmluL2Vtc2NyaXB0ZW4vY29udHJpYi80LjYvd2l0aHJfMy4wLjIudGd6IiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici1wYWNrYWdlcy9iaW4vZW1zY3JpcHRlbi9jb250cmliLzQuNi90aWR5c2VsZWN0XzEuMi4xLnRneiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnItcGFja2FnZXMvYmluL2Vtc2NyaXB0ZW4vY29udHJpYi80LjYvZ3RhYmxlXzAuMy42LnRneiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnItcGFja2FnZXMvYmluL2Vtc2NyaXB0ZW4vY29udHJpYi80LjYvaXNvYmFuZF8wLjMuMC50Z3oiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLXBhY2thZ2VzL2Jpbi9lbXNjcmlwdGVuL2NvbnRyaWIvNC42L1M3XzAuMi4yLnRneiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnItcGFja2FnZXMvYmluL2Vtc2NyaXB0ZW4vY29udHJpYi80LjYvZmFydmVyXzIuMS4yLnRneiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnItcGFja2FnZXMvYmluL2Vtc2NyaXB0ZW4vY29udHJpYi80LjYvbGFiZWxpbmdfMC40LjMudGd6IiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici1wYWNrYWdlcy9iaW4vZW1zY3JpcHRlbi9jb250cmliLzQuNi9SQ29sb3JCcmV3ZXJfMS4xLTMudGd6IiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici1wYWNrYWdlcy9iaW4vZW1zY3JpcHRlbi9jb250cmliLzQuNi92aXJpZGlzTGl0ZV8wLjQuMy50Z3oiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLXBhY2thZ2VzL2Jpbi9lbXNjcmlwdGVuL2NvbnRyaWIvNC42L3NjYWxlc18xLjQuMC50Z3oiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLXBhY2thZ2VzL2Jpbi9lbXNjcmlwdGVuL2NvbnRyaWIvNC42L2NyYXlvbl8xLjUuMy50Z3oiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLXBhY2thZ2VzL2Jpbi9lbXNjcmlwdGVuL2NvbnRyaWIvNC42L2htc18xLjEuNC50Z3oiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLXBhY2thZ2VzL2Jpbi9lbXNjcmlwdGVuL2NvbnRyaWIvNC42L3ByZXR0eXVuaXRzXzEuMi4wLnRneiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnItcGFja2FnZXMvYmluL2Vtc2NyaXB0ZW4vY29udHJpYi80LjYvY2xpcHJfMC44LjEudGd6IiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici1wYWNrYWdlcy9iaW4vZW1zY3JpcHRlbi9jb250cmliLzQuNi9iaXQ2NF80LjguMi50Z3oiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLXBhY2thZ2VzL2Jpbi9lbXNjcmlwdGVuL2NvbnRyaWIvNC42L3R6ZGJfMC41LjAudGd6IiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici1wYWNrYWdlcy9iaW4vZW1zY3JpcHRlbi9jb250cmliLzQuNi92cm9vbV8xLjcuMS45MDAwLnRneiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnItcGFja2FnZXMvYmluL2Vtc2NyaXB0ZW4vY29udHJpYi80LjYvc3RyaW5naV8xLjguNy50Z3oiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLXBhY2thZ2VzL2Jpbi9lbXNjcmlwdGVuL2NvbnRyaWIvNC42L2RwbHlyXzEuMi4xLnRneiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnItcGFja2FnZXMvYmluL2Vtc2NyaXB0ZW4vY29udHJpYi80LjYvcHVycnJfMS4yLjIudGd6IiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici1wYWNrYWdlcy9iaW4vZW1zY3JpcHRlbi9jb250cmliLzQuNi9zdHJpbmdyXzEuNi4wLnRneiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnItcGFja2FnZXMvYmluL2Vtc2NyaXB0ZW4vY29udHJpYi80LjYvY3BwMTFfMC41LjUudGd6IiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici1wYWNrYWdlcy9iaW4vZW1zY3JpcHRlbi9jb250cmliLzQuNi9nZ3Bsb3QyXzQuMC4zLnRneiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnItcGFja2FnZXMvYmluL2Vtc2NyaXB0ZW4vY29udHJpYi80LjYvanNvbmxpdGVfMi4wLjAudGd6IiwKICAiaHR0cDovLzEyNy4wLjAuMTo0MTgxL2xhYi92ZW5kb3Ivd2Vici1wYWNrYWdlcy9iaW4vZW1zY3JpcHRlbi9jb250cmliLzQuNi9wcm9ncmVzc18xLjIuMy50Z3oiLAogICJodHRwOi8vMTI3LjAuMC4xOjQxODEvbGFiL3ZlbmRvci93ZWJyLXBhY2thZ2VzL2Jpbi9lbXNjcmlwdGVuL2NvbnRyaWIvNC42L3JlYWRyXzIuMi4wLnRneiIsCiAgImh0dHA6Ly8xMjcuMC4wLjE6NDE4MS9sYWIvdmVuZG9yL3dlYnItcGFja2FnZXMvYmluL2Vtc2NyaXB0ZW4vY29udHJpYi80LjYvdGlkeXJfMS4zLjIudGd6Igpd"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4852420a3ed5ea40b1af-90c6d1a215a88656bbf6",
+          "file": "static.spec.ts",
+          "line": 9,
+          "column": 1
+        },
+        {
+          "title": "P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-1",
+              "projectName": "webkit-1",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 17663,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 3\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"ResizeObserver loop completed with undelivered notifications.\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 3\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"ResizeObserver loop completed with undelivered notifications.\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment/static.spec.ts:90:18",
+                    "location": {
+                      "file": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment/static.spec.ts",
+                      "column": 18,
+                      "line": 90
+                    },
+                    "snippet": "  88 |   );\n  89 |   expect(violations).toEqual([]);\n> 90 |   expect(errors).toEqual([]);\n     |                  ^\n  91 |   expect(network.every((url) => new URL(url).origin === new URL(baseURL!).origin)).toBe(true);\n  92 |   await info.attach('network', {\n  93 |     body: JSON.stringify(network, null, 2),"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment/static.spec.ts",
+                        "column": 18,
+                        "line": 90
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 3\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"ResizeObserver loop completed with undelivered notifications.\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  88 |   );\n  89 |   expect(violations).toEqual([]);\n> 90 |   expect(errors).toEqual([]);\n     |                  ^\n  91 |   expect(network.every((url) => new URL(url).origin === new URL(baseURL!).origin)).toBe(true);\n  92 |   await info.attach('network', {\n  93 |     body: JSON.stringify(network, null, 2),\n    at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment/static.spec.ts:90:18"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-20T18:41:26.429Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results-deployment/removed-status-repro/static-P7-AT-066–068-arbit-5dac8-ME-cache-CSP-and-real-SQL-R-webkit-1-repeat1/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results-deployment/removed-status-repro/static-P7-AT-066–068-arbit-5dac8-ME-cache-CSP-and-real-SQL-R-webkit-1-repeat1/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results-deployment/removed-status-repro/static-P7-AT-066–068-arbit-5dac8-ME-cache-CSP-and-real-SQL-R-webkit-1-repeat1/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment/static.spec.ts",
+                    "column": 18,
+                    "line": 90
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "4852420a3ed5ea40b1af-827fa0df3e29d5997736",
+          "file": "static.spec.ts",
+          "line": 9,
+          "column": 1
+        },
+        {
+          "title": "P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/CSP and real SQL/R",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-1",
+              "projectName": "webkit-1",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 17818,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 3\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"ResizeObserver loop completed with undelivered notifications.\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 3\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"ResizeObserver loop completed with undelivered notifications.\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment/static.spec.ts:90:18",
+                    "location": {
+                      "file": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment/static.spec.ts",
+                      "column": 18,
+                      "line": 90
+                    },
+                    "snippet": "  88 |   );\n  89 |   expect(violations).toEqual([]);\n> 90 |   expect(errors).toEqual([]);\n     |                  ^\n  91 |   expect(network.every((url) => new URL(url).origin === new URL(baseURL!).origin)).toBe(true);\n  92 |   await info.attach('network', {\n  93 |     body: JSON.stringify(network, null, 2),"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment/static.spec.ts",
+                        "column": 18,
+                        "line": 90
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 3\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"ResizeObserver loop completed with undelivered notifications.\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  88 |   );\n  89 |   expect(violations).toEqual([]);\n> 90 |   expect(errors).toEqual([]);\n     |                  ^\n  91 |   expect(network.every((url) => new URL(url).origin === new URL(baseURL!).origin)).toBe(true);\n  92 |   await info.attach('network', {\n  93 |     body: JSON.stringify(network, null, 2),\n    at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment/static.spec.ts:90:18"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-20T18:41:45.891Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results-deployment/removed-status-repro/static-P7-AT-066–068-arbit-5dac8-ME-cache-CSP-and-real-SQL-R-webkit-1-repeat2/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results-deployment/removed-status-repro/static-P7-AT-066–068-arbit-5dac8-ME-cache-CSP-and-real-SQL-R-webkit-1-repeat2/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results-deployment/removed-status-repro/static-P7-AT-066–068-arbit-5dac8-ME-cache-CSP-and-real-SQL-R-webkit-1-repeat2/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment/static.spec.ts",
+                    "column": 18,
+                    "line": 90
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "4852420a3ed5ea40b1af-49c607f7407db6273622",
+          "file": "static.spec.ts",
+          "line": 9,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-20T18:40:54.823Z",
+    "duration": 71025.373,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

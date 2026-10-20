@@ -6,9 +6,20 @@ export function usePanelHeight() {
   useEffect(() => {
     const host = ref.current;
     if (!host) return;
-    const observer = new ResizeObserver(() => setHeight(host.clientHeight));
+    let frame: number | undefined;
+    const observer = new ResizeObserver(() => {
+      if (frame !== undefined) return;
+      // Panel minima affect layout; update them outside the observer delivery cycle.
+      frame = requestAnimationFrame(() => {
+        frame = undefined;
+        setHeight(host.clientHeight);
+      });
+    });
     observer.observe(host);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (frame !== undefined) cancelAnimationFrame(frame);
+    };
   }, []);
   return {ref, height};
 }

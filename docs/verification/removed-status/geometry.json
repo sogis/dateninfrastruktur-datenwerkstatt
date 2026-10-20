@@ -1,0 +1,194 @@
+[
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "chromium",
+    "case": "navigation-Daten-1280"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "chromium",
+    "case": "navigation-Daten-1440"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "chromium",
+    "case": "navigation-R-1280"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "chromium",
+    "case": "navigation-R-1440"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "chromium",
+    "case": "navigation-SQL-1280"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "chromium",
+    "case": "navigation-SQL-1440"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "chromium",
+    "case": "navigation-Übersicht-1280"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "chromium",
+    "case": "navigation-Übersicht-1440"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "firefox",
+    "case": "navigation-Daten-1280"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "firefox",
+    "case": "navigation-Daten-1440"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "firefox",
+    "case": "navigation-R-1280"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "firefox",
+    "case": "navigation-R-1440"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "firefox",
+    "case": "navigation-SQL-1280"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "firefox",
+    "case": "navigation-SQL-1440"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "firefox",
+    "case": "navigation-Übersicht-1280"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "firefox",
+    "case": "navigation-Übersicht-1440"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "webkit",
+    "case": "navigation-Daten-1280"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "webkit",
+    "case": "navigation-Daten-1440"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "webkit",
+    "case": "navigation-R-1280"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "webkit",
+    "case": "navigation-R-1440"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "webkit",
+    "case": "navigation-SQL-1280"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "webkit",
+    "case": "navigation-SQL-1440"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "webkit",
+    "case": "navigation-Übersicht-1280"
+  },
+  {
+    "headerBottom": 56,
+    "top": 56,
+    "firstChildTop": 56,
+    "overflow": false,
+    "browser": "webkit",
+    "case": "navigation-Übersicht-1440"
+  }
+]

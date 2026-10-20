@@ -145,15 +145,13 @@ function Shell() {
         <Link to="/projects" className="brand">
           Datenwerkstatt
         </Link>
-        <span className="build-status">
-          {services.mode === 'temporary'
-            ? 'Nur diese Sitzung · Verlust bei Reload'
-            : 'Entwicklungsstand · nicht abgenommen'}
-        </span>
+        {services.mode === 'temporary' && (
+          <span className="build-status">Nur diese Sitzung · Verlust bei Reload</span>
+        )}
       </header>
       {error && (
         <div role="alert" className="error app-error">
-          <strong>{error}</strong>
+          <span className="app-error-message">{error}</span>
           <IconButton
             icon="x-lg"
             label="Hinweis schliessen"
@@ -349,32 +347,32 @@ function WorkspaceProvider() {
             <Button onClick={() => openAnalysis('r')} />
           </NavigationItem>
         </AppNavigation>
-        <section className="workspace-content" data-analysis={inAnalysis}>
-          <div className="save-status" aria-live="polite">
-            {session.readOnly
-              ? 'Nur lesend · Schreibrecht liegt in einem anderen Tab oder Web Locks fehlen.'
-              : state === 'saved'
-                ? session.mode === 'temporary'
+        <section className="workspace-content" data-analysis={inAnalysis} data-save-state={state}>
+          {(session.readOnly || session.mode === 'temporary' || state !== 'saved') && (
+            <div className="save-status" aria-live="polite">
+              {session.readOnly
+                ? 'Nur lesend · Schreibrecht liegt in einem anderen Tab oder Web Locks fehlen.'
+                : state === 'saved'
                   ? 'Nur diese Sitzung · kein Backup'
-                  : 'Lokal gespeichert · kein Backup'
-                : state === 'saving'
-                  ? 'Speichert …'
-                  : state === 'error'
-                    ? 'Speichern fehlgeschlagen'
-                    : 'Nicht gespeichert'}
-            {session.readOnly && (
-              <Button
-                onClick={() => {
-                  void services.workspaces
-                    .reacquire(session.document.workspace.id)
-                    .then(() => routerApi.invalidate())
-                    .catch(report);
-                }}
-              >
-                Schreibrecht erneut anfordern
-              </Button>
-            )}
-          </div>
+                  : state === 'saving'
+                    ? 'Speichert …'
+                    : state === 'error'
+                      ? 'Speichern fehlgeschlagen'
+                      : 'Nicht gespeichert'}
+              {session.readOnly && (
+                <Button
+                  onClick={() => {
+                    void services.workspaces
+                      .reacquire(session.document.workspace.id)
+                      .then(() => routerApi.invalidate())
+                      .catch(report);
+                  }}
+                >
+                  Schreibrecht erneut anfordern
+                </Button>
+              )}
+            </div>
+          )}
           {error !== undefined && (
             <div className="error" role="alert">
               {message(error)}{' '}

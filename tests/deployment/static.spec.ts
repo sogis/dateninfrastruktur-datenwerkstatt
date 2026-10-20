@@ -61,7 +61,10 @@ test('P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/C
   await expect(page.locator('.result-grid tbody td')).toHaveText(['42']);
   await page.getByRole('button', {name: 'Aufbewahren', exact: true}).click();
   await expect(page.getByText('1 Zeilen · vollständig · aufbewahrt', {exact: true})).toBeVisible();
-  await expect(page.getByText('Lokal gespeichert · kein Backup', {exact: true})).toBeVisible();
+  await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
+    'data-save-state',
+    'saved',
+  );
   const url = page.url();
   await page.reload();
   await expect(page.locator('.result-grid tbody td')).toHaveText(['42']);
@@ -161,7 +164,10 @@ test('UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices unde
     expect((await request.get(`${baseURL}${path}`)).status()).toBe(200);
   // Persist the newly created analysis before intentionally reloading it.
   await page.getByRole('button', {name: 'Speichern', exact: true}).click();
-  await expect(page.getByText('Lokal gespeichert · kein Backup', {exact: true})).toBeVisible();
+  await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
+    'data-save-state',
+    'saved',
+  );
   await page.route('**/*.woff2', (route) => route.abort());
   await page.reload();
   await expect(page.locator('.monaco-editor')).toBeVisible();

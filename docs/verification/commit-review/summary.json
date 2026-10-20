@@ -1,0 +1,29 @@
+{
+  "verify": {
+    "exitCode": 0,
+    "unitPassed": 47,
+    "integrationChromiumPassed": 43,
+    "e2eChromiumPassed": 37
+  },
+  "fileInputSmokeExitCode": 0,
+  "formatCheckExitCode": 0,
+  "candidateFiles": 178,
+  "browser-matrix": {
+    "exitCode": 0,
+    "startTime": "2026-10-20T19:07:36.001Z",
+    "duration": 261371.365,
+    "expected": 44,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "deployment": {
+    "exitCode": 0,
+    "startTime": "2026-10-20T19:07:36.076Z",
+    "duration": 283154.847,
+    "expected": 36,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
