@@ -1,0 +1,22 @@
+[WebServer] (node:99122) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 13 tests using 1 worker
+
+(node:99125) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/p7-ui.spec.ts:16:1 › P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layout reset and reload (17.3s)
+  ✓   2 [chromium] › tests/e2e/p7-ui.spec.ts:142:1 › P7 AT-055–057: native focus trap/return, settings, storage cleanup and data-free diagnostics (3.1s)
+  ✓   3 [chromium] › tests/e2e/p7-ui.spec.ts:227:1 › P7 AT-025 AT-055 AT-056: selected SQL is snapshotted and cell markup remains text (3.2s)
+  ✓   4 [chromium] › tests/e2e/p7-ui.spec.ts:255:1 › P7 AT-058: browser history restores the analysis cursor and layout does not edit the domain (2.5s)
+  ✓   5 [chromium] › tests/e2e/required-fields.spec.ts:45:1 › Required fields: creating a project shows a field error and preserves Unicode names (681ms)
+  ✓   6 [chromium] › tests/e2e/required-fields.spec.ts:66:3 › Required fields: sql name guards save and run buttons and keyboard shortcuts (3.1s)
+  ✓   7 [chromium] › tests/e2e/required-fields.spec.ts:66:3 › Required fields: r name guards save and run buttons and keyboard shortcuts (14.1s)
+  ✓   8 [chromium] › tests/e2e/required-fields.spec.ts:106:1 › Required fields: file selection, drag and drop, import validation and dataset renaming share one valid value (3.1s)
+  ✓   9 [chromium] › tests/e2e/required-fields.spec.ts:163:1 › Required fields: CSV column errors prevent preview work and keep the last document unchanged (1.8s)
+  ✓  10 [chromium] › tests/e2e/required-fields.spec.ts:192:1 › Required fields: parameter values are required by type and empty strings and NULL stay valid (2.3s)
+  ✓  11 [chromium] › tests/e2e/required-fields.spec.ts:231:1 › Required fields: SQL dataset and R transfer validate before keeping results or creating an analysis (15.2s)
+  ✓  12 [chromium] › tests/e2e/required-fields.spec.ts:276:1 › Required fields: portal stages allow an empty index search and validate before creating a project (3.8s)
+  ✓  13 [chromium] › tests/e2e/required-fields.spec.ts:306:1 › Required fields: editing a project preserves its valid name until correction and save (1.7s)
+
+  13 passed (1.2m)

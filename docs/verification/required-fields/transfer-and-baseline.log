@@ -1,0 +1,19 @@
+[WebServer] (node:20740) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:20743) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/required-fields.spec.ts:74:3 › Required fields: sql name guards save and run buttons and keyboard shortcuts (2.6s)
+  ✓  2 [chromium] › tests/e2e/required-fields.spec.ts:242:1 › Required fields: SQL dataset and R transfer validate before keeping results or creating an analysis (14.1s)
+(node:20816) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [firefox] › tests/e2e/required-fields.spec.ts:74:3 › Required fields: sql name guards save and run buttons and keyboard shortcuts (2.3s)
+  ✓  4 [firefox] › tests/e2e/required-fields.spec.ts:242:1 › Required fields: SQL dataset and R transfer validate before keeping results or creating an analysis (15.2s)
+(node:20853) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [webkit] › tests/e2e/required-fields.spec.ts:74:3 › Required fields: sql name guards save and run buttons and keyboard shortcuts (2.0s)
+  ✓  6 [webkit] › tests/e2e/required-fields.spec.ts:242:1 › Required fields: SQL dataset and R transfer validate before keeping results or creating an analysis (16.2s)
+
+  6 passed (53.1s)

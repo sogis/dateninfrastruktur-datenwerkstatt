@@ -9,7 +9,16 @@ import {
   EmptyState,
   Notice,
   PanelHeader,
+  RequiredFieldsNote,
 } from '../../ui/Controls';
+import {useFormValidation, useNameField} from '../../ui/useFormValidation';
+import {
+  displayNameError,
+  sqlNameError,
+  csvColumnNameError,
+  requiredValueError,
+} from '../../domain/fieldValidation';
+import type {EditingSession} from '../../application/workspaceService';
 import {Modal} from '../../ui/Modal';
 import {PortalImport} from '../catalog/PortalImport';
 import {useEffect, useRef, useState} from 'react';
@@ -44,6 +53,19 @@ const types = [
   'DECIMAL(18,4)',
   'DECIMAL(38,18)',
 ];
+function DatasetNameField({session, dataset}: {session: EditingSession; dataset: Dataset}) {
+  const name = useNameField(
+    dataset.name,
+    'Datensatznamen',
+    (value) => session.renameDataset(dataset.id, value),
+    report,
+  );
+  return (
+    <FormField label={`Anzeigename ${dataset.sqlName}`} error={name.error}>
+      <Input {...name.input} disabled={session.readOnly} />
+    </FormField>
+  );
+}
 export function PreviewTable({preview}: {preview: Pick<ImportPreview, 'schema' | 'rows'>}) {
   return (
     <div className="table-scroll">
@@ -141,6 +163,7 @@ export function DataSection() {
           </Button>
         </ActionGroup>
       </PanelHeader>
+      {datasets.length > 0 && <RequiredFieldsNote />}
       {datasets.length === 0 ? (
         <EmptyState>Noch keine Datensätze.</EmptyState>
       ) : (
@@ -150,20 +173,7 @@ export function DataSection() {
             return (
               <li key={dataset.id}>
                 <div>
-                  <FormField label={`Anzeigename ${dataset.sqlName}`}>
-                    <Input
-                      defaultValue={dataset.name}
-                      disabled={session.readOnly}
-                      onBlur={(event) => {
-                        if (event.target.value !== dataset.name)
-                          try {
-                            session.renameDataset(dataset.id, event.target.value);
-                          } catch (error) {
-                            report(error);
-                          }
-                      }}
-                    />
-                  </FormField>
+                  <DatasetNameField session={session} dataset={dataset} />
                   <code>data.{dataset.sqlName}</code>
                   <span>
                     {version.rowCount === undefined
@@ -390,6 +400,30 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
   const [dirty, setDirty] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const occupied = Object.values(session.document.datasets)
+    .filter((d) => d.id !== replace)
+    .map((d) => d.sqlName);
+  const columnKeys = options.columns.map((_, i) => `column-${i}`);
+  const form = useFormValidation({
+    file: () => (file ? undefined : 'Bitte wähle eine CSV- oder Parquet-Datei aus.'),
+    name: () => displayNameError(name, 'Datensatznamen'),
+    sqlName: () => (replace ? undefined : sqlNameError(sqlName, occupied)),
+    delimiter: () => requiredValueError(options.delimiter),
+    decimalSeparator: () => requiredValueError(options.decimalSeparator),
+    ...Object.fromEntries(
+      options.columns.flatMap((column, i) => [
+        [
+          `column-${i}`,
+          () =>
+            csvColumnNameError(
+              column.name,
+              options.columns.filter((_, index) => i !== index).map((c) => c.name),
+            ),
+        ],
+        [`type-${i}`, () => requiredValueError(column.logicalType)],
+      ]),
+    ),
+  });
   const controller = useRef<AbortController | undefined>(undefined);
   const key = useRef<string | undefined>(undefined);
   useEffect(
@@ -414,12 +448,14 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
       return;
     }
     setFile(chosen);
+    form.change('file');
     setFormat(extension);
     setOptions(defaults());
     setError('');
     if (!previous) {
       setName(chosen.name.replace(/\.[^.]+$/, '').slice(0, 120));
       setSqlName(service.suggestName(chosen.name));
+      form.reset();
     }
   };
   const change = (update: Partial<CsvImportOptions>) => {
@@ -427,7 +463,21 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
     setDirty(true);
   };
   const load = () => {
-    if (!file) return;
+    if (
+      !form.validate([
+        'file',
+        ...(format === 'csv'
+          ? [
+              'delimiter',
+              'decimalSeparator',
+              ...columnKeys,
+              ...options.columns.map((_, i) => `type-${i}`),
+            ]
+          : []),
+      ]) ||
+      !file
+    )
+      return;
     controller.current = new AbortController();
     setBusy(true);
     setError('');
@@ -452,6 +502,7 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
   };
   const confirm = () => {
     if (!preview || dirty) return;
+    if (!form.validate(['name', 'sqlName'])) return;
     controller.current = new AbortController();
     setBusy(true);
     setError('');
@@ -496,6 +547,7 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
         </>
       }
     >
+      <RequiredFieldsNote />
       <div
         className="file-drop"
         onDragOver={(e) => e.preventDefault()}
@@ -507,8 +559,11 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
           }
         }}
       >
-        <FormField label="Datei (CSV oder Parquet, maximal 128 MiB)">
+        <FormField label="Datei (CSV oder Parquet, maximal 128 MiB)" error={form.errors.file}>
           <FileInput
+            {...form.control('file')}
+            required
+            selectedFile={file ?? null}
             type="file"
             accept=".csv,.parquet"
             disabled={busy}
@@ -518,14 +573,29 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
         <span>oder eine Datei hier ablegen</span>
       </div>
       <div className="import-fields">
-        <FormField label={<>Anzeigename</>}>
-          <Input value={name} disabled={busy} onChange={(e) => setName(e.target.value)} />
-        </FormField>
-        <FormField label={<>SQL-Name</>}>
+        <FormField label={<>Anzeigename</>} error={form.errors.name}>
           <Input
+            {...form.control('name')}
+            required
+            maxLength={120}
+            value={name}
+            disabled={busy}
+            onChange={(e) => {
+              setName(e.target.value);
+              form.change('name', displayNameError(e.target.value, 'Datensatznamen'));
+            }}
+          />
+        </FormField>
+        <FormField label={<>SQL-Name</>} error={form.errors.sqlName}>
+          <Input
+            {...form.control('sqlName')}
+            required={!replace}
             value={sqlName}
             disabled={!!replace || busy}
-            onChange={(e) => setSqlName(e.target.value)}
+            onChange={(e) => {
+              setSqlName(e.target.value);
+              form.change('sqlName', sqlNameError(e.target.value, occupied));
+            }}
           />
         </FormField>
       </div>
@@ -535,6 +605,8 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
           <div className="import-fields">
             <FormField label={<>Trennzeichen</>}>
               <Select
+                {...form.control('delimiter')}
+                required
                 value={options.delimiter}
                 onChange={(e) =>
                   change({
@@ -551,6 +623,8 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
             </FormField>
             <FormField label={<>Dezimalzeichen</>}>
               <Select
+                {...form.control('decimalSeparator')}
+                required
                 value={options.decimalSeparator}
                 onChange={(e) =>
                   change({decimalSeparator: e.target.value as '.' | ',', columns: []})
@@ -596,20 +670,31 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
             <div className="column-options">
               {options.columns.map((column, i) => (
                 <div key={i}>
-                  <FormField label={<>Spalte {i + 1}</>}>
+                  <FormField label={<>Spalte {i + 1}</>} error={form.errors[`column-${i}`]}>
                     <Input
+                      {...form.control(`column-${i}`)}
+                      required
                       value={column.name}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        form.change(
+                          `column-${i}`,
+                          csvColumnNameError(
+                            e.target.value,
+                            options.columns.filter((_, index) => i !== index).map((c) => c.name),
+                          ),
+                        );
                         change({
                           columns: options.columns.map((c, index) =>
                             index === i ? {...c, name: e.target.value} : c,
                           ),
-                        })
-                      }
+                        });
+                      }}
                     />
                   </FormField>
                   <FormField label={<>Typ {i + 1}</>}>
                     <Select
+                      {...form.control(`type-${i}`)}
+                      required
                       aria-label={`Typ ${i + 1}`}
                       value={column.logicalType}
                       onChange={(e) =>
@@ -631,7 +716,7 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
           )}
         </fieldset>
       )}
-      <Button disabled={!file || busy} onClick={load}>
+      <Button disabled={busy} onClick={load}>
         Vorschau laden
       </Button>
       {preview && (

@@ -1038,3 +1038,323 @@ für diesen Review nicht erneut ausgeführt. Keine neue V1-Gesamtabnahme und kei
 Release. Nächster konkreter Schritt nach dem beauftragten Commit/Push ist die
 reguläre UI-Durchsicht; eine Umsetzung des neutralen Designentwurfs ist ein
 separater Abschnitt.
+
+
+## UI — Pflichtfelder und Feldvalidierung (20. Oktober 2026)
+
+REQ-014/019/067, AT-003/004/018/054/055/058; Status: **implementiert und automatisiert abgenommen**.
+Native Safari-Prüfgrenze siehe Abschluss dieses Abschnitts.
+Ausgangsrevision `b20ce0e`, Arbeitsbaum vor Beginn sauber. Node 22.23.1, npm
+11.18.0; keine Paketänderung. Quellbaseline-Paketdatei am dokumentierten Commit
+über raw.githubusercontent.com gelesen; der früher dokumentierte lokale
+Quellcheckout ist auf diesem Host nicht vorhanden. Keine Quellportaländerung.
+
+Abschnitt A: gemeinsame UI-Validierung, gemeinsame Namensmeldungen,
+Pflichtkennzeichnung/Inlinefehler bei Erstellung und Umbenennung, natives
+`required`, getrennte zugängliche Labels und Sternchen, Dateiauswahl mit
+kontrolliertem Dateizustand. Implementiert in `src/ui/Controls.tsx`,
+`src/ui/useFormValidation.ts`, `src/domain/fieldValidation.ts` und
+`src/features/workspaces/Workspaces.tsx`; neue Tests in
+`tests/e2e/required-fields.spec.ts`, `tests/unit/field-validation.test.ts`.
+
+Tatsächliche Checks des Zwischenstands:
+
+- `npm run typecheck`: Exit 0 (erster Abschnitt).
+- `npm run test:unit -- tests/unit/field-validation.test.ts`: Exit 0, zunächst 3/3 Tests.
+- Erster Chromiumlauf der zwei neuen Projekttests: Exit 1, 1/2 bestanden.
+  Das Sternchen war trotz aria-hidden Bestandteil von Playwrights getByLabel;
+  explizite Verknüpfung zum Labeltext ergänzt, zugängliche Namen bleiben stabil.
+- Zweiter Chromiumlauf: Exit 1, 1/2 bestanden. Der neue Reloadtest wartete noch
+  nicht auf den asynchronen Flush; dieselbe Saved-State-Prüfung wie in den
+  bestehenden Persistenztests ergänzt. Kein Sollwert geändert.
+- `DW_REUSE_DEV_SERVER=1 npx playwright test tests/e2e/required-fields.spec.ts --project=chromium --reporter=list --output=test-results/required-fields-a-pass`:
+  Exit 0, 2/2 bestanden. Bestehender Vite-Server auf Port 4173 gehört diesem
+  Repository; eigener Portal-Testserver wird durch Playwright verwaltet.
+- Weiterer Typecheck beim Herauslösen des CSV-Schemas: Exit 2, fehlender
+  weiterhin benötigter Zod-Import im Importadapter; Import wieder ergänzt.
+- Anschliessend `npm run typecheck` und `npm run lint`: beide Exit 0.
+
+Abschnitt B: Analyse-/Datensatznamen, Datei-/Portalimport, typabhängige Parameter
+und Transfers ergänzt; gezielte Browserprüfung läuft. Fachliche Schemas und
+Engine-/Speicherverträge bleiben erhalten. Nächster Schritt: neue Prüfungen und
+SQL/R-Geometrie auswerten, danach vollständige Verify-/Browser-/Deploymentabnahme.
+Finale Revision/Dateifingerprint, Befehle mit Exitcodes und verbleibende Grenzen
+folgen nach der Abnahme. Aktuell keine abschliessende V1-Fertigmeldung.
+
+
+### Fortsetzung und Browserabnahme (21. Oktober 2026)
+
+Abschnitt B geprüft: `DW_REUSE_DEV_SERVER=1 npx playwright test
+tests/e2e/required-fields.spec.ts tests/e2e/p7-ui.spec.ts --project=chromium
+--reporter=list --output=test-results/required-fields-b-final`: **Exit 0, 13/13**
+([Log](verification/required-fields/section-b.log)). Anschliessend zusätzliche
+Prüfung von vorhandenen Transferbestätigungen und Nur-Lesen:
+`DW_REUSE_DEV_SERVER=1 npx playwright test tests/e2e/required-fields.spec.ts
+--project=chromium --grep 'SQL dataset|read-only' --reporter=list
+--output=test-results/required-fields-extra`: **Exit 0, 2/2**
+([Log](verification/required-fields/section-b-extra.log)). Neue Endfassung hat
+10 Pflichtfeld-E2E-Fälle; der gemeinsame Endlauf folgt weiter unten.
+
+Beim Zwischenlauf 11/13 bestanden; zwei Fokusprüfungen deckten einen echten
+Bedienfehler auf: Blur-Fehler verschoben den Aktionsbutton zwischen pointerdown
+und click. Gemeinsame Hilfe verzögert diese Blur-Darstellung bis nach pointerup;
+Aktionsvalidierung und Fehlerfokus bleiben unmittelbar. Nachweis über dieselben
+Tests ohne gelockerte Fokusanforderung. Der anschliessende neue SQL→R-Test
+benötigte den bereits bestehenden 60-s-Kaltstartvertrag für webR statt des
+allgemeinen 10-s-Locatorlimits; vor Ablauf war der echte R-Transfer noch busy,
+kein fachlicher Fehler. Keine Engineergebnisse, Goldenwerte oder Fixtures geändert.
+
+Der erste vollständige Verify-Aufruf vom 20. Oktober wurde während der
+Integrationstests unterbrochen: 28/43 bis zum Protokollende, kein Exitcode und
+kein vollständiger Pass behauptet
+([Zwischenlog](verification/required-fields/verify-interrupted.log)).
+Der erste Wiederanlauf am 21. Oktober endete **Exit 1** vor den Browsertests,
+weil dessen eigener verwaister Portal-Testserver PID 3182 noch Port 4174 hielt
+([Log](verification/required-fields/verify-port-conflict.log)). Identität per
+Prozessliste geprüft; ausschliesslich diesen Server mit `kill -TERM 3182` beendet.
+Neuer vollständiger Verify-Aufruf läuft mit regulärer Playwright-Serververwaltung.
+
+Nativer Safari-Smoke bestanden auf Safari **27.0.1 (22625.1.29.11.28)**,
+macOS **27.0.1 (26A434)**, eigener Origin **127.0.0.1:4195**. Leere Erstellung und
+Projektumbenennung mit Feldfehler/korrektem Fokus, korrigierter Unicode-Name
+`Safari-Ölten` nach Reload erhalten. Fehlende Datei fokussiert sichtbaren
+Auswahlbutton. Native Dateiauswahl von synthetischem `fixtures/gemeinden.csv`,
+echte DuckDB-Vorschau mit IDs 001–004, leerer Anzeigename abgewiesen, korrigierter
+Import als `data.gemeinden` mit vier Zeilen erfolgreich.
+[AX-Nachweise](verification/required-fields/native-safari.json),
+[Importfehler](verification/required-fields/safari-import-name-error.png),
+[Erfolg](verification/required-fields/safari-import-success.png).
+Nur eigenes zusätzliches Testfenster geschlossen; vorhandene Fenster/Dateidialoge
+erhalten. Eigenen Testserver PID 5733 anschliessend beendet; bestehender
+Nutzerserver auf Port 4173 blieb erhalten. Kein vollständiger Safari-Enginepilot
+oder Safari-Prozessneustart für diese UI-Änderung behauptet.
+
+
+Der vollständige E2E-Lauf zeigte zwei bisherige Erwartungen, die der ausdrücklich
+geänderten Bedienung widersprachen. `navigation.spec.ts` erwartete den globalen
+englischen Zod-Fehler bei leerem Projektnamen; jetzt wird der deutsche Inlinefehler
+und die Abwesenheit eines globalen Banners geprüft. Die vorhandenen Banner-,
+Zoom-, SVG- und Tastaturprüfungen bleiben mit einer ausdrücklich testlokalen
+langen UI-Fehlermeldung bestehen (keine vorgetäuschten Engine-/Speicherergebnisse).
+`p8-imports.spec.ts` erwartete eine deaktivierte Vorschau nach XLSX-Auswahl. Jetzt
+prüft er die vereinbarte aktive Aktion mit Feldfehler/Fokus sowie weiterhin
+gesperrte Importbestätigung und leere native Dateiauswahl. Der fachliche Grund
+ist in beiden Tests kommentiert. Kein Test oder Goldenwert wurde entfernt.
+
+Vollständiger Zwischenlauf: Typecheck/Lint/52 Unit-Tests/Build und **43/43
+Integrationstests bestanden**, E2E **Exit 1, 45/47** mit ausschliesslich den beiden
+oben begründeten alten UI-Erwartungen
+([Log](verification/required-fields/verify-before-test-adaptation.log)).
+Nach deren Anpassung:
+`DW_REUSE_DEV_SERVER=1 PLAYWRIGHT_JSON_OUTPUT_FILE=docs/verification/required-fields/adapted-tests.json npx playwright test tests/e2e/navigation.spec.ts tests/e2e/p8-imports.spec.ts --grep 'Notices:|P8 AT-019 AT-020' --project=chromium --project=firefox --project=webkit --reporter=list,json --output=test-results/required-fields-adapted`:
+**Exit 0, 6/6** ([Log](verification/required-fields/adapted-tests.log),
+[JSON](verification/required-fields/adapted-tests.json)).
+Finaler Produktstand wird erneut vollständig mit `npm run verify` geprüft;
+Firefox-/WebKit-E2E und Deployment folgen danach seriell, damit der synthetische
+Portalserver nicht gleichzeitig von verschiedenen Tests verändert wird.
+
+Ein weiterer vollständiger Lauf zeigte im bestehenden P7-Test ein sporadisches
+Zeitrennen nach dem Ausblenden der R-Konsole: die unmittelbare UI-Prüfung bestand,
+aber Reload erfolgte vor dem Commit der asynchronen View-Speicherung. Der Test
+wartet nun wie bereits bei Splitteränderungen auf den tatsächlichen gespeicherten
+Wert `rConsoleVisible=false`, bevor er neu lädt. Die bisherigen Sollwerte und die
+erneute Prüfung nach Reload bleiben erhalten; keine Wartezeit oder Retry ergänzt.
+Produktive View-/Speicherlogik wurde für diesen Befund nicht verändert.
+
+Der erste vollständige Firefox-/WebKit-E2E-Lauf endete Exit 1 mit **93/94**
+(Firefox 47/47). Im WebKit-SQL-Namenstest wurde ausschliesslich Revision 0→1
+durch den noch ausstehenden gültigen Analyse-Erstellungscommit beobachtet.
+Ausgangsaufnahmen warten jetzt auf `session.flush()` der gültigen Vorbereitung;
+Beobachtungen nach ungültigen Aktionen lösen weiterhin keinen Flush aus und
+vergleichen Dokument, Revision und Persistenzgeneration unverändert strikt.
+[Zwischenlog](verification/required-fields/browser-matrix-before-setup-settle.log).
+Den Wiederholungslauf nach 12 Firefox-Tests bewusst mit SIGINT abgebrochen
+(Exit 130), um die folgende, bei der Durchsicht gefundene Anzeigeabweichung noch
+vor der Endabnahme zu korrigieren; kein vollständiger Pass behauptet.
+
+Beim R-Objekttransfer zeigte der deaktivierte SQL-Name beim Ersetzen noch den
+Entwurf eines neuen Datensatzes. Die Engine verwendete korrekt den bestehenden
+SQL-Namen; die UI zeigt nun ebenfalls diesen festen Namen. Beim Wechsel zurück
+zu „Neuer Datensatz“ bleibt der eigene Entwurf erhalten. Derselbe echte
+SQL→R-E2E-Test prüft jetzt beide Auswahlzustände samt `required`/disabled.
+
+Gezielte Nachprüfung:
+`DW_REUSE_DEV_SERVER=1 PLAYWRIGHT_JSON_OUTPUT_FILE=docs/verification/required-fields/transfer-and-baseline.json npx playwright test tests/e2e/required-fields.spec.ts --grep 'sql name|SQL dataset' --project=chromium --project=firefox --project=webkit --reporter=list,json --output=test-results/required-fields-transfer`:
+**Exit 0, 6/6** ([Log](verification/required-fields/transfer-and-baseline.log)).
+Beim anschliessenden vollständigen Typecheck: Exit 2, weil die DOM-Selectauswahl
+als `string` statt als gebrandete `DatasetId` typisiert ist. Den bereits im
+Transfervertrag verwendeten `DatasetId`-Cast auch beim Lesen des ausgewählten
+Datensatzes ergänzt; keine fachliche Regel geändert. Abnahme erneut vollständig
+gestartet. Fehlerreihenfolge im R-Capture folgt der sichtbaren Feldreihenfolge
+(Umwandlungsbestätigungen vor Namen).
+
+Implementierungszuordnung für diesen UI-Abschnitt:
+
+| Requirement / Abnahme | Geliefert | Relevante Dateien / Nachweis |
+| --- | --- | --- |
+| REQ-014, AT-003/004/018 | Bestehende Namensschemata, Unicode, Trim, Längen, Kollisionen inklusive Tombstones und reservierte SQL-/R-Namen; ungültige Entwürfe bleiben lokal | `domain/fieldValidation.ts`, `domain/importOptions.ts`, `ui/useFormValidation.ts`, Workspaces, DataSection, SQL/R, PortalImport; `field-validation.test.ts`, `required-fields.spec.ts` |
+| REQ-019, AT-003/055/058 | Gültige Übernahme bei Blur, Speichern und Editor-Tastenkürzeln, bestehender Autosave; kein Commit bei ungültigem Namen | `ui/useFormValidation.ts`, Workspaces, SQL/R; Dokument-/Generationsvergleich und Reload im E2E |
+| REQ-067, AT-054/055/058 | Sichtbare Sterne, native Pflichtsemantik, einmalige Erklärung, Inlinefehler mit `aria-describedby`/`aria-invalid`, Fehlerfokus, Nur-Lesen und kompakter Analysename | Controls, gemeinsame Validierung, Formularstellen, CSS; drei Browser, Geometrie-/Zoomprüfungen, nativer Safari-Smoke |
+| REQ-014/067, AT-018/054/055 | Aktive Import-/Transferstufen, Dateiauswahl/Drop, Parameter inklusive leerem String/NULL, Pflichtbestätigungen; vorbelegte Auswahlen erfüllen die Pflicht | DataSection, PortalImport, Transfer, Parameters, ArchiveActions, Einstellungen; echte Engine-E2E und bestehende Regressionen |
+
+Keine neuen Dependencies, persistierten Felder, Archivversionen oder
+Engine-Schnittstellen. Vorhandene native Datei-/Formularverträge nur intern
+erweitert. Dokumentierte Regeln in `docs/DESIGN_SYSTEM.md` ergänzt.
+
+Finaler Gesamtcheck `DW_REUSE_DEV_SERVER=1 npm run verify`: **Exit 0**,
+Typecheck und Lint samt Modulgrenzen, **52/52 Unit**, Produktionsbuild,
+**43/43 Chromium-Integration**, **47/47 Chromium-E2E** bestanden
+([Log](verification/required-fields/verify.log)). Geprüfter Arbeitsbaum auf
+`b20ce0ecc6831af896dc9730d960501f82db4108`; exakte Quell-/Testdateien und
+Designsystem über [SHA-256-Fingerprint](verification/required-fields/code-fingerprint.json).
+Zu diesem Prüfzeitpunkt war der Abschnitt noch nicht committed. Danach vollständige
+Firefox-/WebKit-E2E und lokales Deployment seriell gestartet.
+
+Letzte Durchsicht: Bei zwei kollidierenden CSV-Spaltennamen blieb nach Korrektur
+des ersten Namens der Fehler am unveränderten zweiten Feld stehen. Den Fall mit
+zusätzlicher E2E-Assertion reproduziert: **Exit 1, 0/1**
+([Log](verification/required-fields/dependent-errors-before.log)). Die gemeinsame
+Hilfe entfernt nun auch bereits angezeigte Fehler, die durch eine Änderung in
+einem anderen Feld behoben wurden; sie erzeugt dabei keine neuen Fehler.
+Gilt gleichermassen für Parameterkollisionen. Der laufende Matrix-Wiederanlauf
+wurde nach 20 Firefox-Fällen bewusst mit Exit 130 abgebrochen. Der zuvor
+erfolgreiche Verify-Lauf bleibt als Zwischenstand erhalten; nach dieser kleinen
+gemeinsamen Korrektur werden Verify und Browsermatrix erneut vollständig geprüft.
+
+Gezielter Kollisionsnachweis nach Korrektur:
+`DW_REUSE_DEV_SERVER=1 npx playwright test tests/e2e/required-fields.spec.ts --grep 'CSV column' --project=chromium --project=firefox --project=webkit --reporter=list --output=test-results/required-fields-dependent`:
+**Exit 0, 3/3** ([Log](verification/required-fields/dependent-errors.log)).
+Auch die Korrektur einer Parameterkollision ist im gemeinsamen E2E ergänzt.
+
+Eine zusätzliche native Safari-Wiederholung auf dem letzten Helferstand wurde
+angefordert, ist aktuell aber nicht ausführbar: `cua.getApp('Safari')` meldet
+einen gesperrten Mac; Nutzer asynchron um Entsperren gebeten. Keine weiteren
+UI-Aktionen am gesperrten Mac versucht. Der oben dokumentierte tatsächlich
+bestandene Safari-Smoke zu Namen und Dateiauswahl bleibt gültiger vorheriger
+Nachweis; die spätere Kollisionskorrektur ist darüber nicht als nativ geprüft
+ausgegeben. Automatisierte Abnahme läuft unabhängig davon weiter.
+
+Erneuter vollständiger Endlauf nach der Kollisionskorrektur:
+`DW_REUSE_DEV_SERVER=1 npm run verify`: **Exit 0**, Typecheck, Lint/Modulgrenzen,
+**52/52 Unit**, Build, **43/43 Integration**, **47/47 Chromium-E2E** bestanden.
+[Endlog](verification/required-fields/verify.log),
+[Exitcode](verification/required-fields/verify.exitcode).
+Dateifingerprint nach dem Lauf unverändert bestätigt; anschliessende Matrix
+prüft denselben Produkt-/Teststand. Chromium-Geometrie: Toolbar 48 px,
+Arbeitsfläche SQL 763/663 px und R 756/656 px bei 1440×900/1280×800.
+[Messwerte](verification/required-fields/geometry/p7-geometry-chromium.json).
+
+Fachliche Randfallprüfung: `requiredValueError` muss Auswahlwerte auf Leerstring
+prüfen, nicht trimmen, weil Tabulator ein gültiges CSV-Trennzeichen ist.
+Helfer korrigiert; ausschliesslich die freie Portal-ID/URL wird vor der
+Leerprüfung getrimmt. Unit-Assertion und echter Tab-CSV-Vorschaupfad ergänzt.
+`npm run test:unit -- tests/unit/field-validation.test.ts`: **Exit 0, 5/5**.
+`DW_REUSE_DEV_SERVER=1 npx playwright test tests/e2e/required-fields.spec.ts --grep 'CSV column' --project=chromium --project=firefox --project=webkit --reporter=list --output=test-results/required-fields-tab`:
+**Exit 0, 3/3** ([Log](verification/required-fields/tab-delimiter.log)).
+Matrix-Zwischenlauf dafür nach 66 Fällen (47 Firefox und 19 WebKit bestanden)
+bewusst mit Exit 130 beendet; nicht als vollständiger Pass ausgegeben.
+Verify, Matrix und Deployment danach seriell auf dem aktualisierten Fingerprint
+neu gestartet. Bisherigen Verify-Pass als
+`verification/required-fields/verify-before-tab-delimiter.log` erhalten.
+
+Vollständiger Verify-Endlauf inklusive Tabulator-/Kollisionsfällen:
+**Exit 0**, Typecheck/Lint/Modulgrenzen, **52 Unit**, Build,
+**43 Integration**, **47 Chromium-E2E** bestanden. Endlog und Exitcode unter den
+oben verlinkten `verify.log`/`verify.exitcode`; Fingerprint unverändert bestätigt.
+
+Vollständige Browsermatrix auf demselben Endstand:
+`DW_REUSE_DEV_SERVER=1 PLAYWRIGHT_JSON_OUTPUT_FILE=docs/verification/required-fields/browser-matrix.json npx playwright test tests/e2e --project=firefox --project=webkit --reporter=list,json --output=test-results/required-fields-browser-matrix`:
+**Exit 0, 94/94** (47 Firefox, 47 WebKit, keine Skips/unerwarteten Fehler).
+[Log](verification/required-fields/browser-matrix.log),
+[JSON](verification/required-fields/browser-matrix.json),
+[Exitcode](verification/required-fields/browser-matrix.exitcode).
+Geometrie-/Screenshotbelege aller drei Browser unter
+`verification/required-fields/geometry/`; beide Zielauflösungen ohne horizontalen
+Seiten-Scrollbar und mit 48-px-Toolbar bestanden. Deploymentabnahme danach
+automatisch gestartet, drei lokale statische Containerprofile gebaut.
+
+Neue Regressionsevidenz von 60 zuvor bereits versionierten Projekt-/Tooltip-
+Prüfbelegen unter `verification/required-fields/regression-evidence/` gesichert;
+historische Dateien bytegenau aus `git show HEAD:<Pfad>` wiederhergestellt.
+Beide SHA-256-Werte und die Zuordnung sind im
+[Manifest](verification/required-fields/regression-evidence/manifest.json)
+nachvollziehbar. Keine alten Belege durch den neuen Lauf überschrieben.
+
+### Abschluss der Pflichtfeld-Implementierung (21. Oktober 2026)
+
+Alle geplanten Formularbereiche sind umgesetzt. Aktionsbezogene Feldvalidierung
+verwendet die bestehenden fachlichen Regeln; ungültige Entwürfe bleiben lokal,
+gültige Namen werden über den bestehenden Autosave übernommen. Inlinefehler,
+Pflichtsemantik, Fokusführung, bedingte Parameter-/Import-/Transferregeln und
+kompakte Analysenamen sind in den drei automatisierten Browsern abgenommen.
+
+| Endprüfung | Tatsächliches Ergebnis |
+| --- | --- |
+| `DW_REUSE_DEV_SERVER=1 npm run verify` | Exit 0: Typecheck, Lint/Modulgrenzen, 52 Unit, Build, 43 Integration und 47 Chromium-E2E bestanden |
+| Vollständige Firefox-/WebKit-E2E, Befehl oben | Exit 0: 94/94, je 47 pro Browser, keine Skips oder Flakes |
+| `PLAYWRIGHT_JSON_OUTPUT_FILE=docs/verification/required-fields/deployment.json npm run test:deployment -- --reporter=list,json` | Exit 0: 63/63, je 7 in allen neun Browser-/Containerprofilen, keine Skips oder Flakes |
+| `npm run build` nach Deployment | Exit 0, normaler Root-Build im lokalen `dist/` wiederhergestellt |
+| Prettier auf allen geänderten Quell-/Testdateien und Designsystem; `git diff --check` | Beide Exit 0 |
+| Nativer Safari-Smoke nach manuellem Entsperren | Auf demselben finalen Dateifingerprint bestanden: Namensvalidierung, Blur-/Aktionsfokus, native Dateiauswahl, echter Vier-Zeilen-Import und Reload |
+
+Maschinenlesbare Zusammenfassung mit exakten Befehlen, Browserprofilen und
+Exitcodes: [checks.json](verification/required-fields/checks.json).
+Deployment: [Log](verification/required-fields/deployment.log),
+[JSON](verification/required-fields/deployment.json),
+[Exitcode](verification/required-fields/deployment.exitcode).
+Build: [Log](verification/required-fields/root-build.log).
+Formatierung: [Log](verification/required-fields/format.log).
+
+Verifizierter Stand: Arbeitsbaum auf
+`b20ce0ecc6831af896dc9730d960501f82db4108`,
+[Quell-/Test-SHA-256](verification/required-fields/code-fingerprint.json)
+nach allen Prüfungen unverändert bestätigt. Node 22.23.1, npm 11.18.0,
+Playwright 1.63.0; Chromium 153.0.8010.12 (1243), Firefox 155.0 (1543),
+WebKit 26.6 (2359), Docker 29.8.1. SQLRooms/DuckDB/webR bleiben auf den
+gepinnten Paketversionen. Drei eigene Testcontainer durch die Tests beendet;
+vorhandene Portal-/Integratorcontainer und Nutzerserver auf 4173 erhalten.
+Zusätzlichen, wegen Mac-Sperre ungenutzten Safari-Testserver 4195 nach
+Identitätsprüfung mit `kill -TERM 29722` beendet (erwarteter Exit 143).
+
+Nach der Rückmeldung „ist entsperrt“ die native Safari-Prüfung auf dem finalen
+Stand vollständig wiederholt. Safari 27.0.1 (22625.1.29.11.28), eigener Origin
+127.0.0.1:4195 und eigenes Fenster
+`82264CAE-9CF0-45B7-88C8-CB46D5DF740B`.
+Leere Projekterstellung mit Inlinefehler und Feldfokus abgewiesen; beim Leeren
+während der Bearbeitung kein neuer Fehler. Nach Blur Fehler ohne Fokuszwang;
+ungültiges Speichern fokussiert den Namen und behält die gültige Überschrift.
+Unicode-Korrektur `Safari-Final-Öffentlich` löscht den Fehler und bleibt nach
+Reload erhalten. Fehlende Datei fokussiert den sichtbaren Auswahlbutton;
+nativer Dateidialog wählt synthetisches `fixtures/gemeinden.csv`.
+Echte DuckDB-Vorschau zeigt IDs 001–004. Leerer Import-Anzeigename abgewiesen,
+korrigierter Import `Safari-Final-Gemeinden` als `data.gemeinden` mit vier Zeilen
+auch nach Reload erhalten. Damit ist die vorherige Mac-Sperre für den
+beauftragten Smoke behoben.
+
+[15 AX-Beobachtungen und Dateihashes](verification/required-fields/native-safari-final.json),
+[Namensfehler](verification/required-fields/safari-final-edit-error.png),
+[Dateifehler](verification/required-fields/safari-final-file-error.png),
+[Importfehler](verification/required-fields/safari-final-import-name-error.png),
+[Import nach Reload](verification/required-fields/safari-final-import-success.png).
+Nur eigenes Testfenster geschlossen; vorhandenen fremden Go-to-Folder-Dialog
+erhalten. Eigenen Testserver nach Identitätsprüfung mit `kill -TERM 51776`
+beendet (erwarteter Exit 143). Quell-/Testfingerprint danach unverändert bestätigt.
+Keine neuen Produktänderungen für diese Nachprüfung nötig.
+
+Verbleibende Prüfgrenze: Vollständiger nativer Safari-Enginepilot/Prozessneustart
+und Ressourcenbenchmarks wurden für diesen Formularabschnitt nicht erneut
+ausgeführt. Das Testportal verwendet synthetische Daten; keine Prüfung oder
+Änderung produktiver Portale.
+
+Nächster konkreter Schritt: Code-/UI-Durchsicht des fertigen Arbeitsbaums.
+Diese Abnahme bezieht sich auf den beauftragten Pflichtfeldumfang, keine neue
+V1-Releasefreigabe.
+
+Commit-Vorbereitung nach explizitem Nutzerauftrag: `git fetch origin main`
+Exit 0, lokales `main` und `origin/main` auf derselben Ausgangsrevision.
+Die Prüfung des gestagten Diffs bezog erstmals auch die neuen Protokolldateien
+ein und meldete Exit 2 wegen nachgestellter Leerzeichen/Leerzeilen in generierter
+CLI-Ausgabe. Diese rein formalen Zeichen in den Logs normalisiert; fachliche
+Ausgabe, Fehlernachweise, Messwerte und Exitcodes erhalten. Betroffene Logs sind
+in `verification/required-fields/checks.json` aufgelistet. Produkt-/Testfingerprint
+bleibt unverändert.

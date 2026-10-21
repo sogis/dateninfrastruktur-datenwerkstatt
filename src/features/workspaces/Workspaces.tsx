@@ -7,6 +7,7 @@ import {
   EmptyState,
   StatusBadge,
   PanelHeader,
+  RequiredFieldsNote,
 } from '../../ui/Controls';
 import {Diagnostics} from './Diagnostics';
 import {ArchiveActions, ArchiveImport} from '../archive/ArchiveActions';
@@ -15,21 +16,24 @@ import {Link, useNavigate} from '@tanstack/react-router';
 import {useStore} from 'zustand';
 import {listRoute, useWorkspace, report} from '../../app/router';
 import {services} from '../../app/services';
+import {useNameField} from '../../ui/useFormValidation';
 export function ProjectList() {
   const workspaces = listRoute.useLoaderData();
-  const [name, setName] = useState('');
+  const name = useNameField('', 'Projektnamen', () => {});
   const [busy, setBusy] = useState(false);
   const navigate = useNavigate();
   return (
     <main>
       <h1>Projekte</h1>
       <form
+        noValidate
         className="create-workspace"
         onSubmit={(e) => {
           e.preventDefault();
+          if (!name.commit()) return;
           setBusy(true);
           void services.workspaces
-            .create(name)
+            .create(name.value)
             .then((d) =>
               navigate({to: '/projects/$workspaceId', params: {workspaceId: d.workspace.id}}),
             )
@@ -37,8 +41,8 @@ export function ProjectList() {
             .finally(() => setBusy(false));
         }}
       >
-        <FormField label={<>Name des neuen Projekts</>}>
-          <Input value={name} onChange={(e) => setName(e.target.value)} required maxLength={120} />
+        <FormField label={<>Name des neuen Projekts</>} error={name.error}>
+          <Input {...name.input} />
         </FormField>
         <Button
           type="submit"
@@ -50,7 +54,7 @@ export function ProjectList() {
           Neues Projekt
         </Button>
       </form>
-      <p className="dw-required-note">* Pflichtfeld</p>
+      <RequiredFieldsNote />
       <ArchiveImport />
       {workspaces.length === 0 ? (
         <EmptyState>
@@ -88,7 +92,12 @@ export function ProjectList() {
 export function ProjectOverview() {
   const {session, state} = useWorkspace();
   const doc = useStore(state.store, (s) => s.document);
-  const [name, setName] = useState(doc.workspace.name);
+  const name = useNameField(
+    doc.workspace.name,
+    'Projektnamen',
+    (value) => session.rename(value),
+    report,
+  );
   const datasets = Object.values(doc.datasets).filter((dataset) => !dataset.removedAt);
   const analyses = Object.values(doc.analyses).filter((analysis) => !analysis.archivedAt);
   const navigate = useNavigate();
@@ -109,22 +118,10 @@ export function ProjectOverview() {
   return (
     <div className="project-details project-overview">
       <h1>{doc.workspace.name}</h1>
+      <RequiredFieldsNote />
       <div className="form-fields">
-        <FormField label={<>Projektname</>}>
-          <Input
-            value={name}
-            disabled={session.readOnly}
-            maxLength={120}
-            onChange={(e) => setName(e.target.value)}
-            onBlur={() => {
-              if (name !== doc.workspace.name)
-                try {
-                  session.rename(name);
-                } catch (error) {
-                  report(error);
-                }
-            }}
-          />
+        <FormField label={<>Projektname</>} error={name.error}>
+          <Input {...name.input} disabled={session.readOnly} />
         </FormField>
         <FormField label="Beschreibung">
           <Textarea
@@ -147,6 +144,7 @@ export function ProjectOverview() {
           icon="floppy"
           disabled={session.readOnly}
           onClick={() => {
+            if (!name.commit()) return;
             void session.flush().catch(report);
           }}
         >

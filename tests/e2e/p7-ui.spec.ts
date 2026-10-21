@@ -134,6 +134,17 @@ test('P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layou
   );
   await page.getByRole('button', {name: 'Konsole', exact: true}).click();
   await expect(page.getByRole('log')).toHaveCount(0);
+  // As with splitter changes above, reload only after the asynchronous view save commits.
+  await expect
+    .poll(() =>
+      page.evaluate(async () => {
+        const p = '/tests/spike/appServices.ts';
+        const {services} = (await import(p)) as typeof import('../../src/app/services');
+        const id = location.pathname.split('/')[2] as import('../../src/domain/model').WorkspaceId;
+        return (await services.views.load(id)).rConsoleVisible;
+      }),
+    )
+    .toBe(false);
   await page.reload();
   await expect(page.getByRole('log')).toHaveCount(0);
   await page.getByRole('button', {name: 'SQL', exact: true}).click();

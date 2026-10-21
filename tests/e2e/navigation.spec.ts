@@ -255,7 +255,24 @@ test('Notices: regular error text, matching red SVG and translucent interaction 
   await expect(page.getByRole('heading', {name: 'Hinweisprüfung'})).toBeVisible();
   await page.getByLabel('Projektname', {exact: true}).fill('');
   await page.getByLabel('Beschreibung', {exact: true}).focus();
-  await expect(page.getByRole('alert')).toContainText('Too small');
+  await expect(page.getByRole('alert')).toContainText('Bitte gib einen Projektnamen ein.');
+  await expect(page.locator('.error-notice')).toHaveCount(0);
+  await page.getByLabel('Projektname', {exact: true}).fill('Hinweisprüfung');
+  await page.getByLabel('Beschreibung', {exact: true}).focus();
+  // Field validation now belongs to the field. Exercise the global notice's long-text
+  // geometry with an explicit UI fixture, independently of any engine or storage result.
+  await page.evaluate(async () => {
+    const entry = performance
+      .getEntriesByType('resource')
+      .find((resource) => new URL(resource.name).pathname === '/src/app/router.tsx');
+    if (!entry) throw Error('Loaded router module missing');
+    const {report} = (await import(entry.name)) as typeof import('../../src/app/router');
+    report(
+      new Error(
+        'Testhinweis: Die angeforderte Operation konnte nicht abgeschlossen werden. Die eingegebenen Daten bleiben erhalten. Bitte prüfe die Verbindung und versuche die Operation erneut. Falls das Problem weiterhin besteht, kannst du eine lokale Diagnose für die weitere Prüfung erstellen.',
+      ),
+    );
+  });
   for (const viewport of viewports) {
     await page.setViewportSize(viewport);
     for (const zoom of [1, 2]) {
@@ -265,7 +282,7 @@ test('Notices: regular error text, matching red SVG and translucent interaction 
       const geometry = await noticeGeometry(
         page,
         info,
-        `notice-name-error-${viewport.width}-zoom-${zoom}`,
+        `notice-long-error-${viewport.width}-zoom-${zoom}`,
       );
       if (zoom === 2)
         expect(geometry.text.height).toBeGreaterThan(

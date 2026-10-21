@@ -1,18 +1,35 @@
-import {Button, Input, Select, FormField, Notice} from '../../ui/Controls';
+import {Button, Input, Select, FormField, Notice, RequiredFieldsNote} from '../../ui/Controls';
+import {useFormValidation} from '../../ui/useFormValidation';
+import {bindingNameError, requiredValueError} from '../../domain/fieldValidation';
 import {useState} from 'react';
 import {useNavigate} from '@tanstack/react-router';
 import type {EditingSession} from '../../application/workspaceService';
 import type {ResultId, AnalysisId} from '../../domain/model';
 import type {TransferPlan} from '../../application/ports';
 import {Modal} from '../../ui/Modal';
+export function approvalChecks(plan: TransferPlan | undefined, approved: string[]) {
+  return Object.fromEntries(
+    (plan?.issues ?? [])
+      .filter((issue) => issue.requiresApproval)
+      .map((issue) => [
+        `approval-${issue.id}`,
+        () =>
+          approved.includes(issue.id)
+            ? undefined
+            : 'Bitte bestätige diese Umwandlung, um fortzufahren.',
+      ]),
+  );
+}
 export function PlanView({
   plan,
   approved,
   onChange,
+  validation,
 }: {
   plan: TransferPlan;
   approved: string[];
   onChange(ids: string[]): void;
+  validation: ReturnType<typeof useFormValidation>;
 }) {
   return (
     <>
@@ -24,15 +41,21 @@ export function PlanView({
         {plan.issues.map((i) => (
           <li key={i.id}>
             {i.requiresApproval ? (
-              <FormField label={<>{i.message}</>}>
+              <FormField label={<>{i.message}</>} error={validation.errors[`approval-${i.id}`]}>
                 <Input
+                  {...validation.control(`approval-${i.id}`)}
+                  required
                   type="checkbox"
                   checked={approved.includes(i.id)}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    validation.change(
+                      `approval-${i.id}`,
+                      e.target.checked ? undefined : 'Bestätigung fehlt.',
+                    );
                     onChange(
                       e.target.checked ? [...approved, i.id] : approved.filter((id) => id !== i.id),
-                    )
-                  }
+                    );
+                  }}
                 />
               </FormField>
             ) : (
@@ -63,6 +86,11 @@ export function TransferToR({
   const [approved, setApproved] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const form = useFormValidation({
+    analysis: () => requiredValueError(analysisId),
+    variable: () => bindingNameError(variable),
+    ...approvalChecks(plan, approved),
+  });
   const act = async (work: () => Promise<void>) => {
     setBusy(true);
     setError('');
@@ -84,7 +112,8 @@ export function TransferToR({
         <>
           <Button
             disabled={busy}
-            onClick={() =>
+            onClick={() => {
+              if (!form.validate(['analysis', 'variable'])) return;
               void act(async () => {
                 const id =
                   analysisId === 'new' ? session.createAnalysis('r') : (analysisId as AnalysisId);
@@ -95,18 +124,17 @@ export function TransferToR({
                     .getR()
                     .planToR(resultId, id, variable, new AbortController().signal),
                 );
-              })
-            }
+              });
+            }}
           >
             Transfer prüfen
           </Button>
           {plan && (
             <Button
               variant="primary"
-              disabled={
-                busy || plan.issues.some((i) => i.requiresApproval && !approved.includes(i.id))
-              }
-              onClick={() =>
+              disabled={busy}
+              onClick={() => {
+                if (!form.validate()) return;
                 void act(async () => {
                   await session.getR().commitToR(plan.id, approved, new AbortController().signal);
                   onClose();
@@ -114,8 +142,8 @@ export function TransferToR({
                     to: '/projects/$workspaceId/r/$analysisId',
                     params: {workspaceId: session.document.workspace.id, analysisId},
                   });
-                })
-              }
+                });
+              }}
             >
               In R übernehmen
             </Button>
@@ -123,8 +151,11 @@ export function TransferToR({
         </>
       }
     >
+      <RequiredFieldsNote />
       <FormField label={<>R-Analyse</>}>
         <Select
+          {...form.control('analysis')}
+          required
           value={analysisId}
           disabled={busy}
           onChange={(e) => {
@@ -140,12 +171,15 @@ export function TransferToR({
           ))}
         </Select>
       </FormField>
-      <FormField label={<>R-Variablenname</>}>
+      <FormField label={<>R-Variablenname</>} error={form.errors.variable}>
         <Input
+          {...form.control('variable')}
+          required
           value={variable}
           disabled={busy}
           onChange={(e) => {
             setVariable(e.target.value);
+            form.change('variable', bindingNameError(e.target.value));
             setPlan(undefined);
           }}
         />
@@ -153,7 +187,7 @@ export function TransferToR({
 
       {plan && (
         <>
-          <PlanView plan={plan} approved={approved} onChange={setApproved} />
+          <PlanView plan={plan} approved={approved} onChange={setApproved} validation={form} />
           <p>
             Das Resultat wird vor der dauerhaften Eingabebindung gesichert. Das R-Skript wird nicht
             gestartet.

@@ -116,7 +116,20 @@
   overflow-wrap: anywhere;
 }
 .dw-field--hidden {
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+.dw-field--hidden > .dw-input {
+  grid-column: 1;
+  grid-row: 1;
+}
+.dw-field-required-inline {
+  grid-column: 2;
+  grid-row: 1;
+}
+.dw-field--hidden > .dw-field-error {
+  grid-column: 1 / -1;
 }
 .dw-check-line {
   display: flex;

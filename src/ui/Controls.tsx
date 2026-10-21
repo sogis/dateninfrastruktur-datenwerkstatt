@@ -260,7 +260,13 @@ export function Textarea({className = '', ...props}: TextareaHTMLAttributes<HTML
 }
 type FieldControl = Pick<
   InputHTMLAttributes<HTMLInputElement>,
-  'id' | 'type' | 'required' | 'aria-describedby' | 'aria-invalid'
+  | 'id'
+  | 'type'
+  | 'required'
+  | 'aria-describedby'
+  | 'aria-invalid'
+  | 'aria-label'
+  | 'aria-labelledby'
 >;
 export function FormField({
   label,
@@ -286,12 +292,19 @@ export function FormField({
       .join(' ') || undefined;
   const input = cloneElement(children, {
     id,
+    'aria-labelledby':
+      children.props['aria-labelledby'] ??
+      (children.props['aria-label'] ? undefined : `${id}-label-text`),
     'aria-describedby': describedBy,
     'aria-invalid': error ? true : children.props['aria-invalid'],
   });
   const labelNode = (
-    <label htmlFor={id} className={`dw-label ${labelHidden ? 'visually-hidden' : ''}`}>
-      {label}
+    <label
+      id={`${id}-label`}
+      htmlFor={id}
+      className={`dw-label ${labelHidden ? 'visually-hidden' : ''}`}
+    >
+      <span id={`${id}-label-text`}>{label}</span>
       {children.props.required && <span aria-hidden="true"> *</span>}
     </label>
   );
@@ -307,6 +320,11 @@ export function FormField({
       ) : (
         <>
           {labelNode}
+          {labelHidden && children.props.required && (
+            <span className="dw-field-required-inline" aria-hidden="true">
+              *
+            </span>
+          )}
           {input}
         </>
       )}
@@ -325,10 +343,24 @@ export function FormField({
 }
 export function FileInput({
   buttonLabel = 'Datei auswählen',
+  selectedFile,
   ...props
-}: InputHTMLAttributes<HTMLInputElement> & {buttonLabel?: string}) {
+}: InputHTMLAttributes<HTMLInputElement> & {buttonLabel?: string; selectedFile?: File | null}) {
   const ref = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState('');
+  const generated = useId();
+  const requiredId = `${props.id ?? generated}-required`;
+  useLayoutEffect(() => {
+    const input = ref.current;
+    if (!input || selectedFile === undefined) return;
+    if (!selectedFile) input.value = '';
+    else if (input.files?.[0] !== selectedFile) {
+      const transfer = new DataTransfer();
+      transfer.items.add(selectedFile);
+      input.files = transfer.files;
+    }
+  });
+  const shownName = selectedFile === undefined ? fileName : selectedFile?.name;
   return (
     <span className="dw-file-input">
       <Input
@@ -344,15 +376,36 @@ export function FileInput({
       />
       <Button
         icon="upload"
-        aria-describedby={props['aria-describedby']}
+        aria-describedby={
+          [
+            props.id ? `${props.id}-label` : '',
+            props['aria-describedby'],
+            props.required ? requiredId : '',
+          ]
+            .filter(Boolean)
+            .join(' ') || undefined
+        }
+        aria-invalid={props['aria-invalid']}
         disabled={props.disabled}
+        onBlur={(event) => {
+          const input = ref.current;
+          if (input) props.onBlur?.({...event, target: input, currentTarget: input});
+        }}
         onClick={() => ref.current?.click()}
       >
         {buttonLabel}
       </Button>
-      {fileName && <span className="dw-file-name">{fileName}</span>}
+      {shownName && <span className="dw-file-name">{shownName}</span>}
+      {props.required && (
+        <span id={requiredId} className="visually-hidden">
+          Pflichtfeld
+        </span>
+      )}
     </span>
   );
+}
+export function RequiredFieldsNote() {
+  return <p className="dw-required-note">* Pflichtfeld</p>;
 }
 export function ActionGroup({className = '', ...props}: HTMLAttributes<HTMLDivElement>) {
   return <div {...props} className={`dw-actions ${className}`} />;

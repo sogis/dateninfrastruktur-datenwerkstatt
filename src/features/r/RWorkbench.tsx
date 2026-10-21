@@ -1,4 +1,15 @@
-import {Button, Input, Select, FormField, ActionGroup, Toolbar, Notice} from '../../ui/Controls';
+import {
+  Button,
+  Input,
+  Select,
+  FormField,
+  ActionGroup,
+  Toolbar,
+  Notice,
+  RequiredFieldsNote,
+} from '../../ui/Controls';
+import {useNameField, useFormValidation} from '../../ui/useFormValidation';
+import {displayNameError, sqlNameError} from '../../domain/fieldValidation';
 import {ActionMenu} from '../../ui/ActionMenu';
 import {useEffect, useRef, useState, useSyncExternalStore} from 'react';
 import {Panel, PanelGroup, PanelResizeHandle} from 'react-resizable-panels';
@@ -10,7 +21,7 @@ import type {Settings} from '../../infrastructure/storage/settings';
 import {CodeEditor} from '../../ui/CodeEditor';
 import {Modal} from '../../ui/Modal';
 import {Parameters} from '../sql/SqlWorkbench';
-import {PlanView} from './Transfer';
+import {PlanView, approvalChecks} from './Transfer';
 import {report} from '../../app/router';
 import {downloadStream} from '../../app/download';
 import {PreviewTable} from '../data/DataSection';
@@ -34,7 +45,15 @@ export function RWorkbench({
   useSyncExternalStore(session.persistence.subscribe, () => session.persistence.document);
   const busy = useSyncExternalStore(session.scheduler.subscribe, session.scheduler.getSnapshot);
   const started = useRef(false);
-  const [name, setName] = useState(analysis.name);
+  const name = useNameField(
+    analysis.name,
+    'Analysenamen',
+    (value) => session.updateAnalysis(analysis.id, {name: value}),
+    report,
+  );
+  const save = () => {
+    if (name.commit()) void session.flush().catch(report);
+  };
   const [selected, setSelected] = useState('latest');
   const {view} = useWorkspace();
   const layout = useStore(view.store, (s) => s.value);
@@ -50,6 +69,14 @@ export function RWorkbench({
   const [datasetName, setDatasetName] = useState('vergleich');
   const [sqlName, setSqlName] = useState('vergleich');
   const [replace, setReplace] = useState<string>('new');
+  const occupied = Object.values(session.document.datasets)
+    .filter((d) => d.id !== replace)
+    .map((d) => d.sqlName);
+  const datasetForm = useFormValidation({
+    ...approvalChecks(plan, approved),
+    name: () => displayNameError(datasetName, 'Datensatznamen'),
+    sqlName: () => (replace === 'new' ? sqlNameError(sqlName, occupied) : undefined),
+  });
   const [preview, setPreview] = useState<Awaited<ReturnType<typeof service.previewObject>>>();
   useEffect(() => {
     if (!started.current && !session.readOnly) {
@@ -67,7 +94,7 @@ export function RWorkbench({
       .map((id) => session.document.results[id])
       .filter((r): r is PlotResult => r?.kind === 'plot') ?? [];
   const execute = (selection?: string) => {
-    if (busy || session.readOnly) return;
+    if (busy || session.readOnly || !name.commit()) return;
     setSelected('latest');
     setPreview(undefined);
     void service.run(analysis.id, selection).catch(report);
@@ -75,27 +102,20 @@ export function RWorkbench({
   return (
     <div className="analysis-area r-workbench">
       <Toolbar className="analysis-toolbar">
-        <FormField
-          label={
-            <>
-              <span className="visually-hidden">Analysename</span>
-            </>
-          }
-          labelHidden
-        >
+        <FormField label="Analysename" error={name.error} className="analysis-name-field">
           <Input
-            value={name}
+            {...name.input}
             disabled={session.readOnly}
-            onChange={(e) => setName(e.target.value)}
-            onBlur={() => {
-              try {
-                if (name !== analysis.name) session.updateAnalysis(analysis.id, {name});
-              } catch (e) {
-                report(e);
+            onKeyDown={(event) => {
+              if ((event.ctrlKey || event.metaKey) && ['s', 'Enter'].includes(event.key)) {
+                event.preventDefault();
+                if (event.key === 's') save();
+                else execute();
               }
             }}
           />
         </FormField>
+        <RequiredFieldsNote />
         <ActionGroup>
           <Button
             variant="primary"
@@ -111,11 +131,7 @@ export function RWorkbench({
               Abbrechen
             </Button>
           )}
-          <Button
-            icon="floppy"
-            disabled={session.readOnly}
-            onClick={() => void session.flush().catch(report)}
-          >
+          <Button icon="floppy" disabled={session.readOnly} onClick={save}>
             Speichern
           </Button>
         </ActionGroup>
@@ -155,8 +171,10 @@ export function RWorkbench({
         />
         {optionsOpen && (
           <Modal title="R-Optionen" onClose={() => setOptionsOpen(false)}>
+            <RequiredFieldsNote />
             <FormField label={<>Umgebung</>}>
               <Select
+                required
                 value={analysis.environmentMode}
                 disabled={!!busy || session.readOnly}
                 onChange={(e) =>
@@ -329,7 +347,7 @@ export function RWorkbench({
                     code={analysis.code}
                     readOnly={session.readOnly}
                     onChange={(code) => session.updateAnalysis(analysis.id, {code})}
-                    onSave={() => void session.flush().catch(report)}
+                    onSave={save}
                     onRun={execute}
                     fontSize={settings.editorFontSize}
                     wordWrap={settings.wordWrap}
@@ -426,30 +444,51 @@ export function RWorkbench({
             <>
               <Button
                 variant="primary"
-                disabled={
-                  !!busy || plan.issues.some((i) => i.requiresApproval && !approved.includes(i.id))
-                }
-                onClick={() =>
+                disabled={!!busy}
+                onClick={() => {
+                  if (!datasetForm.validate()) return;
                   void service
                     .commitFromR(plan.id, datasetName, approved, new AbortController().signal, {
                       sqlName,
                       ...(replace === 'new' ? {} : {replace: replace as DatasetId}),
                     })
                     .then(() => setPlan(undefined))
-                    .catch(report)
-                }
+                    .catch(report);
+                }}
               >
                 Datensatz übernehmen
               </Button>
             </>
           }
         >
-          <PlanView plan={plan} approved={approved} onChange={setApproved} />
-          <FormField label={<>Datensatzname</>}>
-            <Input value={datasetName} onChange={(e) => setDatasetName(e.target.value)} />
+          <RequiredFieldsNote />
+          <PlanView
+            plan={plan}
+            approved={approved}
+            onChange={setApproved}
+            validation={datasetForm}
+          />
+          <FormField label={<>Datensatzname</>} error={datasetForm.errors.name}>
+            <Input
+              {...datasetForm.control('name')}
+              required
+              maxLength={120}
+              value={datasetName}
+              onChange={(e) => {
+                setDatasetName(e.target.value);
+                datasetForm.change('name', displayNameError(e.target.value, 'Datensatznamen'));
+              }}
+            />
           </FormField>
           <FormField label={<>Zieldatensatz</>}>
-            <Select value={replace} onChange={(e) => setReplace(e.target.value)}>
+            <Select
+              required
+              value={replace}
+              onChange={(e) => {
+                setReplace(e.target.value);
+                datasetForm.reset();
+              }}
+            >
               <option value="new">Neuer Datensatz</option>
               {Object.values(session.document.datasets)
                 .filter((d) => !d.removedAt)
@@ -460,11 +499,20 @@ export function RWorkbench({
                 ))}
             </Select>
           </FormField>
-          <FormField label={<>SQL-Name</>}>
+          <FormField label={<>SQL-Name</>} error={datasetForm.errors.sqlName}>
             <Input
-              value={sqlName}
+              {...datasetForm.control('sqlName')}
+              required={replace === 'new'}
+              value={
+                replace === 'new'
+                  ? sqlName
+                  : (session.document.datasets[replace as DatasetId]?.sqlName ?? '')
+              }
               disabled={replace !== 'new'}
-              onChange={(e) => setSqlName(e.target.value)}
+              onChange={(e) => {
+                setSqlName(e.target.value);
+                datasetForm.change('sqlName', sqlNameError(e.target.value, occupied));
+              }}
             />
           </FormField>
         </Modal>

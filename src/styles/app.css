@@ -333,9 +333,16 @@ main {
   min-height: 48px;
 }
 .analysis-toolbar > .dw-field {
-  width: 200px;
-  max-width: 200px;
-  flex: 1 1 120px;
+  width: 300px;
+  max-width: 340px;
+  flex: 1 1 240px;
+}
+.analysis-toolbar .analysis-name-field {
+  grid-template-columns: auto minmax(80px, 1fr);
+  align-items: center;
+}
+.analysis-name-field .dw-field-error {
+  grid-column: 1 / -1;
 }
 .analysis-toolbar .dw-actions {
   flex-wrap: nowrap;

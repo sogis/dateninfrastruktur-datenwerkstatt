@@ -1,0 +1,331 @@
+{
+  "config": {
+    "argv": [
+      "/Users/stefan/Library/Application Support/fnm/node-versions/v22.23.1/installation/bin/node",
+      "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/node_modules/.bin/playwright",
+      "test",
+      "tests/e2e/required-fields.spec.ts",
+      "--grep",
+      "sql name|SQL dataset",
+      "--project=chromium",
+      "--project=firefox",
+      "--project=webkit",
+      "--reporter=list,json",
+      "--output=test-results/required-fields-transfer"
+    ],
+    "configFile": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/playwright.config.ts",
+    "rootDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/required-fields-transfer",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests",
+        "testIgnore": [
+          "**/deployment/**"
+        ],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/required-fields-transfer",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests",
+        "testIgnore": [
+          "**/deployment/**"
+        ],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/required-fields-transfer",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests",
+        "testIgnore": [
+          "**/deployment/**"
+        ],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "e2e/required-fields.spec.ts",
+      "file": "e2e/required-fields.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Required fields: sql name guards save and run buttons and keyboard shortcuts",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2579,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T01:05:58.895Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4ddc8deaa2bc1876463a-68bd6f916fab2d7345b5",
+          "file": "e2e/required-fields.spec.ts",
+          "line": 74,
+          "column": 3
+        },
+        {
+          "title": "Required fields: SQL dataset and R transfer validate before keeping results or creating an analysis",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14147,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T01:06:01.487Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4ddc8deaa2bc1876463a-684e25dc8001ea713b79",
+          "file": "e2e/required-fields.spec.ts",
+          "line": 242,
+          "column": 1
+        },
+        {
+          "title": "Required fields: sql name guards save and run buttons and keyboard shortcuts",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "firefox",
+              "projectName": "firefox",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2299,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T01:06:15.804Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4ddc8deaa2bc1876463a-68ee25ab291020eb940c",
+          "file": "e2e/required-fields.spec.ts",
+          "line": 74,
+          "column": 3
+        },
+        {
+          "title": "Required fields: SQL dataset and R transfer validate before keeping results or creating an analysis",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "firefox",
+              "projectName": "firefox",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 15153,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T01:06:18.115Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4ddc8deaa2bc1876463a-c32889773062b16c81a2",
+          "file": "e2e/required-fields.spec.ts",
+          "line": 242,
+          "column": 1
+        },
+        {
+          "title": "Required fields: sql name guards save and run buttons and keyboard shortcuts",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1968,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T01:06:33.438Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4ddc8deaa2bc1876463a-42767053a2a54944326a",
+          "file": "e2e/required-fields.spec.ts",
+          "line": 74,
+          "column": 3
+        },
+        {
+          "title": "Required fields: SQL dataset and R transfer validate before keeping results or creating an analysis",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 16247,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T01:06:35.419Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4ddc8deaa2bc1876463a-7f1ee021b112c4fb98e6",
+          "file": "e2e/required-fields.spec.ts",
+          "line": 242,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-21T01:05:58.556Z",
+    "duration": 53133.007,
+    "expected": 6,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

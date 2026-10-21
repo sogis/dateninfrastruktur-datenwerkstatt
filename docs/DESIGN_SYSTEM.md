@@ -89,10 +89,37 @@ Pflichtfelder erhalten ein sichtbares Sternchen und native required-Semantik;
 einmal pro Formular wird „\* Pflichtfeld“ erklärt. Keine neuen fachlichen
 Validierungsregeln allein durch die Designmigration.
 
+Die Kennzeichnung gilt auch für bereits ausgefüllte und bearbeitbare Felder.
+Ein Feld darf während der Bearbeitung vorübergehend leer sein. Nach dem Verlassen
+eines bearbeiteten Feldes und vor der zugehörigen Aktion wird geprüft. Neue Fehler
+werden nicht bei jedem Tastendruck angezeigt; vorhandene Fehler verschwinden,
+sobald die Eingabe gültig ist. Ungültige Entwürfe bleiben korrigierbar, der letzte
+gültige Dokumentwert bleibt erhalten. Bei abgewiesener Aktion erhält das erste
+ungültige Feld den Fokus; Blur-Validierung erzwingt keinen Fokuswechsel.
+Feldfehler stehen am Feld, ohne zusätzlichen globalen Fehlerhinweis. Eigene
+Formularvalidierung verwendet `noValidate` bei weiterhin gesetztem `required`.
+
+Pflichtregeln gelten für die jeweilige Aktion und aktive Stufe: Datei/CSV-Optionen
+vor Vorschau, Namen vor Importbestätigung; Portal-ID/URL nur für „Kontext laden“.
+Eine leere Indexsuche und aufgelöste Deep Links bleiben gültig. Vorbelegte
+Auswahlfelder erfüllen ihre Pflicht bereits. Fest vorgegebene SQL-Namen beim
+Ersetzen sind deaktiviert und verlangen keine neue Eingabe. Stringparameter dürfen
+leer sein, NULL deaktiviert die Werteingabe; Zahlen und typisierte Parameter
+benötigen einen gültigen Wert. Beschreibung, Zufallsseed, Diagrammkategorie,
+zusätzlicher NULL-Marker und gewöhnliche Optionscheckboxen bleiben optional.
+Bereits fachlich verlangte Umwandlungsbestätigungen sind Pflichtcheckboxen.
+
+Die Dateiauswahl unterstützt Auswahlbutton und Drag-and-drop mit demselben
+Dateizustand. Der sichtbare Button vermittelt Pflichtstatus/Feldfehler und erhält
+bei einem Fehler den Fokus. Der zugängliche Feldname enthält keinen dekorativen
+Stern; native Pflichtsemantik vermittelt die Anforderung zusätzlich.
+
 Checkboxen und Radiobuttons stehen links, ihre anklickbare Beschriftung rechts
 mit 8 px Abstand und normalem Schriftgewicht. Mehrzeilige Texte dürfen umbrechen.
-Analysename in einer kompakten Werkzeugleiste darf ein visuell ausgeblendetes
-Label haben. Parametertabellen verwenden Spaltenköpfe plus eindeutige zugängliche
+Analysename in einer kompakten Werkzeugleiste besitzt ein sichtbares Inline-Label
+mit Sternchen. Der Hinweis „\* Pflichtfeld“ steht in derselben Werkzeugleiste;
+der Platzvertrag bleibt im gültigen Ausgangszustand erfüllt. Feldfehler dürfen
+die Höhe bedarfsgerecht vergrössern. Parametertabellen verwenden Spaltenköpfe plus eindeutige zugängliche
 Feldnamen. Deaktivierte und schreibgeschützte Werte bleiben lesbar.
 
 ## Komponenten und Zustände

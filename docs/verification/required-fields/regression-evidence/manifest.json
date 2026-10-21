@@ -1,0 +1,362 @@
+[
+  {
+    "historical_path": "docs/verification/projects/chromium-project-data-history.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/chromium-project-data-history.png",
+    "historical_sha256": "25d2f06cc9f17a3fb516acfdacd7db365083d9bca28874a65e0800d5df7ed1e7",
+    "new_sha256": "205c2f4b3697a0bf30ab848a51a3fe6618c0acc266b470421581c62f4984c9c6"
+  },
+  {
+    "historical_path": "docs/verification/projects/chromium-project-overview.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/chromium-project-overview.png",
+    "historical_sha256": "21d91a1821637cc364c01147f5a2bef692abefb1fb47f9f445c724009983c441",
+    "new_sha256": "abe3346d5bea157be5a23197e6aff413996745d42e249c5f1d60680b80c36023"
+  },
+  {
+    "historical_path": "docs/verification/projects/chromium-project-sql-history.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/chromium-project-sql-history.png",
+    "historical_sha256": "0c8abec61f1b452aabe51976ff95abcaa03a59a16d64a877f1a424fbc93c7023",
+    "new_sha256": "f611f790ed4c0ce97690ab119937a5146e0a1ff5f4cb4f62dd1fe6d26c4e34d0"
+  },
+  {
+    "historical_path": "docs/verification/projects/components-chromium-1280-fallback.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/components-chromium-1280-fallback.png",
+    "historical_sha256": "be6afcaf88ea26d3e297b6b811f29514ad60a92d3199f427a4b0c73d99419d4b",
+    "new_sha256": "9630a6f80764929275e0eed0bff03b2512e3bf273c4b759c51fd0d8c109299c0"
+  },
+  {
+    "historical_path": "docs/verification/projects/components-chromium-1440-fallback.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/components-chromium-1440-fallback.png",
+    "historical_sha256": "93e0bc567e030cd161319cdcc82a69b9232835cdb6ce9b0846bec7869a837328",
+    "new_sha256": "be6e7da6759b1d63b2363661cfd4ac761bc317d361f2aef18aeb589fd039ce64"
+  },
+  {
+    "historical_path": "docs/verification/projects/components-chromium-720-fallback.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/components-chromium-720-fallback.png",
+    "historical_sha256": "08b9b5e4cbc4e1e6f0c7d099f7d0615bcf7ca623c6fa672c5f466bcad80d8f08",
+    "new_sha256": "fc63bd8195577de02a75def883e4b94b82862750151e140050d50b58af20adfb"
+  },
+  {
+    "historical_path": "docs/verification/projects/components-chromium.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/components-chromium.png",
+    "historical_sha256": "a3c5af6b06e215522c50907a717894572996e1e0398c836a1d729166d53afa44",
+    "new_sha256": "c5ca2f97907c8548e4e6538662a6fb05efaa88799c043aa24be0ca927be4f0b7"
+  },
+  {
+    "historical_path": "docs/verification/projects/components-firefox-1280-fallback.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/components-firefox-1280-fallback.png",
+    "historical_sha256": "b4bafcd61c8fdfc28057fb6968aadb49735fb53e1e67670b05e04a56fed5615d",
+    "new_sha256": "69d00c8e8a02f91e59e71061e7b06e56aab27b19a443d9c24c9ce6a6f5ba10fc"
+  },
+  {
+    "historical_path": "docs/verification/projects/components-firefox-1440-fallback.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/components-firefox-1440-fallback.png",
+    "historical_sha256": "22c5ae7a91261a9d61a6adf492aa3eda6ef82bf2d3f4ab4ce49f474ea70667a5",
+    "new_sha256": "a24dbdd81fc72b8deb8b36550f7c77e5087fd529971786cb66a23af2577c517e"
+  },
+  {
+    "historical_path": "docs/verification/projects/components-firefox-720-fallback.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/components-firefox-720-fallback.png",
+    "historical_sha256": "8d51821a036cfc3bb0f1ad8c4288d494ef97c76c854350d9acd628f291abb0ad",
+    "new_sha256": "27000e2b51fea70b40c0768f075ff1bb37688c6e998a5cbb22a2faf6f0a43ee6"
+  },
+  {
+    "historical_path": "docs/verification/projects/components-firefox.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/components-firefox.png",
+    "historical_sha256": "0f13394bbd32bcc795d6a2a8daa12d16d408679ea5a7f481b814711b3538d8ef",
+    "new_sha256": "16ed0bc6c731cc45c7e3ac777d4f7b6d3a266a002404f306f8c5e300b3103e38"
+  },
+  {
+    "historical_path": "docs/verification/projects/components-webkit-1280-fallback.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/components-webkit-1280-fallback.png",
+    "historical_sha256": "3046f20445eeeffd80271fb4251da77544262cbb4780708069d03a9e94bc8d1d",
+    "new_sha256": "de71e44c97f0fdf1ea411d6d0a99e3813a9c86484f6e7deabcff4c8e60bacfcb"
+  },
+  {
+    "historical_path": "docs/verification/projects/components-webkit-1440-fallback.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/components-webkit-1440-fallback.png",
+    "historical_sha256": "7d1cad6a2da540f7b6d53a7171d3ed6e6add490d6ba1f2110b0b3fe9ab7bbf68",
+    "new_sha256": "bfdd90d96f5390a653d07a5233f7293c08d2ff638cd8a88c00b2163206c74def"
+  },
+  {
+    "historical_path": "docs/verification/projects/components-webkit-720-fallback.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/components-webkit-720-fallback.png",
+    "historical_sha256": "fb480d8be185b943704583eed49eab14a8248fa7a5192363640b567df0c5ab42",
+    "new_sha256": "0df46a9430f88b417135e49bb3e13bf74a7f17be92f6921fd49281892fe20c9d"
+  },
+  {
+    "historical_path": "docs/verification/projects/components-webkit.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/components-webkit.png",
+    "historical_sha256": "b255b27aff5bf739d6c5547384d6767b20bdea747346509464205737127e47e5",
+    "new_sha256": "639d3988bbb46064400e3e9dbc567ab78d91065b0de98c7ef815613b2423c8f5"
+  },
+  {
+    "historical_path": "docs/verification/projects/firefox-project-data-history.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/firefox-project-data-history.png",
+    "historical_sha256": "f130ebaa0c4c06e23f152563a16c6c76622ae09d98a44e19787aa1d41dfc30da",
+    "new_sha256": "41e3a0d4c73328e33ff74b1c447152dd33c116f3cbd83e10d88f8f80cbbe700b"
+  },
+  {
+    "historical_path": "docs/verification/projects/firefox-project-overview.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/firefox-project-overview.png",
+    "historical_sha256": "6bf4ffea5a751a24e8b7759b5b53a2efeca49a0d12cffa27089de9b164ec1cc9",
+    "new_sha256": "b8706cace3015d8f849f17e7204cad55751aaab5bb784e3807204e5a71af5dc6"
+  },
+  {
+    "historical_path": "docs/verification/projects/firefox-project-sql-history.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/firefox-project-sql-history.png",
+    "historical_sha256": "e75a06660cd200dc79c4af954b206de09527635cf9fa7b82c3ef71d6cdae27aa",
+    "new_sha256": "5827d7b69388a994d24fdb5fd07553d48e1397c9573a205b9257a641a7287a62"
+  },
+  {
+    "historical_path": "docs/verification/projects/import-chromium-1280.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/import-chromium-1280.png",
+    "historical_sha256": "4bd29263671c027be0c7b4b1bd214d59ccc221c51db3309d48cd47266f61e0bc",
+    "new_sha256": "8ba66594f6c95acbc98ef366bb1a62b1f126322a203a0149f82902524aa7ffef"
+  },
+  {
+    "historical_path": "docs/verification/projects/import-chromium-1440.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/import-chromium-1440.png",
+    "historical_sha256": "0ac250ca1fe44ba8d9e14969facbd95e6a7125f1728bb320314cc47ad1957613",
+    "new_sha256": "b1f6a45d4b1f4734023adfef24dddcdbdd79021c08ae853d9c7f0f1d6d9bb98d"
+  },
+  {
+    "historical_path": "docs/verification/projects/import-firefox-1280.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/import-firefox-1280.png",
+    "historical_sha256": "fad90ce566aca2e2e77a0b20fa6dacf18fd8b94bafb228a8b3a42bc4197287eb",
+    "new_sha256": "b09af6bedac0548f0fcdca15397a8240f21a8f741d5a0654a7f296f577bce078"
+  },
+  {
+    "historical_path": "docs/verification/projects/import-firefox-1440.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/import-firefox-1440.png",
+    "historical_sha256": "ee6b3d852f6e0ef47a60bb3ccb69b04d1bec55ece2bde7b409e17e55849410b5",
+    "new_sha256": "3243e98c9fb71e74d53338171763736fe1f09fd6adb61e12277ef58f4411c557"
+  },
+  {
+    "historical_path": "docs/verification/projects/import-webkit-1280.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/import-webkit-1280.png",
+    "historical_sha256": "fa66cbcc89d93916fa7a4329c6e392f491b190c5b14102547081835305ed52d2",
+    "new_sha256": "9e42ad79fe0ced431c091e43583b3055e7a3ed6fc132eceb406910d2815d8264"
+  },
+  {
+    "historical_path": "docs/verification/projects/import-webkit-1440.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/import-webkit-1440.png",
+    "historical_sha256": "33e9b06f25c2f25d3fff9ef87b5cc73a21e4125b95d23044a080f6b8242b76c6",
+    "new_sha256": "28cbd73e8f3cd6c5c1946d02e77c1fc0e04be60a83b4a35dc825b45c5a9aae1f"
+  },
+  {
+    "historical_path": "docs/verification/projects/overview-chromium.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/overview-chromium.png",
+    "historical_sha256": "f29c12b851d412586dfdba08ea460f8beaf54a967c18018850236d8f7b72459c",
+    "new_sha256": "bc3862ecbb773da4300e646fe3447b96deb55d0e84a35489756591ba03ef24c3"
+  },
+  {
+    "historical_path": "docs/verification/projects/overview-firefox.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/overview-firefox.png",
+    "historical_sha256": "fe57d78b78aa1e4315cdc7a7a142929de5d6fa047a15cac65cef3f82461eefc2",
+    "new_sha256": "1c8874a477d4f8c8764d63d81c784d7149d8b24d7b36d8f0cb4283c5a34b94da"
+  },
+  {
+    "historical_path": "docs/verification/projects/overview-webkit.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/overview-webkit.png",
+    "historical_sha256": "58493d2291d126eadd5f7d14c2574b7dea2220ab8559eecd66107208dcfaf8e1",
+    "new_sha256": "a44b85d904b567ead3989971e140c186717be78fce27669f9083a66f672dde84"
+  },
+  {
+    "historical_path": "docs/verification/projects/p8-golden-chromium.json",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/p8-golden-chromium.json",
+    "historical_sha256": "0e7f2e6adf7945433da915748b2761cf87316e56b0b113c9e2d33780b488e2b8",
+    "new_sha256": "24a1c45e3c4cfe9474d8dd5c66a2860d0391e1d8dac3f9a21e9ec2355852edc1"
+  },
+  {
+    "historical_path": "docs/verification/projects/p8-golden-chromium.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/p8-golden-chromium.png",
+    "historical_sha256": "d443217ce4a6fec6c83bbc8e92c47c3c97c8f0b3548889385760f94ae7de2821",
+    "new_sha256": "f76758b06e66b9f50ad5a901e9bb455fc8719305c1035b3a9c074307b68c9e6c"
+  },
+  {
+    "historical_path": "docs/verification/projects/p8-golden-firefox.json",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/p8-golden-firefox.json",
+    "historical_sha256": "b4f37faa36579d2dc93ad9ebbf7f43e9969939b10eba98938d5abde1ff3ca4de",
+    "new_sha256": "399522c2e16318dae1026df0be37357400aec9d3dcf5b4f3cb9962efcb11de09"
+  },
+  {
+    "historical_path": "docs/verification/projects/p8-golden-firefox.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/p8-golden-firefox.png",
+    "historical_sha256": "76c735141e28535ba7f9d9b4651c796b75784952d80a669e8f81263d30e29ac6",
+    "new_sha256": "d0fc26f340007f9b8b0d7a359e586c356ba05d70253ce150c5827ef990b8193d"
+  },
+  {
+    "historical_path": "docs/verification/projects/p8-golden-webkit.json",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/p8-golden-webkit.json",
+    "historical_sha256": "e40e38b184f4cee23eb23f5be39505b8ebdddd5982857899112f6441bb3a62f1",
+    "new_sha256": "e6aec10bad1a9d8a00e53edc0a5af98f81baf9e4f7751fdf4dd0854e959b5fb3"
+  },
+  {
+    "historical_path": "docs/verification/projects/p8-golden-webkit.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/p8-golden-webkit.png",
+    "historical_sha256": "01b31286425f5323285b6cf5b45fd6a1e8f63a483dd9facaa51466763c90c0ef",
+    "new_sha256": "fc99280a9c4a1750c64a832d2fe24aeeb301142a97e8f2cb928e9bca24a43971"
+  },
+  {
+    "historical_path": "docs/verification/projects/project-chromium-1280.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/project-chromium-1280.png",
+    "historical_sha256": "ed3b8b481ba905d36827a710856f44c9a0ec0d5fc6a30a1e0801d124b9672e56",
+    "new_sha256": "86d88beb564a2eb8a6358900d0b317dccd0d4380534731578dba63bae45ad8b7"
+  },
+  {
+    "historical_path": "docs/verification/projects/project-chromium-1440.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/project-chromium-1440.png",
+    "historical_sha256": "2548f805486f53c162e04c8c2439d08761b0ce9c28d24c3d2840531452aba244",
+    "new_sha256": "eed1a3b33e14a5e1cf1f8d2ca5ed664a2f1bbf8754a964c76f2346b34b0e0647"
+  },
+  {
+    "historical_path": "docs/verification/projects/project-firefox-1280.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/project-firefox-1280.png",
+    "historical_sha256": "5bf610a0aed0fced2e83afe70ec49841f101ca98b1bd3f358b411713fde9d6f7",
+    "new_sha256": "3decbff1a251b441684cf80989c28e8e07531aa3957aca3f55e1e19c5d6e6bfd"
+  },
+  {
+    "historical_path": "docs/verification/projects/project-firefox-1440.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/project-firefox-1440.png",
+    "historical_sha256": "5e666aa1ec246af0098b42e91d2cc84c36a7a2c159dd87a3201b54c86091ef8e",
+    "new_sha256": "aef8d4dc3e4bc8c80227971889da616bd97374c3b455c73d977cc1b83af329e5"
+  },
+  {
+    "historical_path": "docs/verification/projects/project-webkit-1280.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/project-webkit-1280.png",
+    "historical_sha256": "0e380dce4cae260d598dd87cd6a2ab4ef5857bc5f39fc487574366f32a6ee87b",
+    "new_sha256": "3b3200b74c007824d0d16feacf2d3723a8c957681a7863b495ea2b7318f20195"
+  },
+  {
+    "historical_path": "docs/verification/projects/project-webkit-1440.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/project-webkit-1440.png",
+    "historical_sha256": "1f09c8eeecf2e9b339f87bf21dbc52e3ad6dceaf40e445a44f396a7ae6f8082a",
+    "new_sha256": "c56b9a0589f736526486665001d20060acb3ade24a9bd4ab07b0619ce7b2eecf"
+  },
+  {
+    "historical_path": "docs/verification/projects/settings-chromium-1280.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/settings-chromium-1280.png",
+    "historical_sha256": "17d8ce909bf754ed253a34276b59a8b32b6426f3c75fb209919599503fc013ff",
+    "new_sha256": "08898aa528c5e6e2a87f6de1513d0985617451f9da0bc22848eea7f6a43b6b1f"
+  },
+  {
+    "historical_path": "docs/verification/projects/settings-chromium-1440.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/settings-chromium-1440.png",
+    "historical_sha256": "c82a9ac0e87223d782c3bc0e1c2dfe967ff8e34dd0db41dd0c2ea50fdfe10a40",
+    "new_sha256": "b8be3240442dc906b7d2c1acf668ba7d29b1c688508d57beef411bdab646e7ef"
+  },
+  {
+    "historical_path": "docs/verification/projects/settings-firefox-1280.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/settings-firefox-1280.png",
+    "historical_sha256": "20d9127ebb525e1bd9d0b04ecb38e186567384e82ded8559fdb46d3547fc0ecf",
+    "new_sha256": "9c86ed1d218886a0874ec9e1b4093809f5848d97099bc7264d9cf7654b7dbc4d"
+  },
+  {
+    "historical_path": "docs/verification/projects/settings-firefox-1440.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/settings-firefox-1440.png",
+    "historical_sha256": "56407c596d9c19fe3d6d70605fdad8070aed494ee879340dd18071d989e028f8",
+    "new_sha256": "3fb5e11666f401bfdb087f7af75d424d992510f771edc18c64055177d5abbc06"
+  },
+  {
+    "historical_path": "docs/verification/projects/settings-webkit-1280.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/settings-webkit-1280.png",
+    "historical_sha256": "81e3bd3ab4174f2717d1608d101cf5148c1e9a82b76f0063ef4c8e2451731d02",
+    "new_sha256": "b3fe6fdb3bdce59f8d25d5823998c06f2777b101aed6c51f7907f9e22fa8fd5b"
+  },
+  {
+    "historical_path": "docs/verification/projects/settings-webkit-1440.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/settings-webkit-1440.png",
+    "historical_sha256": "cb89021634ed4ccf2a17f5ed63877f6bee104ed494fff9affa75ef0a2e17837f",
+    "new_sha256": "70ed583d48ce319fae855e6945bb3c997f4e11dd64d961fda95e175200325f17"
+  },
+  {
+    "historical_path": "docs/verification/projects/tooltips/icon-button-chromium.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/tooltips/icon-button-chromium.png",
+    "historical_sha256": "1bb1cfb5a7f4a8333850a444ba565db8604d50ff24b5496b25d11a8fa1e88925",
+    "new_sha256": "d52c97746feb20c4983fdc3a049056b2858eaec9055347b30d21194bd484a766"
+  },
+  {
+    "historical_path": "docs/verification/projects/tooltips/icon-button-firefox.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/tooltips/icon-button-firefox.png",
+    "historical_sha256": "3843178b9f556080e85dd451e6f96272b6ad90ceab37f9989a2f6805b7fc7b9c",
+    "new_sha256": "1ddfc6f4afa867cba531835388f27b53ee18738938b89279ae7fd472cb75c4da"
+  },
+  {
+    "historical_path": "docs/verification/projects/tooltips/icon-button-webkit.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/tooltips/icon-button-webkit.png",
+    "historical_sha256": "764df883d682c0c2dba487ea3ce40ef9caed6badc1cf5c71edcd7ff3ef66fbfc",
+    "new_sha256": "cf16fb2724d21051491892b570ee1b1f9f11dd17d7742615b84e9f7ba4911a77"
+  },
+  {
+    "historical_path": "docs/verification/projects/tooltips/navigation-chromium-1280.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/tooltips/navigation-chromium-1280.png",
+    "historical_sha256": "9f17dbef638366a7aca16ed3354998e7bd970e6c5b50a593af05ae046d3ac9ee",
+    "new_sha256": "9c99ae9d4e5a4612fb95b9e02df9c2085b81e0130055dc830d4716428c0a5cf8"
+  },
+  {
+    "historical_path": "docs/verification/projects/tooltips/navigation-chromium-1440.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/tooltips/navigation-chromium-1440.png",
+    "historical_sha256": "5a86db6c7965d2546ebf9ceb0ee33cee93e2fca1bf353ff48eaa12f07af8bf30",
+    "new_sha256": "2fa60e44280d3ad8f7b6348d2b7930712a30e073e3fcb8679df1c88d5ac71d74"
+  },
+  {
+    "historical_path": "docs/verification/projects/tooltips/navigation-chromium.json",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/tooltips/navigation-chromium.json",
+    "historical_sha256": "ebf52ad04eeabd773c8f1a7d284a619f2f72ca22ab7e4c837080b873dba1eed3",
+    "new_sha256": "ca0a740206785757d0b5f4bd92d6b4086fbb5d9c33ce61a105151782a2b3a367"
+  },
+  {
+    "historical_path": "docs/verification/projects/tooltips/navigation-firefox-1280.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/tooltips/navigation-firefox-1280.png",
+    "historical_sha256": "ea6c771d27cfd7e058fcb7413af86ba522e9826b2c711bb2827eb1bdc16dfe4b",
+    "new_sha256": "feabacd22f9a6519610a77e6f04db41dd9854306bbfb7ab8742025d6b85f176b"
+  },
+  {
+    "historical_path": "docs/verification/projects/tooltips/navigation-firefox-1440.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/tooltips/navigation-firefox-1440.png",
+    "historical_sha256": "119fef7ff6c323bcca72748f56a3f522e59f53bdde1196291f24985d58089bb6",
+    "new_sha256": "3035e19c23829a4a2580857bdc21b6a0c19e7efed04d4dfba44d81afa2a88a76"
+  },
+  {
+    "historical_path": "docs/verification/projects/tooltips/navigation-firefox.json",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/tooltips/navigation-firefox.json",
+    "historical_sha256": "b9588b32ed14fdfdcac3b07143f73f8888376353378e31d84aab06bcc53952ca",
+    "new_sha256": "dc3a182ec6fe3df66232f91e0971bc6ed40a55bebd394928b2a0f5a93ef31c49"
+  },
+  {
+    "historical_path": "docs/verification/projects/tooltips/navigation-webkit-1280.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/tooltips/navigation-webkit-1280.png",
+    "historical_sha256": "2cbb4ffe5085e5a03c4ee33699956cc40a8970b900482e77b769a9cced30a98d",
+    "new_sha256": "e8eee2b409258d71f8de1c3b3044f104413b00c28cf6d035d5b0ac7fcd9e4d92"
+  },
+  {
+    "historical_path": "docs/verification/projects/tooltips/navigation-webkit-1440.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/tooltips/navigation-webkit-1440.png",
+    "historical_sha256": "7c4464258f575625a8cf56140976f5a3b503a481a241ba8e866bceb54eb8d7f3",
+    "new_sha256": "47eaa3f691817edf81d6f3503183683e04dbdb346468605a0a52e7b875f10345"
+  },
+  {
+    "historical_path": "docs/verification/projects/tooltips/navigation-webkit.json",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/tooltips/navigation-webkit.json",
+    "historical_sha256": "bb3362529cbf072c2f71cb239d53b5eb3277405770ae3803a4f129fd84906aa4",
+    "new_sha256": "d8569b2f31c47934421b33c6f0d8835d0f132f9abbcac6893f656bd77b50f88d"
+  },
+  {
+    "historical_path": "docs/verification/projects/webkit-project-data-history.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/webkit-project-data-history.png",
+    "historical_sha256": "99104c161a728882b207eaaa5ad0e6a0562587c5322b042e2efd78b52e4d395a",
+    "new_sha256": "9484f5daa69443bc9f8e59b43e590ed35dac192145aa78fa0dff77ab7e11ffdd"
+  },
+  {
+    "historical_path": "docs/verification/projects/webkit-project-overview.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/webkit-project-overview.png",
+    "historical_sha256": "34e8c35cf81a4e6c3ff89d16f1b08477e5814fdf5c22d691130a914fe36a41ac",
+    "new_sha256": "f039c39f227eda67db97de4db3a518da655f597f18805c93038a4369957e640d"
+  },
+  {
+    "historical_path": "docs/verification/projects/webkit-project-sql-history.png",
+    "new_evidence": "docs/verification/required-fields/regression-evidence/webkit-project-sql-history.png",
+    "historical_sha256": "355bce0aad145406f8fdafb659304841f9800b68d8bf3701f92f887966eff819",
+    "new_sha256": "cec5758f4b99c0d35db155018f678e5e44bdd874b0f7adb678bf36d4fc73f38c"
+  }
+]

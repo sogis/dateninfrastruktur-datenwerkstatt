@@ -1,24 +1,34 @@
 import {numericColumn} from '../../ui/table';
-import {Button, Input, Select, FormField, ActionGroup, Toolbar, Notice} from '../../ui/Controls';
+import {
+  Button,
+  Input,
+  Select,
+  FormField,
+  ActionGroup,
+  Toolbar,
+  Notice,
+  RequiredFieldsNote,
+} from '../../ui/Controls';
+import {useNameField, useFormValidation} from '../../ui/useFormValidation';
+import {displayNameError, sqlNameError} from '../../domain/fieldValidation';
 import {ActionMenu} from '../../ui/ActionMenu';
 import {Modal} from '../../ui/Modal';
 import {failureMessage} from '../../application/errors';
 import {TransferToR} from '../r/Transfer';
 import {useEffect, useRef, useState, useSyncExternalStore} from 'react';
 import {Panel, PanelGroup, PanelResizeHandle} from 'react-resizable-panels';
-import type {
-  Analysis,
-  ParameterValue,
-  SqlAnalysis,
-  TableResult,
-  Visualization,
-} from '../../domain/model';
+import type {Analysis, SqlAnalysis, TableResult, Visualization} from '../../domain/model';
 import type {EditingSession} from '../../application/workspaceService';
 import type {CodeModels} from '../../infrastructure/monaco/models';
 import type {Settings} from '../../infrastructure/storage/settings';
 import {CodeEditor} from '../../ui/CodeEditor';
 import {downloadStream} from '../../app/download';
-import {parameterSchema} from '../../domain/workspace';
+import {
+  parameterNameError,
+  parameterValueError,
+  parseParameterValue,
+  type ParameterType,
+} from '../../domain/parameterValues';
 import {report, useWorkspace} from '../../app/router';
 import {useStore} from 'zustand';
 import {usePanelHeight} from '../../ui/PanelLayout';
@@ -44,7 +54,15 @@ export function SqlWorkbench({
   const {ref: panelHost, height: panelHeight} = usePanelHeight();
   useSyncExternalStore(session.persistence.subscribe, () => session.persistence.document);
   const busy = useSyncExternalStore(session.scheduler.subscribe, session.scheduler.getSnapshot);
-  const [name, setName] = useState(analysis.name);
+  const name = useNameField(
+    analysis.name,
+    'Analysenamen',
+    (value) => session.updateAnalysis(analysis.id, {name: value}),
+    report,
+  );
+  const save = () => {
+    if (name.commit()) void session.flush().catch(report);
+  };
   const [selected, setSelected] = useState<string>('latest');
   const runs = Object.values(session.document.runs)
     .filter((r) => r.snapshot.analysisId === analysis.id)
@@ -53,7 +71,7 @@ export function SqlWorkbench({
   const run = selected === 'latest' ? runs[0] : runs.find((r) => r.id === selected);
   const result = run?.resultIds[0] ? session.document.results[run.resultIds[0]] : undefined;
   const execute = (selection?: string) => {
-    if (!busy && !session.readOnly) {
+    if (!busy && !session.readOnly && name.commit()) {
       setSelected('latest');
       void service.run(analysis.id, selection).catch(report);
     }
@@ -61,27 +79,20 @@ export function SqlWorkbench({
   return (
     <div className="analysis-area">
       <Toolbar className="analysis-toolbar">
-        <FormField
-          label={
-            <>
-              <span className="visually-hidden">Analysename</span>
-            </>
-          }
-          labelHidden
-        >
+        <FormField label="Analysename" error={name.error} className="analysis-name-field">
           <Input
-            value={name}
+            {...name.input}
             disabled={session.readOnly}
-            onChange={(e) => setName(e.target.value)}
-            onBlur={() => {
-              try {
-                if (name !== analysis.name) session.updateAnalysis(analysis.id, {name});
-              } catch (e) {
-                report(e);
+            onKeyDown={(event) => {
+              if ((event.ctrlKey || event.metaKey) && ['s', 'Enter'].includes(event.key)) {
+                event.preventDefault();
+                if (event.key === 's') save();
+                else execute();
               }
             }}
           />
         </FormField>
+        <RequiredFieldsNote />
         <ActionGroup>
           <Button
             variant="primary"
@@ -97,11 +108,7 @@ export function SqlWorkbench({
               Abbrechen
             </Button>
           )}
-          <Button
-            icon="floppy"
-            disabled={session.readOnly}
-            onClick={() => void session.flush().catch(report)}
-          >
+          <Button icon="floppy" disabled={session.readOnly} onClick={save}>
             Speichern
           </Button>
         </ActionGroup>
@@ -177,9 +184,7 @@ export function SqlWorkbench({
                   report(e);
                 }
               }}
-              onSave={() => {
-                void session.flush().catch(report);
-              }}
+              onSave={save}
               onRun={execute}
               fontSize={settings.editorFontSize}
               wordWrap={settings.wordWrap}
@@ -246,15 +251,6 @@ export function SqlWorkbench({
     </div>
   );
 }
-type ParameterType =
-  | 'string'
-  | 'number'
-  | 'boolean'
-  | 'null'
-  | 'int64'
-  | 'decimal'
-  | 'date'
-  | 'timestamp';
 function parameterRows(parameters: Analysis['parameters']) {
   return Object.entries(parameters).map(([name, value]) => ({
     name,
@@ -269,6 +265,21 @@ function parameterRows(parameters: Analysis['parameters']) {
 export function Parameters({analysis, session}: {analysis: Analysis; session: EditingSession}) {
   const [rows, setRows] = useState(() => parameterRows(analysis.parameters));
   const [error, setError] = useState('');
+  const form = useFormValidation(
+    Object.fromEntries(
+      rows.flatMap((row, i) => [
+        [
+          `name-${i}`,
+          () =>
+            parameterNameError(
+              row.name,
+              rows.filter((_, index) => i !== index).map((r) => r.name),
+            ),
+        ],
+        [`value-${i}`, () => parameterValueError(row.type, row.value)],
+      ]),
+    ),
+  );
   const [dirty, setDirty] = useState(false);
   return (
     <details className="parameters dw-compact">
@@ -276,11 +287,16 @@ export function Parameters({analysis, session}: {analysis: Analysis; session: Ed
         Parameter ({Object.keys(analysis.parameters).length})
         {dirty ? ' · Änderungen noch nicht übernommen' : ''}
       </summary>
+      <RequiredFieldsNote />
       <table>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Typ</th>
+            <th>
+              Name <span aria-hidden="true">*</span>
+            </th>
+            <th>
+              Typ <span aria-hidden="true">*</span>
+            </th>
             <th>Wert</th>
             <th />
           </tr>
@@ -289,23 +305,43 @@ export function Parameters({analysis, session}: {analysis: Analysis; session: Ed
           {rows.map((row, i) => (
             <tr key={i}>
               <td>
-                <Input
-                  aria-label={`Parameter ${i + 1} Name`}
-                  disabled={session.readOnly}
-                  value={row.name}
-                  onChange={(e) => {
-                    setDirty(true);
-                    setRows(rows.map((r, j) => (j === i ? {...r, name: e.target.value} : r)));
-                  }}
-                />
+                <FormField
+                  label={`Parameter ${i + 1} Name`}
+                  labelHidden
+                  error={form.errors[`name-${i}`]}
+                >
+                  <Input
+                    {...form.control(`name-${i}`)}
+                    required
+                    aria-label={`Parameter ${i + 1} Name`}
+                    disabled={session.readOnly}
+                    value={row.name}
+                    onChange={(e) => {
+                      setDirty(true);
+                      form.change(
+                        `name-${i}`,
+                        parameterNameError(
+                          e.target.value,
+                          rows.filter((_, j) => i !== j).map((r) => r.name),
+                        ),
+                      );
+                      setRows(rows.map((r, j) => (j === i ? {...r, name: e.target.value} : r)));
+                    }}
+                  />
+                </FormField>
               </td>
               <td>
                 <Select
+                  required
                   aria-label={`Parameter ${i + 1} Typ`}
                   disabled={session.readOnly}
                   value={row.type}
                   onChange={(e) => {
                     setDirty(true);
+                    form.change(
+                      `value-${i}`,
+                      parameterValueError(e.target.value as ParameterType, row.value),
+                    );
                     setRows(
                       rows.map((r, j) =>
                         j === i ? {...r, type: e.target.value as ParameterType} : r,
@@ -328,15 +364,24 @@ export function Parameters({analysis, session}: {analysis: Analysis; session: Ed
                 </Select>
               </td>
               <td>
-                <Input
-                  aria-label={`Parameter ${i + 1} Wert`}
-                  disabled={session.readOnly || row.type === 'null'}
-                  value={row.value}
-                  onChange={(e) => {
-                    setDirty(true);
-                    setRows(rows.map((r, j) => (j === i ? {...r, value: e.target.value} : r)));
-                  }}
-                />
+                <FormField
+                  label={`Parameter ${i + 1} Wert`}
+                  labelHidden
+                  error={form.errors[`value-${i}`]}
+                >
+                  <Input
+                    {...form.control(`value-${i}`)}
+                    required={!['string', 'null'].includes(row.type)}
+                    aria-label={`Parameter ${i + 1} Wert`}
+                    disabled={session.readOnly || row.type === 'null'}
+                    value={row.value}
+                    onChange={(e) => {
+                      setDirty(true);
+                      form.change(`value-${i}`, parameterValueError(row.type, e.target.value));
+                      setRows(rows.map((r, j) => (j === i ? {...r, value: e.target.value} : r)));
+                    }}
+                  />
+                </FormField>
               </td>
               <td>
                 <Button
@@ -345,6 +390,7 @@ export function Parameters({analysis, session}: {analysis: Analysis; session: Ed
                   onClick={() => {
                     setDirty(true);
                     setRows(rows.filter((_, j) => i !== j));
+                    form.reset();
                   }}
                 >
                   Entfernen
@@ -368,28 +414,10 @@ export function Parameters({analysis, session}: {analysis: Analysis; session: Ed
           disabled={session.readOnly || !dirty}
           onClick={() => {
             try {
-              const parameters: Record<string, ParameterValue> = {};
-              for (const row of rows) {
-                if (
-                  !/^[A-Za-z][A-Za-z0-9_]*$/.test(row.name) ||
-                  Object.hasOwn(parameters, row.name)
-                )
-                  throw Error('Parameternamen müssen eindeutig und gültig sein.');
-                if (row.type === 'boolean' && !['true', 'false'].includes(row.value))
-                  throw Error('Boolescher Wert: true oder false.');
-                if (row.type === 'number' && !row.value.trim()) throw Error('Zahl fehlt.');
-                const value =
-                  row.type === 'null'
-                    ? null
-                    : row.type === 'number'
-                      ? Number(row.value)
-                      : row.type === 'boolean'
-                        ? row.value === 'true'
-                        : row.type === 'string'
-                          ? row.value
-                          : {type: row.type, value: row.value};
-                parameters[row.name] = parameterSchema.parse(value);
-              }
+              if (!form.validate()) return;
+              const parameters = Object.fromEntries(
+                rows.map((row) => [row.name, parseParameterValue(row.type, row.value)]),
+              );
               session.updateAnalysis(analysis.id, {parameters});
               setDirty(false);
               setError('');
@@ -416,6 +444,11 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
   const [view, setView] = useState<'table' | 'chart'>('table');
   const [datasetName, setDatasetName] = useState(result.name);
   const [sqlName, setSqlName] = useState('ergebnis');
+  const occupied = Object.values(session.document.datasets).map((d) => d.sqlName);
+  const datasetForm = useFormValidation({
+    name: () => displayNameError(datasetName, 'Datensatznamen'),
+    sqlName: () => sqlNameError(sqlName, occupied),
+  });
   const busy = useSyncExternalStore(session.scheduler.subscribe, session.scheduler.getSnapshot);
   // Paging cancellation discards the UI reply only; it must never cancel another engine job.
   useEffect(() => {
@@ -584,18 +617,37 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
       )}
       <details className="result-data">
         <summary>Als Datensatz übernehmen · Schema</summary>
+        <RequiredFieldsNote />
         <p>
           Das vollständige Resultat wird zuerst aufbewahrt und als neue Dateneinbindung gespeichert.
         </p>
-        <FormField label={<>Datensatzname</>}>
-          <Input value={datasetName} onChange={(e) => setDatasetName(e.target.value)} />
+        <FormField label={<>Datensatzname</>} error={datasetForm.errors.name}>
+          <Input
+            {...datasetForm.control('name')}
+            required
+            maxLength={120}
+            value={datasetName}
+            onChange={(e) => {
+              setDatasetName(e.target.value);
+              datasetForm.change('name', displayNameError(e.target.value, 'Datensatznamen'));
+            }}
+          />
         </FormField>
-        <FormField label={<>SQL-Name</>}>
-          <Input value={sqlName} onChange={(e) => setSqlName(e.target.value)} />
+        <FormField label={<>SQL-Name</>} error={datasetForm.errors.sqlName}>
+          <Input
+            {...datasetForm.control('sqlName')}
+            required
+            value={sqlName}
+            onChange={(e) => {
+              setSqlName(e.target.value);
+              datasetForm.change('sqlName', sqlNameError(e.target.value, occupied));
+            }}
+          />
         </FormField>
         <Button
           disabled={!!busy || session.readOnly || unavailable}
           onClick={() => {
+            if (!datasetForm.validate()) return;
             void service.asDataset(result.id, datasetName, sqlName).catch(report);
           }}
         >
@@ -654,8 +706,10 @@ function ChartControls({result, session}: {result: TableResult; session: Editing
         <span className="chart-source">
           Tabellenergebnis: <strong>{result.name}</strong> · {runTimeText(result.createdAt)}
         </span>
+        <RequiredFieldsNote />
         <FormField label={<>Diagrammtyp</>}>
           <Select
+            required
             value={spec.type}
             onChange={(e) =>
               setSpec({...spec, type: e.target.value as Visualization['spec']['type']})
@@ -669,6 +723,7 @@ function ChartControls({result, session}: {result: TableResult; session: Editing
         {(['x', 'y', 'color'] as const).map((axis) => (
           <FormField key={axis} label={<>{axis === 'color' ? 'Kategorie' : axis.toUpperCase()}</>}>
             <Select
+              required={axis !== 'color'}
               aria-label={`Diagramm ${axis}`}
               value={spec[axis] ?? ''}
               onChange={(e) => {

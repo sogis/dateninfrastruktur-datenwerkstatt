@@ -1,4 +1,13 @@
-import {Button, Input, Select, FormField, ActionGroup, FileInput, Notice} from '../../ui/Controls';
+import {
+  Button,
+  Input,
+  Select,
+  FormField,
+  ActionGroup,
+  FileInput,
+  Notice,
+  RequiredFieldsNote,
+} from '../../ui/Controls';
 import {useState, useSyncExternalStore} from 'react';
 import {useNavigate} from '@tanstack/react-router';
 import {services} from '../../app/services';
@@ -227,6 +236,7 @@ export function ArchiveActions({session}: {session: EditingSession}) {
         >
           <FormField label={<>Archivmodus</>}>
             <Select
+              required
               value={mode}
               disabled={busy}
               onChange={(e) => setMode(e.target.value as 'recipe' | 'with-data')}
@@ -235,6 +245,7 @@ export function ArchiveActions({session}: {session: EditingSession}) {
               <option value="recipe">Rezept ohne lokale Bytes</option>
             </Select>
           </FormField>
+          <RequiredFieldsNote />
           <p>
             {Object.keys(doc.datasets).length} Datensätze · {Object.keys(doc.results).length}{' '}
             Resultate · {Object.values(doc.artifacts).reduce((n, a) => n + a.bytes, 0)} bekannte

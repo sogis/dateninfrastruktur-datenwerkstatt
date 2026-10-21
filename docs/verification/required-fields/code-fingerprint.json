@@ -1,0 +1,31 @@
+{
+  "recorded_at_utc": "2026-10-21T01:31:03.584071+00:00",
+  "git_head": "b20ce0ecc6831af896dc9730d960501f82db4108",
+  "state": "working tree, no commit created",
+  "sha256": {
+    "docs/DESIGN_SYSTEM.md": "327066b9327c67e333709f73f17c1c0026e69db75c5bc7cbd41138ae7da49882",
+    "package-lock.json": "d888e800277b6e9d32410354e924815abea2350303176bcb8dd9ed6dd7d5f67f",
+    "package.json": "fe3a0ca6c7d86166b4863049bacc88e59ca9f7c253c58c9eaf0eacba53545507",
+    "src/app/router.tsx": "bc7fe00da0989018ab479b47f484ab2477c82cb3d52ce36fcade63546f200736",
+    "src/domain/fieldValidation.ts": "f3accc722152899b4685ce9c8911bbff4fbb5d582cfa7991f890334d341db29b",
+    "src/domain/importOptions.ts": "a90ebafc5ebd6686cdcd61f028560a6c06bd094aecaf4a1b156d296489f5cca2",
+    "src/domain/parameterValues.ts": "b371229b9a70bf2d6aab733361833cbb638a1cba8fce3a278deb9fa4d7ca2fb5",
+    "src/features/archive/ArchiveActions.tsx": "d0bc638581aeb553a988f03121899384a49eaf528999a6a54cea52d510cdac55",
+    "src/features/catalog/PortalImport.tsx": "d86bd68079895c688c8e1419fd1c68e899e389a2733a0a57b27b05757d57e478",
+    "src/features/data/DataSection.tsx": "b51fd13dee0dc82eefb39f2ec6749e2f0bf209dd979a2a3e27b882cae1cca7a4",
+    "src/features/r/RWorkbench.tsx": "b9d3f5ac2b895238a5470f52fa65e121305e41f5a784b8885ffcecacd7fc6960",
+    "src/features/r/Transfer.tsx": "d5a4e25451f29ee78a4cff154e48ccdc61d5543b104a95f39ddf6637abc6072a",
+    "src/features/sql/SqlWorkbench.tsx": "a81fab83ac49dff5efb01f1e970f87a4422d9979def51161307241bab16ddf91",
+    "src/features/workspaces/Workspaces.tsx": "62f1f243ff97853714e72ab97810f3ebdd1530ac6a5b0f60aa07b7537b083d89",
+    "src/infrastructure/sqlrooms/fileImportEngine.ts": "fa71dbda78a0831f47245bea4db6269f446a0ca96cb296e64c61b800147ba282",
+    "src/styles/app.css": "c64dceaa4a0fca96e111f869558bd5e73d51a20f5a5f091dc2daf2b05788734c",
+    "src/styles/components.css": "e5cbec76d7dc360b3937cd032ee0c1f2aa7bd8a626961ef2af816c9eeaceace4",
+    "src/ui/Controls.tsx": "865357e3c955d24e86f291dbfee62cb57d07c1f4d7531bbc23a53e7106d358a4",
+    "src/ui/useFormValidation.ts": "f06371cf7d127cf55dd1e03fd3ced8b7cf9c728bb6ef8c736d1e2271a53db776",
+    "tests/e2e/navigation.spec.ts": "f5eae028ad65b5564189b952ca3714cc41827e733dc76d7f6d7e2304ba2b6ee7",
+    "tests/e2e/p7-ui.spec.ts": "9f330848bca6434758cb4831d8481c0b634118c96e3665e1a6d83be831e53f2d",
+    "tests/e2e/p8-imports.spec.ts": "f9a12a8e7a27d70e98e8328d7b0b7b648f7a6c6125bd9f24660c9a9b20c90f34",
+    "tests/e2e/required-fields.spec.ts": "576659931a3d3dd1b8e8eb787a4ef770a6f3510a51bab85d0e53eb77f5b9ed0f",
+    "tests/unit/field-validation.test.ts": "f625d14254e88534b80b53a3655537ef65f29be69dadf4591a88f554b0b1a40e"
+  }
+}

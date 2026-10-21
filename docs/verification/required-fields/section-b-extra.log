@@ -1,0 +1,11 @@
+[WebServer] (node:99429) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:99432) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/required-fields.spec.ts:240:1 › Required fields: SQL dataset and R transfer validate before keeping results or creating an analysis (15.1s)
+  ✓  2 [chromium] › tests/e2e/required-fields.spec.ts:364:1 › Required fields: read-only project metadata keeps its semantics and cannot be edited (919ms)
+
+  2 passed (16.4s)

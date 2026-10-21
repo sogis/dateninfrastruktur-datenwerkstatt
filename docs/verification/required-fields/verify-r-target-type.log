@@ -1,0 +1,10 @@
+
+> datenwerkstatt@0.1.0 verify
+> npm run typecheck && npm run lint && npm run test:unit && npm run build && npm run test:integration && npm run test:e2e
+
+
+> datenwerkstatt@0.1.0 typecheck
+> tsc --noEmit
+
+src/features/r/RWorkbench.tsx(507,48): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'Record<DatasetId, Dataset>'.
+  No index signature with a parameter of type 'string' was found on type 'Record<DatasetId, Dataset>'.

@@ -44,7 +44,15 @@ test('P8 AT-019 AT-020: XLSX invalidates old preview, real over-limit file and v
     });
     await expect(page.getByRole('alert')).toContainText('Unterstützt sind CSV und Parquet');
     await expect(page.getByRole('button', {name: 'Import bestätigen', exact: true})).toBeDisabled();
-    await expect(page.getByRole('button', {name: 'Vorschau laden', exact: true})).toBeDisabled();
+    // Missing inputs now explain the problem at the field instead of silently disabling preview.
+    await expect(page.getByRole('button', {name: 'Vorschau laden', exact: true})).toBeEnabled();
+    await page.getByRole('button', {name: 'Vorschau laden', exact: true}).click();
+    await expect(input).toHaveAccessibleDescription(
+      'Bitte wähle eine CSV- oder Parquet-Datei aus.',
+    );
+    await expect(page.getByRole('button', {name: 'Datei auswählen', exact: true})).toBeFocused();
+    await expect(input).toHaveValue('');
+    await expect(page.getByRole('button', {name: 'Import bestätigen', exact: true})).toBeDisabled();
     await input.setInputFiles(tooLarge);
     await page.getByRole('button', {name: 'Vorschau laden', exact: true}).click();
     await expect(page.getByRole('alert')).toContainText('134217728');

@@ -1,0 +1,51 @@
+[WebServer] (node:26004) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:26008) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › tests/e2e/required-fields.spec.ts:173:1 › Required fields: CSV column errors prevent preview work and keep the last document unchanged (12.0s)
+
+
+  1) [chromium] › tests/e2e/required-fields.spec.ts:173:1 › Required fields: CSV column errors prevent preview work and keep the last document unchanged
+
+    Error: expect(locator).not.toHaveAttribute(expected) failed
+
+    Locator:  getByRole('dialog').getByLabel('Spalte 2', { exact: true })
+    Expected: not "true"
+    Received: "true"
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "not toHaveAttribute" getByRole('dialog').getByLabel('Spalte 2', { exact: true }) with timeout 10000ms
+      - waiting for getByRole('dialog').getByLabel('Spalte 2', { exact: true })
+        24 × locator resolved to <input required="" value="wert" class="dw-input " id="_r_i_-column-1" aria-invalid="true" aria-describedby="_r_i_-column-1-error" aria-labelledby="_r_i_-column-1-label-text"/>
+           - unexpected value "true"
+
+
+      198 |   await column.fill('kennung');
+      199 |   await expect(column).not.toHaveAttribute('aria-invalid', 'true');
+    > 200 |   await expect(otherColumn).not.toHaveAttribute('aria-invalid', 'true');
+          |                                 ^
+      201 |   await dialog.getByRole('button', {name: 'Vorschau laden', exact: true}).click();
+      202 |   await expect(dialog.getByRole('columnheader', {name: /kennung/})).toBeVisible();
+      203 |   expect(Object.keys((await snapshot(page)).document.datasets)).toHaveLength(0);
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/required-fields.spec.ts:200:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/required-fields-dependent-before/e2e-required-fields-Requir-abd5e-the-last-document-unchanged-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/required-fields-dependent-before/e2e-required-fields-Requir-abd5e-the-last-document-unchanged-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/required-fields-dependent-before/e2e-required-fields-Requir-abd5e-the-last-document-unchanged-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/required-fields-dependent-before/e2e-required-fields-Requir-abd5e-the-last-document-unchanged-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/required-fields.spec.ts:173:1 › Required fields: CSV column errors prevent preview work and keep the last document unchanged

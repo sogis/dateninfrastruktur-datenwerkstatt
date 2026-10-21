@@ -1,4 +1,12 @@
-import {Button, IconButton, Input, Select, FormField, Notice} from '../ui/Controls';
+import {
+  Button,
+  IconButton,
+  Input,
+  Select,
+  FormField,
+  Notice,
+  RequiredFieldsNote,
+} from '../ui/Controls';
 import {NavigationItem} from '../ui/NavigationItem';
 import {StorageSettings} from '../features/workspaces/StorageSettings';
 import {WorkspaceViewController} from '../state/workspaceView';
@@ -459,9 +467,11 @@ function SettingsPage() {
   return (
     <main className="settings-page">
       <h1>Einstellungen</h1>
+      <RequiredFieldsNote />
       <div className="form-fields">
         <FormField label={<>Editor-Schriftgrösse</>}>
           <Select
+            required
             value={settings.editorFontSize}
             onChange={(e) => save({...settings, editorFontSize: Number(e.target.value)})}
           >

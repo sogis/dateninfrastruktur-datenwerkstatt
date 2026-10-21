@@ -1,4 +1,6 @@
-import {Button, Input, Select, FormField, Notice} from '../../ui/Controls';
+import {Button, Input, Select, FormField, Notice, RequiredFieldsNote} from '../../ui/Controls';
+import {useFormValidation} from '../../ui/useFormValidation';
+import {displayNameError, sqlNameError, requiredValueError} from '../../domain/fieldValidation';
 import {Modal} from '../../ui/Modal';
 import {useEffect, useRef, useState} from 'react';
 import {useNavigate} from '@tanstack/react-router';
@@ -44,6 +46,32 @@ export function PortalImport({
   const [local, setLocal] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const occupied =
+    target === 'new'
+      ? []
+      : Object.values(active?.document.datasets ?? {})
+          .filter((d) => d.id !== replace)
+          .map((d) => d.sqlName);
+  const contextError = (candidate: string) => {
+    const missing = requiredValueError(
+      candidate.trim(),
+      'Bitte gib eine Dataset-ID oder Portal-URL ein.',
+    );
+    if (missing) return missing;
+    try {
+      access.selection(provider, candidate);
+    } catch (failure) {
+      return failure instanceof Error ? failure.message : String(failure);
+    }
+  };
+  const form = useFormValidation({
+    provider: () => requiredValueError(provider),
+    value: () => contextError(value),
+    table: () => requiredValueError(selected),
+    target: () => requiredValueError(target),
+    name: () => displayNameError(name, 'Datensatznamen'),
+    sqlName: () => (replace ? undefined : sqlNameError(sqlName, occupied)),
+  });
   const [entries, setEntries] = useState<Awaited<ReturnType<PortalAccess['search']>>>([]);
   const controller = useRef(new AbortController());
   const stage = useRef<{session: EditingSession; key: string} | undefined>(undefined);
@@ -74,8 +102,9 @@ export function PortalImport({
     };
     // This dialog captures its initial route selection once; editing uses the explicit load action.
   }, []);
-  const load = () =>
-    act(async () => {
+  const load = () => {
+    if (!form.validate(['provider', 'table', 'target'])) return;
+    return act(async () => {
       const table = tables.find((t) => t.tableId === selected);
       if (!table) return;
       if (stage.current) await stage.current.session.getDatasets().discard(stage.current.key);
@@ -95,7 +124,9 @@ export function PortalImport({
         setName(previous?.name ?? table.title.slice(0, 120));
         setSqlName(previous?.sqlName ?? chosen.getDatasets().suggestName(table.suggestedSqlName));
       }
+      form.reset();
     });
+  };
   return (
     <Modal
       title="Aus Portal hinzufügen"
@@ -119,7 +150,8 @@ export function PortalImport({
             <Button
               variant="primary"
               disabled={busy}
-              onClick={() =>
+              onClick={() => {
+                if (!form.validate(['provider', 'table', 'target', 'name', 'sqlName'])) return;
                 void act(async () => {
                   const table = tables.find((t) => t.tableId === selected)!;
                   let chosen = active;
@@ -164,8 +196,8 @@ export function PortalImport({
                     replace: true,
                   });
                   onClose(true);
-                })
-              }
+                });
+              }}
             >
               Portalimport bestätigen
             </Button>
@@ -177,8 +209,11 @@ export function PortalImport({
         <p>Kein Portalprovider konfiguriert. Produktive Portal-URL fehlt im Entwicklungsprofil.</p>
       ) : (
         <>
-          <FormField label={<>Portal</>}>
+          <RequiredFieldsNote />
+          <FormField label={<>Portal</>} error={form.errors.provider}>
             <Select
+              {...form.control('provider')}
+              required
               disabled={busy}
               value={provider}
               onChange={(e) => {
@@ -194,12 +229,28 @@ export function PortalImport({
               ))}
             </Select>
           </FormField>
-          <FormField label={<>Dataset-ID oder Portal-URL</>}>
-            <Input value={value} disabled={busy} onChange={(e) => setValue(e.target.value)} />
+          <FormField
+            label={<>Dataset-ID oder Portal-URL</>}
+            hint="Für „Kontext laden“ erforderlich. Die Indexsuche darf leer bleiben."
+            error={form.errors.value}
+          >
+            <Input
+              {...form.control('value')}
+              required
+              value={value}
+              disabled={busy}
+              onChange={(e) => {
+                setValue(e.target.value);
+                form.change('value', contextError(e.target.value));
+              }}
+            />
           </FormField>
           <Button
-            disabled={busy || !value.trim()}
-            onClick={() => void act(() => resolve(access.selection(provider, value)))}
+            disabled={busy}
+            onClick={() => {
+              if (form.validate(['provider', 'value']))
+                void act(() => resolve(access.selection(provider, value)));
+            }}
           >
             Kontext laden
           </Button>
@@ -210,11 +261,12 @@ export function PortalImport({
             <>
               <Button
                 disabled={busy}
-                onClick={() =>
+                onClick={() => {
+                  form.reset();
                   void act(async () =>
                     setEntries(await access.search(provider, value, controller.current.signal)),
-                  )
-                }
+                  );
+                }}
               >
                 Index durchsuchen
               </Button>
@@ -241,8 +293,10 @@ export function PortalImport({
           )}
           {tables.length > 0 && (
             <>
-              <FormField label={<>Portaltabelle</>}>
+              <FormField label={<>Portaltabelle</>} error={form.errors.table}>
                 <Select
+                  {...form.control('table')}
+                  required
                   disabled={busy}
                   value={selected}
                   onChange={(e) => {
@@ -259,8 +313,10 @@ export function PortalImport({
               </FormField>
               <p>{tables.find((t) => t.tableId === selected)?.license ?? 'Keine Lizenzangabe'}</p>
               {!session && (
-                <FormField label={<>Zielprojekt</>}>
+                <FormField label={<>Zielprojekt</>} error={form.errors.target}>
                   <Select
+                    {...form.control('target')}
+                    required
                     disabled={busy}
                     value={target}
                     onChange={(e) => {
@@ -285,14 +341,28 @@ export function PortalImport({
           {preview && (
             <>
               <PreviewTable preview={preview} />
-              <FormField label={<>Anzeigename</>}>
-                <Input value={name} onChange={(e) => setName(e.target.value)} />
-              </FormField>
-              <FormField label={<>SQL-Name</>}>
+              <FormField label={<>Anzeigename</>} error={form.errors.name}>
                 <Input
+                  {...form.control('name')}
+                  required
+                  maxLength={120}
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    form.change('name', displayNameError(e.target.value, 'Datensatznamen'));
+                  }}
+                />
+              </FormField>
+              <FormField label={<>SQL-Name</>} error={form.errors.sqlName}>
+                <Input
+                  {...form.control('sqlName')}
+                  required={!replace}
                   disabled={!!replace}
                   value={sqlName}
-                  onChange={(e) => setSqlName(e.target.value)}
+                  onChange={(e) => {
+                    setSqlName(e.target.value);
+                    form.change('sqlName', sqlNameError(e.target.value, occupied));
+                  }}
                 />
               </FormField>
               <FormField label={<>Lokal sichern</>}>

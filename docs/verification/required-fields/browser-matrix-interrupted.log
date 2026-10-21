@@ -1,0 +1,19 @@
+[WebServer] (node:20393) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 94 tests using 1 worker
+
+(node:20396) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [firefox] › tests/e2e/archive.spec.ts:6:1 › P6 AT-051 AT-053 AT-063: Golden archive in fresh profile, graph remap, real SQL/PNG, duplicate and independent deletion (17.7s)
+  ✓   2 [firefox] › tests/e2e/archive.spec.ts:139:1 › P6 AT-059: recipe inspection/confirmation without engine or empty fake tables (1.7s)
+  ✓   3 [firefox] › tests/e2e/design-system.spec.ts:43:1 › UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard (2.0s)
+  ✓   4 [firefox] › tests/e2e/design-system.spec.ts:133:1 › UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmount (2.1s)
+  ✓   5 [firefox] › tests/e2e/design-system.spec.ts:222:1 › UI tooltips: no misplaced frames, collapsed/expanded navigation, scroll and resize (4.6s)
+  ✓   6 [firefox] › tests/e2e/design-system.spec.ts:328:1 › UI tooltips: shared IconButton flips at viewport edge and follows measured size (1.9s)
+  ✓   7 [firefox] › tests/e2e/design-system.spec.ts:376:1 › UI geometry: 8 px wrapped actions, form labels, narrow/zoom equivalent and failed local font (1.4s)
+  ✓   8 [firefox] › tests/e2e/design-system.spec.ts:454:1 › UI screens: project actions, forms, navigation and settings at target viewports (2.1s)
+  ✓   9 [firefox] › tests/e2e/imports.spec.ts:21:1 › P2 / AT-008 AT-010 AT-018: confirmed import, reload, data preview, independent alias and complete Parquet download (5.4s)
+  ✓  10 [firefox] › tests/e2e/imports.spec.ts:59:1 › P2 / AT-016: denied OPFS requires explicit temporary mode and never claims local persistence (2.8s)
+  ✓  11 [firefox] › tests/e2e/imports.spec.ts:83:1 › P2 / AT-013: real import surfaces OPFS quota failure without publishing partial metadata (4.4s)
+  ✓  12 [firefox] › tests/e2e/imports.spec.ts:110:1 › P2 / AT-002 AT-024 partial: one import worker survives routes and closes before another workspace opens (3.9s)
