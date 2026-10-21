@@ -1,0 +1,10 @@
+[WebServer] (node:61916) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:61917) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/design-system.spec.ts:43:1 › UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard (4.2s)
+
+  1 passed (4.6s)

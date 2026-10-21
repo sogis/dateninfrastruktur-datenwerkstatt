@@ -174,9 +174,9 @@ async function noticeGeometry(page: Page, info: TestInfo, name: string) {
     };
   });
   expect(geometry.text.fontWeight).toBe('400');
-  expect(geometry.text.color).toBe('rgb(184, 15, 23)');
-  expect(geometry.color).toBe(geometry.text.color);
-  expect(geometry.iconColor).toBe(geometry.text.color);
+  expect(geometry.text.color).toBe('rgb(180, 35, 24)');
+  expect(geometry.color).toBe('rgb(91, 102, 115)');
+  expect(geometry.iconColor).toBe(geometry.color);
   expect(geometry.background).toBe('rgba(0, 0, 0, 0)');
   expect(geometry.border).toBe('rgba(0, 0, 0, 0)');
   expect(geometry.width).toBe('40px');
@@ -191,24 +191,14 @@ async function noticeGeometry(page: Page, info: TestInfo, name: string) {
   await page.screenshot({path: info.outputPath(`${name}.png`)});
   await close.hover();
   try {
-    for (const [state, opacity] of [
-      ['hover', 0.1],
-      ['active', 0.16],
+    for (const [state, background] of [
+      ['hover', 'rgb(243, 245, 247)'],
+      ['active', 'rgb(231, 235, 239)'],
     ] as const) {
       if (state === 'active') await page.mouse.down();
-      await expect(close).toHaveCSS('color', geometry.text.color);
-      await expect(close.locator('svg')).toHaveCSS('fill', geometry.text.color);
-      // Normalize the browsers' different decimal precision for computed sRGB colors.
-      await expect
-        .poll(async () => {
-          const color = await close.evaluate((button) => getComputedStyle(button).backgroundColor);
-          return color
-            .match(/[\d.]+/g)
-            ?.map((channel, index) =>
-              index < 3 ? Math.round(Number(channel) * 255) : Number(channel),
-            );
-        })
-        .toEqual([184, 15, 23, opacity]);
+      await expect(close).toHaveCSS('color', geometry.color);
+      await expect(close.locator('svg')).toHaveCSS('fill', geometry.color);
+      await expect(close).toHaveCSS('background-color', background);
       await page.screenshot({path: info.outputPath(`${name}-${state}.png`)});
     }
   } finally {
@@ -220,7 +210,7 @@ async function noticeGeometry(page: Page, info: TestInfo, name: string) {
   return geometry;
 }
 
-test('Notices: regular error text, matching red SVG and translucent interaction states with keyboard dismissal', async ({
+test('Notices: regular error text, neutral SVG and neutral interaction states with keyboard dismissal', async ({
   page,
   browserName,
 }, info) => {

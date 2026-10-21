@@ -1,9 +1,9 @@
 # Designsystem Datenwerkstatt – organisationsunabhängige Basis
 
-**Version:** 1.2  
-**Stand:** 21. Oktober 2026  
-**Standardtheme:** `neutral-blue`  
-**Status:** Spezifikation für die Umsetzung; keine Aussage über eine bereits erfolgte Implementierung oder Abnahme.
+**Version:** 1.2
+**Stand:** 21. Oktober 2026
+**Standardtheme:** `neutral-blue`
+**Status:** Nachgeführte Referenzfassung v1.2 mit den abgestimmten Projektkonventionen vom 21. Oktober 2026. Massgeblich für weitere Änderungen ist [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md).
 
 Dieses Dokument beschreibt eine vollständige organisationsunabhängige Variante
 des Designsystems der Datenwerkstatt. Grundlage ist das bereitgestellte
@@ -21,6 +21,12 @@ führt keine neuen fachlichen Validierungsregeln ein.
 **Verbindlichkeit:** „MUSS“ bezeichnet eine Anforderung dieser Spezifikation.
 „SOLL“ bezeichnet den Standardfall; eine Abweichung benötigt einen konkreten
 fachlichen oder gestalterischen Grund. „DARF“ bezeichnet eine zulässige Option.
+
+**Massgebliche Fassung:** [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) ist die aktuelle
+Gestaltungsreferenz für die Anwendung. Diese Datei enthält die entsprechend
+nachgeführte Referenzfassung v1.2; `DESIGN_SYSTEM_NEUTRAL.md` ist historisch.
+Die am 21. Oktober 2026 abgestimmten Regeln sind nachfolgend direkt eingearbeitet
+und benötigen bei der Umsetzung keine erneute Ausnahme oder Übersteuerung.
 
 ## 1. Gestaltungsziel und verbindliche Entscheidungen
 
@@ -47,6 +53,19 @@ Für die erste neutrale Version gelten folgende Entscheidungen:
 10. **Betrieb:** Fonts und Icons werden mit der Anwendung ausgeliefert und
     funktionieren auch unter dem Anwendungspfad `/lab/`.
 
+### 1.1 Abgestimmte Projektkonventionen
+
+| Bereich | Verbindliche Regel |
+| --- | --- |
+| Pflicht und Optionalität | Erforderliche Felder ohne Zusatz; optionale Felder mit gedämpftem „(optional)“. Keine Sternchen oder Pflichtfeldhinweise. Native `required`-Semantik bleibt erhalten. |
+| Analysenamen | In SQL/R bleibt das kompakte Label sichtbar; die Ausnahme für ausgeblendete Parameterlabels gilt nur in Parametertabellen. |
+| Feldfehler und Aktionslayout | Eingabe und zugehörige Buttons bleiben auch bei mehrzeiligen Fehlern ausgerichtet. Bei schmaler Projekterstellung folgt der Button unter der Feldgruppe. |
+| Vergrösserter Text | Zeilenhöhen wachsen mit der Schrift. Die Labelzeilenhöhe beträgt dimensionslos `1.42857143`, entsprechend 20 px bei 14 px Schrift. |
+| Prüfungen | Gezielte Prüfung des betroffenen UI-Umfangs gemäss Abschnitt 15.2; kein automatischer Start vollständiger Suiten oder Browser-/Deploymentmatrizen. |
+
+Diese Regeln gelten als regulärer Projektstandard. Die Einzelheiten und
+Ausnahmen stehen in den jeweiligen Abschnitten, insbesondere 4, 8 und 15.2.
+
 Die neutrale Version benötigt kein neues gemeinsames Komponentenpaket.
 Gemeinsame Tokens und Komponenten innerhalb der bestehenden Anwendung genügen.
 Die vorgeschlagenen Alternativen Petrol, Indigo und Graphit sind mit dieser
@@ -56,11 +75,11 @@ Version nicht automatisch zusätzliche produktive Themes.
 
 Die Implementierung MUSS drei Verantwortlichkeiten unterscheiden:
 
-| Ebene | Inhalt | Veränderbarkeit |
-| --- | --- | --- |
-| Gemeinsame Gestaltungsregeln | Layout, Abstände, Bediengrössen, Komponenten, Zustände, Tastaturbedienung, zugängliche Semantik | Gemeinsamer Vertrag aller Themes |
-| Theme | Aktions- und Neutralfarben, Schriftfamilie, zugehörige Schriftgewichte | Zentral austauschbar; Änderungen erfordern erneute Prüfung der betroffenen Darstellungen |
-| Marke und Absender | Produktname, Logo, optionaler Organisationsname | Über eine zentrale Konfiguration austauschbar |
+| Ebene                        | Inhalt                                                                                          | Veränderbarkeit                                                                          |
+| ---------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Gemeinsame Gestaltungsregeln | Layout, Abstände, Bediengrössen, Komponenten, Zustände, Tastaturbedienung, zugängliche Semantik | Gemeinsamer Vertrag aller Themes                                                         |
+| Theme                        | Aktions- und Neutralfarben, Schriftfamilie, zugehörige Schriftgewichte                          | Zentral austauschbar; Änderungen erfordern erneute Prüfung der betroffenen Darstellungen |
+| Marke und Absender           | Produktname, Logo, optionaler Organisationsname                                                 | Über eine zentrale Konfiguration austauschbar                                            |
 
 Komponenten MÜSSEN semantische Tokens verwenden. Direkte Farbwerte gehören in
 die Theme-Definition, nicht in einzelne Komponenten. Dies gilt auch für Links,
@@ -78,20 +97,20 @@ produktbezogen, aber unabhängig von einer bestimmten Organisation.
 
 ### 3.1 Neutrale Flächen und Text
 
-| Token | Rolle | Wert |
-| --- | --- | --- |
-| `--dw-surface` | Seite, Navigation, Editor, Resultate, Dialoge, Eingaben | `#FFFFFF` |
-| `--dw-surface-subtle` | Werkzeugleisten, Tabellenköpfe, Konsole, schreibgeschützte Felder | `#F3F5F7` |
-| `--dw-surface-neutral` | Neutrale Statuslabels und zurückgesetzte Bereiche | `#EEF1F4` |
-| `--dw-surface-hover` | Hover neutraler Bedienelemente | `#F3F5F7` |
-| `--dw-surface-pressed` | Gedrückter Zustand neutraler Bedienelemente | `#E7EBEF` |
-| `--dw-text` | Haupttext | `#25313C` |
-| `--dw-text-secondary` | Hilfetext, Metadaten, nachgeordnete Beschriftung | `#5B6673` |
-| `--dw-border-subtle` | Gliedernde Trennlinien | `#D9DFE5` |
-| `--dw-border-control` | Erkennbare Eingabe- und Controlkonturen | `#7C8793` |
-| `--dw-border-control-hover` | Eingabekontur bei Hover | `#5B6673` |
-| `--dw-disabled-bg` | Hintergrund deaktivierter Controls | `#ECEFF2` |
-| `--dw-disabled-text` | Text deaktivierter Controls | `#626D79` |
+| Token                       | Rolle                                                             | Wert      |
+| --------------------------- | ----------------------------------------------------------------- | --------- |
+| `--dw-surface`              | Seite, Navigation, Editor, Resultate, Dialoge, Eingaben           | `#FFFFFF` |
+| `--dw-surface-subtle`       | Werkzeugleisten, Tabellenköpfe, Konsole, schreibgeschützte Felder | `#F3F5F7` |
+| `--dw-surface-neutral`      | Neutrale Statuslabels und zurückgesetzte Bereiche                 | `#EEF1F4` |
+| `--dw-surface-hover`        | Hover neutraler Bedienelemente                                    | `#F3F5F7` |
+| `--dw-surface-pressed`      | Gedrückter Zustand neutraler Bedienelemente                       | `#E7EBEF` |
+| `--dw-text`                 | Haupttext                                                         | `#25313C` |
+| `--dw-text-secondary`       | Hilfetext, Metadaten, nachgeordnete Beschriftung                  | `#5B6673` |
+| `--dw-border-subtle`        | Gliedernde Trennlinien                                            | `#D9DFE5` |
+| `--dw-border-control`       | Erkennbare Eingabe- und Controlkonturen                           | `#7C8793` |
+| `--dw-border-control-hover` | Eingabekontur bei Hover                                           | `#5B6673` |
+| `--dw-disabled-bg`          | Hintergrund deaktivierter Controls                                | `#ECEFF2` |
+| `--dw-disabled-text`        | Text deaktivierter Controls                                       | `#626D79` |
 
 Arbeitsflächen bleiben weiss. Funktionsbereiche werden mit Abstand,
 zurückhaltenden Flächen und feinen Trennlinien gegliedert. Flächendeckende
@@ -104,18 +123,18 @@ sein. Dafür werden unterschiedliche Tokens verwendet.
 
 ### 3.2 Aktion, Links, Auswahl und Fokus
 
-| Token | Rolle | Wert |
-| --- | --- | --- |
-| `--dw-action-bg` | Gefüllte Primäraktion | `#2B5C8A` |
-| `--dw-action-bg-hover` | Hover der Primäraktion | `#234E75` |
-| `--dw-action-bg-pressed` | Gedrückte Primäraktion | `#1D4162` |
-| `--dw-action-fg` | Text und Icons auf der Primäraktion | `#FFFFFF` |
-| `--dw-link` | Textlinks | `#2B5C8A` |
-| `--dw-link-hover` | Textlinks bei Hover oder Drücken | `#234E75` |
-| `--dw-selection-bg` | Zurückhaltende Auswahlfläche | `#EAF1F8` |
-| `--dw-selection-fg` | Text und Icons ausgewählter Elemente | `#2B5C8A` |
-| `--dw-selection-border` | Zusätzliche sichtbare Auswahlkontur | `#2B5C8A` |
-| `--dw-focus-ring` | Tastaturfokus | `#0B5FFF` |
+| Token                    | Rolle                                | Wert      |
+| ------------------------ | ------------------------------------ | --------- |
+| `--dw-action-bg`         | Gefüllte Primäraktion                | `#2B5C8A` |
+| `--dw-action-bg-hover`   | Hover der Primäraktion               | `#234E75` |
+| `--dw-action-bg-pressed` | Gedrückte Primäraktion               | `#1D4162` |
+| `--dw-action-fg`         | Text und Icons auf der Primäraktion  | `#FFFFFF` |
+| `--dw-link`              | Textlinks                            | `#2B5C8A` |
+| `--dw-link-hover`        | Textlinks bei Hover oder Drücken     | `#234E75` |
+| `--dw-selection-bg`      | Zurückhaltende Auswahlfläche         | `#EAF1F8` |
+| `--dw-selection-fg`      | Text und Icons ausgewählter Elemente | `#2B5C8A` |
+| `--dw-selection-border`  | Zusätzliche sichtbare Auswahlkontur  | `#2B5C8A` |
+| `--dw-focus-ring`        | Tastaturfokus                        | `#0B5FFF` |
 
 Blau wird sparsam eingesetzt. Vollflächen sind hauptsächlich für die führende
 Aktion des jeweiligen Entscheidungskontexts vorgesehen. Navigation und
@@ -130,22 +149,22 @@ Visited-Farbe. Ein besuchter Projektlink behält die Linkrolle des Themes.
 
 ### 3.3 Status und destruktive Aktionen
 
-| Bedeutung | Vordergrund-Token / Wert | Hintergrund-Token / Wert |
-| --- | --- | --- |
-| Information | `--dw-info-fg`: `#245C83` | `--dw-info-bg`: `#ECF3F9` |
-| Erfolg | `--dw-success-fg`: `#276749` | `--dw-success-bg`: `#EBF5EF` |
-| Warnung | `--dw-warning-fg`: `#8A5700` | `--dw-warning-bg`: `#FFF4DB` |
-| Fehler | `--dw-error-fg`: `#B42318` | `--dw-error-bg`: `#FEF3F2` |
+| Bedeutung   | Vordergrund-Token / Wert     | Hintergrund-Token / Wert     |
+| ----------- | ---------------------------- | ---------------------------- |
+| Information | `--dw-info-fg`: `#245C83`    | `--dw-info-bg`: `#ECF3F9`    |
+| Erfolg      | `--dw-success-fg`: `#276749` | `--dw-success-bg`: `#EBF5EF` |
+| Warnung     | `--dw-warning-fg`: `#8A5700` | `--dw-warning-bg`: `#FFF4DB` |
+| Fehler      | `--dw-error-fg`: `#B42318`   | `--dw-error-bg`: `#FEF3F2`   |
 
-| Token | Rolle | Wert |
-| --- | --- | --- |
-| `--dw-danger-bg` | Gefüllte destruktive Bestätigung | `#B42318` |
-| `--dw-danger-bg-hover` | Hover dieser Bestätigung | `#912018` |
-| `--dw-danger-bg-pressed` | Gedrückte destruktive Bestätigung | `#751A14` |
-| `--dw-danger-fg` | Text und Icons auf gefülltem Danger-Button | `#FFFFFF` |
-| `--dw-danger-text` | Destruktive Textaktion und Danger-Kontur | `#B42318` |
-| `--dw-danger-subtle-hover` | Hover einer ungefüllten destruktiven Aktion | `#FEF3F2` |
-| `--dw-danger-subtle-pressed` | Gedrückte ungefüllte destruktive Aktion | `#FEE4E2` |
+| Token                        | Rolle                                       | Wert      |
+| ---------------------------- | ------------------------------------------- | --------- |
+| `--dw-danger-bg`             | Gefüllte destruktive Bestätigung            | `#B42318` |
+| `--dw-danger-bg-hover`       | Hover dieser Bestätigung                    | `#912018` |
+| `--dw-danger-bg-pressed`     | Gedrückte destruktive Bestätigung           | `#751A14` |
+| `--dw-danger-fg`             | Text und Icons auf gefülltem Danger-Button  | `#FFFFFF` |
+| `--dw-danger-text`           | Destruktive Textaktion und Danger-Kontur    | `#B42318` |
+| `--dw-danger-subtle-hover`   | Hover einer ungefüllten destruktiven Aktion | `#FEF3F2` |
+| `--dw-danger-subtle-pressed` | Gedrückte ungefüllte destruktive Aktion     | `#FEE4E2` |
 
 Statusmeldungen MÜSSEN ihre Bedeutung mit Text benennen. Farbe und Icons
 ergänzen die Aussage. Nicht jede erfolgreiche Bedienhandlung benötigt eine
@@ -153,7 +172,7 @@ grüne Meldung; dauerhafte Statusangaben und relevante Rückmeldungen genügen.
 
 Die gemeinsame rote Farbfamilie verbindet Fehler und destruktive Bedeutung.
 Die dafür vorgesehenen Tokens bleiben trotzdem getrennt. Normale
-Projektlinks, Pflichtfeldmarkierungen und aktive Navigation sind nicht rot.
+Projektlinks, Optionalzusätze und aktive Navigation sind nicht rot.
 
 ### 3.4 Geltungsbereich und Kontrast
 
@@ -202,8 +221,13 @@ den konfigurierten Build-Basispfad aufgelöst, damit `/lab/` funktioniert.
 Font-Stack:
 
 ```css
-font-family: "Source Sans 3", system-ui, -apple-system,
-  BlinkMacSystemFont, "Segoe UI", sans-serif;
+font-family:
+  'Source Sans 3',
+  system-ui,
+  -apple-system,
+  BlinkMacSystemFont,
+  'Segoe UI',
+  sans-serif;
 ```
 
 `font-display: swap` erhält die sofortige Lesbarkeit. Der System-Fallback
@@ -216,19 +240,23 @@ Die Pixelangaben beziehen sich auf eine Basis von 16 px bei 100 % Zoom.
 Textgrössen werden bevorzugt in `rem` umgesetzt; die Schriftgrösse des
 Browser-Root-Elements wird nicht verkleinert.
 
-| Verwendung | Grösse | Gewicht | Zeilenhöhe |
-| --- | --- | --- | --- |
-| Seitentitel | 28 px / 1.75 rem | 600 | 1.25 |
-| Abschnittstitel | 20 px / 1.25 rem | 600 | 1.4 |
-| Produktname im Header | 18 px / 1.125 rem | 500 | 1.4 |
-| Standardtext, normale Tabellenzellen | 16 px / 1 rem | 400 | 1.5 |
-| Navigation | 14 px / 0.875 rem | 500 | 1.4 |
-| Formularlabel | 14 px / 0.875 rem | 500 | 20 px / 1.25 rem |
-| Hilfetext | 14 px / 0.875 rem | 400 | 1.5 |
-| Standardbutton | 16 px / 1 rem | 500 | 1.25 |
-| Kompakter Button, kompakte Bedienung | 14 px / 0.875 rem | 500 | 1.3 |
-| Tabellenkopf | 14 px / 0.875 rem | 600 | 1.4 |
-| Nachgeordnete Metadaten, Statusbadge | 12 px / 0.75 rem | 400 | 1.5 |
+| Verwendung                           | Grösse            | Gewicht | Zeilenhöhe       |
+| ------------------------------------ | ----------------- | ------- | ---------------- |
+| Seitentitel                          | 28 px / 1.75 rem  | 600     | 1.25             |
+| Abschnittstitel                      | 1.42857143 (20 px bei 14 px Schrift)  | 600     | 1.4              |
+| Produktname im Header                | 18 px / 1.125 rem | 500     | 1.4              |
+| Standardtext, normale Tabellenzellen | 16 px / 1 rem     | 400     | 1.5              |
+| Navigation                           | 14 px / 0.875 rem | 500     | 1.4              |
+| Formularlabel                        | 14 px / 0.875 rem | 500     | 1.42857143 (20 px bei 14 px Schrift) |
+| Hilfetext                            | 14 px / 0.875 rem | 400     | 1.5              |
+| Standardbutton                       | 16 px / 1 rem     | 500     | 1.25             |
+| Kompakter Button, kompakte Bedienung | 14 px / 0.875 rem | 500     | 1.3              |
+| Tabellenkopf                         | 14 px / 0.875 rem | 600     | 1.4              |
+| Nachgeordnete Metadaten, Statusbadge | 12 px / 0.75 rem  | 400     | 1.5              |
+
+Die Zeilenhöhen skalieren mit der jeweiligen Schriftgrösse. Labels verwenden
+`line-height: 1.42857143` statt einer festen Pixel- oder rem-Zeilenhöhe, damit
+mehrzeilige Labels bei Textvergrösserung nicht überlappen.
 
 Gewicht 700 DARF für gezielte inhaltliche Hervorhebung verwendet werden.
 Gewichte 800 und 900 sind für die Bedienoberfläche nicht vorgesehen.
@@ -262,33 +290,33 @@ Messwerte behandelt.
 
 Verbindliches Abstandsraster: **4, 8, 12, 16, 20, 24, 32, 40, 48 und 64 px**.
 
-| Beziehung | Abstand |
-| --- | --- |
-| Icon–Text | 8 px |
+| Beziehung                             | Abstand                   |
+| ------------------------------------- | ------------------------- |
+| Icon–Text                             | 8 px                      |
 | Benachbarte Aktionen derselben Gruppe | 8 px in beiden Richtungen |
-| Unterschiedliche Aktionsgruppen | 16 px |
-| Label–Control | 8 px |
-| Control–Hilfetext oder Fehlermeldung | 8 px |
-| Formularfelder | 16 px |
-| Inhaltsabschnitte | 32 px |
-| Dialoginnenraum, normaler Inhaltsrand | 24 px |
-| Inhaltsrand bei schmalem Viewport | 16 px |
+| Unterschiedliche Aktionsgruppen       | 16 px                     |
+| Label–Control                         | 8 px                      |
+| Control–Hilfetext oder Fehlermeldung  | 8 px                      |
+| Formularfelder                        | 16 px                     |
+| Inhaltsabschnitte                     | 32 px                     |
+| Dialoginnenraum, normaler Inhaltsrand | 24 px                     |
+| Inhaltsrand bei schmalem Viewport     | 16 px                     |
 
 Aktionsgruppen verwenden Layout-`gap` und dürfen umbrechen. Leerzeichen,
 leere Elemente und individuelle Button-Margins werden nicht zur
 Layoutsteuerung verwendet. Zusammengehörige Aktionen behalten beim Umbruch
 ihre Reihenfolge und mindestens 8 px Abstand.
 
-| Element | Vorgabe |
-| --- | --- |
-| Standardcontrol | Mindestens 40 px hoch |
-| Kompaktes Control | Mindestens 32 px hoch; für dichte Arbeitsbereiche |
-| IconButton / Navigation im Standard | Mindestens 40 × 40 px |
+| Element                              | Vorgabe                                                   |
+| ------------------------------------ | --------------------------------------------------------- |
+| Standardcontrol                      | Mindestens 40 px hoch                                     |
+| Kompaktes Control                    | Mindestens 32 px hoch; für dichte Arbeitsbereiche         |
+| IconButton / Navigation im Standard  | Mindestens 40 × 40 px                                     |
 | Bedienziel bei grobem Zeiger / Touch | Mindestens 44 × 44 px wirksame, nicht überlappende Fläche |
-| Controls, Menüs und Dialoge | 4 px Radius |
-| Einfache Kontur | 1 px |
-| Auswahlkontur | 2 px innenliegend, ohne Layoutverschiebung |
-| Fokus | 3 px Ring mit 2 px Abstand |
+| Controls, Menüs und Dialoge          | 4 px Radius                                               |
+| Einfache Kontur                      | 1 px                                                      |
+| Auswahlkontur                        | 2 px innenliegend, ohne Layoutverschiebung                |
+| Fokus                                | 3 px Ring mit 2 px Abstand                                |
 
 Controlhöhen sind Mindesthöhen. Mehrzeilige oder vergrösserte Texte dürfen die
 Höhe vergrössern. Buttons und relevante Labels werden nicht abgeschnitten.
@@ -305,9 +333,9 @@ Dialoge zulässig. Normale Inhaltsabschnitte erhalten keine Schatten.
 Der öffentliche Komponentenvertrag trennt Gewichtung und Bedeutung:
 
 ```ts
-type ButtonVariant = "primary" | "secondary" | "tertiary";
-type ButtonTone = "default" | "danger";
-type ControlSize = "default" | "compact";
+type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
+type ButtonTone = 'default' | 'danger';
+type ControlSize = 'default' | 'compact';
 ```
 
 `variant` beschreibt die Hervorhebung. `tone` beschreibt eine gegebenenfalls
@@ -321,11 +349,11 @@ bestehende Aufrufer vorübergehend kompatibel halten.
 
 ### 6.2 Normale Aktionen
 
-| Variante | Standard | Hover | Gedrückt |
-| --- | --- | --- | --- |
-| Primary | `action-bg`, Text/Icon `action-fg`, transparente Kontur | `action-bg-hover` | `action-bg-pressed` |
-| Secondary | `surface`, Text/Icon `text`, Kontur `border-control` | `surface-hover`, Kontur bleibt sichtbar | `surface-pressed` |
-| Tertiary | Transparent, Text/Icon `text`, transparente Kontur | `surface-hover` | `surface-pressed` |
+| Variante  | Standard                                                | Hover                                   | Gedrückt            |
+| --------- | ------------------------------------------------------- | --------------------------------------- | ------------------- |
+| Primary   | `action-bg`, Text/Icon `action-fg`, transparente Kontur | `action-bg-hover`                       | `action-bg-pressed` |
+| Secondary | `surface`, Text/Icon `text`, Kontur `border-control`    | `surface-hover`, Kontur bleibt sichtbar | `surface-pressed`   |
+| Tertiary  | Transparent, Text/Icon `text`, transparente Kontur      | `surface-hover`                         | `surface-pressed`   |
 
 Die Rollen in den Tabellen bezeichnen jeweils das gleichnamige `--dw-`-Token.
 Text und Icons einer Schaltfläche verwenden dieselbe Vordergrundrolle.
@@ -335,20 +363,20 @@ Pro zusammengehörigem Entscheidungskontext SOLL genau eine visuell führende
 Aktion vorhanden sein. Es müssen nicht auf jeder Seite alle drei Varianten
 vorkommen.
 
-| Kontext | Führende Aktion | Nachgeordnete Aktionen |
-| --- | --- | --- |
-| Projektliste | „Neues Projekt“ als Primary | „Projekt öffnen“ als Secondary; weitere Werkzeuge als Tertiary |
-| SQL-/R-Arbeitsbereich | „Ausführen“ als Primary | „Speichern“ als Secondary; Ansicht und weitere Aktionen nachgeordnet |
-| Formular oder Dialog zum Bearbeiten | Abschliessendes „Speichern“ / „Übernehmen“ als Primary | „Abbrechen“ als Secondary |
-| Projektdatei und Speicher | Aufgabenabhängig; keine erzwungene Primary-Aktion | Exportieren, Duplizieren, Integrität prüfen als Secondary oder Tertiary |
+| Kontext                             | Führende Aktion                                        | Nachgeordnete Aktionen                                                  |
+| ----------------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------- |
+| Projektliste                        | „Neues Projekt“ als Primary                            | „Projekt öffnen“ als Secondary; weitere Werkzeuge als Tertiary          |
+| SQL-/R-Arbeitsbereich               | „Ausführen“ als Primary                                | „Speichern“ als Secondary; Ansicht und weitere Aktionen nachgeordnet    |
+| Formular oder Dialog zum Bearbeiten | Abschliessendes „Speichern“ / „Übernehmen“ als Primary | „Abbrechen“ als Secondary                                               |
+| Projektdatei und Speicher           | Aufgabenabhängig; keine erzwungene Primary-Aktion      | Exportieren, Duplizieren, Integrität prüfen als Secondary oder Tertiary |
 
 ### 6.3 Destruktive Aktionen
 
-| Variante mit `tone="danger"` | Standard | Hover | Gedrückt |
-| --- | --- | --- | --- |
-| Primary | `danger-bg`, Text/Icon `danger-fg` | `danger-bg-hover` | `danger-bg-pressed` |
-| Secondary | `surface`, Text/Icon und Kontur `danger-text` | `danger-subtle-hover` | `danger-subtle-pressed` |
-| Tertiary | Transparent, Text/Icon `danger-text` | `danger-subtle-hover` | `danger-subtle-pressed` |
+| Variante mit `tone="danger"` | Standard                                      | Hover                 | Gedrückt                |
+| ---------------------------- | --------------------------------------------- | --------------------- | ----------------------- |
+| Primary                      | `danger-bg`, Text/Icon `danger-fg`            | `danger-bg-hover`     | `danger-bg-pressed`     |
+| Secondary                    | `surface`, Text/Icon und Kontur `danger-text` | `danger-subtle-hover` | `danger-subtle-pressed` |
+| Tertiary                     | Transparent, Text/Icon `danger-text`          | `danger-subtle-hover` | `danger-subtle-pressed` |
 
 „Projekt löschen“ steht räumlich getrennt von häufigen Arbeitsaktionen und
 erscheint dort als Secondary oder Tertiary mit Danger-Bedeutung. Eine gefüllte
@@ -373,15 +401,15 @@ Spezifikation autorisiert keine Änderung des Löschverhaltens.
 
 ## 7. Zustände und ihr Zusammenspiel
 
-| Zustand | Bedeutung | Verbindliches Verhalten |
-| --- | --- | --- |
-| `hover` | Zeiger befindet sich über dem Element | Definierte Hover-Fläche; keine Layoutverschiebung |
-| `pressed` / CSS `:active` | Momentanes Drücken | Definierte dunklere beziehungsweise neutrale Pressed-Fläche |
-| `focus-visible` | Sichtbarer Tastaturfokus | 3-px-Fokusring mit 2 px Abstand; bestehende Auswahl oder Fehlerkontur bleibt erkennbar |
-| `selected` | Dauerhafte Auswahl | Auswahlfläche und zusätzliche sichtbare Form/Kontur; passende Semantik, z. B. `aria-selected` oder `aria-pressed` |
-| `current` | Aktuelles Navigationsziel | Auswahlgestaltung plus `aria-current="page"` am Navigationslink |
-| `disabled` | Derzeit nicht bedienbar | Explizite Disabled-Farben, keine Hover-/Pressed-Reaktion; native Semantik, wo möglich |
-| `busy` | Vorgang läuft | Verständlicher Lauftext, Schutz vor Doppelaktionen und passende Busy-Semantik |
+| Zustand                   | Bedeutung                             | Verbindliches Verhalten                                                                                           |
+| ------------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `hover`                   | Zeiger befindet sich über dem Element | Definierte Hover-Fläche; keine Layoutverschiebung                                                                 |
+| `pressed` / CSS `:active` | Momentanes Drücken                    | Definierte dunklere beziehungsweise neutrale Pressed-Fläche                                                       |
+| `focus-visible`           | Sichtbarer Tastaturfokus              | 3-px-Fokusring mit 2 px Abstand; bestehende Auswahl oder Fehlerkontur bleibt erkennbar                            |
+| `selected`                | Dauerhafte Auswahl                    | Auswahlfläche und zusätzliche sichtbare Form/Kontur; passende Semantik, z. B. `aria-selected` oder `aria-pressed` |
+| `current`                 | Aktuelles Navigationsziel             | Auswahlgestaltung plus `aria-current="page"` am Navigationslink                                                   |
+| `disabled`                | Derzeit nicht bedienbar               | Explizite Disabled-Farben, keine Hover-/Pressed-Reaktion; native Semantik, wo möglich                             |
+| `busy`                    | Vorgang läuft                         | Verständlicher Lauftext, Schutz vor Doppelaktionen und passende Busy-Semantik                                     |
 
 `pressed`, `selected` und `current` sind unterschiedliche Zustände. Ein normaler
 Aktionsbutton erhält kein `aria-pressed`, nur weil er kurz gedrückt wird.
@@ -436,33 +464,66 @@ Hilfetext folgt darunter in 14 px, Gewicht 400 und `text-secondary`.
 Placeholder ersetzt kein Label. Ein Placeholder, sofern sinnvoll, zeigt ein
 Beispiel und verwendet eine gut lesbare Textrolle.
 
-Pflichtfelder erhalten ein sichtbares Sternchen in der Label-Farbe und native
-`required`-Semantik. Einmal pro Formular wird „* Pflichtfeld“ erklärt.
-Fachliche Pflichtfeldregeln werden durch die Migration nicht verändert.
+Erforderliche Felder tragen keinen sichtbaren Zusatz und behalten ihre native
+`required`-Semantik.
+Optionale Felder zeigen direkt hinter dem Label „(optional)“ in
+`text-secondary`, Gewicht 400 und derselben Schriftgrösse. Der Zusatz wird
+über `aria-describedby` vermittelt; der zugängliche Feldname bleibt stabil.
+Es gibt keine Sternchen und keine Pflichtfeldhinweise. `FormField.optional`
+wird explizit gesetzt; gewöhnliche Optionscheckboxen, Navigation und fest
+vorgegebene/deaktivierte Werte erhalten keinen Zusatz. Stringparameter zeigen
+ihren Optionalzusatz pro Werteingabe, auch bei ausgeblendeten Labels;
+NULL deaktiviert die Werteingabe ohne Zusatz. Die fachlichen Regeln bleiben
+unverändert. Feldfehler verschieben benachbarte Aktionsbuttons nicht gegenüber
+der Eingabe; bei schmaler Projekterstellung folgt der Button unter der Feldgruppe.
 
-| Feldzustand | Gestaltung |
-| --- | --- |
-| Standard | `surface`, Text `text`, Kontur `border-control` |
-| Hover | Kontur `border-control-hover` |
-| Fokus | Vorhandene Kontur plus Fokusring |
-| Fehler | Kontur und Fehlermeldung `error-fg`; zusätzliche Textbeschreibung |
+Als optional gekennzeichnet werden Beschreibung, Zufallsseed, zusätzlicher
+CSV-NULL-Marker, Diagrammkategorie und Stringparameterwerte. Die deaktivierte
+NULL-Werteingabe erhält keinen Zusatz. Benötigte Zahlen- und andere typisierte
+Parameterwerte bleiben erforderlich. „Projekt öffnen“, Navigationsauswahlen
+und fest vorgegebene SQL-Namen erhalten keinen Optionalzusatz. Für die Portal-ID
+bleibt der aktionsbezogene Hinweis „für Kontext laden erforderlich“ massgeblich;
+Indexsuche und aufgelöste Deep Links verlangen keine zusätzliche Eingabe.
+
+Die Projekterstellung verwendet gemeinsame Rasterzeilen für Label, Eingabe und
+Fehler. Der Button steht in der Eingabezeile; mehrzeilige Fehler darunter
+verändern seine Ausrichtung nicht. Analysewerkzeugleisten halten ihre Buttons
+ebenfalls an der Eingabe ausgerichtet. Feste Fehlerhöhen, leere Platzhalter und
+individuelle Pixelversätze werden nicht als Ausgleich verwendet.
+
+| Feldzustand      | Gestaltung                                                                                                                           |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Standard         | `surface`, Text `text`, Kontur `border-control`                                                                                      |
+| Hover            | Kontur `border-control-hover`                                                                                                        |
+| Fokus            | Vorhandene Kontur plus Fokusring                                                                                                     |
+| Fehler           | Kontur und Fehlermeldung `error-fg`; zusätzliche Textbeschreibung                                                                    |
 | Schreibgeschützt | `surface-subtle`, Text `text`, erkennbare Kontur; Inhalt bleibt fokussier- und kopierbar, soweit das native Control dies unterstützt |
-| Deaktiviert | `disabled-bg`, Text `disabled-text`, native Deaktivierung |
+| Deaktiviert      | `disabled-bg`, Text `disabled-text`, native Deaktivierung                                                                            |
 
 Fehlermeldungen nennen das konkrete Problem und werden über
 `aria-describedby` dem Feld zugeordnet. `aria-invalid="true"` kennzeichnet
 ungültige Eingaben. Bestehender Hilfetext und Fehlertext können gemeinsam
 referenziert werden. Validierung erzeugt keine Live-Meldung pro Tastendruck.
+Vorübergehendes Leeren bleibt während der Bearbeitung möglich. Geprüft wird
+beim Verlassen eines bearbeiteten Felds und vor der zugehörigen Aktion. Während
+des Tippens entstehen keine neuen Fehler; ein vorhandener Fehler verschwindet,
+sobald der Wert gültig ist. Ungültige Entwürfe bleiben zur Korrektur erhalten,
+im Projektdokument bleibt der letzte gültige Wert. Eine fehlgeschlagene Aktion
+fokussiert das erste ungültige aktive Feld; Blur erzwingt keinen Fokuswechsel.
+Formulare mit eigener Feldvalidierung verwenden `noValidate` und behalten
+`required`. Eingabefehler erzeugen keinen zusätzlichen globalen Fehlerbanner.
+Netzwerk-, Engine- und Speicherfehler verwenden weiterhin ihre eigenen Wege.
 
 Checkboxen und Radiobuttons stehen links; die anklickbare Beschriftung folgt
 rechts mit 8 px Abstand und Gewicht 400. Mehrzeilige Texte dürfen umbrechen.
 Die gesamte Label-Fläche ist anklickbar. Haken, Auswahlpunkte und Konturen
 bleiben ausreichend kontrastreich.
 
-Der Analysename in einer kompakten Werkzeugleiste DARF ein visuell ausgeblendetes
-Label haben. Parametertabellen verwenden Spaltenköpfe und eindeutige
-zugängliche Feldnamen. Diese Ausnahmen ersetzen nicht die sichtbaren Labels
-normaler Formulare.
+Der Analysename in SQL-/R-Werkzeugleisten besitzt ein sichtbares kompaktes
+Inline-Label. Nur Parametertabellen dürfen ihre eindeutigen Feldlabels visuell
+ausblenden, weil sichtbare Spaltenköpfe den Kontext vermitteln. Der Optionalzusatz
+bei Stringwerten bleibt dann sichtbar neben der betreffenden Werteingabe.
+Normale Formulare behalten sichtbare Labels oberhalb des Controls.
 
 ## 9. Meldungen, Badges und leere Zustände
 
@@ -579,9 +640,9 @@ Eine zentrale Markenkonfiguration SOLL mindestens folgende Werte unterstützen:
 
 ```ts
 type BrandConfig = {
-  productName: string;       // Standard: "Datenwerkstatt"
+  productName: string; // Standard: "Datenwerkstatt"
   organisationName?: string;
-  logoSrc?: string;          // Lokales Asset oder freigegebener eigener Assetpfad
+  logoSrc?: string; // Lokales Asset oder freigegebener eigener Assetpfad
   logoAlt?: string;
 };
 ```
@@ -610,15 +671,15 @@ SVGs verwenden `currentColor`. Dekorative SVGs erhalten `aria-hidden` und
 `focusable="false"`; der zugängliche Name steht am bedienbaren Auslöser.
 Es gibt keine Unicode-Ersatzbilder, Iconfonts oder externen Iconabrufe.
 
-| Ziel | Bootstrap-Icon |
-| --- | --- |
+| Ziel                  | Bootstrap-Icon   |
+| --------------------- | ---------------- |
 | Navigation umschalten | `layout-sidebar` |
-| Projekte | `collection` |
-| Übersicht | `folder2-open` |
-| Daten | `table` |
-| SQL / DuckDB | `database` |
-| R / webR | `bar-chart-line` |
-| Einstellungen | `gear` |
+| Projekte              | `collection`     |
+| Übersicht             | `folder2-open`   |
+| Daten                 | `table`          |
+| SQL / DuckDB          | `database`       |
+| R / webR              | `bar-chart-line` |
+| Einstellungen         | `gear`           |
 
 Navigationsicons sind 20 × 20 px auf mindestens 40 × 40 px grossen
 Bedienflächen. Eingeklappt erscheint ein Tooltip, ausgeklappt zusätzlich das
@@ -657,16 +718,16 @@ eingeklappte Navigation.
 
 Bei der normalen Desktopdarstellung gelten die bestehenden Zielgrössen:
 
-| Bereich | Vorgabe |
-| --- | --- |
-| Header | 56 px im Standard |
-| Navigation eingeklappt | 52 px |
-| Navigation ausgeklappt | 212 px |
-| Zusätzliche Analysenbedienung | Höchstens 88 px in der Standardansicht |
-| SQL-/R-Arbeitsflächen | Mindestens 75 % der Viewporthöhe in der Standardarbeitsansicht bei geschlossenen Zusatzpanels |
-| Breite der Arbeitsflächen | Mindestens 90 % der Breite rechts der eingeklappten Iconleiste in dieser Standardarbeitsansicht |
-| SQL-Editor bei 900 px Viewporthöhe | Mindestens 180 px |
-| Ergebnis bei 900 px Viewporthöhe | Mindestens 220 px |
+| Bereich                            | Vorgabe                                                                                         |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Header                             | 56 px im Standard                                                                               |
+| Navigation eingeklappt             | 52 px                                                                                           |
+| Navigation ausgeklappt             | 212 px                                                                                          |
+| Zusätzliche Analysenbedienung      | Höchstens 88 px in der Standardansicht                                                          |
+| SQL-/R-Arbeitsflächen              | Mindestens 75 % der Viewporthöhe in der Standardarbeitsansicht bei geschlossenen Zusatzpanels   |
+| Breite der Arbeitsflächen          | Mindestens 90 % der Breite rechts der eingeklappten Iconleiste in dieser Standardarbeitsansicht |
+| SQL-Editor bei 900 px Viewporthöhe | Mindestens 180 px                                                                               |
+| Ergebnis bei 900 px Viewporthöhe   | Mindestens 220 px                                                                               |
 
 Die Breitenmessung bezieht sich auf die Standardarbeitsansicht mit
 eingeklappter Navigation. Bewusst geöffnete Navigation und Zusatzpanels
@@ -718,14 +779,14 @@ aller Datenzellen dieser Spalte entsprechen.** Tabellenüberschriften werden
 nicht pauschal zentriert oder linksbündig dargestellt. Entscheidend ist der
 logische Datentyp und nicht, ob ein Zellwert zufällig nur aus Ziffern besteht.
 
-| Spaltentyp | Tabellenkopf | Datenzellen | Beispiele |
-| --- | --- | --- | --- |
-| Text, Namen, Bezeichnungen, Links | Links | Links | Projektname, Dateiname, Beschreibung |
-| Mengen, Zählwerte, numerische Kennzahlen, Beträge | Rechts | Rechts | Anzahl Daten, Anzahl Analysen, Grösse |
-| Datum und Zeitstempel | Links | Links | Erstellt, Zuletzt bearbeitet |
-| Identifikatoren und Codes | Links | Links | BFS-Nummer, Postleitzahl, UUID |
-| Status, Kategorien | Links | Links | Aktiv, Validiert, Fehler |
-| Reine Aktionsspalte | Zentriert (sofern beschriftet) | Zentriert | Aktionsmenü oder IconButton |
+| Spaltentyp                                        | Tabellenkopf                   | Datenzellen | Beispiele                             |
+| ------------------------------------------------- | ------------------------------ | ----------- | ------------------------------------- |
+| Text, Namen, Bezeichnungen, Links                 | Links                          | Links       | Projektname, Dateiname, Beschreibung  |
+| Mengen, Zählwerte, numerische Kennzahlen, Beträge | Rechts                         | Rechts      | Anzahl Daten, Anzahl Analysen, Grösse |
+| Datum und Zeitstempel                             | Links                          | Links       | Erstellt, Zuletzt bearbeitet          |
+| Identifikatoren und Codes                         | Links                          | Links       | BFS-Nummer, Postleitzahl, UUID        |
+| Status, Kategorien                                | Links                          | Links       | Aktiv, Validiert, Fehler              |
+| Reine Aktionsspalte                               | Zentriert (sofern beschriftet) | Zentriert   | Aktionsmenü oder IconButton           |
 
 Für links-nach-rechts geschriebene Oberflächen entsprechen `text-align: start`
 und `text-align: end` der linken beziehungsweise rechten Ausrichtung. Die
@@ -837,54 +898,53 @@ Theme-Overrides gehören ebenfalls an eine zentrale Stelle.
 :root {
   color-scheme: light;
 
-  --dw-font-ui: "Source Sans 3", system-ui, -apple-system,
-    BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --dw-font-code: "JetBrains Mono", ui-monospace, SFMono-Regular,
-    Menlo, Consolas, monospace;
+  --dw-font-ui:
+    'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --dw-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --dw-weight-regular: 400;
   --dw-weight-medium: 500;
   --dw-weight-semibold: 600;
   --dw-weight-strong: 700;
 
-  --dw-surface: #FFFFFF;
-  --dw-surface-subtle: #F3F5F7;
-  --dw-surface-neutral: #EEF1F4;
-  --dw-surface-hover: #F3F5F7;
-  --dw-surface-pressed: #E7EBEF;
-  --dw-text: #25313C;
-  --dw-text-secondary: #5B6673;
-  --dw-border-subtle: #D9DFE5;
-  --dw-border-control: #7C8793;
-  --dw-border-control-hover: #5B6673;
-  --dw-disabled-bg: #ECEFF2;
-  --dw-disabled-text: #626D79;
+  --dw-surface: #ffffff;
+  --dw-surface-subtle: #f3f5f7;
+  --dw-surface-neutral: #eef1f4;
+  --dw-surface-hover: #f3f5f7;
+  --dw-surface-pressed: #e7ebef;
+  --dw-text: #25313c;
+  --dw-text-secondary: #5b6673;
+  --dw-border-subtle: #d9dfe5;
+  --dw-border-control: #7c8793;
+  --dw-border-control-hover: #5b6673;
+  --dw-disabled-bg: #eceff2;
+  --dw-disabled-text: #626d79;
 
-  --dw-action-bg: #2B5C8A;
-  --dw-action-bg-hover: #234E75;
-  --dw-action-bg-pressed: #1D4162;
-  --dw-action-fg: #FFFFFF;
-  --dw-link: #2B5C8A;
-  --dw-link-hover: #234E75;
-  --dw-selection-bg: #EAF1F8;
-  --dw-selection-fg: #2B5C8A;
-  --dw-selection-border: #2B5C8A;
-  --dw-focus-ring: #0B5FFF;
+  --dw-action-bg: #2b5c8a;
+  --dw-action-bg-hover: #234e75;
+  --dw-action-bg-pressed: #1d4162;
+  --dw-action-fg: #ffffff;
+  --dw-link: #2b5c8a;
+  --dw-link-hover: #234e75;
+  --dw-selection-bg: #eaf1f8;
+  --dw-selection-fg: #2b5c8a;
+  --dw-selection-border: #2b5c8a;
+  --dw-focus-ring: #0b5fff;
 
-  --dw-info-fg: #245C83;
-  --dw-info-bg: #ECF3F9;
+  --dw-info-fg: #245c83;
+  --dw-info-bg: #ecf3f9;
   --dw-success-fg: #276749;
-  --dw-success-bg: #EBF5EF;
-  --dw-warning-fg: #8A5700;
-  --dw-warning-bg: #FFF4DB;
-  --dw-error-fg: #B42318;
-  --dw-error-bg: #FEF3F2;
-  --dw-danger-bg: #B42318;
+  --dw-success-bg: #ebf5ef;
+  --dw-warning-fg: #8a5700;
+  --dw-warning-bg: #fff4db;
+  --dw-error-fg: #b42318;
+  --dw-error-bg: #fef3f2;
+  --dw-danger-bg: #b42318;
   --dw-danger-bg-hover: #912018;
-  --dw-danger-bg-pressed: #751A14;
-  --dw-danger-fg: #FFFFFF;
-  --dw-danger-text: #B42318;
-  --dw-danger-subtle-hover: #FEF3F2;
-  --dw-danger-subtle-pressed: #FEE4E2;
+  --dw-danger-bg-pressed: #751a14;
+  --dw-danger-fg: #ffffff;
+  --dw-danger-text: #b42318;
+  --dw-danger-subtle-hover: #fef3f2;
+  --dw-danger-subtle-pressed: #fee4e2;
 
   --dw-space-1: 4px;
   --dw-space-2: 8px;
@@ -913,18 +973,16 @@ die tatsächliche CSS-/Buildstruktur angepasst:
 
 ```css
 @font-face {
-  font-family: "Source Sans 3";
-  src: url("./fonts/source-sans-3/SourceSans3VF-Upright.ttf.woff2")
-    format("woff2");
+  font-family: 'Source Sans 3';
+  src: url('./fonts/source-sans-3/SourceSans3VF-Upright.ttf.woff2') format('woff2');
   font-style: normal;
   font-weight: 200 900;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Source Sans 3";
-  src: url("./fonts/source-sans-3/SourceSans3VF-Italic.ttf.woff2")
-    format("woff2");
+  font-family: 'Source Sans 3';
+  src: url('./fonts/source-sans-3/SourceSans3VF-Italic.ttf.woff2') format('woff2');
   font-style: italic;
   font-weight: 200 900;
   font-display: swap;
@@ -1047,58 +1105,75 @@ mehrzeilige Texte gehören ausdrücklich dazu.
 ### 15.1 Visuelle und funktionale Abnahme
 
 - [ ] Das Standardtheme verwendet die hier festgelegten Rollen; normale
-  Aktionen, Links und Navigation verwenden keine rote Akzentfarbe.
+      Aktionen, Links und Navigation verwenden keine rote Akzentfarbe.
 - [ ] Source Sans 3 wird tatsächlich mit den vorgesehenen Gewichten geladen.
-  Formularlabels und Buttons sind 500, Überschriften 600.
+      Formularlabels und Buttons sind 500, Überschriften 600.
 - [ ] Der neutrale Header funktioniert ohne Organisationslogo und zeigt den
-  Produktnamen mit dem vorgesehenen Platzhalter.
+      Produktnamen mit dem vorgesehenen Platzhalter.
 - [ ] Primary, Secondary, Tertiary und Danger sind konsistent; destruktive
-  Aktionen stehen passend getrennt von häufigen Arbeitsaktionen.
+      Aktionen stehen passend getrennt von häufigen Arbeitsaktionen.
 - [ ] Hover, Pressed, Fokus, Auswahl, Disabled und Busy sind in den tatsächlich
-  verwendeten Kombinationen sichtbar und bedienbar.
+      verwendeten Kombinationen sichtbar und bedienbar.
 - [ ] Ausgewählte Navigation besitzt neben der hellen Fläche eine Kontur;
-  der Tastaturfokus bleibt zusätzlich erkennbar.
+      der Tastaturfokus bleibt zusätzlich erkennbar.
 - [ ] Text-, Control- und Zustandskontraste wurden auf den realen Hintergründen
-  geprüft. Meldungen und Auswahl sind nicht ausschliesslich farbcodiert.
+      geprüft. Meldungen und Auswahl sind nicht ausschliesslich farbcodiert.
 - [ ] Alle Eingaben haben passende Labels; Labelklick, Checkboxklick,
-  Pflichtfeldkennzeichnung und Fehlerzuordnung funktionieren.
+      Optionalzusatz, native `required`-Semantik und Fehlerzuordnung funktionieren.
 - [ ] Menüs und Dialoge sind mit Tastatur bedienbar; Fokusbegrenzung und
-  Fokusrückgabe funktionieren. Tooltips erfüllen den beschriebenen Lebenszyklus.
+      Fokusrückgabe funktionieren. Tooltips erfüllen den beschriebenen Lebenszyklus.
 - [ ] Busy verhindert doppelte Ausführung; fachlich verfügbares Abbrechen
-  bleibt erreichbar. Bestehende Sperren und Bestätigungen wirken weiter.
+      bleibt erreichbar. Bestehende Sperren und Bestätigungen wirken weiter.
 - [ ] Bei 1440 × 900, 1280 × 800, geringer Höhe und 200 % Zoom überlagern sich
-  keine Bedienelemente; Labels dürfen umbrechen und Inhalte bleiben erreichbar.
+      keine Bedienelemente; Labels dürfen umbrechen und Inhalte bleiben erreichbar.
 - [ ] Aktionsgruppen besitzen auch beim Umbruch mindestens 8 px Abstand.
 - [ ] Bei 1280 × 800 und 100 % Zoom entsteht kein horizontaler Seiten-Overflow;
-  Code- und Tabellenscrollen funktionieren innerhalb ihrer Bereiche.
+      Code- und Tabellenscrollen funktionieren innerhalb ihrer Bereiche.
 - [ ] Tabellenköpfe und Datenzellen sind je Spalte konsistent ausgerichtet:
-  Text/Datum/Identifikatoren links, Zahlen rechts, reine Aktionen zentriert.
-  Insbesondere stehen „Daten“ und „Analysen“ rechtsbündig über ihren Werten.
+      Text/Datum/Identifikatoren links, Zahlen rechts, reine Aktionen zentriert.
+      Insbesondere stehen „Daten“ und „Analysen“ rechtsbündig über ihren Werten.
 - [ ] Numerische Kolonnen verwenden tabellarische Ziffern. `0`, `NULL` und
-  Identifikatoren bleiben eindeutig; Zahlensortierung erfolgt numerisch und
-  Datumssortierung chronologisch, unabhängig vom Anzeigeformat.
+      Identifikatoren bleiben eindeutig; Zahlensortierung erfolgt numerisch und
+      Datumssortierung chronologisch, unabhängig vom Anzeigeformat.
 - [ ] Zeitstempel in kompakten Übersichten sind sinnvoll gekürzt, ohne die
-  fachlich benötigte Präzision oder zugängliche Detailinformation zu verlieren.
+      fachlich benötigte Präzision oder zugängliche Detailinformation zu verlieren.
 - [ ] Die SQL-/R-Arbeitsflächen erfüllen die Masse der Standardarbeitsansicht;
-  Editorgrösse und vorhandene Grösseneinstellungen bleiben verwendbar.
+      Editorgrösse und vorhandene Grösseneinstellungen bleiben verwendbar.
 - [ ] Lokale Font- und SVG-Pfade funktionieren unter `/lab/`; der
-  Systemfont-Fallback ist bedienbar und es gibt keine externen Font-/Iconabrufe.
+      Systemfont-Fallback ist bedienbar und es gibt keine externen Font-/Iconabrufe.
 - [ ] Projektbegriffe, kanonische Routen, Navigationszustände, Datenzuständigkeit
-  der Ansichten, Laufdetails und Diagnoseanordnung bleiben fachlich korrekt.
+      der Ansichten, Laufdetails und Diagnoseanordnung bleiben fachlich korrekt.
 
-### 15.2 Bestehende Projekt-Gates
+### 15.2 Gezielter Prüfumfang für die neutrale Oberfläche
 
-Die im Ausgangsdokument vorgeschriebenen Prüfungen bleiben Teil der
-Implementierungsabnahme: `npm run verify`, E2E zusätzlich mit Firefox/WebKit,
-betroffene statische Deploymentchecks, Dokumentlinks sowie ein nativer
-Safari-UI-Smoke. Neue Screenshots und Messungen werden getrennt von
-historischen P7/P8-Belegen dokumentiert.
+Für die neutrale Designmigration gelten Typecheck, ein Produktionsbuild und
+fünf gezielte Chromium-Fälle:
 
-Diese Gate-Namen stammen aus dem bestehenden Designsystem. Die vorliegende
-Dokumenterstellung bestätigt weder deren Verfügbarkeit im Repository noch
-eine erfolgreiche Ausführung. Bei der Implementierung werden die vorhandenen
-Projektkommandos geprüft und tatsächlich verwendete Prüfwege festgehalten.
-Nicht ausgeführte Prüfungen werden ausdrücklich benannt.
+1. Komponentenreferenz mit Rollen, Zuständen, Tastaturbedienung und Kontrasten.
+2. Tooltip-Lebenszyklus einschliesslich Zeigerwechsel und Timerbereinigung.
+3. Reale Ansichten mit Navigation, Tabellen, Optionalzusätzen und Fehlerlayout.
+4. Der bestehende einzelne SQL-/R-Geometriefall mit echten Ergebnissen.
+5. Lokale Assets und Font-Fallback unter `/lab/` in einer einzelnen
+   Vite-Produktionsvorschau.
+
+Bei reinen UI-Korrekturen werden nur die betroffenen Prüfungen ausgeführt;
+ein fehlgeschlagener Fall wird nach einer Korrektur gezielt wiederholt.
+Vollständiges `npm run verify`, gesamte Testsuiten, Firefox-/WebKit-Matrix,
+Docker-Deploymentmatrix und nativer Safari-Smoke gehören nicht automatisch zu
+diesem UI-Prüfumfang. Änderungen an Fachfunktionen, Engines, Speicherung und
+vollständige V1-/Releaseabnahmen richten sich weiterhin nach der SPEC und dem
+jeweiligen Auftrag.
+
+Textvergrösserung um 200 % und die verkleinerte Layoutsimulation prüfen
+Lesbarkeit und Umbruch. Sie werden ausdrücklich nicht als native
+Browserzoom-Abnahme bezeichnet.
+
+Tatsächliche Befehle, Exitcodes, geprüfte Revision, Screenshots und verbleibende
+Grenzen werden im Implementierungsstatus dokumentiert. Nicht ausgeführte
+Prüfungen werden benannt. Die neutrale Migration verwendet
+`verification/neutral-v1.2/`; historische Nachweise werden nicht überschrieben.
+Die abgestimmten Regeln sind in dieser Projektfassung und der nachgeführten
+Referenz `DESIGN_SYSTEM_NEUTRAL_v1.2.md` enthalten.
 
 ## 16. Anhang: rechnerische Farbprüfung
 
@@ -1107,23 +1182,23 @@ WCAG-Relativluminanzformel berechnet. Für die Beurteilung wurden ungerundete
 Werte verwendet; die Tabelle zeigt zur Vermeidung einer Aufrundung über einen
 Grenzwert auf zwei Nachkommastellen **abgerundete** Werte. [1]
 
-| Vordergrund / Hintergrund | Verhältnis mindestens | Beurteilte Rolle |
-| --- | --- | --- |
-| `#FFFFFF` / `#2B5C8A` | 6.99:1 | Text auf Primary |
-| `#FFFFFF` / `#234E75` | 8.68:1 | Text auf Primary-Hover |
-| `#FFFFFF` / `#1D4162` | 10.58:1 | Text auf Primary-Pressed |
-| `#25313C` / `#FFFFFF` | 13.26:1 | Haupttext auf Arbeitsfläche |
-| `#5B6673` / `#F3F5F7` | 5.34:1 | Sekundärtext auf Funktionsfläche |
-| `#2B5C8A` / `#EAF1F8` | 6.14:1 | Auswahltext und Auswahlkontur |
-| `#7C8793` / `#FFFFFF` | 3.65:1 | Controlkontur auf Weiss |
-| `#7C8793` / `#F3F5F7` | 3.34:1 | Controlkontur auf Funktionsfläche |
-| `#0B5FFF` / `#FFFFFF` | 5.12:1 | Fokusring auf Weiss |
-| `#626D79` / `#ECEFF2` | 4.56:1 | Text deaktivierter Controls |
-| `#245C83` / `#ECF3F9` | 6.39:1 | Information |
-| `#276749` / `#EBF5EF` | 6.03:1 | Erfolg |
-| `#8A5700` / `#FFF4DB` | 5.57:1 | Warnung |
-| `#B42318` / `#FEF3F2` | 6.04:1 | Fehler |
-| `#FFFFFF` / `#B42318` | 6.57:1 | Text auf gefülltem Danger-Button |
+| Vordergrund / Hintergrund | Verhältnis mindestens | Beurteilte Rolle                  |
+| ------------------------- | --------------------- | --------------------------------- |
+| `#FFFFFF` / `#2B5C8A`     | 6.99:1                | Text auf Primary                  |
+| `#FFFFFF` / `#234E75`     | 8.68:1                | Text auf Primary-Hover            |
+| `#FFFFFF` / `#1D4162`     | 10.58:1               | Text auf Primary-Pressed          |
+| `#25313C` / `#FFFFFF`     | 13.26:1               | Haupttext auf Arbeitsfläche       |
+| `#5B6673` / `#F3F5F7`     | 5.34:1                | Sekundärtext auf Funktionsfläche  |
+| `#2B5C8A` / `#EAF1F8`     | 6.14:1                | Auswahltext und Auswahlkontur     |
+| `#7C8793` / `#FFFFFF`     | 3.65:1                | Controlkontur auf Weiss           |
+| `#7C8793` / `#F3F5F7`     | 3.34:1                | Controlkontur auf Funktionsfläche |
+| `#0B5FFF` / `#FFFFFF`     | 5.12:1                | Fokusring auf Weiss               |
+| `#626D79` / `#ECEFF2`     | 4.56:1                | Text deaktivierter Controls       |
+| `#245C83` / `#ECF3F9`     | 6.39:1                | Information                       |
+| `#276749` / `#EBF5EF`     | 6.03:1                | Erfolg                            |
+| `#8A5700` / `#FFF4DB`     | 5.57:1                | Warnung                           |
+| `#B42318` / `#FEF3F2`     | 6.04:1                | Fehler                            |
+| `#FFFFFF` / `#B42318`     | 6.57:1                | Text auf gefülltem Danger-Button  |
 
 Alle aufgeführten aktiven Textpaare liegen über 4.5:1; die geprüften
 Controlkonturen liegen über 3:1. Die normale blaue Primärfarbe liegt mit Weiss

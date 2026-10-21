@@ -1,27 +1,54 @@
 :root {
   color-scheme: light;
-  --dw-font-sans: 'Frutiger', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --dw-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --dw-color-surface: #ffffff;
-  --dw-color-subtle: #f4f7f9;
-  --dw-color-badge: #eef2f5;
-  --dw-color-hover: #e1e8ef;
-  --dw-color-selected: #fdebec;
-  --dw-color-text: #2f4858;
-  --dw-color-muted: #536779;
-  --dw-color-accent: #d20a11;
-  --dw-color-accent-hover: #b80f17;
-  --dw-color-line: #d9e0e6;
-  --dw-color-input-border: #7c8b97;
-  --dw-color-focus: #0b5fff;
-  --dw-color-info: #2d5f87;
-  --dw-color-info-bg: #e8f2fb;
-  --dw-color-success: #2f7d4e;
-  --dw-color-success-bg: #e7f6ec;
-  --dw-color-warning: #8a5a00;
-  --dw-color-warning-bg: #fff3e0;
-  --dw-color-danger: #b80f17;
-  --dw-color-danger-bg: #fdebec;
+
+  --dw-font-ui:
+    'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --dw-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --dw-weight-regular: 400;
+  --dw-weight-medium: 500;
+  --dw-weight-semibold: 600;
+  --dw-weight-strong: 700;
+
+  --dw-surface: #ffffff;
+  --dw-surface-subtle: #f3f5f7;
+  --dw-surface-neutral: #eef1f4;
+  --dw-surface-hover: #f3f5f7;
+  --dw-surface-pressed: #e7ebef;
+  --dw-text: #25313c;
+  --dw-text-secondary: #5b6673;
+  --dw-border-subtle: #d9dfe5;
+  --dw-border-control: #7c8793;
+  --dw-border-control-hover: #5b6673;
+  --dw-disabled-bg: #eceff2;
+  --dw-disabled-text: #626d79;
+
+  --dw-action-bg: #2b5c8a;
+  --dw-action-bg-hover: #234e75;
+  --dw-action-bg-pressed: #1d4162;
+  --dw-action-fg: #ffffff;
+  --dw-link: #2b5c8a;
+  --dw-link-hover: #234e75;
+  --dw-selection-bg: #eaf1f8;
+  --dw-selection-fg: #2b5c8a;
+  --dw-selection-border: #2b5c8a;
+  --dw-focus-ring: #0b5fff;
+
+  --dw-info-fg: #245c83;
+  --dw-info-bg: #ecf3f9;
+  --dw-success-fg: #276749;
+  --dw-success-bg: #ebf5ef;
+  --dw-warning-fg: #8a5700;
+  --dw-warning-bg: #fff4db;
+  --dw-error-fg: #b42318;
+  --dw-error-bg: #fef3f2;
+  --dw-danger-bg: #b42318;
+  --dw-danger-bg-hover: #912018;
+  --dw-danger-bg-pressed: #751a14;
+  --dw-danger-fg: #ffffff;
+  --dw-danger-text: #b42318;
+  --dw-danger-subtle-hover: #fef3f2;
+  --dw-danger-subtle-pressed: #fee4e2;
+
   --dw-space-1: 4px;
   --dw-space-2: 8px;
   --dw-space-3: 12px;
@@ -32,13 +59,25 @@
   --dw-space-10: 40px;
   --dw-space-12: 48px;
   --dw-space-16: 64px;
+
+  --dw-radius-control: 4px;
+  --dw-border-width: 1px;
+  --dw-selection-width: 2px;
+  --dw-control-min-height: 40px;
+  --dw-control-compact-min-height: 32px;
+  --dw-touch-target-min-size: 44px;
+  --dw-focus-width: 3px;
+  --dw-focus-offset: 2px;
+
   --dw-gap-actions: var(--dw-space-2);
   --dw-gap-groups: var(--dw-space-4);
-  --dw-radius: 4px;
-  --dw-control-height: 40px;
-  --dw-control-font: 16px;
+  --dw-radius: var(--dw-radius-control);
+  --dw-control-height: var(--dw-control-min-height);
+  --dw-control-font: 1rem;
   --dw-control-padding: 16px;
   --dw-control-padding-y: 6px;
-  --dw-shadow-overlay: 0 8px 24px #2f485826;
-  --dw-backdrop: #2f485866;
+  --dw-tooltip-bg: var(--dw-text);
+  --dw-tooltip-fg: var(--dw-surface);
+  --dw-shadow-overlay: 0 8px 24px #25313c26;
+  --dw-backdrop: #25313c66;
 }

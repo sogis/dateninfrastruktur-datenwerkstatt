@@ -72,7 +72,11 @@ export function PreviewTable({preview}: {preview: Pick<ImportPreview, 'schema' |
         <thead>
           <tr>
             {preview.schema.columns.map((c) => (
-              <th key={c.name} className={numericColumn(c.logicalType) ? 'numeric' : undefined}>
+              <th
+                scope="col"
+                key={c.name}
+                className={numericColumn(c.logicalType) ? 'numeric' : undefined}
+              >
                 {c.name}
                 <small>{c.logicalType}</small>
               </th>
@@ -125,10 +129,26 @@ export function DataSection() {
   const [removing, setRemoving] = useState<Dataset>();
   const [preview, setPreview] = useState<ImportPreview>();
   const [busy, setBusy] = useState(false);
+  const [busyAction, setBusyAction] = useState('');
+  const pending = useRef(false);
   const [inventory, setInventory] = useState<{missing: string[]; orphans: string[]}>();
   const [cleanupMessage, setCleanupMessage] = useState('');
   const refresh = () =>
     session.getDatasets().inventory(new AbortController().signal).then(setInventory);
+  const act = (action: string, work: () => Promise<unknown>) => {
+    if (pending.current) return;
+    pending.current = true;
+    setBusyAction(action);
+    setBusy(true);
+    void Promise.resolve()
+      .then(work)
+      .catch(report)
+      .finally(() => {
+        pending.current = false;
+        setBusy(false);
+        setBusyAction('');
+      });
+  };
   useEffect(() => {
     const control = new AbortController();
     void session
@@ -184,34 +204,36 @@ export function DataSection() {
                 <ActionGroup>
                   <Button
                     disabled={busy}
+                    busy={busyAction === `inspect-${dataset.id}`}
+                    busyLabel="Daten werden geladen …"
                     onClick={() => {
-                      setBusy(true);
-                      void session
-                        .getDatasets()
-                        .inspect(dataset.id, new AbortController().signal)
-                        .then(setPreview)
-                        .catch(report)
-                        .finally(() => setBusy(false));
+                      act(`inspect-${dataset.id}`, () =>
+                        session
+                          .getDatasets()
+                          .inspect(dataset.id, new AbortController().signal)
+                          .then(setPreview),
+                      );
                     }}
                   >
                     Daten ansehen
                   </Button>
                   <Button
                     disabled={busy}
+                    busy={busyAction === `export-${dataset.id}`}
+                    busyLabel="Parquet wird exportiert …"
                     onClick={() => {
-                      setBusy(true);
-                      void session
-                        .getDatasets()
-                        .export(dataset.id, new AbortController().signal)
-                        .then((data) =>
-                          downloadStream(
-                            data,
-                            `${dataset.sqlName}.parquet`,
-                            'application/vnd.apache.parquet',
+                      act(`export-${dataset.id}`, () =>
+                        session
+                          .getDatasets()
+                          .export(dataset.id, new AbortController().signal)
+                          .then((data) =>
+                            downloadStream(
+                              data,
+                              `${dataset.sqlName}.parquet`,
+                              'application/vnd.apache.parquet',
+                            ),
                           ),
-                        )
-                        .catch(report)
-                        .finally(() => setBusy(false));
+                      );
                     }}
                   >
                     Parquet exportieren
@@ -219,13 +241,13 @@ export function DataSection() {
                   {version.backing.kind === 'public-parquet' && (
                     <Button
                       disabled={session.readOnly || busy}
+                      busy={busyAction === `keep-${dataset.id}`}
+                      busyLabel="Daten werden gesichert …"
                       onClick={() => {
-                        setBusy(true);
-                        void session
-                          .getDatasets()
-                          .keepLocal(dataset.id, new AbortController().signal)
-                          .catch(report)
-                          .finally(() => setBusy(false));
+                        if (session.readOnly) return;
+                        act(`keep-${dataset.id}`, () =>
+                          session.getDatasets().keepLocal(dataset.id, new AbortController().signal),
+                        );
                       }}
                     >
                       Lokal sichern
@@ -246,7 +268,8 @@ export function DataSection() {
                     Daten ersetzen
                   </Button>
                   <Button
-                    variant="danger"
+                    variant="secondary"
+                    tone="danger"
                     disabled={session.readOnly || busy}
                     onClick={() => setRemoving(dataset)}
                   >
@@ -294,17 +317,19 @@ export function DataSection() {
           {inventory.orphans.length} nicht referenzierte Dateien.{' '}
           <Button
             disabled={session.readOnly || busy}
+            busy={busyAction === 'cleanup'}
+            busyLabel="Dateien werden bereinigt …"
             onClick={() => {
-              setBusy(true);
-              void session
-                .getDatasets()
-                .cleanOrphans(new AbortController().signal)
-                .then(async (count) => {
-                  setCleanupMessage(`${count} verwaiste Dateien entfernt.`);
-                  await refresh();
-                })
-                .catch(report)
-                .finally(() => setBusy(false));
+              if (session.readOnly) return;
+              act('cleanup', () =>
+                session
+                  .getDatasets()
+                  .cleanOrphans(new AbortController().signal)
+                  .then(async (count) => {
+                    setCleanupMessage(`${count} verwaiste Dateien entfernt.`);
+                    await refresh();
+                  }),
+              );
             }}
           >
             Verwaiste Dateien bereinigen
@@ -333,7 +358,8 @@ export function DataSection() {
             <>
               <ActionGroup>
                 <Button
-                  variant="danger"
+                  variant="primary"
+                  tone="danger"
                   onClick={() => {
                     session.removeDataset(removing.id);
                     setRemoving(undefined);
@@ -397,6 +423,8 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
   const [preview, setPreview] = useState<ImportPreview>();
   const [dirty, setDirty] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [busyAction, setBusyAction] = useState<'preview' | 'confirm'>();
+  const pending = useRef(false);
   const [error, setError] = useState('');
   const occupied = Object.values(session.document.datasets)
     .filter((d) => d.id !== replace)
@@ -461,6 +489,7 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
     setDirty(true);
   };
   const load = () => {
+    if (pending.current || session.readOnly) return;
     if (
       !form.validate([
         'file',
@@ -477,6 +506,8 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
     )
       return;
     controller.current = new AbortController();
+    pending.current = true;
+    setBusyAction('preview');
     setBusy(true);
     setError('');
     const prior = key.current;
@@ -496,12 +527,18 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
       .catch((failure: unknown) =>
         setError(failure instanceof Error ? failure.message : String(failure)),
       )
-      .finally(() => setBusy(false));
+      .finally(() => {
+        pending.current = false;
+        setBusyAction(undefined);
+        setBusy(false);
+      });
   };
   const confirm = () => {
-    if (!preview || dirty) return;
+    if (pending.current || session.readOnly || !preview || dirty) return;
     if (!form.validate(['name', 'sqlName'])) return;
     controller.current = new AbortController();
+    pending.current = true;
+    setBusyAction('confirm');
     setBusy(true);
     setError('');
     void service
@@ -514,7 +551,11 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
       .catch((failure: unknown) =>
         setError(failure instanceof Error ? failure.message : String(failure)),
       )
-      .finally(() => setBusy(false));
+      .finally(() => {
+        pending.current = false;
+        setBusyAction(undefined);
+        setBusy(false);
+      });
   };
   return (
     <Modal
@@ -529,7 +570,13 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
         <>
           <ActionGroup>
             <ActionGroup>
-              <Button variant="primary" disabled={!preview || dirty || busy} onClick={confirm}>
+              <Button
+                variant="primary"
+                disabled={!preview || dirty || busy}
+                busy={busyAction === 'confirm'}
+                busyLabel="Datei wird importiert …"
+                onClick={confirm}
+              >
                 Import bestätigen
               </Button>
               <Button
@@ -713,7 +760,12 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
           )}
         </fieldset>
       )}
-      <Button disabled={busy} onClick={load}>
+      <Button
+        disabled={busy}
+        busy={busyAction === 'preview'}
+        busyLabel="Vorschau wird geladen …"
+        onClick={load}
+      >
         Vorschau laden
       </Button>
       {preview && (

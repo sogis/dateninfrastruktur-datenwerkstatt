@@ -16,18 +16,23 @@ import {
 } from 'react';
 import {Icon, type IconName} from './Icon';
 export type ControlSize = 'default' | 'compact';
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
+export type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
+export type ButtonTone = 'default' | 'danger';
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   ref?: Ref<HTMLButtonElement>;
   variant?: ButtonVariant;
+  tone?: ButtonTone;
   size?: ControlSize;
   busy?: boolean;
+  busyLabel?: string;
   icon?: IconName | undefined;
 }
 export function Button({
   variant = 'secondary',
+  tone = 'default',
   size,
   busy = false,
+  busyLabel = 'Wird verarbeitet …',
   icon,
   className = '',
   children,
@@ -41,68 +46,88 @@ export function Button({
       type={type}
       disabled={disabled || busy}
       aria-busy={busy || undefined}
-      className={`dw-button dw-button--${variant} ${size ? `dw-size-${size}` : ''} ${className}`}
+      className={`dw-button dw-button--${variant} dw-button--tone-${tone} ${size ? `dw-size-${size}` : ''} ${className}`}
     >
       {busy ? (
         <Icon name="arrow-repeat" className="dw-spin" size={16} />
       ) : icon ? (
         <Icon name={icon} size={16} />
       ) : null}
-      {children}
+      {busy ? busyLabel : children}
     </button>
   );
 }
 type TooltipState =
   | {phase: 'closed' | 'waiting' | 'measuring'}
-  | {phase: 'open'; left: number; top: number};
+  | {phase: 'open'; left: number; top: number; placement: 'right' | 'left'};
+type TooltipTrigger = Pick<
+  HTMLAttributes<HTMLElement>,
+  'aria-describedby' | 'onPointerEnter' | 'onPointerLeave' | 'onFocus' | 'onBlur'
+>;
 // UI-only ownership, scoped to each document; also owns pending hover timers.
 const activeTooltips = new WeakMap<Document, () => void>();
-export function Tooltip({
-  text,
-  children,
-}: {
-  text: string;
-  children: ReactElement<{'aria-describedby'?: string | undefined}>;
-}) {
+export function Tooltip({text, children}: {text: string; children: ReactElement<TooltipTrigger>}) {
   const id = useId();
   const host = useRef<HTMLSpanElement>(null);
   const tooltip = useRef<HTMLSpanElement>(null);
   const ownerDocument = useRef<Document | null>(null);
-  const timer = useRef<number | null>(null);
+  const showTimer = useRef<number | null>(null);
+  const closeTimer = useRef<number | null>(null);
   const generation = useRef(0);
-  const source = useRef<'hover' | 'keyboard' | null>(null);
+  const showing = useRef(false);
+  const dismissed = useRef(false);
+  const conditions = useRef({triggerHover: false, tooltipHover: false, keyboardFocus: false});
   const [state, setState] = useState<TooltipState>({phase: 'closed'});
   const cancelPending = useCallback(() => {
     generation.current++;
-    if (timer.current !== null) {
-      ownerDocument.current?.defaultView?.clearTimeout(timer.current);
-      timer.current = null;
+    const win = ownerDocument.current?.defaultView;
+    if (showTimer.current !== null) {
+      win?.clearTimeout(showTimer.current);
+      showTimer.current = null;
+    }
+    if (closeTimer.current !== null) {
+      win?.clearTimeout(closeTimer.current);
+      closeTimer.current = null;
     }
   }, []);
   const close = useCallback(() => {
     cancelPending();
-    source.current = null;
+    showing.current = false;
+    dismissed.current = true;
+    conditions.current.tooltipHover = false;
     const doc = ownerDocument.current;
     if (doc && activeTooltips.get(doc) === close) activeTooltips.delete(doc);
     setState({phase: 'closed'});
   }, [cancelPending]);
   const reveal = useCallback(
     (delay: number) => {
-      close();
+      if (dismissed.current) return;
       const doc = host.current?.ownerDocument;
       const win = doc?.defaultView;
       if (!doc || !win) return;
-      activeTooltips.get(doc)?.();
-      activeTooltips.set(doc, close);
+      if (activeTooltips.get(doc) !== close) {
+        activeTooltips.get(doc)?.();
+        activeTooltips.set(doc, close);
+      }
       ownerDocument.current = doc;
-      source.current = delay === 0 ? 'keyboard' : 'hover';
-      const ticket = generation.current;
+      if (closeTimer.current !== null) {
+        win.clearTimeout(closeTimer.current);
+        closeTimer.current = null;
+      }
+      if (showing.current && showTimer.current === null) return;
+      if (showTimer.current !== null) {
+        if (delay > 0) return;
+        win.clearTimeout(showTimer.current);
+        showTimer.current = null;
+      }
+      showing.current = true;
+      const ticket = ++generation.current;
       if (delay === 0) {
         setState({phase: 'measuring'});
       } else {
         setState({phase: 'waiting'});
-        timer.current = win.setTimeout(() => {
-          timer.current = null;
+        showTimer.current = win.setTimeout(() => {
+          showTimer.current = null;
           if (ticket === generation.current && activeTooltips.get(doc) === close)
             setState({phase: 'measuring'});
         }, delay);
@@ -110,6 +135,24 @@ export function Tooltip({
     },
     [close],
   );
+  const settle = useCallback(() => {
+    const win = ownerDocument.current?.defaultView;
+    if (closeTimer.current !== null) {
+      win?.clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+    if (Object.values(conditions.current).some(Boolean) || !showing.current) return;
+    if (showTimer.current !== null) {
+      close();
+      return;
+    }
+    // The transparent hit area bridges the 8px gap; grace also allows diagonal movement.
+    if (win)
+      closeTimer.current = win.setTimeout(() => {
+        closeTimer.current = null;
+        if (!Object.values(conditions.current).some(Boolean)) close();
+      }, 120);
+  }, [close]);
   useLayoutEffect(() => {
     if (state.phase !== 'measuring' && state.phase !== 'open') return;
     const wrapper = host.current;
@@ -135,16 +178,20 @@ export function Tooltip({
       }
       const {width, height} = tip.getBoundingClientRect();
       const right = rect.right + 8;
-      const preferredLeft = right + width <= win.innerWidth - 8 ? right : rect.left - width - 8;
+      const placement = right + width <= win.innerWidth - 8 ? 'right' : 'left';
+      const preferredLeft = placement === 'right' ? right : rect.left - width - 8;
       const left = Math.max(8, Math.min(preferredLeft, win.innerWidth - width - 8));
       const top = Math.max(
         8,
         Math.min(rect.top + (rect.height - height) / 2, win.innerHeight - height - 8),
       );
       setState((current) =>
-        current.phase === 'open' && current.left === left && current.top === top
+        current.phase === 'open' &&
+        current.left === left &&
+        current.top === top &&
+        current.placement === placement
           ? current
-          : {phase: 'open', left, top},
+          : {phase: 'open', left, top, placement},
       );
     };
     measure();
@@ -192,34 +239,51 @@ export function Tooltip({
     [cancelPending, close],
   );
   return (
-    <span
-      ref={host}
-      className="dw-tooltip-host"
-      onPointerEnter={(e) => {
-        if (e.pointerType !== 'touch' && source.current !== 'keyboard') reveal(250);
-      }}
-      onPointerLeave={() => {
-        if (source.current !== 'keyboard') close();
-      }}
-      onPointerDown={close}
-      onClick={close}
-      onFocus={(e) => {
-        if (e.target.matches(':focus-visible')) {
-          reveal(0);
-        }
-      }}
-      onBlur={() => {
-        close();
-      }}
-    >
+    <span ref={host} className="dw-tooltip-host" onPointerDown={close} onClick={close}>
       {cloneElement(children, {
         'aria-describedby': [children.props['aria-describedby'], id].filter(Boolean).join(' '),
+        onPointerEnter: (event) => {
+          children.props.onPointerEnter?.(event);
+          if (event.pointerType === 'touch') return;
+          conditions.current.triggerHover = true;
+          dismissed.current = false;
+          reveal(conditions.current.keyboardFocus ? 0 : 250);
+        },
+        onPointerLeave: (event) => {
+          children.props.onPointerLeave?.(event);
+          if (event.pointerType === 'touch') return;
+          conditions.current.triggerHover = false;
+          settle();
+        },
+        onFocus: (event) => {
+          children.props.onFocus?.(event);
+          if (!event.currentTarget.matches(':focus-visible')) return;
+          conditions.current.keyboardFocus = true;
+          dismissed.current = false;
+          reveal(0);
+        },
+        onBlur: (event) => {
+          children.props.onBlur?.(event);
+          conditions.current.keyboardFocus = false;
+          settle();
+        },
       })}
       <span
         ref={tooltip}
         id={id}
         role="tooltip"
         className="dw-tooltip"
+        data-placement={state.phase === 'open' ? state.placement : undefined}
+        onPointerEnter={(event) => {
+          if (event.pointerType === 'touch') return;
+          conditions.current.tooltipHover = true;
+          settle();
+        }}
+        onPointerLeave={(event) => {
+          if (event.pointerType === 'touch') return;
+          conditions.current.tooltipHover = false;
+          settle();
+        }}
         hidden={state.phase === 'closed' || state.phase === 'waiting'}
         style={{
           left: state.phase === 'open' ? state.left : 0,

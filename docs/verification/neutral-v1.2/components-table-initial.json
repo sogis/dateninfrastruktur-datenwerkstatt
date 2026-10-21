@@ -1,0 +1,202 @@
+{
+  "config": {
+    "argv": [
+      "/Users/stefan/Library/Application Support/fnm/node-versions/v22.23.1/installation/bin/node",
+      "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/node_modules/.bin/playwright",
+      "test",
+      "tests/e2e/design-system.spec.ts",
+      "--project=chromium",
+      "--grep",
+      "UI components:",
+      "--reporter=list,json",
+      "--output=test-results/neutral-v1.2-components-final"
+    ],
+    "configFile": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/playwright.config.ts",
+    "rootDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/neutral-v1.2-components-final",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests",
+        "testIgnore": [
+          "**/deployment/**",
+          "**/neutral/**"
+        ],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/neutral-v1.2-components-final",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests",
+        "testIgnore": [
+          "**/deployment/**",
+          "**/neutral/**"
+        ],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/neutral-v1.2-components-final",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests",
+        "testIgnore": [
+          "**/deployment/**",
+          "**/neutral/**"
+        ],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "e2e/design-system.spec.ts",
+      "file": "e2e/design-system.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 11544,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCSS\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.dw-table th.numeric')\nExpected: \u001b[32m\"end\"\u001b[39m\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toHaveCSS\" locator('.dw-table th.numeric') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.dw-table th.numeric')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCSS\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.dw-table th.numeric')\nExpected: \u001b[32m\"end\"\u001b[39m\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toHaveCSS\" locator('.dw-table th.numeric') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.dw-table th.numeric')\u001b[22m\n\n    at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:131:54",
+                    "location": {
+                      "file": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts",
+                      "column": 54,
+                      "line": 131
+                    },
+                    "snippet": "  129 |   ).toBe('Source Sans 3');\n  130 |   await expect(page.locator('h1')).toHaveCSS('font-weight', '600');\n> 131 |   await expect(page.locator('.dw-table th.numeric')).toHaveCSS('text-align', 'end');\n      |                                                      ^\n  132 |   await expect(page.locator('.dw-table td.numeric')).toHaveCSS('text-align', 'end');\n  133 |   await expect(page.locator('label').filter({hasText: /^Projektname$/})).toHaveCSS(\n  134 |     'font-weight',"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts",
+                        "column": 54,
+                        "line": 131
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCSS\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.dw-table th.numeric')\nExpected: \u001b[32m\"end\"\u001b[39m\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toHaveCSS\" locator('.dw-table th.numeric') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.dw-table th.numeric')\u001b[22m\n\n\n  129 |   ).toBe('Source Sans 3');\n  130 |   await expect(page.locator('h1')).toHaveCSS('font-weight', '600');\n> 131 |   await expect(page.locator('.dw-table th.numeric')).toHaveCSS('text-align', 'end');\n      |                                                      ^\n  132 |   await expect(page.locator('.dw-table td.numeric')).toHaveCSS('text-align', 'end');\n  133 |   await expect(page.locator('label').filter({hasText: /^Projektname$/})).toHaveCSS(\n  134 |     'font-weight',\n    at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:131:54"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T18:31:30.277Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/neutral-v1.2-components-final/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/neutral-v1.2-components-final/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/neutral-v1.2-components-final/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts",
+                    "column": 54,
+                    "line": 131
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c374ec8b109679ad246c-f337c2f518d1eea0ca77",
+          "file": "e2e/design-system.spec.ts",
+          "line": 43,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-21T18:31:29.823Z",
+    "duration": 12130.693,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

@@ -1,0 +1,56 @@
+[WebServer] (node:61516) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:61519) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › tests/e2e/design-system.spec.ts:43:1 › UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard (4.3s)
+(node:61547) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [chromium] › tests/e2e/design-system.spec.ts:320:1 › UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmount (1.1s)
+  ✓  3 [chromium] › tests/e2e/neutral-ui.spec.ts:21:1 › Neutral UI: real project navigation, aligned tables, optional fields and error layouts (3.1s)
+  ✓  4 [chromium] › tests/e2e/p7-ui.spec.ts:16:1 › P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layout reset and reload (16.4s)
+
+
+  1) [chromium] › tests/e2e/design-system.spec.ts:43:1 › UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByLabel('Fontstatus Source Sans 3 400')
+    Expected substring: "Systemfont-Fallback"
+    Error: strict mode violation: getByLabel('Fontstatus Source Sans 3 400') resolved to 2 elements:
+        1) <output aria-label="Fontstatus Source Sans 3 400">Source Sans 3 400: Systemfont-Fallback</output> aka getByRole('status', { name: 'Fontstatus Source Sans 3 400', exact: true })
+        2) <output aria-label="Fontstatus Source Sans 3 400 italic">…</output> aka getByRole('status', { name: 'Fontstatus Source Sans 3 400 italic' })
+
+    Call log:
+      - Expect "toContainText" getByLabel('Fontstatus Source Sans 3 400') with timeout 10000ms
+      - waiting for getByLabel('Fontstatus Source Sans 3 400')
+
+
+      290 |     'JetBrains Mono 400',
+      291 |   ])
+    > 292 |     await expect(page.getByLabel(`Fontstatus ${label}`)).toContainText('Systemfont-Fallback');
+          |                                                          ^
+      293 |   await expect(page.getByRole('button', {name: 'primary default', exact: true})).toBeEnabled();
+      294 |   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(720);
+      295 |   const touch = await browser.newContext({hasTouch: true, viewport: {width: 720, height: 450}});
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:292:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/neutral-v1.2/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/neutral-v1.2/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/neutral-v1.2/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/neutral-v1.2/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/design-system.spec.ts:43:1 › UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard
+  3 passed (25.6s)

@@ -110,7 +110,7 @@ test('P7 AT-067: invalid operator config fails closed before any runtime', async
   expect(workers).toEqual([]);
 });
 
-test('UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices under each deployment base', async ({
+test('UI assets: local SVGs, Source Sans 3, JetBrains Mono, fallback and notices under each deployment base', async ({
   page,
   request,
   baseURL,
@@ -129,7 +129,10 @@ test('UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices unde
   await expect(page.locator('.sidebar svg')).toHaveCount(7);
   await page.getByRole('button', {name: 'SQL', exact: true}).click();
   await expect(page.locator('.monaco-editor')).toBeVisible();
-  await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(async () => {
+    await document.fonts.load('italic 400 16px "Source Sans 3"');
+    await document.fonts.ready;
+  });
   const loaded = await page.evaluate(() => ({
     font:
       [...document.fonts].find((font) => font.family.includes('JetBrains Mono'))?.status ===
@@ -137,16 +140,16 @@ test('UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices unde
     urls: performance
       .getEntriesByType('resource')
       .map((r) => r.name)
-      .filter((n) => /JetBrainsMono|Frutiger/.test(n)),
-    frutiger: [...document.fonts]
-      .filter((font) => font.family.includes('Frutiger'))
+      .filter((n) => /JetBrainsMono|SourceSans3/.test(n)),
+    sourceSans: [...document.fonts]
+      .filter((font) => font.family.includes('Source Sans 3'))
       .map((font) => ({weight: font.weight, status: font.status}))
       .sort((a, b) => a.weight.localeCompare(b.weight)),
   }));
   expect(loaded.font).toBe(true);
-  expect(loaded.frutiger).toEqual([
-    {weight: '400', status: 'loaded'},
-    {weight: '700', status: 'loaded'},
+  expect(loaded.sourceSans).toEqual([
+    {weight: '200 900', status: 'loaded'},
+    {weight: '200 900', status: 'loaded'},
   ]);
   expect(loaded.urls.length).toBeGreaterThan(0);
   for (const url of loaded.urls) {
@@ -159,7 +162,7 @@ test('UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices unde
     'licenses/ui-assets.json',
     'licenses/original-notices/bootstrap-icons-1.13.1.txt',
     'licenses/original-notices/jetbrains-mono-2.304-OFL.txt',
-    'licenses/original-notices/frutiger-original-notices.txt',
+    'licenses/original-notices/source-sans-3.052R-OFL.txt',
   ])
     expect((await request.get(`${baseURL}${path}`)).status()).toBe(200);
   // Persist the newly created analysis before intentionally reloading it.
@@ -180,11 +183,11 @@ test('UI assets: local SVGs, Frutiger, JetBrains Mono, fallback and notices unde
     ),
   ).toBe('error');
   expect(
-    await page.evaluate(() =>
-      [...document.fonts]
-        .filter((font) => font.family.includes('Frutiger'))
-        .map((font) => font.status),
-    ),
+    await page.evaluate(async () => {
+      const fonts = [...document.fonts].filter((font) => font.family.includes('Source Sans 3'));
+      await Promise.all(fonts.map((font) => font.load().catch(() => undefined)));
+      return fonts.map((font) => font.status);
+    }),
   ).toEqual(['error', 'error']);
   await nav.getByRole('link', {name: 'Einstellungen', exact: true}).click();
   await expect(page).toHaveURL(`${baseURL}settings`);

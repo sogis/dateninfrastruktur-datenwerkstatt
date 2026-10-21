@@ -1,0 +1,80 @@
+[
+  {
+    "foreground": "--dw-text",
+    "background": "--dw-surface",
+    "minimum": 4.5,
+    "ratio": 13.263965620463937
+  },
+  {
+    "foreground": "--dw-text-secondary",
+    "background": "--dw-surface-subtle",
+    "minimum": 4.5,
+    "ratio": 5.347984485446043
+  },
+  {
+    "foreground": "--dw-action-fg",
+    "background": "--dw-action-bg",
+    "minimum": 4.5,
+    "ratio": 6.998664789165496
+  },
+  {
+    "foreground": "--dw-selection-fg",
+    "background": "--dw-selection-bg",
+    "minimum": 4.5,
+    "ratio": 6.144183136078084
+  },
+  {
+    "foreground": "--dw-disabled-text",
+    "background": "--dw-disabled-bg",
+    "minimum": 4.5,
+    "ratio": 4.568380786698713
+  },
+  {
+    "foreground": "--dw-info-fg",
+    "background": "--dw-info-bg",
+    "minimum": 4.5,
+    "ratio": 6.39305016729866
+  },
+  {
+    "foreground": "--dw-success-fg",
+    "background": "--dw-success-bg",
+    "minimum": 4.5,
+    "ratio": 6.033418522985432
+  },
+  {
+    "foreground": "--dw-warning-fg",
+    "background": "--dw-warning-bg",
+    "minimum": 4.5,
+    "ratio": 5.579426108188577
+  },
+  {
+    "foreground": "--dw-error-fg",
+    "background": "--dw-error-bg",
+    "minimum": 4.5,
+    "ratio": 6.04726982551666
+  },
+  {
+    "foreground": "--dw-danger-fg",
+    "background": "--dw-danger-bg",
+    "minimum": 4.5,
+    "ratio": 6.57428861557707
+  },
+  {
+    "foreground": "--dw-border-control",
+    "background": "--dw-surface",
+    "minimum": 3,
+    "ratio": 3.656037750303666
+  },
+  {
+    "foreground": "--dw-border-control",
+    "background": "--dw-surface-subtle",
+    "minimum": 3,
+    "ratio": 3.3452711440754843
+  },
+  {
+    "foreground": "--dw-focus-ring",
+    "background": "--dw-surface",
+    "minimum": 3,
+    "ratio": 5.128063549459489
+  }
+]

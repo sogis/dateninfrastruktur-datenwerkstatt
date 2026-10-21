@@ -1,11 +1,4 @@
-import {
-  Button,
-  IconButton,
-  Input,
-  Select,
-  FormField,
-  Notice,
-} from '../ui/Controls';
+import {Button, IconButton, Input, Select, FormField, Notice} from '../ui/Controls';
 import {NavigationItem} from '../ui/NavigationItem';
 import {StorageSettings} from '../features/workspaces/StorageSettings';
 import {WorkspaceViewController} from '../state/workspaceView';
@@ -25,7 +18,8 @@ import {
   useRouter,
 } from '@tanstack/react-router';
 import {useStore} from 'zustand';
-import logo from '../assets/kanton-solothurn.svg';
+import {Brand} from '../ui/Brand';
+import {brand} from './brand';
 import {services} from './services';
 import {appStore} from '../state/appStore';
 import {createWorkspaceStore} from '../state/workspaceStore';
@@ -148,9 +142,8 @@ function Shell() {
   return (
     <>
       <header className="app-header">
-        <img src={logo} alt="Kanton Solothurn" />
         <Link to="/projects" className="brand">
-          Datenwerkstatt
+          <Brand config={brand} />
         </Link>
         {services.mode === 'temporary' && (
           <span className="build-status">Nur diese Sitzung · Verlust bei Reload</span>
@@ -162,7 +155,7 @@ function Shell() {
           <IconButton
             icon="x-lg"
             label="Hinweis schliessen"
-            variant="ghost"
+            variant="tertiary"
             onClick={() => appStore.setState({error: null})}
           />
         </div>

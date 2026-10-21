@@ -309,9 +309,9 @@ export function RunDetails({
           <table>
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Typ</th>
-                <th>Wert</th>
+                <th scope="col">Name</th>
+                <th scope="col">Typ</th>
+                <th scope="col">Wert</th>
               </tr>
             </thead>
             <tbody>

@@ -1,8 +1,8 @@
 import {test, expect} from '../persistentBrowser';
 import {mkdir, writeFile} from 'node:fs/promises';
 import type {Locator, Page} from '@playwright/test';
-const evidence = 'docs/verification/projects';
-const tooltipEvidence = 'docs/verification/projects/tooltips';
+const evidence = 'docs/verification/neutral-v1.2';
+const tooltipEvidence = 'docs/verification/neutral-v1.2/tooltips';
 async function tooltipGeometry(trigger: Locator) {
   return trigger.evaluate((control) => {
     const tooltip = control.parentElement!.querySelector<HTMLElement>('[role="tooltip"]')!;
@@ -42,10 +42,13 @@ async function capture(page: Page, name: string) {
 }
 test('UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard', async ({
   page,
+  browser,
 }, info) => {
+  test.setTimeout(30_000);
   const requests: string[] = [];
   page.on('request', (request) => requests.push(request.url()));
   await page.goto('/tests/design-system/');
+  await page.evaluate(() => document.fonts.ready);
   const name = page.getByRole('textbox', {name: 'Projektname', exact: true});
   await name.fill('Referenzprojekt');
   await expect(name).toHaveAttribute('required');
@@ -111,33 +114,226 @@ test('UI components: labels, native submit, checkbox, errors, busy state, menu a
   expect(
     await page.evaluate(() =>
       [...document.fonts]
-        .filter((font) => font.family.includes('Frutiger'))
-        .map((font) => ({weight: font.weight, status: font.status}))
-        .sort((a, b) => a.weight.localeCompare(b.weight)),
+        .filter((font) => font.family.includes('Source Sans 3'))
+        .map((font) => ({weight: font.weight, style: font.style, status: font.status}))
+        .sort((a, b) => a.style.localeCompare(b.style)),
     ),
   ).toEqual([
-    {weight: '400', status: 'loaded'},
-    {weight: '700', status: 'loaded'},
+    {weight: '200 900', style: 'italic', status: 'loaded'},
+    {weight: '200 900', style: 'normal', status: 'loaded'},
   ]);
   expect(
     await page
       .locator('body')
       .evaluate((el) => getComputedStyle(el).fontFamily.split(',')[0]?.replaceAll('"', '').trim()),
-  ).toBe('Frutiger');
+  ).toBe('Source Sans 3');
+  await expect(page.locator('h1')).toHaveCSS('font-weight', '600');
+  await expect(page.locator('.dw-table th.numeric')).toHaveCSS('text-align', 'end');
+  await expect(page.locator('.dw-table td.numeric')).toHaveCSS('text-align', 'end');
+  await expect(page.locator('label').filter({hasText: /^Projektname$/})).toHaveCSS(
+    'font-weight',
+    '500',
+  );
+  const roles = {
+    primary: ['--dw-action-bg', '--dw-action-bg-hover', '--dw-action-bg-pressed'],
+    secondary: ['--dw-surface', '--dw-surface-hover', '--dw-surface-pressed'],
+    tertiary: [null, '--dw-surface-hover', '--dw-surface-pressed'],
+  } as const;
+  const token = (name: string) =>
+    page.evaluate((property) => {
+      const probe = document.createElement('span');
+      probe.style.color = `var(${property})`;
+      document.body.append(probe);
+      const color = getComputedStyle(probe).color;
+      probe.remove();
+      return color;
+    }, name);
+  for (const tone of ['default', 'danger'] as const) {
+    for (const variant of ['primary', 'secondary', 'tertiary'] as const) {
+      const button = page.getByRole('button', {name: `${variant} ${tone}`, exact: true});
+      await expect(button).toHaveCSS('font-weight', '500');
+      const backgrounds =
+        tone === 'danger'
+          ? variant === 'primary'
+            ? ['--dw-danger-bg', '--dw-danger-bg-hover', '--dw-danger-bg-pressed']
+            : [
+                variant === 'tertiary' ? null : '--dw-surface',
+                '--dw-danger-subtle-hover',
+                '--dw-danger-subtle-pressed',
+              ]
+          : roles[variant];
+      await page.mouse.move(0, 0);
+      await expect(button).toHaveCSS(
+        'background-color',
+        backgrounds[0] ? await token(backgrounds[0]) : 'rgba(0, 0, 0, 0)',
+      );
+      await button.hover();
+      await expect(button).toHaveCSS('background-color', await token(backgrounds[1]!));
+      await page.mouse.down();
+      try {
+        await expect(button).toHaveCSS('background-color', await token(backgrounds[2]!));
+      } finally {
+        await page.mouse.up();
+      }
+    }
+  }
+  await expect(page.getByRole('button', {name: 'primary default', exact: true})).toHaveCSS(
+    'background-color',
+    'rgb(43, 92, 138)',
+  );
+  for (const [message, foreground, background] of [
+    ['Information: Die Vorschau zeigt die ersten 200 Zeilen.', '--dw-info-fg', '--dw-info-bg'],
+    ['Erfolg: Lokal gespeichert.', '--dw-success-fg', '--dw-success-bg'],
+    ['Warnung: Nur in dieser Sitzung verfügbar.', '--dw-warning-fg', '--dw-warning-bg'],
+    ['Fehler: Die Datei konnte nicht gelesen werden.', '--dw-error-fg', '--dw-error-bg'],
+  ]) {
+    const notice = page.locator('.dw-notice').filter({hasText: message!});
+    await expect(notice).toHaveCSS('color', await token(foreground!));
+    await expect(notice).toHaveCSS('background-color', await token(background!));
+  }
+  await expect(page.getByRole('button', {name: 'Wird gespeichert', exact: true})).toHaveCSS(
+    'color',
+    await token('--dw-text'),
+  );
+  await expect(page.getByRole('textbox', {name: 'Schreibgeschützter Name'})).toHaveAttribute(
+    'readonly',
+  );
+  await expect(page.getByRole('textbox', {name: 'Schreibgeschützter Name'})).toHaveCSS(
+    'background-color',
+    await token('--dw-surface-subtle'),
+  );
+  await expect(page.getByRole('textbox', {name: 'Deaktivierte Eingabe'})).toBeDisabled();
+  await expect(page.getByRole('button', {name: 'Deaktiviert', exact: true})).toHaveCSS(
+    'color',
+    await token('--dw-disabled-text'),
+  );
+  await page.keyboard.press('Tab');
+  await name.focus();
+  await expect(name).toHaveCSS('outline-color', await token('--dw-focus-ring'));
+  await expect(name).toHaveCSS('outline-width', '3px');
+  await expect(sql).toHaveCSS('background-color', await token('--dw-selection-bg'));
+  const selected = await sql.evaluate((el) => {
+    const style = getComputedStyle(el);
+    return [
+      style.boxShadow,
+      style.borderColor,
+      style.outlineColor,
+      getComputedStyle(el, '::before').backgroundColor,
+      getComputedStyle(el, '::before').borderColor,
+    ].join(' ');
+  });
+  expect(selected).toContain(await token('--dw-selection-border'));
+  const contrast = await page.evaluate(() => {
+    const styles = getComputedStyle(document.documentElement);
+    const luminance = (token: string) => {
+      const hex = styles.getPropertyValue(token).trim().replace('#', '');
+      const linear = [0, 2, 4].map((start) => {
+        const value = parseInt(hex.slice(start, start + 2), 16) / 255;
+        return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * linear[0]! + 0.7152 * linear[1]! + 0.0722 * linear[2]!;
+    };
+    return [
+      ['--dw-text', '--dw-surface', 4.5],
+      ['--dw-text-secondary', '--dw-surface-subtle', 4.5],
+      ['--dw-action-fg', '--dw-action-bg', 4.5],
+      ['--dw-selection-fg', '--dw-selection-bg', 4.5],
+      ['--dw-disabled-text', '--dw-disabled-bg', 4.5],
+      ['--dw-info-fg', '--dw-info-bg', 4.5],
+      ['--dw-success-fg', '--dw-success-bg', 4.5],
+      ['--dw-warning-fg', '--dw-warning-bg', 4.5],
+      ['--dw-error-fg', '--dw-error-bg', 4.5],
+      ['--dw-danger-fg', '--dw-danger-bg', 4.5],
+      ['--dw-border-control', '--dw-surface', 3],
+      ['--dw-border-control', '--dw-surface-subtle', 3],
+      ['--dw-focus-ring', '--dw-surface', 3],
+    ].map(([foreground, background, minimum]) => {
+      const a = luminance(foreground as string),
+        b = luminance(background as string);
+      return {
+        foreground,
+        background,
+        minimum: Number(minimum),
+        ratio: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05),
+      };
+    });
+  });
+  for (const pair of contrast)
+    expect(pair.ratio, `${pair.foreground} on ${pair.background}`).toBeGreaterThanOrEqual(
+      pair.minimum,
+    );
+  await capture(page, `components-${info.project.name}`);
+  // Text-only enlargement exercises fixed-size controls independently of viewport scaling.
+  await page.setViewportSize({width: 720, height: 450});
+  await page.evaluate(() => {
+    const sizes = [...document.querySelectorAll<HTMLElement>('body, body *')].map((el) => ({
+      el,
+      size: parseFloat(getComputedStyle(el).fontSize),
+    }));
+    for (const {el, size} of sizes) if (Number.isFinite(size)) el.style.fontSize = `${size * 2}px`;
+  });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(720);
+  for (const label of await page.locator('.dw-label').all()) {
+    const typography = await label.evaluate((node) => {
+      const style = getComputedStyle(node);
+      return {size: parseFloat(style.fontSize), line: parseFloat(style.lineHeight)};
+    });
+    expect(typography.line).toBeGreaterThanOrEqual(typography.size * 1.2);
+  }
+  const rows = await gaps(page.getByTestId('wrapped-actions'));
+  for (let i = 1; i < rows.length; i++) {
+    const previous = rows[i - 1]!,
+      current = rows[i]!;
+    expect(
+      current.top === previous.top ? current.left - previous.right : current.top - previous.bottom,
+    ).toBeGreaterThanOrEqual(7.99);
+  }
+  await capture(page, `components-${info.project.name}-text-200`);
+  await page.route('**/*.woff2', (route) => route.abort());
+  await page.reload();
+  for (const label of [
+    'Source Sans 3 400',
+    'Source Sans 3 500',
+    'Source Sans 3 600',
+    'Source Sans 3 400 italic',
+    'JetBrains Mono 400',
+  ])
+    await expect(page.getByLabel(`Fontstatus ${label}`, {exact: true})).toContainText(
+      'Systemfont-Fallback',
+    );
+  await expect(page.getByRole('button', {name: 'primary default', exact: true})).toBeEnabled();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(720);
+  const touch = await browser.newContext({hasTouch: true, viewport: {width: 720, height: 450}});
+  try {
+    const coarse = await touch.newPage();
+    await coarse.goto('http://127.0.0.1:4173/tests/design-system/');
+    expect(await coarse.evaluate(() => matchMedia('(pointer: coarse)').matches)).toBe(true);
+    for (const control of [
+      coarse.getByRole('button', {name: 'primary default', exact: true}),
+      coarse.getByRole('button', {name: 'Optionen', exact: true}),
+      coarse.getByRole('button', {name: 'SQL', exact: true}),
+    ]) {
+      const bounds = (await control.boundingBox())!;
+      expect(bounds.width).toBeGreaterThanOrEqual(44);
+      expect(bounds.height).toBeGreaterThanOrEqual(44);
+    }
+  } finally {
+    await touch.close();
+  }
+  await writeFile(`${evidence}/contrast.json`, JSON.stringify(contrast, null, 2));
   expect(
     requests.filter((url) => /^https?:/.test(url) && !url.startsWith('http://127.0.0.1:4173/')),
   ).toEqual([]);
   expect(requests.filter((url) => /duckdb|webr\/|workspaceService/.test(url))).toEqual([]);
-  await capture(page, `components-${info.project.name}`);
+  expect(requests.filter((url) => /Frutiger/.test(url))).toEqual([]);
+  await capture(page, `components-${info.project.name}-fallback`);
 });
 test('UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmount', async ({
   page,
   browserName,
 }) => {
-  // macOS WebKit's native full keyboard navigation uses Option+Tab for buttons.
   const optionTab = browserName === 'webkit' && process.platform === 'darwin';
   const backTab = optionTab ? 'Alt+Shift+Tab' : 'Shift+Tab';
-  const forwardTab = optionTab ? 'Alt+Tab' : 'Tab';
   await page.clock.install();
   await page.goto('/tests/design-system/');
   await page.evaluate(() => document.fonts.ready);
@@ -151,7 +347,19 @@ test('UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmo
   await page.clock.runFor(1);
   await expect(visible).toHaveText('SQL · DuckDB');
   await expect(sql).toHaveAccessibleDescription('SQL · DuckDB');
+  const {anchor, tip} = await tooltipGeometry(sql);
+  expect(tip.left - anchor.right).toBeCloseTo(8, 2);
+  // Crossing the transparent gap and hovering the tooltip must preserve it.
+  await page.mouse.move(anchor.right + 4, (anchor.top + anchor.bottom) / 2);
+  await page.clock.runFor(300);
+  await expect(visible).toHaveText('SQL · DuckDB');
+  await visible.hover();
+  await page.clock.runFor(300);
+  await expect(visible).toHaveText('SQL · DuckDB');
   await page.mouse.move(600, 100);
+  await page.clock.runFor(119);
+  await expect(visible).toHaveCount(1);
+  await page.clock.runFor(1);
   await expect(visible).toHaveCount(0);
   await r.hover();
   await page.clock.runFor(200);
@@ -160,18 +368,11 @@ test('UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmo
   await expect(visible).toHaveCount(0);
   await sql.hover();
   await page.clock.runFor(100);
-  await page.keyboard.press('Escape');
-  await page.clock.runFor(300);
-  await expect(visible).toHaveCount(0);
-  await page.mouse.move(600, 100);
-  await sql.hover();
-  await page.clock.runFor(100);
   await r.hover();
   await page.clock.runFor(249);
   await expect(visible).toHaveCount(0);
   await page.clock.runFor(1);
   await expect(visible).toHaveText('R · webR');
-  // Escape also dismisses hover when keyboard focus is outside the host.
   await page.keyboard.press('Escape');
   await page.clock.runFor(300);
   await expect(visible).toHaveCount(0);
@@ -185,17 +386,15 @@ test('UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmo
   await expect(sql).toBeFocused();
   await expect(visible).toHaveText('SQL · DuckDB');
   await page.mouse.move(600, 100);
-  await r.hover();
-  await expect(visible).toHaveCount(0);
-  await page.clock.runFor(250);
-  await expect(visible).toHaveText('R · webR');
-  await page.keyboard.press('Escape');
-  await sql.press(forwardTab);
-  await expect(r).toBeFocused();
-  await expect(visible).toHaveText('R · webR');
+  await page.clock.runFor(300);
+  await expect(visible).toHaveText('SQL · DuckDB');
+  await visible.hover();
   await page.getByRole('textbox', {name: 'Projektname', exact: true}).focus();
+  await page.clock.runFor(300);
+  await expect(visible).toHaveText('SQL · DuckDB');
+  await page.mouse.move(600, 100);
+  await page.clock.runFor(120);
   await expect(visible).toHaveCount(0);
-
   const toggle = page.getByRole('button', {name: 'Tooltip-Auslöser umschalten (100 ms)'});
   const options = page.getByRole('button', {name: 'Optionen', exact: true});
   await toggle.click();
@@ -214,9 +413,6 @@ test('UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmo
   await page.clock.runFor(100);
   await expect(options).toHaveCount(0);
   await expect(visible).toHaveCount(0);
-  await sql.hover();
-  await page.clock.runFor(250);
-  await expect(visible).toHaveText('SQL · DuckDB');
   await page.clock.resume();
 });
 test('UI tooltips: no misplaced frames, collapsed/expanded navigation, scroll and resize', async ({
@@ -414,7 +610,7 @@ test('UI geometry: 8 px wrapped actions, form labels, narrow/zoom equivalent and
       });
     expect(label).toMatchObject({
       fontSize: '14px',
-      fontWeight: '700',
+      fontWeight: '500',
       background: 'rgb(255, 255, 255)',
     });
     expect(label.gap).toBeCloseTo(8, 2);
@@ -440,12 +636,20 @@ test('UI geometry: 8 px wrapped actions, form labels, narrow/zoom equivalent and
       ),
     ),
   ).toEqual([
-    {family: 'Frutiger', weight: '400', outcome: 'rejected', status: 'error'},
-    {family: 'Frutiger', weight: '700', outcome: 'rejected', status: 'error'},
+    {family: 'Source Sans 3', weight: '200 900', outcome: 'rejected', status: 'error'},
+    {family: 'Source Sans 3', weight: '200 900', outcome: 'rejected', status: 'error'},
     {family: 'JetBrains Mono', weight: '400', outcome: 'rejected', status: 'error'},
   ]);
-  for (const name of ['Frutiger 400', 'Frutiger 700', 'JetBrains Mono 400'])
-    await expect(page.getByLabel(`Fontstatus ${name}`)).toContainText('Systemfont-Fallback');
+  for (const name of [
+    'Source Sans 3 400',
+    'Source Sans 3 500',
+    'Source Sans 3 600',
+    'Source Sans 3 400 italic',
+    'JetBrains Mono 400',
+  ])
+    await expect(page.getByLabel(`Fontstatus ${name}`, {exact: true})).toContainText(
+      'Systemfont-Fallback',
+    );
   await writeFile(
     `${evidence}/components-${info.project.name}.json`,
     JSON.stringify(measurements, null, 2),

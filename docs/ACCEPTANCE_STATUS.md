@@ -90,3 +90,18 @@ JetBrains Mono lokal ausgeliefert, mit Systemfonts als Ladefehler-Fallback.
 Vollständige E2E-Suite zusätzlich 26/26 in Firefox und 26/26 in WebKit; 27 statische
 Deploymentprüfungen bestanden. Nativer Safari-UI-Smoke separat dokumentiert.
 [Aktueller Kandidat, Befehle, Screenshots, Messwerte und Grenzen](verification/design-system/README.md).
+
+
+## Neutrales Designsystem v1.2 — 21. Oktober 2026
+
+Die neue neutrale Darstellung ist separat und gezielt geprüft. Die obenstehenden
+P0–P8-/Frutiger-/Kantonsnachweise bleiben historische Nachweise ihrer jeweiligen
+Revision. Für diese Migration sind Typecheck, Produktionsbuild und die fünf
+vereinbarten Chromium-Szenarien bestanden: Komponenten, Tooltip, reale Ansichten,
+bestehender SQL-/R-Geometriefall und lokale Assets unter `/lab/`.
+Die korrigierten Zwischenläufe und Prüfgrenzen sind im
+[Implementierungsstatus](IMPLEMENTATION_STATUS.md) und in
+[checks.json](verification/neutral-v1.2/checks.json) dokumentiert.
+Keine erneute Vollabnahme der gesamten AT-Matrix; vollständige Suiten,
+Firefox/WebKit, Docker-Deploymentmatrix und Safari wurden auf ausdrücklichen
+Nutzerwunsch nicht ausgeführt.

@@ -1,0 +1,46 @@
+[WebServer] (node:61795) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:61798) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › tests/e2e/design-system.spec.ts:43:1 › UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard (4.6s)
+
+
+  1) [chromium] › tests/e2e/design-system.spec.ts:43:1 › UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard
+
+    Error: expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 44
+    Received:    40
+
+      305 |       const bounds = (await control.boundingBox())!;
+      306 |       expect(bounds.width).toBeGreaterThanOrEqual(44);
+    > 307 |       expect(bounds.height).toBeGreaterThanOrEqual(44);
+          |                             ^
+      308 |     }
+      309 |   } finally {
+      310 |     await touch.close();
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:307:29
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/neutral-v1.2-components/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/neutral-v1.2-components/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/neutral-v1.2-components/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/neutral-v1.2-components/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/neutral-v1.2-components/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/design-system.spec.ts:43:1 › UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard

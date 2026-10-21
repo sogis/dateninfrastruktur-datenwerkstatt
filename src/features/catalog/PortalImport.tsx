@@ -45,6 +45,8 @@ export function PortalImport({
   const [sqlName, setSqlName] = useState('');
   const [local, setLocal] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [busyAction, setBusyAction] = useState('');
+  const pending = useRef<symbol | undefined>(undefined);
   const [error, setError] = useState('');
   const occupied =
     target === 'new'
@@ -75,15 +77,24 @@ export function PortalImport({
   const [entries, setEntries] = useState<Awaited<ReturnType<PortalAccess['search']>>>([]);
   const controller = useRef(new AbortController());
   const stage = useRef<{session: EditingSession; key: string} | undefined>(undefined);
-  const act = async (work: () => Promise<void>) => {
+  const act = async (work: () => Promise<void>, action = 'resolve') => {
+    if (pending.current) return;
+    const operation = Symbol();
+    const signal = controller.current.signal;
+    pending.current = operation;
+    setBusyAction(action);
     setBusy(true);
     setError('');
     try {
       await work();
     } catch (e) {
-      if (!controller.current.signal.aborted) setError(e instanceof Error ? e.message : String(e));
+      if (!signal.aborted) setError(e instanceof Error ? e.message : String(e));
     } finally {
-      setBusy(false);
+      if (pending.current === operation) {
+        pending.current = undefined;
+        setBusyAction('');
+        setBusy(false);
+      }
     }
   };
   const resolve = async (selection: CatalogSelection) => {
@@ -98,6 +109,7 @@ export function PortalImport({
     if (initial) void act(() => resolve(initial));
     return () => {
       controller.current.abort();
+      pending.current = undefined;
       if (stage.current) void stage.current.session.getDatasets().discard(stage.current.key);
     };
     // This dialog captures its initial route selection once; editing uses the explicit load action.
@@ -125,7 +137,7 @@ export function PortalImport({
         setSqlName(previous?.sqlName ?? chosen.getDatasets().suggestName(table.suggestedSqlName));
       }
       form.reset();
-    });
+    }, 'preview');
   };
   return (
     <Modal
@@ -150,6 +162,8 @@ export function PortalImport({
             <Button
               variant="primary"
               disabled={busy}
+              busy={busyAction === 'confirm'}
+              busyLabel="Portalimport wird übernommen …"
               onClick={() => {
                 if (!form.validate(['provider', 'table', 'target', 'name', 'sqlName'])) return;
                 void act(async () => {
@@ -196,7 +210,7 @@ export function PortalImport({
                     replace: true,
                   });
                   onClose(true);
-                });
+                }, 'confirm');
               }}
             >
               Portalimport bestätigen
@@ -246,6 +260,8 @@ export function PortalImport({
           </FormField>
           <Button
             disabled={busy}
+            busy={busyAction === 'resolve'}
+            busyLabel="Kontext wird geladen …"
             onClick={() => {
               if (form.validate(['provider', 'value']))
                 void act(() => resolve(access.selection(provider, value)));
@@ -260,10 +276,14 @@ export function PortalImport({
             <>
               <Button
                 disabled={busy}
+                busy={busyAction === 'search'}
+                busyLabel="Index wird durchsucht …"
                 onClick={() => {
                   form.reset();
-                  void act(async () =>
-                    setEntries(await access.search(provider, value, controller.current.signal)),
+                  void act(
+                    async () =>
+                      setEntries(await access.search(provider, value, controller.current.signal)),
+                    'search',
                   );
                 }}
               >
@@ -273,6 +293,7 @@ export function PortalImport({
                 {entries.map((e) => (
                   <li key={e.key}>
                     <Button
+                      disabled={busy}
                       onClick={() =>
                         void act(() =>
                           resolve({
@@ -332,7 +353,12 @@ export function PortalImport({
                   </Select>
                 </FormField>
               )}
-              <Button disabled={busy} onClick={() => void load()}>
+              <Button
+                disabled={busy}
+                busy={busyAction === 'preview'}
+                busyLabel="Portalvorschau wird geladen …"
+                onClick={() => void load()}
+              >
                 Portalvorschau laden
               </Button>
             </>

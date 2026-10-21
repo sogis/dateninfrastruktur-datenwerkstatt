@@ -1,0 +1,322 @@
+{
+  "config": {
+    "argv": [
+      "/Users/stefan/Library/Application Support/fnm/node-versions/v22.23.1/installation/bin/node",
+      "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/node_modules/.bin/playwright",
+      "test",
+      "tests/e2e/design-system.spec.ts",
+      "tests/e2e/neutral-ui.spec.ts",
+      "tests/e2e/p7-ui.spec.ts",
+      "--project=chromium",
+      "--grep",
+      "UI components:|UI tooltips: hover delay|Neutral UI:|P7 AT-054–055 AT-058",
+      "--reporter=list,json",
+      "--output=test-results/neutral-v1.2"
+    ],
+    "configFile": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/playwright.config.ts",
+    "rootDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/neutral-v1.2",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests",
+        "testIgnore": [
+          "**/deployment/**",
+          "**/neutral/**"
+        ],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/neutral-v1.2",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests",
+        "testIgnore": [
+          "**/deployment/**",
+          "**/neutral/**"
+        ],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/neutral-v1.2",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests",
+        "testIgnore": [
+          "**/deployment/**",
+          "**/neutral/**"
+        ],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "e2e/design-system.spec.ts",
+      "file": "e2e/design-system.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 4282,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByLabel('Fontstatus Source Sans 3 400')\nExpected substring: \u001b[32m\"Systemfont-Fallback\"\u001b[39m\nError: strict mode violation: getByLabel('Fontstatus Source Sans 3 400') resolved to 2 elements:\n    1) <output aria-label=\"Fontstatus Source Sans 3 400\">Source Sans 3 400: Systemfont-Fallback</output> aka getByRole('status', { name: 'Fontstatus Source Sans 3 400', exact: true })\n    2) <output aria-label=\"Fontstatus Source Sans 3 400 italic\">…</output> aka getByRole('status', { name: 'Fontstatus Source Sans 3 400 italic' })\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByLabel('Fontstatus Source Sans 3 400') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Fontstatus Source Sans 3 400')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByLabel('Fontstatus Source Sans 3 400')\nExpected substring: \u001b[32m\"Systemfont-Fallback\"\u001b[39m\nError: strict mode violation: getByLabel('Fontstatus Source Sans 3 400') resolved to 2 elements:\n    1) <output aria-label=\"Fontstatus Source Sans 3 400\">Source Sans 3 400: Systemfont-Fallback</output> aka getByRole('status', { name: 'Fontstatus Source Sans 3 400', exact: true })\n    2) <output aria-label=\"Fontstatus Source Sans 3 400 italic\">…</output> aka getByRole('status', { name: 'Fontstatus Source Sans 3 400 italic' })\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByLabel('Fontstatus Source Sans 3 400') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Fontstatus Source Sans 3 400')\u001b[22m\n\n    at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:292:58",
+                    "location": {
+                      "file": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts",
+                      "column": 58,
+                      "line": 292
+                    },
+                    "snippet": "  290 |     'JetBrains Mono 400',\n  291 |   ])\n> 292 |     await expect(page.getByLabel(`Fontstatus ${label}`)).toContainText('Systemfont-Fallback');\n      |                                                          ^\n  293 |   await expect(page.getByRole('button', {name: 'primary default', exact: true})).toBeEnabled();\n  294 |   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(720);\n  295 |   const touch = await browser.newContext({hasTouch: true, viewport: {width: 720, height: 450}});"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts",
+                        "column": 58,
+                        "line": 292
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByLabel('Fontstatus Source Sans 3 400')\nExpected substring: \u001b[32m\"Systemfont-Fallback\"\u001b[39m\nError: strict mode violation: getByLabel('Fontstatus Source Sans 3 400') resolved to 2 elements:\n    1) <output aria-label=\"Fontstatus Source Sans 3 400\">Source Sans 3 400: Systemfont-Fallback</output> aka getByRole('status', { name: 'Fontstatus Source Sans 3 400', exact: true })\n    2) <output aria-label=\"Fontstatus Source Sans 3 400 italic\">…</output> aka getByRole('status', { name: 'Fontstatus Source Sans 3 400 italic' })\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByLabel('Fontstatus Source Sans 3 400') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Fontstatus Source Sans 3 400')\u001b[22m\n\n\n  290 |     'JetBrains Mono 400',\n  291 |   ])\n> 292 |     await expect(page.getByLabel(`Fontstatus ${label}`)).toContainText('Systemfont-Fallback');\n      |                                                          ^\n  293 |   await expect(page.getByRole('button', {name: 'primary default', exact: true})).toBeEnabled();\n  294 |   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(720);\n  295 |   const touch = await browser.newContext({hasTouch: true, viewport: {width: 720, height: 450}});\n    at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:292:58"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T18:27:45.200Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/neutral-v1.2/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/neutral-v1.2/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/neutral-v1.2/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts",
+                    "column": 58,
+                    "line": 292
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c374ec8b109679ad246c-f337c2f518d1eea0ca77",
+          "file": "e2e/design-system.spec.ts",
+          "line": 43,
+          "column": 1
+        },
+        {
+          "title": "UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmount",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1064,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T18:27:49.825Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c374ec8b109679ad246c-ad17140ffea59675551b",
+          "file": "e2e/design-system.spec.ts",
+          "line": 320,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "e2e/neutral-ui.spec.ts",
+      "file": "e2e/neutral-ui.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Neutral UI: real project navigation, aligned tables, optional fields and error layouts",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3139,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T18:27:50.904Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1fb6046a2b9db0aac392-9a41ee0558a1ab50a506",
+          "file": "e2e/neutral-ui.spec.ts",
+          "line": 21,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "e2e/p7-ui.spec.ts",
+      "file": "e2e/p7-ui.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layout reset and reload",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 16393,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T18:27:54.050Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0a0ed78d7d3e7b772481-4524f336aa0c45315678",
+          "file": "e2e/p7-ui.spec.ts",
+          "line": 16,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-21T18:27:44.832Z",
+    "duration": 25637.190000000002,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

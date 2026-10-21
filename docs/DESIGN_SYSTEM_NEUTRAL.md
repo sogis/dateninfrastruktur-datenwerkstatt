@@ -3,7 +3,13 @@
 **Version:** 1.1  
 **Stand:** 20. Oktober 2026  
 **Standardtheme:** `neutral-blue`  
-**Status:** Spezifikation für die Umsetzung; keine Aussage über eine bereits erfolgte Implementierung oder Abnahme.
+**Status:** Historische Fassung v1.1; nicht als aktuelle Umsetzungsvorgabe verwenden.
+
+> Massgeblich ist [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md). Die nachgeführte
+> [Referenzfassung v1.2](DESIGN_SYSTEM_NEUTRAL_v1.2.md) enthält die abgestimmten
+> Regeln zu Optionalzusätzen, sichtbaren Analysenamen, Fehlerlayout,
+> Textvergrösserung und gezielten Prüfungen. Die folgenden älteren Regeln
+> bleiben ausschliesslich zur historischen Einordnung erhalten.
 
 Dieses Dokument beschreibt eine vollständige organisationsunabhängige Variante
 des Designsystems der Datenwerkstatt. Grundlage ist das bereitgestellte

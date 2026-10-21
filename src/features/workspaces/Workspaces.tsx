@@ -10,7 +10,7 @@ import {
 } from '../../ui/Controls';
 import {Diagnostics} from './Diagnostics';
 import {ArchiveActions, ArchiveImport} from '../archive/ArchiveActions';
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 import {Link, useNavigate} from '@tanstack/react-router';
 import {useStore} from 'zustand';
 import {listRoute, useWorkspace, report} from '../../app/router';
@@ -20,6 +20,7 @@ export function ProjectList() {
   const workspaces = listRoute.useLoaderData();
   const name = useNameField('', 'Projektnamen', () => {});
   const [busy, setBusy] = useState(false);
+  const creating = useRef(false);
   const navigate = useNavigate();
   return (
     <main>
@@ -29,7 +30,8 @@ export function ProjectList() {
         className="create-workspace"
         onSubmit={(e) => {
           e.preventDefault();
-          if (!name.commit()) return;
+          if (creating.current || !services.workspaces.canCreate || !name.commit()) return;
+          creating.current = true;
           setBusy(true);
           void services.workspaces
             .create(name.value)
@@ -37,7 +39,10 @@ export function ProjectList() {
               navigate({to: '/projects/$workspaceId', params: {workspaceId: d.workspace.id}}),
             )
             .catch(report)
-            .finally(() => setBusy(false));
+            .finally(() => {
+              creating.current = false;
+              setBusy(false);
+            });
         }}
       >
         <FormField label={<>Name des neuen Projekts</>} error={name.error}>
@@ -48,6 +53,7 @@ export function ProjectList() {
           variant="primary"
           icon="plus-lg"
           busy={busy}
+          busyLabel="Projekt wird erstellt …"
           disabled={busy || !services.workspaces.canCreate}
         >
           Neues Projekt
@@ -62,10 +68,14 @@ export function ProjectList() {
         <table className="workspace-list">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Daten</th>
-              <th>Analysen</th>
-              <th>Zuletzt bearbeitet</th>
+              <th scope="col">Name</th>
+              <th scope="col" className="numeric">
+                Daten
+              </th>
+              <th scope="col" className="numeric">
+                Analysen
+              </th>
+              <th scope="col">Zuletzt bearbeitet</th>
             </tr>
           </thead>
           <tbody>
@@ -78,7 +88,33 @@ export function ProjectList() {
                 </td>
                 <td className="numeric">{w.datasetCount}</td>
                 <td className="numeric">{w.analysisCount}</td>
-                <td>{new Date(w.updatedAt).toLocaleString('de-CH')}</td>
+                <td>
+                  <details className="timestamp-detail">
+                    <summary>
+                      <time dateTime={w.updatedAt}>
+                        {new Date(w.updatedAt).toLocaleString('de-CH', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </time>
+                    </summary>
+                    <time dateTime={w.updatedAt}>
+                      {new Date(w.updatedAt).toLocaleString('de-CH', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        fractionalSecondDigits: 3,
+                        timeZoneName: 'short',
+                      })}
+                    </time>
+                  </details>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -96,6 +132,8 @@ export function ProjectOverview() {
     (value) => session.rename(value),
     report,
   );
+  const saving = useRef(false);
+  const [isSaving, setIsSaving] = useState(false);
   const datasets = Object.values(doc.datasets).filter((dataset) => !dataset.removedAt);
   const analyses = Object.values(doc.analyses).filter((analysis) => !analysis.archivedAt);
   const navigate = useNavigate();
@@ -138,11 +176,22 @@ export function ProjectOverview() {
       </div>
       <ActionGroup>
         <Button
+          variant="primary"
           icon="floppy"
-          disabled={session.readOnly}
+          disabled={session.readOnly || isSaving}
+          busy={isSaving}
+          busyLabel="Änderungen werden gespeichert …"
           onClick={() => {
-            if (!name.commit()) return;
-            void session.flush().catch(report);
+            if (saving.current || session.readOnly || !name.commit()) return;
+            saving.current = true;
+            setIsSaving(true);
+            void session
+              .flush()
+              .catch(report)
+              .finally(() => {
+                saving.current = false;
+                setIsSaving(false);
+              });
           }}
         >
           Speichern

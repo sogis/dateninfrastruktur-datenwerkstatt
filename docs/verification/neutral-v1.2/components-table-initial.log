@@ -1,0 +1,49 @@
+[WebServer] (node:62255) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:62257) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › tests/e2e/design-system.spec.ts:43:1 › UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard (11.5s)
+
+
+  1) [chromium] › tests/e2e/design-system.spec.ts:43:1 › UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard
+
+    Error: expect(locator).toHaveCSS(expected) failed
+
+    Locator: locator('.dw-table th.numeric')
+    Expected: "end"
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveCSS" locator('.dw-table th.numeric') with timeout 10000ms
+      - waiting for locator('.dw-table th.numeric')
+
+
+      129 |   ).toBe('Source Sans 3');
+      130 |   await expect(page.locator('h1')).toHaveCSS('font-weight', '600');
+    > 131 |   await expect(page.locator('.dw-table th.numeric')).toHaveCSS('text-align', 'end');
+          |                                                      ^
+      132 |   await expect(page.locator('.dw-table td.numeric')).toHaveCSS('text-align', 'end');
+      133 |   await expect(page.locator('label').filter({hasText: /^Projektname$/})).toHaveCSS(
+      134 |     'font-weight',
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/design-system.spec.ts:131:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/neutral-v1.2-components-final/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/neutral-v1.2-components-final/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/neutral-v1.2-components-final/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/neutral-v1.2-components-final/e2e-design-system-UI-compo-a67a0-te-menu-and-dialog-keyboard-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/design-system.spec.ts:43:1 › UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard

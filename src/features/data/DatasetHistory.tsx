@@ -257,9 +257,9 @@ export function DatasetHistory({
                 <table>
                   <thead>
                     <tr>
-                      <th>Spalte</th>
-                      <th>Datentyp</th>
-                      <th>NULL erlaubt</th>
+                      <th scope="col">Spalte</th>
+                      <th scope="col">Datentyp</th>
+                      <th scope="col">NULL erlaubt</th>
                     </tr>
                   </thead>
                   <tbody>

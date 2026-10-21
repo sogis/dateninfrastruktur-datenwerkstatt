@@ -3,28 +3,65 @@
 @import './components.css';
 
 .app-header {
-  height: 56px;
+  min-height: 56px;
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  gap: 32px;
-  padding: 0 24px;
-  background: white;
-  border-bottom: 1px solid var(--dw-color-line);
+  gap: 16px;
+  padding: 8px 24px;
+  background: var(--dw-surface);
+  border-bottom: 1px solid var(--dw-border-subtle);
 }
-.app-header img {
-  width: 190px;
-  height: auto;
-}
-.brand {
-  font-weight: 700;
-  color: var(--dw-color-text);
+.brand,
+.brand:visited,
+.brand:hover {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  color: var(--dw-text);
   text-decoration: none;
 }
+.brand-logo {
+  max-width: 160px;
+  max-height: 32px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+.brand-placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  border: 1px solid var(--dw-border-subtle);
+  border-radius: var(--dw-radius);
+  background: var(--dw-surface-subtle);
+  color: var(--dw-text-secondary);
+  font-size: 0.75rem;
+  font-weight: var(--dw-weight-medium);
+}
+.brand-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.brand-name {
+  display: block;
+  font-size: 1.125rem;
+  line-height: 1.4;
+  font-weight: var(--dw-weight-medium);
+}
+.brand-organisation {
+  display: block;
+  color: var(--dw-text-secondary);
+  font-size: 0.75rem;
+}
 .build-status {
-  font-size: 12px;
+  font-size: 0.75rem;
   margin-left: auto;
-  color: var(--dw-color-muted);
+  color: var(--dw-text-secondary);
 }
 main {
   padding: 32px 24px;
@@ -83,11 +120,11 @@ main {
 .workspace-list th {
   text-align: left;
   padding: 12px 16px;
-  border-bottom: 1px solid var(--dw-color-line);
+  border-bottom: 1px solid var(--dw-border-subtle);
 }
 .workspace-list th {
-  font-size: 14px;
-  background: var(--dw-color-subtle);
+  font-size: 0.875rem;
+  background: var(--dw-surface-subtle);
 }
 .workspace-list .numeric {
   text-align: right;
@@ -110,8 +147,8 @@ main {
   flex: 0 0 52px;
   width: 52px;
   min-width: 0;
-  background: white;
-  border-right: 1px solid var(--dw-color-line);
+  background: var(--dw-surface);
+  border-right: 1px solid var(--dw-border-subtle);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -137,10 +174,10 @@ main {
   padding: 8px 10px;
   border: 0;
   border-radius: 4px;
-  color: var(--dw-color-text);
-  background: white;
+  color: var(--dw-text);
+  background: var(--dw-surface);
   text-decoration: none;
-  font: 400 14px/1.3 var(--dw-font-sans);
+  font: var(--dw-weight-medium) 0.875rem/1.4 var(--dw-font-ui);
   cursor: pointer;
 }
 .sidebar.expanded .dw-nav-item {
@@ -151,12 +188,14 @@ main {
   padding: 10px;
 }
 .dw-nav-item:hover {
-  background: var(--dw-color-hover);
-  color: var(--dw-color-text);
+  background: var(--dw-surface-hover);
+  color: var(--dw-text);
 }
-.dw-nav-item[aria-current='page'] {
-  background: var(--dw-color-selected);
-  color: var(--dw-color-accent);
+.dw-nav-item[aria-current='page'],
+.dw-nav-item[aria-current='page']:hover {
+  background: var(--dw-selection-bg);
+  color: var(--dw-selection-fg);
+  box-shadow: inset 0 0 0 var(--dw-selection-width) var(--dw-selection-border);
 }
 .workspace-content {
   flex: 1;
@@ -170,9 +209,9 @@ main {
 .save-status {
   min-height: 28px;
   padding: 4px 12px;
-  font-size: 12px;
-  line-height: 20px;
-  color: var(--dw-color-muted);
+  font-size: 0.75rem;
+  line-height: 1.66666667;
+  color: var(--dw-text-secondary);
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -204,7 +243,7 @@ main {
   flex-wrap: wrap;
   gap: 16px;
   align-items: center;
-  border-bottom: 1px solid var(--dw-color-line);
+  border-bottom: 1px solid var(--dw-border-subtle);
   padding: 12px 0;
 }
 .analysis-list li > a {
@@ -213,8 +252,8 @@ main {
 }
 .analysis-list li > span,
 .dataset-list span {
-  font-size: 12px;
-  color: var(--dw-color-muted);
+  font-size: 0.75rem;
+  color: var(--dw-text-secondary);
 }
 .dataset-list > li > div:not(.dw-actions) {
   display: flex;
@@ -228,7 +267,7 @@ main {
 }
 .project-context {
   margin: 0;
-  color: var(--dw-color-muted);
+  color: var(--dw-text-secondary);
 }
 .project-data-summary {
   list-style: none;
@@ -241,7 +280,7 @@ main {
   align-items: baseline;
   gap: 8px 24px;
   padding-block: 12px;
-  border-bottom: 1px solid var(--dw-color-line);
+  border-bottom: 1px solid var(--dw-border-subtle);
   overflow-wrap: anywhere;
 }
 .project-data-summary strong {
@@ -249,7 +288,7 @@ main {
 }
 .project-data-summary span {
   font-variant-numeric: tabular-nums;
-  color: var(--dw-color-muted);
+  color: var(--dw-text-secondary);
 }
 .dataset-version-heading {
   display: flex;
@@ -309,8 +348,8 @@ main {
 }
 .error {
   padding: 12px 24px;
-  background: var(--dw-color-danger-bg);
-  color: var(--dw-color-danger);
+  background: var(--dw-error-bg);
+  color: var(--dw-error-fg);
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
@@ -330,13 +369,7 @@ main {
   font-weight: 400;
 }
 .app-error .dw-icon-button {
-  color: var(--dw-color-danger);
-}
-.app-error .dw-icon-button:hover:not(:disabled) {
-  background: color-mix(in srgb, currentColor 10%, transparent);
-}
-.app-error .dw-icon-button:active:not(:disabled) {
-  background: color-mix(in srgb, currentColor 16%, transparent);
+  color: var(--dw-text-secondary);
 }
 .analysis-area {
   display: flex;
@@ -371,7 +404,7 @@ main {
   height: 100%;
   min-height: 0;
   overflow: hidden;
-  background: white;
+  background: var(--dw-surface);
 }
 .sql-panel-host {
   flex: 1;
@@ -388,13 +421,13 @@ main {
 }
 .panel-handle {
   height: 7px;
-  background: var(--dw-color-line);
+  background: var(--dw-border-subtle);
   cursor: row-resize;
 }
 .panel-handle:hover,
 .panel-handle:focus-visible,
 .panel-handle[data-resize-handle-active] {
-  background: var(--dw-color-focus);
+  background: var(--dw-focus-ring);
 }
 .horizontal-handle {
   width: 7px;
@@ -416,7 +449,7 @@ main {
   flex: 1 1 180px;
 }
 .file-drop {
-  border: 1px dashed var(--dw-color-input-border);
+  border: 1px dashed var(--dw-border-control);
   border-radius: 4px;
   padding: 16px;
   display: flex;
@@ -428,7 +461,7 @@ main {
   overflow: auto;
 }
 .column-options > div {
-  border: 1px solid var(--dw-color-line);
+  border: 1px solid var(--dw-border-subtle);
   border-radius: 4px;
   padding: 12px;
   display: grid;
@@ -448,37 +481,38 @@ main {
   border-collapse: collapse;
   width: 100%;
   font-variant-numeric: tabular-nums;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 .table-scroll th,
 .table-scroll td {
   text-align: left;
   padding: 6px 12px;
-  border-bottom: 1px solid var(--dw-color-line);
+  border-bottom: 1px solid var(--dw-border-subtle);
   white-space: pre-wrap;
   min-width: 100px;
 }
 .table-scroll th,
 .result-grid th {
+  padding: 6px 12px;
   position: sticky;
   top: 0;
-  background: var(--dw-color-subtle);
+  background: var(--dw-surface-subtle);
   text-align: left;
 }
 .table-scroll small {
   display: block;
   font-weight: 400;
-  font-size: 12px;
-  color: var(--dw-color-muted);
+  font-size: 0.75rem;
+  color: var(--dw-text-secondary);
 }
 .table-scroll i {
-  color: var(--dw-color-muted);
+  color: var(--dw-text-secondary);
 }
 .parameters {
   flex: 0 0 auto;
   padding: 4px 12px;
-  font-size: 14px;
-  border-bottom: 1px solid var(--dw-color-line);
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--dw-border-subtle);
   max-height: 240px;
   overflow: auto;
 }
@@ -490,7 +524,8 @@ main {
   max-width: 900px;
 }
 .parameters th {
-  text-align: left;
+  text-align: start;
+  padding: 4px;
 }
 .parameters td {
   padding: 4px;
@@ -501,7 +536,7 @@ main {
 .result-section {
   height: 100%;
   overflow: auto;
-  font-size: 14px;
+  font-size: 0.875rem;
   display: flex;
   flex-direction: column;
 }
@@ -514,7 +549,7 @@ main {
   max-width: 380px;
 }
 .result-toolbar > span {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .result-grid {
   overflow: auto;
@@ -522,7 +557,7 @@ main {
   flex: 1;
 }
 .result-grid td {
-  border-bottom: 1px solid var(--dw-color-line);
+  border-bottom: 1px solid var(--dw-border-subtle);
   padding: 6px 12px;
   white-space: pre-wrap;
   max-width: 500px;
@@ -532,16 +567,16 @@ main {
   border: 0;
   background: none;
   color: inherit;
-  font-weight: 700;
+  font-weight: var(--dw-weight-semibold);
 }
 .table-scroll .numeric,
 .result-grid .numeric {
   text-align: right;
 }
 .null-cell {
-  color: var(--dw-color-muted);
+  color: var(--dw-text-secondary);
   font-style: italic;
-  background: var(--dw-color-badge);
+  background: var(--dw-surface-neutral);
   padding: 1px 4px;
   border-radius: 2px;
 }
@@ -566,8 +601,8 @@ main {
   margin: 0;
 }
 .result-error {
-  color: var(--dw-color-danger);
-  background: var(--dw-color-danger-bg);
+  color: var(--dw-error-fg);
+  background: var(--dw-error-bg);
 }
 .chart-area canvas {
   width: 100%;
@@ -588,12 +623,12 @@ main {
   flex-shrink: 0;
   overflow: auto;
   padding: 12px;
-  border-right: 1px solid var(--dw-color-line);
+  border-right: 1px solid var(--dw-border-subtle);
   overflow-wrap: anywhere;
-  background: white;
+  background: var(--dw-surface);
 }
 .r-objects h3 {
-  font-size: 14px;
+  font-size: 0.875rem;
   margin-block: 12px 8px;
 }
 .r-objects .dw-actions {
@@ -608,12 +643,12 @@ main {
 .r-output {
   height: 100%;
   overflow: auto;
-  background: white;
+  background: var(--dw-surface);
   padding: 8px;
 }
 .r-output > p {
   padding: 16px;
-  color: var(--dw-color-muted);
+  color: var(--dw-text-secondary);
 }
 .r-plot {
   display: flex;
@@ -630,7 +665,7 @@ main {
   height: 100dvh;
   margin: 0;
   overflow: auto;
-  background: white;
+  background: var(--dw-surface);
   padding: 16px;
 }
 .r-plot:fullscreen img {
@@ -648,16 +683,16 @@ main {
 .r-console {
   height: 100%;
   overflow: auto;
-  background: var(--dw-color-subtle);
+  background: var(--dw-surface-subtle);
   padding: 8px 12px;
 }
 .r-console pre {
   margin: 2px 0;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .r-console pre[data-kind='stderr'],
 .r-console pre[data-kind='warning'] {
-  color: var(--dw-color-danger);
+  color: var(--dw-error-fg);
 }
 .run-status {
   min-height: 40px;
@@ -667,8 +702,8 @@ main {
   gap: 12px;
   align-items: center;
   flex: 0 0 auto;
-  font-size: 12px;
-  background: var(--dw-color-subtle);
+  font-size: 0.75rem;
+  background: var(--dw-surface-subtle);
 }
 .run-status .dw-field {
   display: flex;
@@ -721,11 +756,9 @@ main > [aria-label='Browser-Speicher'] {
 }
 @media (max-width: 750px) {
   .app-header {
+    flex-wrap: wrap;
     padding-inline: 16px;
     gap: 16px;
-  }
-  .app-header img {
-    width: 145px;
   }
   .build-status {
     display: none;
@@ -807,4 +840,31 @@ main > [aria-label='Browser-Speicher'] {
 .result-grid th.numeric .dw-button {
   width: 100%;
   justify-content: flex-end;
+}
+
+.workspace-list .actions,
+.parameters .actions,
+.table-scroll .actions {
+  text-align: center;
+}
+.timestamp-detail {
+  font-variant-numeric: tabular-nums;
+}
+.timestamp-detail summary {
+  width: fit-content;
+}
+.timestamp-detail > time {
+  display: block;
+  margin-top: 8px;
+  color: var(--dw-text-secondary);
+  font-size: 0.875rem;
+}
+
+@media (pointer: coarse) {
+  .dw-nav-item {
+    min-height: var(--dw-touch-target-min-size);
+  }
+  .sidebar {
+    padding-inline: 3px;
+  }
 }

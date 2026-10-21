@@ -1,0 +1,214 @@
+{
+  "date": "2026-10-21",
+  "baseline": "6e1e1e03596727fc425a8aecbf8e29c2a0afcb13",
+  "scope": "Neutral-blue v1.2 UI migration; required fields unmarked and explicit optional suffix; targeted checks only.",
+  "commands": [
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "logs": [
+        "typecheck.log",
+        "typecheck-final.log"
+      ],
+      "note": "Second run includes the new standalone preview configuration in tsconfig; subsequent edits are CSS/docs and simple test assertions/reference classes."
+    },
+    {
+      "command": "APP_BASE_PATH=/lab/ npm run build",
+      "exitCode": 0,
+      "logs": [
+        "build-initial.log",
+        "build.log"
+      ],
+      "note": "Rebuilt only after touch/text/layout CSS corrections. Final asset smoke uses final production build."
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 PLAYWRIGHT_JSON_OUTPUT_FILE=docs/verification/neutral-v1.2/ui.json npx playwright test tests/e2e/design-system.spec.ts tests/e2e/neutral-ui.spec.ts tests/e2e/p7-ui.spec.ts --project=chromium --grep 'UI components:|UI tooltips: hover delay|Neutral UI:|P7 AT-054–055 AT-058' --reporter=list,json --output=test-results/neutral-v1.2",
+      "exitCode": 1,
+      "report": "ui.json",
+      "note": "Tooltip, real views and SQL/R geometry passed; component test first stopped at an ambiguous font-status selector."
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 PLAYWRIGHT_JSON_OUTPUT_FILE=docs/verification/neutral-v1.2/components.json npx playwright test tests/e2e/design-system.spec.ts --project=chromium --grep 'UI components:' --reporter=list,json --output=test-results/neutral-v1.2-components-final",
+      "exitCode": 0,
+      "report": "components.json",
+      "note": "Only affected component case repeated. Intermediate reports record touch-height defect, visual text-enlargement correction and reference-class selector correction; original first repetition used output=test-results/neutral-v1.2-components."
+    },
+    {
+      "command": "PLAYWRIGHT_JSON_OUTPUT_FILE=docs/verification/neutral-v1.2/assets.json npx playwright test -c playwright.neutral.config.ts --reporter=list,json",
+      "exitCode": 0,
+      "report": "assets.json",
+      "note": "Single Vite preview, no Docker. Only generated dist/runtime-config.json receives /lab/ operator settings. Repeated after final CSS build."
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "runHistory": [
+    {
+      "report": "assets-initial.json",
+      "log": "assets-initial.log",
+      "exitCode": 0,
+      "stats": {
+        "startTime": "2026-10-21T18:27:53.303Z",
+        "duration": 1803.872,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    {
+      "report": "assets.json",
+      "log": "assets.log",
+      "exitCode": 0,
+      "stats": {
+        "startTime": "2026-10-21T18:32:06.177Z",
+        "duration": 1305.325,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    {
+      "report": "components-before-table-style.json",
+      "log": "components-before-table-style.log",
+      "exitCode": 0,
+      "stats": {
+        "startTime": "2026-10-21T18:30:21.225Z",
+        "duration": 4891.8240000000005,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    {
+      "report": "components-before-text-fix.json",
+      "log": "components-before-text-fix.log",
+      "exitCode": 0,
+      "stats": {
+        "startTime": "2026-10-21T18:29:25.628Z",
+        "duration": 4629.273,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    {
+      "report": "components-table-initial.json",
+      "log": "components-table-initial.log",
+      "exitCode": 1,
+      "stats": {
+        "startTime": "2026-10-21T18:31:29.823Z",
+        "duration": 12130.693,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      }
+    },
+    {
+      "report": "components-touch-initial.json",
+      "log": "components-touch-initial.log",
+      "exitCode": 1,
+      "stats": {
+        "startTime": "2026-10-21T18:28:41.478Z",
+        "duration": 5161.462,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      }
+    },
+    {
+      "report": "components.json",
+      "log": "components.log",
+      "exitCode": 0,
+      "stats": {
+        "startTime": "2026-10-21T18:32:06.177Z",
+        "duration": 4992.195000000001,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    {
+      "report": "ui.json",
+      "log": "ui.log",
+      "exitCode": 1,
+      "stats": {
+        "startTime": "2026-10-21T18:27:44.832Z",
+        "duration": 25637.190000000002,
+        "expected": 3,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      }
+    }
+  ],
+  "fixes": [
+    "Font status lookup now uses exact accessible name to distinguish normal and italic.",
+    "App navigation coarse-pointer minimum height overrides later desktop CSS: 44px.",
+    "Labels use scalable unitless line height so 200% text does not overlap.",
+    "Shared table style and reference use existing numeric/actions column classes consistently."
+  ],
+  "notRun": [
+    "npm run verify",
+    "full unit/integration/E2E suites",
+    "Firefox",
+    "WebKit",
+    "Docker deployment matrix",
+    "native Safari",
+    "native browser zoom"
+  ],
+  "limits": [
+    "200% text enlargement and 720x450 layout simulation are not a native browser-zoom audit.",
+    "Vite existing large-chunk warning remains; no bundle-splitting changes."
+  ],
+  "preservation": "Historical evidence directories unchanged; existing user Vite server PID52467 retained; own preview stopped after tests.",
+  "fontRelease": {
+    "name": "Source Sans 3",
+    "version": "3.052R",
+    "commit": "ed1808970eb3c7301c9a523bee26473ba0bb62fa"
+  },
+  "sourceTestSha256": {
+    "playwright.config.ts": "e5d7027e68733d7a764986a8af2bae67b2de8fb8828a28be50a4f4f845c74f26",
+    "playwright.neutral.config.ts": "a739688154549671da0066258f29c0f53fd0a35e81d567b95e1e78806499fd62",
+    "src/app/brand.ts": "32ed44007f724e1e3285221c67e5c6565d1d75954cb7de9c9419f80c55035806",
+    "src/app/router.tsx": "ffc2e77a558609faa6d9c40434b48f9ecd4a0777552048acce3ca8a19265b838",
+    "src/assets/fonts/source-sans-3/SourceSans3VF-Italic.ttf.woff2": "b4959abc0569392f87c6c6ac612f90e3fe0104d283724189b7d8b6f61af347d3",
+    "src/assets/fonts/source-sans-3/SourceSans3VF-Upright.ttf.woff2": "5f16566f7a40d39b339ad26be151fa5a1ab1f0c2574c7a2e619765584a1acbd8",
+    "src/assets/ui-assets.json": "066d9997199dd3661a0dd7feca6ac9dc7a99c00beb1dd28f373b5dcb0a11920b",
+    "src/features/archive/ArchiveActions.tsx": "e2382fcbdca20bc31037e6cc01c0b2e4f90ade4361616e4222715cf93ba29af5",
+    "src/features/catalog/PortalImport.tsx": "dbd60d3e560fa22fc9baa49aacce28fe8ae15d70b911a645b0509da40ca23319",
+    "src/features/data/DataSection.tsx": "478e210f008b59bba47e69454ed383146a531e4dbf5e2522bb85dc9a04bf4168",
+    "src/features/data/DatasetHistory.tsx": "5baeaa4c4ef4e322fc5387136e60d0946c24ec60b22dd94d6e62dec23fdce73f",
+    "src/features/r/RWorkbench.tsx": "8113ca4c6d8cca9308fe4972fe66a20e677be125f2c73eb234fa60e29025ae2f",
+    "src/features/r/Transfer.tsx": "78ab18a59ccdf78733013b8895f55cf9f0d32d8a6a36f6d9832d8611016cc106",
+    "src/features/results/RunDetails.tsx": "345cf289faa1c7514990a4e10c952679336aae444745282de0d0e01cf062324f",
+    "src/features/sql/SqlWorkbench.tsx": "5742226766bf94a73353882eeead1ba8d48c837f05210c8de574eef6eb00ea1c",
+    "src/features/sql/chart.tsx": "1d25972ddb295ebb2f6170127f0725c25078ab69e0c83ed815a21a97ebd7cb22",
+    "src/features/workspaces/StorageSettings.tsx": "274bdc0f24dd5f4331a1631a908130503966986d98fe0553f2679f3c03ee3ecc",
+    "src/features/workspaces/Workspaces.tsx": "f78772facb471e87b8ee17420dee233e3633fa54109410fd7c8531d3e13e152d",
+    "src/styles/app.css": "5e6865978065cd10238f009379e705584018f685c1ab65fc92ca8790759bf7a2",
+    "src/styles/base.css": "8908f18c095ddcb62ca7088d342aa94475b3b8252c812d3e14327846bdf09e6e",
+    "src/styles/components.css": "f03b6dc99770b69c52b433ab1a05cfab1dfc1e7687ef5ce400b593e970146a25",
+    "src/styles/tokens.css": "b7bc826e07c0a5840f1d936e9daed035976a4a9e9cdfb0378189c5317232be0d",
+    "src/ui/ActionMenu.tsx": "0b575f80506fd31f5e56c02cf28a7e0079efb736cda9fca014266d702b9c5dc2",
+    "src/ui/Brand.tsx": "365b7460fde778a38a1abca85cdcdb6848847789addc7a002a838b15b3e4df41",
+    "src/ui/Controls.tsx": "206e70d5fad4ffd1b5e129c34b4e07d348bb7cc8864edf50b4276160dbf81e96",
+    "tests/deployment/static.spec.ts": "d0a4af089692f5385183cbb2ef404cda1cc34f441c0bf517a08d0b876b74e8cc",
+    "tests/design-system/reference.tsx": "7c8fbf2c5585607c0d58187f596340253b583d012949121db5d60eff25fa8a66",
+    "tests/e2e/design-system.spec.ts": "88fd34f1a7b5f82bdee144045dca531d9301c6652ec4982e7305bea917e0cabe",
+    "tests/e2e/navigation.spec.ts": "3c9b6c2bad91d39b2c9555f700e4bffa6c85740994363ef5ff3a55f020c2ffe4",
+    "tests/e2e/neutral-ui.spec.ts": "73ed564e68a0b6541b1952a1bfaaea83c6b87f0f37759ec4626f2098e2f62ac7",
+    "tests/neutral/assets.spec.ts": "b8fafc5db32519e018955310ec5fa072ad57b2b320ad21004741979d476fc1c8",
+    "tests/neutral/prepare-preview.mjs": "aff66806ab98b2d2947e8915ea0b15190218fbed4a9961084c984dba11a3ebd3",
+    "tsconfig.json": "83582b283fdd010aa5bf1fc5cc9cc149a58e3fca0e34d1a527c31b60b6aef3df"
+  },
+  "productionManifestSha256": "70c0f370c1b62a19218d14c8e43dabb0f54653ba5a6866459e564e1c58aab0d9"
+}

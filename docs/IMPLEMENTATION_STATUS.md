@@ -1418,3 +1418,120 @@ Diagrammformulare wurden bei dieser Beschriftungsänderung nicht zusätzlich im
 Browser geprüft. Keine Dependencies, Dokumentfelder oder Engineverträge geändert.
 Nächster konkreter Schritt: Durchsicht der lokalen Änderung; kein neuer
 Commit-/Pushauftrag für diesen Abschnitt.
+
+
+### Neutrales Designsystem v1.2 (21. Oktober 2026)
+
+Die genehmigte Migration ist umgesetzt: Standardtheme `neutral-blue`, getrennte
+semantische Rollen für Aktion/Link/Auswahl/Fokus/Status/Destruktion, lokale variable
+Source Sans 3 (3.052R) und zentrale austauschbare Marke mit neutralem DW-Platzhalter.
+Die bestätigte Optional-Konvention bleibt erhalten: keine Sternchen oder
+Pflichtfeldtexte. Bei der initialen Migration blieb die Eingangsreferenz
+`DESIGN_SYSTEM_NEUTRAL_v1.2.md` zunächst unverändert; das operative
+`DESIGN_SYSTEM.md` enthielt die bestätigten Nutzerentscheidungen bereits.
+Die anschliessende Nachführung aller Referenzen ist im folgenden Abschnitt dokumentiert.
+
+| Betroffene Requirements / Nachweise | Gelieferte Änderung |
+| --- | --- |
+| REQ-061, REQ-064 | Projekte, Übersicht, Daten und Einstellungen mit gemeinsamen Rollen; Tabellenzählköpfe rechtsbündig, kompakte Zeit mit aufklappbarem Vollwert |
+| REQ-062–063, REQ-066 / AT-054, AT-058 | SQL/R behalten Werkzeugleistenreihenfolge, breite Arbeitsflächen, Splitter und Reload; echte SQL-Ausgabe und R-Grafik im ausgewählten P7-Fall bestanden |
+| REQ-065 / AT-057 | Neutraler Header, lokale Source-Sans-Gewichte 400/500/600 und Italic, bestehende Codefont/Icons; SPEC-Brandingentscheidung auf neue Nutzerentscheidung abgeglichen |
+| REQ-067 / gezielter AT-055-Nachweis | Buttongewichtung und Danger-Ton getrennt; lesbare Disabled/Readonly/Busy-Zustände, synchrone Doppelaktionsguards, Auswahlkontur, Tastatur/Fokus, hoverbarer Tooltip, Tabellen-scope/aria-sort |
+| REQ-014, REQ-019 | Bestehende Namensvalidierung, Fehlerfokus und Autosave erhalten; Fehler verschieben Buttons nicht gegenüber Eingaben |
+
+Implementierte Bereiche: `src/styles/{tokens,base,components,app}.css`,
+`src/ui/{Controls,ActionMenu,Brand}.tsx`, `src/app/brand.ts`, `src/app/router.tsx` sowie die
+betroffenen Formular-, Daten-, SQL-/R- und Speicheransichten unter `src/features/`.
+README, SPEC, Implementierungsplan, Fontprovenienz und Assetinventar sind angepasst.
+Keine neuen Dependencies, Dokument-/Archivfelder oder Engine-/Speicherverträge.
+Frühere Kantonsassets und deren Herkunft bleiben historisch erhalten; sie werden
+im neutralen Build nicht geladen. Fontquelle ist auf Release-Commit
+`ed1808970eb3c7301c9a523bee26473ba0bb62fa` fixiert, Original-OFL wird mit ausgeliefert.
+
+Ausgangsrevision `6e1e1e03596727fc425a8aecbf8e29c2a0afcb13`, Arbeitsbaum vor Beginn
+sauber. Vor den drei Abschnitten Bestand/Diff erneut abgeglichen. Die endgültigen
+Quell-/Test-/Konfigurationshashes und die Buildmanifest-SHA-256 stehen zusammen mit
+Befehlen und sämtlichen Ergebnissen in
+[checks.json](verification/neutral-v1.2/checks.json).
+
+| Tatsächlich ausgeführte gezielte Prüfung | Ergebnis |
+| --- | --- |
+| `npm run typecheck` | Exit 0; nach Einbezug der neuen Previewkonfiguration nochmals Exit 0 |
+| `APP_BASE_PATH=/lab/ npm run build` | Exit 0; nach den CSS-Korrekturen einmal neu gebaut, ebenfalls Exit 0 |
+| Vier gezielte Chromium-Dev-Fälle, exakter Filter in checks.json | Erster Lauf Exit 1: drei bestanden; Komponentenfall wegen mehrdeutigem Testselektor gestoppt |
+| Nur Komponentenreferenz nach Korrekturen wiederholt | Final Exit 0; alle sechs Buttonkombinationen, Kontraste, Fokus, Menü/Dialog, Fallback, Touch und Textvergrösserung bestanden |
+| `npx playwright test -c playwright.neutral.config.ts --reporter=list,json` | Final Exit 0, ein Asset-Smoke gegen finalen `/lab/`-Build; Vite-Preview statt Docker |
+| `git diff --check` | Exit 0 |
+
+Alle fünf ausgewählten Szenarien sind damit bestanden. Nicht betroffene
+Tooltip-, Realansichten- und SQL-/R-Fälle wurden jeweils nur einmal ausgeführt.
+Der Komponentenfall wurde während der Korrekturen gezielt wiederholt: zuerst
+exakte Fontstatusnamen, dann eine durch die CSS-Reihenfolge verdrängte
+44-px-Touchhöhe und bei der Sichtprüfung auffällige feste Labelzeilenhöhe
+korrigiert; Referenztabelle und deren Zahlenklassen vereinheitlicht. Auch der
+zwischenzeitlich falsche Tabellen-Testselektor ist in den aufbewahrten Reports
+sichtbar. Keine Erwartungen zur Verdeckung eines Produktfehlers abgeschwächt.
+
+Die letzte Sichtprüfung bestätigt lesbare mehrzeilige Labels bei 200-%-Text,
+ruhige neutrale Rollen, korrekt ausgerichtete Projektzahlen und SQL-Namensfehler
+sowie die breite echte R-Grafik. Die Textprüfung nutzt skalierte Schriftgrössen
+und 720 × 450 als Layoutsimulation; dies ist keine native Browserzoom-Abnahme.
+Für den mehrzeiligen Projektfehler wurde nur im Test die DOM-Fehlerregion mit
+längerem Beispieltext befüllt, ohne produktive Validierungsregeln zu ändern.
+
+Nachweise: [Typecheck](verification/neutral-v1.2/typecheck-final.log),
+[finaler Build](verification/neutral-v1.2/build.log),
+[gezielter Dev-Lauf](verification/neutral-v1.2/ui.json),
+[finale Komponentenprüfung](verification/neutral-v1.2/components.json),
+[finaler Asset-Smoke](verification/neutral-v1.2/assets.json),
+[Kontrastwerte](verification/neutral-v1.2/contrast.json),
+[SQL-/R-Geometrie](verification/neutral-v1.2/geometry/p7-geometry-chromium.json),
+[Projektliste](verification/neutral-v1.2/projects-table.png),
+[Textvergrösserung](verification/neutral-v1.2/components-chromium-text-200.png).
+Alle neuen Screenshots/Messwerte liegen separat unter `verification/neutral-v1.2/`.
+Historische Nachweise bleiben unverändert. Der vorhandene Nutzerserver auf 4173
+wurde nach Pfad-/Prozessprüfung wiederverwendet und läuft weiter; die eigene
+Produktionsvorschau auf 4197 ist nach den Tests beendet. Nur die generierte
+`dist/runtime-config.json` erhält für den Smoke `/lab/` als Betreiber-Basispfad.
+
+Ausdrücklich nicht ausgeführt: vollständiges Verify, gesamte Unit-/Integrations-/
+E2E-Suiten, Firefox/WebKit, Docker-Deploymentmatrix und Safari. Nicht in diesen
+fünf Fällen enthaltene fachliche Import-/Transfer-/Archivpfade wurden nicht neu
+vollständig abgenommen. Die bestehende Vite-Warnung zu grossen Codechunks bleibt;
+kein Bundle-Splitting als Zusatzumfang. Dies ist eine gezielte Designabnahme,
+keine erneute vollständige V1-/Releasefreigabe.
+
+Nächster konkreter Schritt: Durchsicht der lokalen Migration. Kein Commit, Push
+oder Deployment wurde für diesen Abschnitt beauftragt oder ausgeführt.
+
+
+### Designsystem-Konventionen nachgeführt (21. Oktober 2026)
+
+Auf Nutzerauftrag sind die abgestimmten Konventionen direkt im Designsystem
+verankert. `docs/DESIGN_SYSTEM.md` ist ausdrücklich die massgebliche aktuelle
+Projektfassung. `docs/DESIGN_SYSTEM_NEUTRAL_v1.2.md` enthält dieselben fachlichen
+Gestaltungsregeln; die ältere v1.1-Datei ist als historisch gekennzeichnet.
+
+Ein zusammenfassender Abschnitt nennt die dauerhaften Regeln: Pflichtfelder
+ohne Zusatz, expliziter Optionalzusatz samt Ausnahmen, sichtbare kompakte
+Analysenamen, stabiles Fehlerlayout, mitwachsende Labelzeilenhöhe und gezielter
+UI-Prüfumfang. Die widersprechenden Sternchen-/Vollgate-Regeln in v1.2 sind
+ersetzt. Validierungszeitpunkt, Fehlerfokus und Erhalt ungültiger Entwürfe sind
+wieder ausdrücklich beschrieben. Vollständige funktionale und Releaseabnahmen
+bleiben an SPEC und Auftrag gebunden; die UI-Regel reduziert deren Umfang nicht.
+
+Prüfung: gezielter Inhalts-/Link-/Referenzabgleich und `git diff --check`, beide
+Exit 0. Nur Dokumentation geändert; keine neuen Laufzeit-, Build- oder Browsertests
+für diese Nachführung ausgeführt. Vorhandene Implementierungsänderungen und
+historische Abnahmenachweise sind erhalten. Nächster Schritt: aktuelle
+Projektfassung als Grundlage weiterer UI-Arbeit verwenden; keine erneuten
+Ausnahmeentscheidungen für die aufgeführten Konventionen nötig.
+
+
+Commit-Vorbereitung auf Nutzerauftrag: `git fetch origin main` Exit 0;
+`HEAD...origin/main` vor dem Commit 0/0. Die Prüfung des gestagten Diffs hat
+Windows-Zeilenenden und nachgestellte Leerzeichen in der neu übernommenen
+Original-OFL gefunden. Ausschliesslich diese Formatierung normalisiert und
+identischen Lizenzwortlaut ohne Whitespace nachgewiesen. Fontdateien und
+geprüfte Quell-/Test-/Konfigurationshashes unverändert. Anschliessender
+`git diff --cached --check`: Exit 0. Keine weiteren Tests für Commit/Push gestartet.

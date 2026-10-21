@@ -143,3 +143,16 @@ stehen im Implementierungsstatus. Keine neue Domain-/Engine-/Speicherschnittstel
 ## UI — Projekte und nachvollziehbare Beziehungen
 
 Nutzerentscheidung vom 15. Oktober 2026: durchgehend Projekt, ausschliesslich `/projects`-Routen ohne Legacy-Aliase, unveränderte Speicherverträge. Umsetzung in drei Abschnitten: (1) Begriffe/Routen/statisches Deployment, (2) Übersicht/Daten trennen, (3) Datenstände/Herkunft/gemeinsame Laufdetails. Abnahme: REQ-011–015/059–067, AT-006/018/054–058; bestehende Golden-/Archiv-/Multitab-Pfade erhalten. Verify, E2E-Dreiermatrix und Deployment ausführen; bekannte Paketmirrorblockade separat ausweisen, Pins nicht ändern. Historische Nachweise nicht überschreiben.
+
+## UI — Neutrales Designsystem v1.2
+
+Nutzerentscheidung vom 21. Oktober 2026: `neutral-blue`, lokale variable Source Sans 3,
+austauschbare neutrale Marke, getrennte Farbrollen und Buttongewichtung/-bedeutung.
+Die Optional-Konvention ohne Pflichtfeldmarker bleibt verbindlich. Umsetzung:
+Tokens/Assets/Marke → Komponenten/Ansichten → gezielte Abnahme.
+Für diesen Abschnitt ausdrücklich nur Typecheck, Produktionsbuild und fünf gezielte
+Chromium-Fälle (Komponenten, Tooltip, reale Ansichten, vorhandener SQL-/R-Geometriefall,
+lokale Assets unter `/lab/`); keine vollständigen Suiten, Browser-/Deploymentmatrix oder
+Safari-Prüfung. Details und tatsächliche Befehle im Implementierungsstatus;
+historische Nachweise bleiben erhalten. REQ-061–067 / AT-054–058, ohne neue
+Domain-, Engine- oder Speicherverträge.

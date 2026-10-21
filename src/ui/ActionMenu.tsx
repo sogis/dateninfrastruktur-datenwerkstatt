@@ -1,5 +1,5 @@
-import {useEffect, useId, useRef, useState} from 'react';
-import {Button, type ButtonVariant} from './Controls';
+import {useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties} from 'react';
+import {Button, type ButtonTone, type ButtonVariant} from './Controls';
 import type {IconName} from './Icon';
 export interface MenuAction {
   label: string;
@@ -7,6 +7,7 @@ export interface MenuAction {
   disabled?: boolean;
   icon?: IconName;
   variant?: ButtonVariant;
+  tone?: ButtonTone;
 }
 export function ActionMenu({
   label = 'Weitere Aktionen',
@@ -16,6 +17,12 @@ export function ActionMenu({
   actions: MenuAction[];
 }) {
   const [open, setOpen] = useState(false);
+  const [position, setPosition] = useState<{
+    left: number;
+    top: number;
+    maxHeight: number;
+    placement: 'bottom' | 'top';
+  } | null>(null);
   const id = useId();
   const host = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
@@ -27,8 +34,62 @@ export function ActionMenu({
     setOpen(false);
     if (restore) trigger.current?.focus();
   };
+  useLayoutEffect(() => {
+    if (!open) {
+      setPosition(null);
+      return;
+    }
+    const anchor = trigger.current;
+    const panel = menu.current;
+    const doc = anchor?.ownerDocument;
+    const win = doc?.defaultView;
+    if (!anchor || !panel || !doc || !win) return;
+    const measure = () => {
+      const rect = anchor.getBoundingClientRect();
+      const width = panel.getBoundingClientRect().width;
+      const naturalHeight = panel.scrollHeight + panel.offsetHeight - panel.clientHeight;
+      const viewportHeight = Math.max(0, win.innerHeight - 16);
+      const below = Math.max(0, Math.min(viewportHeight, win.innerHeight - rect.bottom - 16));
+      const above = Math.max(0, Math.min(viewportHeight, rect.top - 16));
+      const placement = naturalHeight <= below || below >= above ? 'bottom' : 'top';
+      const maxHeight = placement === 'bottom' ? below : above;
+      const height = Math.min(naturalHeight, maxHeight);
+      const left = Math.max(8, Math.min(rect.right - width, win.innerWidth - width - 8));
+      const preferredTop = placement === 'bottom' ? rect.bottom + 8 : rect.top - height - 8;
+      const top = Math.max(8, Math.min(preferredTop, win.innerHeight - height - 8));
+      setPosition((current) =>
+        current?.left === left &&
+        current.top === top &&
+        current.maxHeight === maxHeight &&
+        current.placement === placement
+          ? current
+          : {left, top, maxHeight, placement},
+      );
+    };
+    measure();
+    let frame: number | null = null;
+    const schedule = () => {
+      if (frame !== null) return;
+      frame = win.requestAnimationFrame(() => {
+        frame = null;
+        measure();
+      });
+    };
+    const observer = new ResizeObserver(schedule);
+    observer.observe(anchor);
+    observer.observe(panel);
+    doc.addEventListener('scroll', schedule, true);
+    win.addEventListener('resize', schedule);
+    return () => {
+      observer.disconnect();
+      doc.removeEventListener('scroll', schedule, true);
+      win.removeEventListener('resize', schedule);
+      if (frame !== null) win.cancelAnimationFrame(frame);
+    };
+  }, [open]);
+  const positioned = position !== null;
   useEffect(() => {
-    if (!open) return;
+    if (!open || !positioned) return;
     const buttons = items();
     (last.current ? buttons.at(-1) : buttons[0])?.focus();
     const outside = (event: PointerEvent) => {
@@ -36,7 +97,13 @@ export function ActionMenu({
     };
     document.addEventListener('pointerdown', outside);
     return () => document.removeEventListener('pointerdown', outside);
-  }, [open]);
+  }, [open, positioned]);
+  const menuStyle: CSSProperties & {'--dw-menu-max-height': string} = {
+    left: position?.left ?? 0,
+    top: position?.top ?? 0,
+    visibility: positioned ? 'visible' : 'hidden',
+    '--dw-menu-max-height': `${position?.maxHeight ?? 0}px`,
+  };
   return (
     <div
       ref={host}
@@ -72,6 +139,8 @@ export function ActionMenu({
           role="menu"
           aria-label={label}
           className="dw-menu-panel"
+          data-placement={position?.placement}
+          style={menuStyle}
           onKeyDown={(e) => {
             const buttons = items(),
               current = buttons.indexOf(document.activeElement as HTMLButtonElement);
@@ -100,7 +169,8 @@ export function ActionMenu({
               tabIndex={-1}
               disabled={action.disabled}
               icon={action.icon}
-              variant={action.variant ?? 'ghost'}
+              variant={action.variant ?? 'tertiary'}
+              tone={action.tone ?? 'default'}
               onClick={() => {
                 close(true);
                 action.onSelect();

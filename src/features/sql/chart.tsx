@@ -46,7 +46,10 @@ export function Chart({
     if (!surface) return;
     const ctx = surface.getContext('2d');
     if (!ctx) return;
-    ctx.fillStyle = 'white';
+    const theme = getComputedStyle(surface);
+    const token = (name: string) => theme.getPropertyValue(name).trim();
+    const uiFont = token('--dw-font-ui');
+    ctx.fillStyle = token('--dw-surface');
     ctx.fillRect(0, 0, 1000, 480);
     try {
       const xi = data.schema.columns.findIndex((c) => c.name === spec.x),
@@ -90,17 +93,17 @@ export function Chart({
         maxX = xs.length ? Math.max(...xs) : 1;
       const x = (v: number) => 70 + ((v - minX) / (maxX - minX || 1)) * 870;
       const y = (v: number) => 410 - ((v - minY) / (maxY - minY || 1)) * 340;
-      ctx.strokeStyle = '#81909b';
+      ctx.strokeStyle = token('--dw-border-control');
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(70, 70);
       ctx.lineTo(70, 410);
       ctx.lineTo(955, 410);
       ctx.stroke();
-      ctx.fillStyle = '#243746';
-      ctx.font = '18px sans-serif';
+      ctx.fillStyle = token('--dw-text');
+      ctx.font = `600 18px ${uiFont}`;
       ctx.fillText(title, 70, 28);
-      ctx.font = '12px sans-serif';
+      ctx.font = `400 12px ${uiFont}`;
       ctx.fillText(spec.y, 10, 52);
       ctx.fillText(spec.x, 850, 466);
       ctx.fillText(String(maxY), 5, 78);
@@ -138,12 +141,12 @@ export function Chart({
         }
       }
       const step = Math.max(1, Math.ceil(points.length / 8));
-      ctx.fillStyle = '#243746';
+      ctx.fillStyle = token('--dw-text');
       points.forEach((p, i) => {
         if (i % step === 0 && p.x !== null) ctx.fillText(p.label.slice(0, 20), x(p.x) - 15, 435);
       });
       if (ci >= 0) {
-        ctx.font = '11px sans-serif';
+        ctx.font = `400 11px ${uiFont}`;
         cats.forEach((cat, i) => {
           ctx.fillStyle = color(cat);
           ctx.fillText(cat.slice(0, 24), 70 + (i % 8) * 110, 48 + Math.floor(i / 8) * 12);

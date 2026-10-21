@@ -66,7 +66,7 @@ Der Portaladapter nutzt die bereits vorhandenen `explore/context.json`-Endpunkte
 
 `python tools/verify-package.py` prüft Dokumentlinks, Requirement-/Test-Zuordnung, Fixture-Sollwerte und Manifestreferenzen des Pakets. `tsc -p contracts/tsconfig.json` prüft die eigenen TypeScript-Verträge. Diese Prüfungen ersetzen nicht die Browser-, Engine- und E2E-Tests.
 
-Das Original-SVG wurde aus der geprüften so-web-components-Baseline übernommen; Herkunft und Lizenz sind dokumentiert. Die Oberfläche verwendet die kantonal lizenzierten lokalen Frutiger-Schnitte 55Roman/75Black aus sodata mit Systemfont-Fallback, JetBrains Mono 2.304 für Code und Konsole sowie lokale Bootstrap-SVGs 1.13.1. [Schriftherkunft und Nutzungsbestätigung](docs/FONT_PROVENANCE.md) sowie die Gestaltungsregeln im [Designsystem](docs/DESIGN_SYSTEM.md) sind dokumentiert. Monacos interner lizenzierter Iconfont bleibt unverändert.
+Die Oberfläche verwendet das organisationsunabhängige helle Theme `neutral-blue`, lokale variable Source Sans 3 (3.052R) mit Systemfont-Fallback, JetBrains Mono 2.304 für Code und Konsole sowie lokale Bootstrap-SVGs 1.13.1. Die zentrale Markenkonfiguration in `src/app/brand.ts` zeigt standardmässig den neutralen DW-Platzhalter und „Datenwerkstatt“; ein eigenes lokales Logo und ein Organisationsname können dort ergänzt werden. [Schriftherkunft und Lizenzen](docs/FONT_PROVENANCE.md) sowie das [Designsystem](docs/DESIGN_SYSTEM.md) dokumentieren die aktive Variante. Frühere Kantonsassets bleiben als historischer Bestand erhalten. Monacos interner lizenzierter Iconfont bleibt unverändert.
 
 ## Statischer Betrieb
 

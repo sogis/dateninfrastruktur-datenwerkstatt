@@ -1,15 +1,15 @@
 @font-face {
-  font-family: 'Frutiger';
-  src: url('../assets/fonts/FrutigerLTW05-55Roman.woff2') format('woff2');
-  font-weight: 400;
+  font-family: 'Source Sans 3';
+  src: url('../assets/fonts/source-sans-3/SourceSans3VF-Upright.ttf.woff2') format('woff2');
+  font-weight: 200 900;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Frutiger';
-  src: url('../assets/fonts/FrutigerLTW05-75Black.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
+  font-family: 'Source Sans 3';
+  src: url('../assets/fonts/source-sans-3/SourceSans3VF-Italic.ttf.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: italic;
   font-display: swap;
 }
 @font-face {
@@ -26,43 +26,46 @@
 }
 body {
   margin: 0;
-  color: var(--dw-color-text);
-  background: var(--dw-color-surface);
-  font: 400 16px/1.5 var(--dw-font-sans);
+  color: var(--dw-text);
+  background: var(--dw-surface);
+  font: var(--dw-weight-regular) 1rem/1.5 var(--dw-font-ui);
+  font-synthesis: none;
 }
 h1,
 h2,
 h3,
 h4 {
-  color: var(--dw-color-text);
+  color: var(--dw-text);
   line-height: 1.25;
-  font-weight: 700;
+  font-weight: var(--dw-weight-semibold);
   margin: 0 0 var(--dw-space-4);
 }
 h1 {
-  font-size: 28px;
+  font-size: 1.75rem;
 }
 h2 {
-  font-size: 20px;
+  font-size: 1.25rem;
+  line-height: 1.4;
 }
 h3 {
-  font-size: 16px;
+  font-size: 1rem;
 }
 h4 {
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 p {
   margin: 0 0 var(--dw-space-4);
 }
 a {
-  color: var(--dw-color-accent);
+  color: var(--dw-link);
   text-underline-offset: 3px;
+  text-decoration: underline;
 }
 a:hover {
-  color: var(--dw-color-accent-hover);
+  color: var(--dw-link-hover);
 }
 :focus-visible {
-  outline: 3px solid var(--dw-color-focus);
+  outline: 3px solid var(--dw-focus-ring);
   outline-offset: 2px;
 }
 summary {
@@ -71,7 +74,7 @@ summary {
 }
 code,
 pre {
-  font-family: var(--dw-font-mono);
+  font-family: var(--dw-font-code);
 }
 pre {
   white-space: pre-wrap;
@@ -95,4 +98,19 @@ pre {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+a:where(:visited) {
+  color: var(--dw-link);
+}
+a:hover,
+a:active {
+  color: var(--dw-link-hover);
+}
+strong {
+  font-weight: var(--dw-weight-strong);
+}
+th {
+  font-weight: var(--dw-weight-semibold);
+  font-size: 0.875rem;
 }

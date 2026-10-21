@@ -1,12 +1,4 @@
-import {
-  Button,
-  Input,
-  Select,
-  FormField,
-  ActionGroup,
-  Toolbar,
-  Notice,
-} from '../../ui/Controls';
+import {Button, Input, Select, FormField, ActionGroup, Toolbar, Notice} from '../../ui/Controls';
 import {useNameField, useFormValidation} from '../../ui/useFormValidation';
 import {displayNameError, sqlNameError} from '../../domain/fieldValidation';
 import {ActionMenu} from '../../ui/ActionMenu';
@@ -50,8 +42,19 @@ export function RWorkbench({
     (value) => session.updateAnalysis(analysis.id, {name: value}),
     report,
   );
+  const saving = useRef(false);
+  const [isSaving, setIsSaving] = useState(false);
   const save = () => {
-    if (name.commit()) void session.flush().catch(report);
+    if (saving.current || session.readOnly || !name.commit()) return;
+    saving.current = true;
+    setIsSaving(true);
+    void session
+      .flush()
+      .catch(report)
+      .finally(() => {
+        saving.current = false;
+        setIsSaving(false);
+      });
   };
   const [selected, setSelected] = useState('latest');
   const {view} = useWorkspace();
@@ -77,6 +80,20 @@ export function RWorkbench({
     sqlName: () => (replace === 'new' ? sqlNameError(sqlName, occupied) : undefined),
   });
   const [preview, setPreview] = useState<Awaited<ReturnType<typeof service.previewObject>>>();
+  const pending = useRef(false);
+  const [busyAction, setBusyAction] = useState('');
+  const act = (action: string, work: () => Promise<unknown>) => {
+    if (pending.current || session.scheduler.getSnapshot()) return;
+    pending.current = true;
+    setBusyAction(action);
+    void Promise.resolve()
+      .then(work)
+      .catch(report)
+      .finally(() => {
+        pending.current = false;
+        setBusyAction('');
+      });
+  };
   useEffect(() => {
     if (!started.current && !session.readOnly) {
       started.current = true;
@@ -93,7 +110,8 @@ export function RWorkbench({
       .map((id) => session.document.results[id])
       .filter((r): r is PlotResult => r?.kind === 'plot') ?? [];
   const execute = (selection?: string) => {
-    if (busy || session.readOnly || !name.commit()) return;
+    if (pending.current || session.scheduler.getSnapshot() || session.readOnly || !name.commit())
+      return;
     setSelected('latest');
     setPreview(undefined);
     void service.run(analysis.id, selection).catch(report);
@@ -119,7 +137,8 @@ export function RWorkbench({
             variant="primary"
             icon="play-fill"
             busy={busy?.startsWith('R ') ?? false}
-            disabled={!!busy || session.readOnly}
+            busyLabel="R wird ausgeführt …"
+            disabled={!!busy || !!busyAction || session.readOnly}
             onClick={() => execute()}
           >
             Ausführen
@@ -129,7 +148,13 @@ export function RWorkbench({
               Abbrechen
             </Button>
           )}
-          <Button icon="floppy" disabled={session.readOnly} onClick={save}>
+          <Button
+            icon="floppy"
+            disabled={session.readOnly || isSaving}
+            busy={isSaving}
+            busyLabel="Änderungen werden gespeichert …"
+            onClick={save}
+          >
             Speichern
           </Button>
         </ActionGroup>
@@ -152,8 +177,9 @@ export function RWorkbench({
             {label: 'R-Optionen', onSelect: () => setOptionsOpen(true)},
             {
               label: 'R zurücksetzen',
-              disabled: !!busy || session.readOnly,
-              variant: 'danger',
+              disabled: !!busy || !!busyAction || session.readOnly,
+              variant: 'tertiary',
+              tone: 'danger',
               onSelect: () => setReset(true),
             },
             {
@@ -228,7 +254,11 @@ export function RWorkbench({
         </FormField>
         <span>{busy ?? (run ? runStatusText(run) : 'Bereit')}</span>
         {!service.scope && !busy && !session.readOnly && (
-          <Button onClick={() => void service.activate(analysis.id).catch(report)}>
+          <Button
+            busy={busyAction === 'activate'}
+            busyLabel="R wird initialisiert …"
+            onClick={() => act('activate', () => service.activate(analysis.id))}
+          >
             R initialisieren
           </Button>
         )}
@@ -289,16 +319,21 @@ export function RWorkbench({
                   {service.objectList.map((o) => (
                     <Button
                       key={o.ref.name}
-                      disabled={!!busy || !o.isDataFrame}
+                      disabled={!!busy || !!busyAction || !o.isDataFrame}
+                      busy={busyAction === `preview-${o.ref.name}`}
+                      busyLabel="Objekt wird geladen …"
                       onClick={() => {
+                        if (pending.current || session.scheduler.getSnapshot() || !o.isDataFrame)
+                          return;
                         setObject(o.ref);
                         setPlan(undefined);
                         setDatasetName(o.ref.name);
                         setSqlName(o.ref.name.toLowerCase().replace(/[^a-z0-9_]/g, '_'));
-                        void service
-                          .previewObject(o.ref, new AbortController().signal)
-                          .then(setPreview)
-                          .catch(report);
+                        act(`preview-${o.ref.name}`, () =>
+                          service
+                            .previewObject(o.ref, new AbortController().signal)
+                            .then(setPreview),
+                        );
                       }}
                     >
                       {o.ref.name} ·{' '}
@@ -314,13 +349,15 @@ export function RWorkbench({
                 ))}
                 {object && (
                   <Button
-                    disabled={!!busy || session.readOnly}
+                    disabled={!!busy || !!busyAction || session.readOnly}
+                    busy={busyAction === 'plan'}
+                    busyLabel="Übernahme wird geprüft …"
                     onClick={() => {
+                      if (session.readOnly) return;
                       setApproved([]);
-                      void service
-                        .planFromR(object, new AbortController().signal)
-                        .then(setPlan)
-                        .catch(report);
+                      act('plan', () =>
+                        service.planFromR(object, new AbortController().signal).then(setPlan),
+                      );
                     }}
                   >
                     Objekt als Datensatz
@@ -406,20 +443,26 @@ export function RWorkbench({
       {reset && (
         <Modal
           title="R-Sitzung zurücksetzen?"
-          onClose={() => setReset(false)}
+          onClose={() => {
+            if (!pending.current) setReset(false);
+          }}
           footer={
             <>
               <Button
-                variant="danger"
+                variant="primary"
+                tone="danger"
+                disabled={!!busy || !!busyAction || session.readOnly}
+                busy={busyAction === 'reset'}
+                busyLabel="R wird zurückgesetzt …"
                 onClick={() => {
-                  void service
-                    .reset()
-                    .then(() => {
+                  if (session.readOnly) return;
+                  act('reset', () =>
+                    service.reset().then(() => {
                       setReset(false);
                       setPreview(undefined);
                       setObject(undefined);
-                    })
-                    .catch(report);
+                    }),
+                  );
                 }}
               >
                 Reset bestätigen
@@ -436,21 +479,26 @@ export function RWorkbench({
       {plan && (
         <Modal
           title="R-Objekt nach SQL übernehmen"
-          onClose={() => setPlan(undefined)}
+          onClose={() => {
+            if (!pending.current) setPlan(undefined);
+          }}
           footer={
             <>
               <Button
                 variant="primary"
-                disabled={!!busy}
+                disabled={!!busy || !!busyAction || session.readOnly}
+                busy={busyAction === 'commit'}
+                busyLabel="Datensatz wird übernommen …"
                 onClick={() => {
-                  if (!datasetForm.validate()) return;
-                  void service
-                    .commitFromR(plan.id, datasetName, approved, new AbortController().signal, {
-                      sqlName,
-                      ...(replace === 'new' ? {} : {replace: replace as DatasetId}),
-                    })
-                    .then(() => setPlan(undefined))
-                    .catch(report);
+                  if (session.readOnly || !datasetForm.validate()) return;
+                  act('commit', () =>
+                    service
+                      .commitFromR(plan.id, datasetName, approved, new AbortController().signal, {
+                        sqlName,
+                        ...(replace === 'new' ? {} : {replace: replace as DatasetId}),
+                      })
+                      .then(() => setPlan(undefined)),
+                  );
                 }}
               >
                 Datensatz übernehmen
@@ -519,6 +567,20 @@ export function RWorkbench({
 function Plot({session, result}: {session: EditingSession; result: PlotResult}) {
   const [url, setUrl] = useState('');
   const container = useRef<HTMLDivElement>(null);
+  const pending = useRef(false);
+  const [busyAction, setBusyAction] = useState('');
+  const act = (action: string, work: () => Promise<unknown>) => {
+    if (pending.current) return;
+    pending.current = true;
+    setBusyAction(action);
+    void Promise.resolve()
+      .then(work)
+      .catch(report)
+      .finally(() => {
+        pending.current = false;
+        setBusyAction('');
+      });
+  };
   useEffect(() => {
     let live = true;
     let objectUrl = '';
@@ -548,19 +610,28 @@ function Plot({session, result}: {session: EditingSession; result: PlotResult}) 
           Grafik Vollbild
         </Button>
         <Button
+          disabled={!!busyAction}
+          busy={busyAction === 'export'}
+          busyLabel="PNG wird heruntergeladen …"
           onClick={() =>
-            void session
-              .getR()
-              .plot(result.id, new AbortController().signal)
-              .then((blob) => downloadStream(blob.stream(), 'r-grafik.png', 'image/png'))
-              .catch(report)
+            act('export', () =>
+              session
+                .getR()
+                .plot(result.id, new AbortController().signal)
+                .then((blob) => downloadStream(blob.stream(), 'r-grafik.png', 'image/png')),
+            )
           }
         >
           PNG herunterladen
         </Button>
         <Button
-          disabled={session.readOnly || result.retention === 'kept'}
-          onClick={() => void session.getR().keepPlot(result.id).catch(report)}
+          disabled={!!busyAction || session.readOnly || result.retention === 'kept'}
+          busy={busyAction === 'keep'}
+          busyLabel="Grafik wird aufbewahrt …"
+          onClick={() => {
+            if (session.readOnly || result.retention === 'kept') return;
+            act('keep', () => session.getR().keepPlot(result.id));
+          }}
         >
           Grafik aufbewahren
         </Button>

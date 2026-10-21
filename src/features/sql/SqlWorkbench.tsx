@@ -51,8 +51,19 @@ export function SqlWorkbench({
     (value) => session.updateAnalysis(analysis.id, {name: value}),
     report,
   );
+  const saving = useRef(false);
+  const [isSaving, setIsSaving] = useState(false);
   const save = () => {
-    if (name.commit()) void session.flush().catch(report);
+    if (saving.current || session.readOnly || !name.commit()) return;
+    saving.current = true;
+    setIsSaving(true);
+    void session
+      .flush()
+      .catch(report)
+      .finally(() => {
+        saving.current = false;
+        setIsSaving(false);
+      });
   };
   const [selected, setSelected] = useState<string>('latest');
   const runs = Object.values(session.document.runs)
@@ -62,7 +73,7 @@ export function SqlWorkbench({
   const run = selected === 'latest' ? runs[0] : runs.find((r) => r.id === selected);
   const result = run?.resultIds[0] ? session.document.results[run.resultIds[0]] : undefined;
   const execute = (selection?: string) => {
-    if (!busy && !session.readOnly && name.commit()) {
+    if (!session.scheduler.getSnapshot() && !session.readOnly && name.commit()) {
       setSelected('latest');
       void service.run(analysis.id, selection).catch(report);
     }
@@ -88,6 +99,7 @@ export function SqlWorkbench({
             variant="primary"
             icon="play-fill"
             busy={busy?.startsWith('SQL ') ?? false}
+            busyLabel="SQL wird ausgeführt …"
             disabled={session.readOnly || !!busy}
             onClick={() => execute()}
           >
@@ -98,7 +110,13 @@ export function SqlWorkbench({
               Abbrechen
             </Button>
           )}
-          <Button icon="floppy" disabled={session.readOnly} onClick={save}>
+          <Button
+            icon="floppy"
+            disabled={session.readOnly || isSaving}
+            busy={isSaving}
+            busyLabel="Änderungen werden gespeichert …"
+            onClick={save}
+          >
             Speichern
           </Button>
         </ActionGroup>
@@ -280,10 +298,12 @@ export function Parameters({analysis, session}: {analysis: Analysis; session: Ed
       <table>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Typ</th>
-            <th>Wert</th>
-            <th />
+            <th scope="col">Name</th>
+            <th scope="col">Typ</th>
+            <th scope="col">Wert</th>
+            <th scope="col" className="actions">
+              <span className="visually-hidden">Aktionen</span>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -369,8 +389,10 @@ export function Parameters({analysis, session}: {analysis: Analysis; session: Ed
                   />
                 </FormField>
               </td>
-              <td>
+              <td className="actions">
                 <Button
+                  variant="tertiary"
+                  tone="danger"
                   disabled={session.readOnly}
                   aria-label={`Parameter ${i + 1} entfernen`}
                   onClick={() => {
@@ -397,6 +419,7 @@ export function Parameters({analysis, session}: {analysis: Analysis; session: Ed
           Parameter hinzufügen
         </Button>
         <Button
+          variant="primary"
           disabled={session.readOnly || !dirty}
           onClick={() => {
             try {
@@ -436,6 +459,20 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
     sqlName: () => sqlNameError(sqlName, occupied),
   });
   const busy = useSyncExternalStore(session.scheduler.subscribe, session.scheduler.getSnapshot);
+  const pending = useRef(false);
+  const [busyAction, setBusyAction] = useState('');
+  const act = (action: string, work: () => Promise<unknown>) => {
+    if (pending.current || session.scheduler.getSnapshot()) return;
+    pending.current = true;
+    setBusyAction(action);
+    void Promise.resolve()
+      .then(work)
+      .catch(report)
+      .finally(() => {
+        pending.current = false;
+        setBusyAction('');
+      });
+  };
   // Paging cancellation discards the UI reply only; it must never cancel another engine job.
   useEffect(() => {
     let current = true;
@@ -475,15 +512,24 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
         </strong>
         <ActionGroup>
           <Button
-            disabled={!!busy || unavailable || session.readOnly || result.retention === 'kept'}
+            disabled={
+              !!busy ||
+              !!busyAction ||
+              unavailable ||
+              session.readOnly ||
+              result.retention === 'kept'
+            }
+            busy={busyAction === 'keep'}
+            busyLabel="Resultat wird aufbewahrt …"
             onClick={() => {
-              void service.keep(result.id).catch(report);
+              if (unavailable || session.readOnly || result.retention === 'kept') return;
+              act('keep', () => service.keep(result.id));
             }}
           >
             Aufbewahren
           </Button>
           <Button
-            disabled={!!busy || unavailable || session.readOnly}
+            disabled={!!busy || !!busyAction || unavailable || session.readOnly}
             onClick={() => setTransfer(true)}
           >
             In R
@@ -492,18 +538,22 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
         {(['csv', 'parquet'] as const).map((format) => (
           <Button
             key={format}
-            disabled={!!busy || unavailable}
+            disabled={!!busy || !!busyAction || unavailable}
+            busy={busyAction === `export-${format}`}
+            busyLabel={`${format.toUpperCase()} wird exportiert …`}
             onClick={() => {
-              void service
-                .export(result.id, format, new AbortController().signal)
-                .then((stream) =>
-                  downloadStream(
-                    stream,
-                    `${result.name}.${format}`,
-                    format === 'csv' ? 'text/csv' : 'application/vnd.apache.parquet',
+              if (unavailable) return;
+              act(`export-${format}`, () =>
+                service
+                  .export(result.id, format, new AbortController().signal)
+                  .then((stream) =>
+                    downloadStream(
+                      stream,
+                      `${result.name}.${format}`,
+                      format === 'csv' ? 'text/csv' : 'application/vnd.apache.parquet',
+                    ),
                   ),
-                )
-                .catch(report);
+              );
             }}
           >
             {format.toUpperCase()} exportieren
@@ -533,10 +583,19 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
                 <tr>
                   {result.schema.columns.map((col) => (
                     <th
+                      scope="col"
                       key={col.name}
+                      aria-sort={
+                        sort[0]?.column === col.name
+                          ? sort[0].direction === 'asc'
+                            ? 'ascending'
+                            : 'descending'
+                          : 'none'
+                      }
                       className={numericColumn(col.logicalType) ? 'numeric' : undefined}
                     >
                       <Button
+                        variant="tertiary"
                         onClick={() => {
                           setOffset(0);
                           setSort([
@@ -630,10 +689,13 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
           />
         </FormField>
         <Button
-          disabled={!!busy || session.readOnly || unavailable}
+          variant="primary"
+          disabled={!!busy || !!busyAction || session.readOnly || unavailable}
+          busy={busyAction === 'dataset'}
+          busyLabel="Datensatz wird gespeichert …"
           onClick={() => {
-            if (!datasetForm.validate()) return;
-            void service.asDataset(result.id, datasetName, sqlName).catch(report);
+            if (session.readOnly || unavailable || !datasetForm.validate()) return;
+            act('dataset', () => service.asDataset(result.id, datasetName, sqlName));
           }}
         >
           Als Datensatz speichern
@@ -668,6 +730,8 @@ function ChartControls({result, session}: {result: TableResult; session: Editing
   const [data, setData] = useState<Awaited<ReturnType<typeof service.chartData>>>();
   const [error, setError] = useState('');
   const canvas = useRef<HTMLCanvasElement>(null);
+  const saving = useRef(false);
+  const [isSaving, setIsSaving] = useState(false);
   const busy = useSyncExternalStore(session.scheduler.subscribe, session.scheduler.getSnapshot);
   useEffect(() => {
     let current = true;
@@ -730,9 +794,28 @@ function ChartControls({result, session}: {result: TableResult; session: Editing
         ))}
         <ActionGroup>
           <Button
-            disabled={!data || !!error || !!busy || session.readOnly}
+            variant="primary"
+            disabled={!data || !!error || !!busy || isSaving || session.readOnly}
+            busy={isSaving}
+            busyLabel="Diagramm wird gespeichert …"
             onClick={() => {
-              void service.saveVisualization(result.id, result.name, spec).catch(report);
+              if (
+                saving.current ||
+                !data ||
+                error ||
+                session.scheduler.getSnapshot() ||
+                session.readOnly
+              )
+                return;
+              saving.current = true;
+              setIsSaving(true);
+              void service
+                .saveVisualization(result.id, result.name, spec)
+                .catch(report)
+                .finally(() => {
+                  saving.current = false;
+                  setIsSaving(false);
+                });
             }}
           >
             Diagramm speichern

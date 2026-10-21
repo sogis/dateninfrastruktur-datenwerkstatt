@@ -1,7 +1,7 @@
 import {Button, Input, Select, FormField, Notice} from '../../ui/Controls';
 import {useFormValidation} from '../../ui/useFormValidation';
 import {bindingNameError, requiredValueError} from '../../domain/fieldValidation';
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 import {useNavigate} from '@tanstack/react-router';
 import type {EditingSession} from '../../application/workspaceService';
 import type {ResultId, AnalysisId} from '../../domain/model';
@@ -85,13 +85,18 @@ export function TransferToR({
   const [plan, setPlan] = useState<TransferPlan>();
   const [approved, setApproved] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
+  const [busyAction, setBusyAction] = useState<'plan' | 'commit'>();
+  const pending = useRef(false);
   const [error, setError] = useState('');
   const form = useFormValidation({
     analysis: () => requiredValueError(analysisId),
     variable: () => bindingNameError(variable),
     ...approvalChecks(plan, approved),
   });
-  const act = async (work: () => Promise<void>) => {
+  const act = async (action: 'plan' | 'commit', work: () => Promise<void>) => {
+    if (pending.current || session.readOnly) return;
+    pending.current = true;
+    setBusyAction(action);
     setBusy(true);
     setError('');
     try {
@@ -99,6 +104,8 @@ export function TransferToR({
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
+      pending.current = false;
+      setBusyAction(undefined);
       setBusy(false);
     }
   };
@@ -112,9 +119,11 @@ export function TransferToR({
         <>
           <Button
             disabled={busy}
+            busy={busyAction === 'plan'}
+            busyLabel="Transfer wird geprüft …"
             onClick={() => {
               if (!form.validate(['analysis', 'variable'])) return;
-              void act(async () => {
+              void act('plan', async () => {
                 const id =
                   analysisId === 'new' ? session.createAnalysis('r') : (analysisId as AnalysisId);
                 setAnalysisId(id);
@@ -133,9 +142,11 @@ export function TransferToR({
             <Button
               variant="primary"
               disabled={busy}
+              busy={busyAction === 'commit'}
+              busyLabel="Resultat wird übernommen …"
               onClick={() => {
                 if (!form.validate()) return;
-                void act(async () => {
+                void act('commit', async () => {
                   await session.getR().commitToR(plan.id, approved, new AbortController().signal);
                   onClose();
                   await navigate({

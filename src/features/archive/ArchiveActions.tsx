@@ -1,13 +1,5 @@
-import {
-  Button,
-  Input,
-  Select,
-  FormField,
-  ActionGroup,
-  FileInput,
-  Notice,
-} from '../../ui/Controls';
-import {useState, useSyncExternalStore} from 'react';
+import {Button, Input, Select, FormField, ActionGroup, FileInput, Notice} from '../../ui/Controls';
+import {useRef, useState, useSyncExternalStore} from 'react';
 import {useNavigate} from '@tanstack/react-router';
 import {services} from '../../app/services';
 import {downloadStream} from '../../app/download';
@@ -18,6 +10,7 @@ import type {ArchiveCandidate} from '../../application/workspaceArchive';
 export function ArchiveImport() {
   const [candidate, setCandidate] = useState<ArchiveCandidate>(),
     [busy, setBusy] = useState(false);
+  const pending = useRef(false);
   const navigate = useNavigate();
   return (
     <section className="archive-import">
@@ -30,14 +23,18 @@ export function ArchiveImport() {
           onChange={(event) => {
             const file = event.target.files?.[0];
             event.target.value = '';
-            if (!file) return;
+            if (pending.current || !file || !services.workspaces.canCreate) return;
+            pending.current = true;
             setBusy(true);
             void services.workspaces
               .getArchive()
               .inspect(file, new AbortController().signal)
               .then(setCandidate)
               .catch(report)
-              .finally(() => setBusy(false));
+              .finally(() => {
+                pending.current = false;
+                setBusy(false);
+              });
           }}
         />
       </FormField>
@@ -56,7 +53,11 @@ export function ArchiveImport() {
               <Button
                 variant="primary"
                 disabled={busy}
+                busy={busy}
+                busyLabel="Projekt wird importiert …"
                 onClick={() => {
+                  if (pending.current || !services.workspaces.canCreate) return;
+                  pending.current = true;
                   setBusy(true);
                   void services.workspaces
                     .importArchive(candidate.id, new AbortController().signal)
@@ -68,7 +69,10 @@ export function ArchiveImport() {
                       });
                     })
                     .catch(report)
-                    .finally(() => setBusy(false));
+                    .finally(() => {
+                      pending.current = false;
+                      setBusy(false);
+                    });
                 }}
               >
                 Als neues Projekt importieren
@@ -104,6 +108,8 @@ export function ArchiveActions({session}: {session: EditingSession}) {
     [busy, setBusy] = useState(false),
     [revision, setRevision] = useState(0),
     [message, setMessage] = useState('');
+  const pending = useRef(false);
+  const [busyAction, setBusyAction] = useState('');
   const [integrity, setIntegrity] = useState(session.integrity);
   const navigate = useNavigate();
   const temporary = Object.values(doc.results).filter(
@@ -116,12 +122,20 @@ export function ArchiveActions({session}: {session: EditingSession}) {
     Object.values(doc.datasetVersions).filter((v) => v.backing.kind === 'missing').length +
     (integrity?.missing.length ?? 0) +
     (integrity?.corrupt.length ?? 0);
-  const act = (work: () => Promise<void>) => {
+  const act = (action: string, work: () => Promise<void>) => {
+    if (pending.current) return;
+    pending.current = true;
+    setBusyAction(action);
     setBusy(true);
     setMessage('');
-    void work()
+    void Promise.resolve()
+      .then(work)
       .catch(report)
-      .finally(() => setBusy(false));
+      .finally(() => {
+        pending.current = false;
+        setBusyAction('');
+        setBusy(false);
+      });
   };
   return (
     <section className="archive-actions">
@@ -133,8 +147,10 @@ export function ArchiveActions({session}: {session: EditingSession}) {
           </Button>
           <Button
             disabled={busy || !services.workspaces.canCreate}
+            busy={busyAction === 'duplicate'}
+            busyLabel="Projekt wird dupliziert …"
             onClick={() =>
-              act(async () => {
+              act('duplicate', async () => {
                 const d = await services.workspaces.duplicate(
                   doc.workspace.id,
                   new AbortController().signal,
@@ -150,8 +166,10 @@ export function ArchiveActions({session}: {session: EditingSession}) {
           </Button>
           <Button
             disabled={busy}
+            busy={busyAction === 'integrity'}
+            busyLabel="Integrität wird geprüft …"
             onClick={() =>
-              act(async () => {
+              act('integrity', async () => {
                 const checked = await session.inspectIntegrity(new AbortController().signal, true);
                 setIntegrity(checked);
                 setMessage('Dateilängen und SHA-256 geprüft.');
@@ -162,10 +180,14 @@ export function ArchiveActions({session}: {session: EditingSession}) {
           </Button>
         </ActionGroup>
         <Button
-          variant="danger"
+          variant="secondary"
+          tone="danger"
           disabled={busy || session.readOnly}
+          busy={busyAction === 'delete-dialog'}
+          busyLabel="Projekt wird vorbereitet …"
           onClick={() =>
-            act(async () => {
+            act('delete-dialog', async () => {
+              if (session.readOnly) return;
               await session.flush();
               setRevision(session.document.revision);
               setDialog('delete');
@@ -207,8 +229,10 @@ export function ArchiveActions({session}: {session: EditingSession}) {
               <Button
                 variant="primary"
                 disabled={busy}
+                busy={busyAction === 'export'}
+                busyLabel="Archiv wird erstellt …"
                 onClick={() =>
-                  act(async () => {
+                  act('export', async () => {
                     const result = await session.exportArchive(
                       mode,
                       {keepTemporary: keep && !session.readOnly, includeExternal: external},
@@ -285,10 +309,14 @@ export function ArchiveActions({session}: {session: EditingSession}) {
           footer={
             <>
               <Button
-                variant="danger"
+                variant="primary"
+                tone="danger"
                 disabled={busy}
+                busy={busyAction === 'delete'}
+                busyLabel="Projekt wird gelöscht …"
                 onClick={() =>
-                  act(async () => {
+                  act('delete', async () => {
+                    if (session.readOnly) return;
                     const failures = await services.workspaces.deleteWorkspace(
                       doc.workspace.id,
                       revision,

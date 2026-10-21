@@ -1,5 +1,5 @@
 import {Button, ActionGroup, Notice} from '../../ui/Controls';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Link} from '@tanstack/react-router';
 import {services} from '../../app/services';
 import {report} from '../../app/router';
@@ -9,6 +9,7 @@ export function StorageSettings() {
     [confirm, setConfirm] = useState(false),
     [busy, setBusy] = useState(false),
     [receipt, setReceipt] = useState('');
+  const cleaning = useRef(false);
   const refresh = () => void services.storageEstimate().then(setEstimate).catch(report);
   useEffect(refresh, []);
   const bytes = (value: number | undefined) =>
@@ -50,9 +51,14 @@ export function StorageSettings() {
           footer={
             <>
               <Button
-                variant="danger"
+                variant="primary"
+                tone="danger"
                 disabled={busy}
+                busy={busy}
+                busyLabel="Projektreste werden bereinigt …"
                 onClick={() => {
+                  if (cleaning.current) return;
+                  cleaning.current = true;
                   setBusy(true);
                   void services.workspaces
                     .cleanAbandoned(new AbortController().signal)
@@ -62,7 +68,10 @@ export function StorageSettings() {
                       refresh();
                     })
                     .catch(report)
-                    .finally(() => setBusy(false));
+                    .finally(() => {
+                      cleaning.current = false;
+                      setBusy(false);
+                    });
                 }}
               >
                 Bereinigung bestätigen
