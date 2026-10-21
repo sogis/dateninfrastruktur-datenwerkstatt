@@ -1,4 +1,4 @@
-import {Button, Input, Select, FormField, Notice, RequiredFieldsNote} from '../../ui/Controls';
+import {Button, Input, Select, FormField, Notice} from '../../ui/Controls';
 import {useFormValidation} from '../../ui/useFormValidation';
 import {displayNameError, sqlNameError, requiredValueError} from '../../domain/fieldValidation';
 import {Modal} from '../../ui/Modal';
@@ -209,7 +209,6 @@ export function PortalImport({
         <p>Kein Portalprovider konfiguriert. Produktive Portal-URL fehlt im Entwicklungsprofil.</p>
       ) : (
         <>
-          <RequiredFieldsNote />
           <FormField label={<>Portal</>} error={form.errors.provider}>
             <Select
               {...form.control('provider')}

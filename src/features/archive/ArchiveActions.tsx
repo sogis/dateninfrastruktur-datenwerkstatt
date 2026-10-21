@@ -6,7 +6,6 @@ import {
   ActionGroup,
   FileInput,
   Notice,
-  RequiredFieldsNote,
 } from '../../ui/Controls';
 import {useState, useSyncExternalStore} from 'react';
 import {useNavigate} from '@tanstack/react-router';
@@ -245,7 +244,6 @@ export function ArchiveActions({session}: {session: EditingSession}) {
               <option value="recipe">Rezept ohne lokale Bytes</option>
             </Select>
           </FormField>
-          <RequiredFieldsNote />
           <p>
             {Object.keys(doc.datasets).length} Datensätze · {Object.keys(doc.results).length}{' '}
             Resultate · {Object.values(doc.artifacts).reduce((n, a) => n + a.bytes, 0)} bekannte

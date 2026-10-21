@@ -1,0 +1,67 @@
+{
+  "date": "2026-10-21",
+  "baseline": "12eabf38b06e52925abc830342d6bad91621ffdf",
+  "scope": "Optional field labels and stable error layout; minimum checks explicitly requested.",
+  "commands": [
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "log": "typecheck.log",
+      "note": "Final source and test files."
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 PLAYWRIGHT_JSON_OUTPUT_FILE=docs/verification/optional-labels/ui.json npx playwright test tests/e2e/optional-labels.spec.ts --project=chromium --reporter=list,json --output=test-results/optional-labels",
+      "exitCode": 1,
+      "log": "ui-initial.log",
+      "report": "ui-initial.json",
+      "passed": 1,
+      "failed": 1,
+      "note": "Project scenario passed. SQL alignment assertions passed; parameter summary click raced autosave layout transition. Report/log renamed from ui to ui-initial without content changes except log whitespace normalization."
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 PLAYWRIGHT_JSON_OUTPUT_FILE=docs/verification/optional-labels/ui-sql.json npx playwright test tests/e2e/optional-labels.spec.ts --grep 'SQL toolbar' --project=chromium --reporter=list,json --output=test-results/optional-labels-sql",
+      "exitCode": 0,
+      "log": "ui-sql.log",
+      "report": "ui-sql.json",
+      "passed": 1,
+      "failed": 0,
+      "note": "Only affected case repeated after waiting for actual autosave completion in test setup; test timeout now 15 seconds."
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "notRun": [
+    "npm run verify",
+    "full test suite",
+    "Firefox",
+    "WebKit",
+    "deployment tests",
+    "native Safari"
+  ],
+  "screenshots": [
+    "project-error-1280.png",
+    "project-error-390.png",
+    "project-optional-description.png",
+    "sql-name-error.png",
+    "sql-optional-parameter.png"
+  ],
+  "visualReview": "All five screenshots inspected. Long project error text is a test-only DOM wrapping fixture; production validation text is unchanged.",
+  "sourceTestSha256": {
+    "src/app/router.tsx": "a97b2c8c19267ca15ad5510d458c8d4caefbb95c463bec1310e1c4a5a88120ab",
+    "src/features/archive/ArchiveActions.tsx": "1e05d1d1287b1b95a21e1f9b84908dd71ad44d20dd78e510d3c6037efc3d2165",
+    "src/features/catalog/PortalImport.tsx": "2472e75ec1a845c34d5e1134a3d7057c3894dfab209fc5d0210bce3424cb419a",
+    "src/features/data/DataSection.tsx": "c35439e4295e599c5ecb8dd7a5af1cb680f84f336251fa9322b125ca23faacc4",
+    "src/features/r/RWorkbench.tsx": "5f533688e33435cec601c8c6f61bd307cd10f682ff36732a57b9da20ee2398ae",
+    "src/features/r/Transfer.tsx": "befc38848b4bc5de99028322a9dfd90bda8d0cff7992549800120d91d9ec8721",
+    "src/features/sql/SqlWorkbench.tsx": "4374370c34b86e9b80871c6575efa2323d8f0fe4090a056ce2b6e7caa428276a",
+    "src/features/workspaces/Workspaces.tsx": "f5ca37d801b2e64109ed27e09f07d0bcf7b4f438b01e310e6dca44714fc34e78",
+    "src/styles/app.css": "75d747d0b61008039c43f8ef85df75c2ad19dce5a56cc29dfc493c64048588cd",
+    "src/styles/components.css": "b1bd62b9aeea0b225433d49829e540d8868c4078b073e52efa5475e40d7668b4",
+    "src/ui/Controls.tsx": "659fc4a8f47e4a85f922def4396304bedb58452b7d203b0941ca81704cdf8b58",
+    "tests/design-system/reference.tsx": "6d326d399200fb0c7234840a0508bde8b557257098f1bc2b91f7ba3d3f7dcd4c",
+    "tests/e2e/optional-labels.spec.ts": "08ca3c895750999d49f3ebb1c1114a02bc5a60bff0d9921654c35e2261322526",
+    "tests/e2e/required-fields.spec.ts": "1628b5c4e42576904c4ad3c9b4e04cf9dea074314b6b2340d7f0bb0558b084dc"
+  }
+}

@@ -5,7 +5,6 @@ import {
   Select,
   FormField,
   Notice,
-  RequiredFieldsNote,
 } from '../ui/Controls';
 import {NavigationItem} from '../ui/NavigationItem';
 import {StorageSettings} from '../features/workspaces/StorageSettings';
@@ -467,7 +466,6 @@ function SettingsPage() {
   return (
     <main className="settings-page">
       <h1>Einstellungen</h1>
-      <RequiredFieldsNote />
       <div className="form-fields">
         <FormField label={<>Editor-Schriftgrösse</>}>
           <Select

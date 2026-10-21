@@ -84,7 +84,6 @@ function Reference() {
             setSubmitted((n) => n + 1);
           }}
         >
-          <p className="dw-required-note">* Pflichtfeld</p>
           <FormField label="Projektname" hint="Ein eindeutiger Name für das Projekt.">
             <Input required name="project" />
           </FormField>
@@ -94,7 +93,7 @@ function Reference() {
           >
             <Input defaultValue="Fehler" />
           </FormField>
-          <FormField label="Beschreibung">
+          <FormField label="Beschreibung" optional>
             <Textarea />
           </FormField>
           <FormField label="Modus">

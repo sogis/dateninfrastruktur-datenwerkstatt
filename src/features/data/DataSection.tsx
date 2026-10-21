@@ -9,7 +9,6 @@ import {
   EmptyState,
   Notice,
   PanelHeader,
-  RequiredFieldsNote,
 } from '../../ui/Controls';
 import {useFormValidation, useNameField} from '../../ui/useFormValidation';
 import {
@@ -163,7 +162,6 @@ export function DataSection() {
           </Button>
         </ActionGroup>
       </PanelHeader>
-      {datasets.length > 0 && <RequiredFieldsNote />}
       {datasets.length === 0 ? (
         <EmptyState>Noch keine Datensätze.</EmptyState>
       ) : (
@@ -547,7 +545,6 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
         </>
       }
     >
-      <RequiredFieldsNote />
       <div
         className="file-drop"
         onDragOver={(e) => e.preventDefault()}
@@ -648,7 +645,7 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
                 onChange={(e) => change({emptyStringIsNull: e.target.checked})}
               />
             </FormField>
-            <FormField label={<>Zusätzlicher NULL-Marker</>}>
+            <FormField label={<>Zusätzlicher NULL-Marker</>} optional>
               <Input
                 value={options.nullStrings[0] ?? ''}
                 onChange={(e) => change({nullStrings: e.target.value ? [e.target.value] : []})}

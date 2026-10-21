@@ -7,7 +7,6 @@ import {
   EmptyState,
   StatusBadge,
   PanelHeader,
-  RequiredFieldsNote,
 } from '../../ui/Controls';
 import {Diagnostics} from './Diagnostics';
 import {ArchiveActions, ArchiveImport} from '../archive/ArchiveActions';
@@ -54,7 +53,6 @@ export function ProjectList() {
           Neues Projekt
         </Button>
       </form>
-      <RequiredFieldsNote />
       <ArchiveImport />
       {workspaces.length === 0 ? (
         <EmptyState>
@@ -118,12 +116,11 @@ export function ProjectOverview() {
   return (
     <div className="project-details project-overview">
       <h1>{doc.workspace.name}</h1>
-      <RequiredFieldsNote />
       <div className="form-fields">
         <FormField label={<>Projektname</>} error={name.error}>
           <Input {...name.input} disabled={session.readOnly} />
         </FormField>
-        <FormField label="Beschreibung">
+        <FormField label="Beschreibung" optional>
           <Textarea
             id="workspace-description"
             value={doc.workspace.description ?? ''}

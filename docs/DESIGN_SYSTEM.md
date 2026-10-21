@@ -85,9 +85,15 @@ Hilfetext folgt darunter in 14 px / 400 und #536779. Fehlermeldungen nennen
 konkret das Problem und werden dem Feld über aria-describedby zugeordnet;
 aria-invalid kennzeichnet ungültige Eingaben. Placeholder ersetzt kein Label.
 IDs und htmlFor verbinden Label und Control; bestehende IDs werden erhalten.
-Pflichtfelder erhalten ein sichtbares Sternchen und native required-Semantik;
-einmal pro Formular wird „\* Pflichtfeld“ erklärt. Keine neuen fachlichen
-Validierungsregeln allein durch die Designmigration.
+Erforderliche Eingabe-/Auswahlfelder erhalten keinen sichtbaren Zusatz, behalten
+aber ihre native required-Semantik. Optionale Felder zeigen direkt hinter dem
+Label „(optional)“ in der gedämpften Textfarbe, normaler Schriftstärke und gleicher
+Schriftgrösse. Der Zusatz wird über aria-describedby vermittelt; der zugängliche
+Feldname bleibt stabil. Keine Sternchen oder zusätzlichen Pflichtfeldhinweise.
+`FormField.optional` wird ausdrücklich gesetzt, nicht aus fehlendem `required`
+abgeleitet: Navigationsauswahlen, Öffnen-Aktionen und fest vorgegebene/deaktivierte
+Werte erhalten keinen Optionalzusatz. Gewöhnliche Optionscheckboxen bleiben
+ebenfalls ohne Zusatz. Keine neuen fachlichen Validierungsregeln.
 
 Die Kennzeichnung gilt auch für bereits ausgefüllte und bearbeitbare Felder.
 Ein Feld darf während der Bearbeitung vorübergehend leer sein. Nach dem Verlassen
@@ -106,21 +112,27 @@ Auswahlfelder erfüllen ihre Pflicht bereits. Fest vorgegebene SQL-Namen beim
 Ersetzen sind deaktiviert und verlangen keine neue Eingabe. Stringparameter dürfen
 leer sein, NULL deaktiviert die Werteingabe; Zahlen und typisierte Parameter
 benötigen einen gültigen Wert. Beschreibung, Zufallsseed, Diagrammkategorie,
-zusätzlicher NULL-Marker und gewöhnliche Optionscheckboxen bleiben optional.
+zusätzlicher NULL-Marker bleiben optional und werden entsprechend beschriftet.
+Stringparameter zeigen den Zusatz pro Werteingabe, nicht pauschal am Spaltenkopf;
+die deaktivierte NULL-Werteingabe trägt keinen Zusatz. Gewöhnliche
+Optionscheckboxen bleiben freiwillige Optionen ohne Optionalzusatz.
 Bereits fachlich verlangte Umwandlungsbestätigungen sind Pflichtcheckboxen.
 
 Die Dateiauswahl unterstützt Auswahlbutton und Drag-and-drop mit demselben
-Dateizustand. Der sichtbare Button vermittelt Pflichtstatus/Feldfehler und erhält
-bei einem Fehler den Fokus. Der zugängliche Feldname enthält keinen dekorativen
-Stern; native Pflichtsemantik vermittelt die Anforderung zusätzlich.
+Dateizustand. Der sichtbare Button vermittelt Label/Feldfehler und erhält bei
+einem Fehler den Fokus. Die native Dateieingabe behält ihre required-Semantik;
+ein eigener Pflichtfeldtext entfällt.
 
 Checkboxen und Radiobuttons stehen links, ihre anklickbare Beschriftung rechts
 mit 8 px Abstand und normalem Schriftgewicht. Mehrzeilige Texte dürfen umbrechen.
 Analysename in einer kompakten Werkzeugleiste besitzt ein sichtbares Inline-Label
-mit Sternchen. Der Hinweis „\* Pflichtfeld“ steht in derselben Werkzeugleiste;
-der Platzvertrag bleibt im gültigen Ausgangszustand erfüllt. Feldfehler dürfen
-die Höhe bedarfsgerecht vergrössern. Parametertabellen verwenden Spaltenköpfe plus eindeutige zugängliche
-Feldnamen. Deaktivierte und schreibgeschützte Werte bleiben lesbar.
+ohne Zusatz. Feldfehler dürfen die Höhe bedarfsgerecht vergrössern; benachbarte
+Buttons bleiben an der Eingabe ausgerichtet. Die Projekterstellung verwendet
+gemeinsame Rasterzeilen für Label, Eingabe und Fehler, mit dem Button in der
+Eingabezeile. In schmaler Darstellung steht er unter der Feldgruppe.
+Parametertabellen verwenden Spaltenköpfe plus eindeutige zugängliche Feldnamen;
+bei ausgeblendeten Labels steht „(optional)“ sichtbar neben der Werteingabe.
+Deaktivierte und schreibgeschützte Werte bleiben lesbar.
 
 ## Komponenten und Zustände
 

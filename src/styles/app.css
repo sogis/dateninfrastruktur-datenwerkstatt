@@ -32,14 +32,30 @@ main {
   margin-inline: auto;
 }
 .create-workspace {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: end;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: minmax(0, 360px) max-content;
+  align-items: start;
+  gap: 8px 16px;
   margin: 24px 0 8px;
 }
 .create-workspace .dw-field {
-  width: min(360px, 100%);
+  display: contents;
+}
+.create-workspace .dw-label {
+  grid-column: 1;
+  grid-row: 1;
+}
+.create-workspace .dw-input {
+  grid-column: 1;
+  grid-row: 2;
+}
+.create-workspace .dw-field-error {
+  grid-column: 1;
+  grid-row: 3;
+}
+.create-workspace > .dw-button {
+  grid-column: 2;
+  grid-row: 2;
 }
 .archive-import {
   margin-block: 24px;
@@ -331,6 +347,7 @@ main {
 .analysis-toolbar {
   flex: 0 0 auto;
   min-height: 48px;
+  align-items: start;
 }
 .analysis-toolbar > .dw-field {
   width: 300px;
@@ -724,6 +741,16 @@ main > [aria-label='Browser-Speicher'] {
   .dw-dialog {
     width: calc(100vw - 32px);
     max-height: calc(100dvh - 32px);
+  }
+}
+@media (max-width: 600px) {
+  .create-workspace {
+    grid-template-columns: minmax(0, 360px);
+  }
+  .create-workspace > .dw-button {
+    grid-column: 1;
+    grid-row: 4;
+    justify-self: start;
   }
 }
 @media (max-height: 700px) {

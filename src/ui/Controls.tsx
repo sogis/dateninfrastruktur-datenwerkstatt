@@ -273,6 +273,7 @@ export function FormField({
   hint,
   error,
   labelHidden = false,
+  optional = false,
   children,
   className = '',
 }: {
@@ -280,6 +281,7 @@ export function FormField({
   hint?: ReactNode;
   error?: ReactNode;
   labelHidden?: boolean;
+  optional?: boolean;
   children: ReactElement<FieldControl>;
   className?: string;
 }) {
@@ -287,7 +289,12 @@ export function FormField({
   const id = children.props.id ?? generated;
   const check = ['checkbox', 'radio'].includes(children.props.type ?? '');
   const describedBy =
-    [children.props['aria-describedby'], hint ? `${id}-hint` : '', error ? `${id}-error` : '']
+    [
+      children.props['aria-describedby'],
+      optional ? `${id}-optional` : '',
+      hint ? `${id}-hint` : '',
+      error ? `${id}-error` : '',
+    ]
       .filter(Boolean)
       .join(' ') || undefined;
   const input = cloneElement(children, {
@@ -298,6 +305,11 @@ export function FormField({
     'aria-describedby': describedBy,
     'aria-invalid': error ? true : children.props['aria-invalid'],
   });
+  const optionalNode = optional ? (
+    <span id={`${id}-optional`} className="dw-field-optional">
+      (optional)
+    </span>
+  ) : null;
   const labelNode = (
     <label
       id={`${id}-label`}
@@ -305,7 +317,7 @@ export function FormField({
       className={`dw-label ${labelHidden ? 'visually-hidden' : ''}`}
     >
       <span id={`${id}-label-text`}>{label}</span>
-      {children.props.required && <span aria-hidden="true"> *</span>}
+      {!labelHidden && optional && <> {optionalNode}</>}
     </label>
   );
   return (
@@ -320,12 +332,8 @@ export function FormField({
       ) : (
         <>
           {labelNode}
-          {labelHidden && children.props.required && (
-            <span className="dw-field-required-inline" aria-hidden="true">
-              *
-            </span>
-          )}
           {input}
+          {labelHidden && optionalNode}
         </>
       )}
       {hint && (
@@ -348,8 +356,6 @@ export function FileInput({
 }: InputHTMLAttributes<HTMLInputElement> & {buttonLabel?: string; selectedFile?: File | null}) {
   const ref = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState('');
-  const generated = useId();
-  const requiredId = `${props.id ?? generated}-required`;
   useLayoutEffect(() => {
     const input = ref.current;
     if (!input || selectedFile === undefined) return;
@@ -377,11 +383,7 @@ export function FileInput({
       <Button
         icon="upload"
         aria-describedby={
-          [
-            props.id ? `${props.id}-label` : '',
-            props['aria-describedby'],
-            props.required ? requiredId : '',
-          ]
+          [props.id ? `${props.id}-label` : '', props['aria-describedby']]
             .filter(Boolean)
             .join(' ') || undefined
         }
@@ -396,16 +398,8 @@ export function FileInput({
         {buttonLabel}
       </Button>
       {shownName && <span className="dw-file-name">{shownName}</span>}
-      {props.required && (
-        <span id={requiredId} className="visually-hidden">
-          Pflichtfeld
-        </span>
-      )}
     </span>
   );
-}
-export function RequiredFieldsNote() {
-  return <p className="dw-required-note">* Pflichtfeld</p>;
 }
 export function ActionGroup({className = '', ...props}: HTMLAttributes<HTMLDivElement>) {
   return <div {...props} className={`dw-actions ${className}`} />;

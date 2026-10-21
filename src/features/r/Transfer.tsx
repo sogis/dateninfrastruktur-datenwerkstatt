@@ -1,4 +1,4 @@
-import {Button, Input, Select, FormField, Notice, RequiredFieldsNote} from '../../ui/Controls';
+import {Button, Input, Select, FormField, Notice} from '../../ui/Controls';
 import {useFormValidation} from '../../ui/useFormValidation';
 import {bindingNameError, requiredValueError} from '../../domain/fieldValidation';
 import {useState} from 'react';
@@ -151,7 +151,6 @@ export function TransferToR({
         </>
       }
     >
-      <RequiredFieldsNote />
       <FormField label={<>R-Analyse</>}>
         <Select
           {...form.control('analysis')}

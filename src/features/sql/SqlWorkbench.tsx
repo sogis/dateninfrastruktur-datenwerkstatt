@@ -1,14 +1,5 @@
 import {numericColumn} from '../../ui/table';
-import {
-  Button,
-  Input,
-  Select,
-  FormField,
-  ActionGroup,
-  Toolbar,
-  Notice,
-  RequiredFieldsNote,
-} from '../../ui/Controls';
+import {Button, Input, Select, FormField, ActionGroup, Toolbar, Notice} from '../../ui/Controls';
 import {useNameField, useFormValidation} from '../../ui/useFormValidation';
 import {displayNameError, sqlNameError} from '../../domain/fieldValidation';
 import {ActionMenu} from '../../ui/ActionMenu';
@@ -92,7 +83,6 @@ export function SqlWorkbench({
             }}
           />
         </FormField>
-        <RequiredFieldsNote />
         <ActionGroup>
           <Button
             variant="primary"
@@ -287,16 +277,11 @@ export function Parameters({analysis, session}: {analysis: Analysis; session: Ed
         Parameter ({Object.keys(analysis.parameters).length})
         {dirty ? ' · Änderungen noch nicht übernommen' : ''}
       </summary>
-      <RequiredFieldsNote />
       <table>
         <thead>
           <tr>
-            <th>
-              Name <span aria-hidden="true">*</span>
-            </th>
-            <th>
-              Typ <span aria-hidden="true">*</span>
-            </th>
+            <th>Name</th>
+            <th>Typ</th>
             <th>Wert</th>
             <th />
           </tr>
@@ -366,6 +351,7 @@ export function Parameters({analysis, session}: {analysis: Analysis; session: Ed
               <td>
                 <FormField
                   label={`Parameter ${i + 1} Wert`}
+                  optional={row.type === 'string'}
                   labelHidden
                   error={form.errors[`value-${i}`]}
                 >
@@ -617,7 +603,6 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
       )}
       <details className="result-data">
         <summary>Als Datensatz übernehmen · Schema</summary>
-        <RequiredFieldsNote />
         <p>
           Das vollständige Resultat wird zuerst aufbewahrt und als neue Dateneinbindung gespeichert.
         </p>
@@ -706,7 +691,6 @@ function ChartControls({result, session}: {result: TableResult; session: Editing
         <span className="chart-source">
           Tabellenergebnis: <strong>{result.name}</strong> · {runTimeText(result.createdAt)}
         </span>
-        <RequiredFieldsNote />
         <FormField label={<>Diagrammtyp</>}>
           <Select
             required
@@ -721,7 +705,11 @@ function ChartControls({result, session}: {result: TableResult; session: Editing
           </Select>
         </FormField>
         {(['x', 'y', 'color'] as const).map((axis) => (
-          <FormField key={axis} label={<>{axis === 'color' ? 'Kategorie' : axis.toUpperCase()}</>}>
+          <FormField
+            key={axis}
+            optional={axis === 'color'}
+            label={<>{axis === 'color' ? 'Kategorie' : axis.toUpperCase()}</>}
+          >
             <Select
               required={axis !== 'color'}
               aria-label={`Diagramm ${axis}`}

@@ -6,7 +6,6 @@ import {
   ActionGroup,
   Toolbar,
   Notice,
-  RequiredFieldsNote,
 } from '../../ui/Controls';
 import {useNameField, useFormValidation} from '../../ui/useFormValidation';
 import {displayNameError, sqlNameError} from '../../domain/fieldValidation';
@@ -115,7 +114,6 @@ export function RWorkbench({
             }}
           />
         </FormField>
-        <RequiredFieldsNote />
         <ActionGroup>
           <Button
             variant="primary"
@@ -171,7 +169,6 @@ export function RWorkbench({
         />
         {optionsOpen && (
           <Modal title="R-Optionen" onClose={() => setOptionsOpen(false)}>
-            <RequiredFieldsNote />
             <FormField label={<>Umgebung</>}>
               <Select
                 required
@@ -187,7 +184,7 @@ export function RWorkbench({
                 <option value="fresh-environment">Frisches Environment</option>
               </Select>
             </FormField>
-            <FormField label={<>Zufallsseed</>}>
+            <FormField label={<>Zufallsseed</>} optional>
               <Input
                 type="number"
                 disabled={!!busy || session.readOnly}
@@ -461,7 +458,6 @@ export function RWorkbench({
             </>
           }
         >
-          <RequiredFieldsNote />
           <PlanView
             plan={plan}
             approved={approved}

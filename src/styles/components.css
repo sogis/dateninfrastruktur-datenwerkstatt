@@ -115,18 +115,27 @@
   color: var(--dw-color-text);
   overflow-wrap: anywhere;
 }
+.dw-field-optional {
+  font-weight: 400;
+  color: var(--dw-color-muted);
+  white-space: nowrap;
+}
 .dw-field--hidden {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
+}
+.dw-field--hidden:has(> .dw-field-optional) {
+  grid-template-columns: minmax(0, 1fr) auto;
 }
 .dw-field--hidden > .dw-input {
   grid-column: 1;
   grid-row: 1;
 }
-.dw-field-required-inline {
+.dw-field--hidden > .dw-field-optional {
   grid-column: 2;
   grid-row: 1;
+  font: 400 14px/20px var(--dw-font-sans);
 }
 .dw-field--hidden > .dw-field-error {
   grid-column: 1 / -1;
@@ -185,8 +194,7 @@
   border-color: var(--dw-color-danger);
 }
 .dw-field-hint,
-.dw-field-error,
-.dw-required-note {
+.dw-field-error {
   font-size: 14px;
   margin: 0;
   color: var(--dw-color-muted);

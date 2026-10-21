@@ -1,0 +1,223 @@
+{
+  "config": {
+    "argv": [
+      "/Users/stefan/Library/Application Support/fnm/node-versions/v22.23.1/installation/bin/node",
+      "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/node_modules/.bin/playwright",
+      "test",
+      "tests/e2e/optional-labels.spec.ts",
+      "--project=chromium",
+      "--reporter=list,json",
+      "--output=test-results/optional-labels"
+    ],
+    "configFile": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/playwright.config.ts",
+    "rootDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/optional-labels",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests",
+        "testIgnore": [
+          "**/deployment/**"
+        ],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/optional-labels",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests",
+        "testIgnore": [
+          "**/deployment/**"
+        ],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/optional-labels",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests",
+        "testIgnore": [
+          "**/deployment/**"
+        ],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "e2e/optional-labels.spec.ts",
+      "file": "e2e/optional-labels.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Optional labels: project fields and error layout on desktop and narrow screens",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1113,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T18:03:02.789Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "195e33b87c6113c83e6e-65bf53b01ca2d64bf63e",
+          "file": "e2e/optional-labels.spec.ts",
+          "line": 25,
+          "column": 1
+        },
+        {
+          "title": "Optional labels: SQL toolbar alignment and conditional parameter values",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "timedOut",
+                  "duration": 120366,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 120000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 120000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 120000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/optional-labels.spec.ts",
+                        "column": 85,
+                        "line": 114
+                      },
+                      "message": "Error: locator.click: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('.parameters').getByRole('button', { name: 'Parameter hinzufügen', exact: true })\u001b[22m\n\n\n  112 |   const parameters = page.locator('.parameters');\n  113 |   await parameters.locator('summary').click();\n> 114 |   await parameters.getByRole('button', {name: 'Parameter hinzufügen', exact: true}).click();\n      |                                                                                     ^\n  115 |   const value = parameters.getByRole('textbox', {name: 'Parameter 1 Wert', exact: true});\n  116 |   const type = parameters.getByRole('combobox', {name: 'Parameter 1 Typ', exact: true});\n  117 |   const suffix = parameters.getByText('(optional)', {exact: true});\n    at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/optional-labels.spec.ts:114:85"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T18:03:03.916Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/optional-labels/e2e-optional-labels-Option-20f36-onditional-parameter-values-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/optional-labels/e2e-optional-labels-Option-20f36-onditional-parameter-values-chromium/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/optional-labels/e2e-optional-labels-Option-20f36-onditional-parameter-values-chromium/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "195e33b87c6113c83e6e-23dcfecdf677b416aa78",
+          "file": "e2e/optional-labels.spec.ts",
+          "line": 89,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-21T18:03:02.461Z",
+    "duration": 121893.993,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

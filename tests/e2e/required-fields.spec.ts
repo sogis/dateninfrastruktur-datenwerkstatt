@@ -56,7 +56,7 @@ test('Required fields: creating a project shows a field error and preserves Unic
   await page.goto('/projects');
   const name = page.getByLabel('Name des neuen Projekts');
   await expect(name).toHaveAttribute('required');
-  await expect(page.getByText('* Pflichtfeld', {exact: true})).toBeVisible();
+  await expect(page.getByText('* Pflichtfeld', {exact: true})).toHaveCount(0);
   await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await expect(name).toBeFocused();
   await expect(name).toHaveAttribute('aria-invalid', 'true');

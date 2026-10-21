@@ -1,0 +1,46 @@
+[WebServer] (node:54047) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:54050) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/optional-labels.spec.ts:25:1 › Optional labels: project fields and error layout on desktop and narrow screens (1.1s)
+  ✘  2 [chromium] › tests/e2e/optional-labels.spec.ts:89:1 › Optional labels: SQL toolbar alignment and conditional parameter values (2.0m)
+
+
+  1) [chromium] › tests/e2e/optional-labels.spec.ts:89:1 › Optional labels: SQL toolbar alignment and conditional parameter values
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.click: Target page, context or browser has been closed
+    Call log:
+      - waiting for locator('.parameters').getByRole('button', { name: 'Parameter hinzufügen', exact: true })
+
+
+      112 |   const parameters = page.locator('.parameters');
+      113 |   await parameters.locator('summary').click();
+    > 114 |   await parameters.getByRole('button', {name: 'Parameter hinzufügen', exact: true}).click();
+          |                                                                                     ^
+      115 |   const value = parameters.getByRole('textbox', {name: 'Parameter 1 Wert', exact: true});
+      116 |   const type = parameters.getByRole('combobox', {name: 'Parameter 1 Typ', exact: true});
+      117 |   const suffix = parameters.getByText('(optional)', {exact: true});
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/optional-labels.spec.ts:114:85
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/optional-labels/e2e-optional-labels-Option-20f36-onditional-parameter-values-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/optional-labels/e2e-optional-labels-Option-20f36-onditional-parameter-values-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/optional-labels/e2e-optional-labels-Option-20f36-onditional-parameter-values-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/optional-labels/e2e-optional-labels-Option-20f36-onditional-parameter-values-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/optional-labels.spec.ts:89:1 › Optional labels: SQL toolbar alignment and conditional parameter values
+  1 passed (2.0m)

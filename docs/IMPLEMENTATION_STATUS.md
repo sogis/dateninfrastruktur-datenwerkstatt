@@ -1358,3 +1358,63 @@ CLI-Ausgabe. Diese rein formalen Zeichen in den Logs normalisiert; fachliche
 Ausgabe, Fehlernachweise, Messwerte und Exitcodes erhalten. Betroffene Logs sind
 in `verification/required-fields/checks.json` aufgelistet. Produkt-/Testfingerprint
 bleibt unverändert.
+
+### Optionale Felder und Fehlerlayout (21. Oktober 2026)
+
+Die Kennzeichnungskonvention ist auf ausdrücklichen Nutzerauftrag umgestellt:
+Erforderliche Felder haben keinen Zusatz; optionale Felder zeigen ein gedämpftes
+„(optional)“ in normaler Schriftstärke. Sternchen, Pflichtfeldhinweise und die
+versteckte Pflichtfeldbeschreibung der Dateiauswahl sind entfernt. Native
+`required`-Semantik, fachliche Validierung, Fokusführung und Autosave bleiben
+erhalten (REQ-014, REQ-019, REQ-067; Formular-/UI-Abnahme AT-054/AT-055).
+
+`src/ui/Controls.tsx` bietet die explizite Eigenschaft `FormField.optional`.
+Der Suffix wird über `aria-describedby` zugeordnet; der zugängliche Feldname
+bleibt unverändert. Beschreibung, Zufallsseed, zusätzlicher CSV-NULL-Marker,
+Diagrammkategorie und Stringparameter verwenden ihn. In Parametertabellen steht
+er neben der Werteingabe; Zahlen benötigen weiterhin einen Wert, NULL deaktiviert
+die Eingabe ohne Suffix. Gewöhnliche Optionscheckboxen, Navigation und fest
+vorgegebene SQL-Namen bleiben ohne Zusatz. Der bedingte Portalhinweis bleibt
+erhalten. Die betroffenen Aufrufer und `docs/DESIGN_SYSTEM.md` sind angepasst.
+
+`src/styles/app.css` ordnet Projekterstellungslabel, Eingabe und Fehler eigenen
+Rasterzeilen zu. Der Button bleibt in der Eingabezeile und steht bei schmaler
+Darstellung unter der Feldgruppe. Analysewerkzeugleisten richten Buttons auch
+bei Feldfehlern weiter an der Eingabe aus. Die Suffixdarstellung einschliesslich
+ausgeblendeter Parameterlabels liegt in `src/styles/components.css`.
+
+Geprüfter Stand: Arbeitsbaum auf `12eabf38b06e52925abc830342d6bad91621ffdf`,
+vor Beginn sauber. Änderungen gegen diesen Stand abgeglichen; historische
+Abnahmenachweise bleiben erhalten. Die Quell-/Test-SHA-256 und tatsächlichen
+Befehle stehen in [checks.json](verification/optional-labels/checks.json).
+
+| Tatsächliche Kurzprüfung | Ergebnis |
+| --- | --- |
+| `npm run typecheck` auf dem finalen Quell-/Teststand | Exit 0 |
+| Zwei gezielte Chromium-Fälle in `tests/e2e/optional-labels.spec.ts`, erster Lauf | Exit 1: Projektfall bestanden; SQL-Fall nach bestandenen Ausrichtungsprüfungen im Testaufbau am Parameteröffnen gescheitert |
+| Nur SQL-Fall nach Korrektur des Testaufbaus wiederholt | Exit 0: bestanden; der Test wartet vor dem Parameteröffnen auf den tatsächlichen Autosave-Abschluss, Timeout auf 15 Sekunden begrenzt |
+| `git diff --check` | Exit 0 |
+
+Damit sind beide angeforderten UI-Szenarien bestanden: Projekterstellung und
+Beschreibung bei 1280/390 px, Ausrichtung vor/nach Fehlern, Korrektur eines Fehlers,
+stabile Feldnamen, native Pflichtsemantik, Optionalfarbe/-schrift sowie SQL-Toolbar
+und Parameterwechsel String/Zahl/NULL. Für mehrzeilige Fehler wurde ausschliesslich
+im Test die bestehende DOM-Fehlerregion mit einem längeren Beispieltext befüllt;
+die produktiven Fehlermeldungen und Validierungsregeln wurden nicht verändert.
+
+Belege: [erster Lauf](verification/optional-labels/ui-initial.log),
+[SQL-Wiederholung](verification/optional-labels/ui-sql.log),
+[Typecheck](verification/optional-labels/typecheck.log),
+[Desktopfehler](verification/optional-labels/project-error-1280.png),
+[schmale Darstellung](verification/optional-labels/project-error-390.png),
+[optionale Beschreibung](verification/optional-labels/project-optional-description.png),
+[SQL-Namensfehler](verification/optional-labels/sql-name-error.png),
+[optionaler Parameterwert](verification/optional-labels/sql-optional-parameter.png).
+Diese fünf Screenshots wurden visuell geprüft.
+
+Gemäss ausdrücklichem Nutzerauftrag nicht ausgeführt: vollständiges Verify,
+gesamte Testsuite, Firefox/WebKit, Deployment und Safari. R-, Import- und
+Diagrammformulare wurden bei dieser Beschriftungsänderung nicht zusätzlich im
+Browser geprüft. Keine Dependencies, Dokumentfelder oder Engineverträge geändert.
+Nächster konkreter Schritt: Durchsicht der lokalen Änderung; kein neuer
+Commit-/Pushauftrag für diesen Abschnitt.
