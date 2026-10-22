@@ -1535,3 +1535,38 @@ Original-OFL gefunden. Ausschliesslich diese Formatierung normalisiert und
 identischen Lizenzwortlaut ohne Whitespace nachgewiesen. Fontdateien und
 geprüfte Quell-/Test-/Konfigurationshashes unverändert. Anschliessender
 `git diff --cached --check`: Exit 0. Keine weiteren Tests für Commit/Push gestartet.
+
+
+### Projektzeitstempel als Tooltip (22. Oktober 2026)
+
+Das Aufklappelement in der Projektliste ist auf Nutzerauftrag durch den
+vorhandenen gemeinsamen Tooltip ersetzt. Sichtbar bleibt das bisherige Datum
+bis auf Minuten; der Tooltip zeigt Sekunden, Millisekunden und Zeitzone im
+bisherigen de-CH-Format. Das unveränderte `<time datetime>` ist per Tab erreichbar;
+Hover und Tastaturfokus zeigen den Vollwert, `aria-describedby` vermittelt ihn
+assistiven Technologien und Escape schliesst die Anzeige. Kein zusätzlicher
+Button/Pfeil, kein nativer `title`-Tooltip und keine Änderung der Zeilenhöhe.
+
+Betroffen: REQ-061/REQ-067, `src/features/workspaces/Workspaces.tsx` und die
+entfernten `.timestamp-detail`-Regeln in `src/styles/app.css`. Datenwerte und
+Tooltipvertrag bleiben unverändert. Die Datumsregel ist im aktuellen Designsystem
+und den Referenzfassungen v1.2/v1.3 nachgeführt. Die Menü-/Split-Button-Regeln von
+v1.3 und historische Nachweise bleiben erhalten.
+
+Ausgangsrevision `1b843ed`, Arbeitsbaum vor Beginn sauber. Tatsächliche Kurzprüfung:
+`npm run typecheck` einmal, Exit 0; genau ein Chromium-Fall in
+`tests/e2e/timestamp-tooltip.spec.ts`, Exit 0, 1/1 bestanden (2.1 Sekunden Fall,
+2.5 Sekunden gesamter Lauf). Sichtbare Minutenanzeige und ISO-Zeitwert,
+Hover-/Tastaturanzeige, Fokus, Escape und unveränderte Zeilenhöhe sind geprüft.
+Der eine Screenshot wurde visuell geprüft. Die bisherige Aufklapp-Erwartung in
+`tests/e2e/neutral-ui.spec.ts` ist angepasst; dieser umfangreiche Fall wurde
+bewusst nicht zusätzlich ausgeführt.
+
+[Exakte Befehle, Exitcodes, Revision und Dateihashes](verification/timestamp-tooltip/checks.json),
+[Typecheck](verification/timestamp-tooltip/typecheck.log),
+[Chromium-Report](verification/timestamp-tooltip/ui.json),
+[Screenshot](verification/timestamp-tooltip/timestamp-tooltip.png).
+`git diff --check`: Exit 0. Kein Build, keine vollständigen Suiten und keine
+weiteren Browser ausgeführt. Vorhandener Nutzerserver auf 4173 nach Pfad-/
+Prozessprüfung wiederverwendet und erhalten. Nächster Schritt: lokale Änderung
+durchsehen; für diesen Abschnitt kein Commit/Push ausgeführt.

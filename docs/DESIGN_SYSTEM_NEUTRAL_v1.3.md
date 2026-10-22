@@ -946,10 +946,15 @@ Analysen rechts, Zuletzt bearbeitet links.** Die Kopftexte „Daten“ und
   Gebietsschema. Werte werden für Sortierung und Berechnungen nicht als
   formatierte Zeichenketten behandelt.
 - In kompakten Übersichten SOLLEN Zeitstempel nur bis auf Minuten angezeigt
-  werden, sofern Sekunden für die Aufgabe nicht relevant sind. Der vollständige
-  Wert bleibt bei Bedarf in einer zugänglichen Detailansicht verfügbar; ein
-  Hover-Tooltip allein genügt dafür nicht. Datenraster mit fachlich wichtigen
-  Sekunden oder Subsekunden behalten ihre erforderliche Präzision.
+  werden, sofern Sekunden für die Aufgabe nicht relevant sind. In der Projektliste
+  zeigt der gemeinsame Tooltip den vollständigen Wert mit Sekunden, Millisekunden
+  und Zeitzone bei Hover und Tastaturfokus. Das sichtbare `<time>` bleibt mit
+  unverändertem `datetime` per Tab erreichbar; `aria-describedby` vermittelt den
+  vollständigen Wert assistiven Technologien. Es gibt dort kein Aufklappelement,
+  keinen zusätzlichen Button und keinen nativen `title`-Tooltip. Die Tabellenzeile
+  verändert beim Anzeigen ihre Höhe nicht. Der vollständige Wert ist somit auch
+  ohne Hover erreichbar. Datenraster mit fachlich wichtigen Sekunden oder
+  Subsekunden behalten ihre erforderliche Präzision.
 - Kopf- und Datenzellen verwenden pro Spalte dieselben horizontalen Innenabstände.
   Als Standard dienen 12 px vertikal und 16 px horizontal. Ausrichtung entsteht
   durch `text-align`, nicht durch zusätzliche Leerzeichen oder individuelle

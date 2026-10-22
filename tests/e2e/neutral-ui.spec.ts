@@ -106,16 +106,14 @@ test('Neutral UI: real project navigation, aligned tables, optional fields and e
   }
   await expect(row.locator('td').first()).toHaveCSS('text-align', /left|start/);
   await expect(row.locator('td').last()).toHaveCSS('text-align', /left|start/);
-  const timestamp = row.locator('.timestamp-detail');
-  const compactTime = timestamp.locator('summary time');
+  const compactTime = row.locator('time');
   await expect(compactTime).toHaveAttribute('datetime', /T/);
   await expect(compactTime).toHaveText(/\d{2}\.\d{2}\.\d{4}.*\d{2}:\d{2}$/);
-  await timestamp.locator('summary').click();
-  await expect(timestamp).toHaveAttribute('open', '');
-  const fullTime = timestamp.locator('time').last();
-  await expect(fullTime).toBeVisible();
-  await expect(fullTime).toHaveAttribute('datetime', (await compactTime.getAttribute('datetime'))!);
-  await expect(fullTime).toHaveText(/\d{2}:\d{2}:\d{2}/);
+  await expect(row.locator('details')).toHaveCount(0);
+  await compactTime.hover();
+  await expect(page.getByRole('tooltip')).toBeVisible();
+  await expect(compactTime).toHaveAccessibleDescription(/\d{2}:\d{2}:\d{2}[.,]\d{3}/);
+  await page.keyboard.press('Escape');
   await capture(page, 'projects-table');
   await row.getByRole('link', {name: 'Neutrale Datenwerkstatt', exact: true}).click();
   await nav.getByRole('link', {name: 'Daten', exact: true}).click();

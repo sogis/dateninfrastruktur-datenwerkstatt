@@ -7,6 +7,7 @@ import {
   EmptyState,
   StatusBadge,
   PanelHeader,
+  Tooltip,
 } from '../../ui/Controls';
 import {Diagnostics} from './Diagnostics';
 import {ArchiveActions, ArchiveImport} from '../archive/ArchiveActions';
@@ -89,31 +90,28 @@ export function ProjectList() {
                 <td className="numeric">{w.datasetCount}</td>
                 <td className="numeric">{w.analysisCount}</td>
                 <td>
-                  <details className="timestamp-detail">
-                    <summary>
-                      <time dateTime={w.updatedAt}>
-                        {new Date(w.updatedAt).toLocaleString('de-CH', {
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </time>
-                    </summary>
-                    <time dateTime={w.updatedAt}>
+                  <Tooltip
+                    text={new Date(w.updatedAt).toLocaleString('de-CH', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit',
+                      fractionalSecondDigits: 3,
+                      timeZoneName: 'short',
+                    })}
+                  >
+                    <time className="project-timestamp" dateTime={w.updatedAt} tabIndex={0}>
                       {new Date(w.updatedAt).toLocaleString('de-CH', {
                         day: '2-digit',
                         month: '2-digit',
                         year: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit',
-                        second: '2-digit',
-                        fractionalSecondDigits: 3,
-                        timeZoneName: 'short',
                       })}
                     </time>
-                  </details>
+                  </Tooltip>
                 </td>
               </tr>
             ))}

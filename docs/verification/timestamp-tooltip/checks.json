@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-22",
+  "baseline": "1b843ed212bd17038b47b6a6852932c5361238b2",
+  "commands": [
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 PLAYWRIGHT_JSON_OUTPUT_FILE=docs/verification/timestamp-tooltip/ui.json npx playwright test tests/e2e/timestamp-tooltip.spec.ts --project=chromium --reporter=list,json --output=test-results/timestamp-tooltip",
+      "exitCode": 0,
+      "report": "ui.json",
+      "log": "ui.log",
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "coverage": [
+    "Minute-only visible date and unchanged datetime",
+    "No button, details, summary or native title tooltip in date cell",
+    "Full seconds, milliseconds and timezone on hover and keyboard focus",
+    "Accessible description, visible focus ring, Escape and unchanged row height"
+  ],
+  "screenshot": "timestamp-tooltip.png",
+  "screenshotReviewed": true,
+  "notRun": [
+    "build",
+    "full test suites",
+    "existing broad neutral-ui case",
+    "other browsers"
+  ],
+  "sourceTestSha256": {
+    "src/features/workspaces/Workspaces.tsx": "35fd5d73c3aeed7bb9f8ed58c5ea17ba4549382198edb6dd4599e1629e017dca",
+    "src/styles/app.css": "a695201360164b2f92331e65f9d1b7c1e795b84c79360b431bc868aaf0ae9608",
+    "tests/e2e/timestamp-tooltip.spec.ts": "c6d1c946ddb3b4309aa13bfd0d07029aa1ab72b1fea49149e874ac99558a7b74",
+    "tests/e2e/neutral-ui.spec.ts": "28791d86abeeb562a7183176c4498659fa84f05ede64827761a7c49530ebe566"
+  }
+}

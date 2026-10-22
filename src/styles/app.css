@@ -847,17 +847,10 @@ main > [aria-label='Browser-Speicher'] {
 .table-scroll .actions {
   text-align: center;
 }
-.timestamp-detail {
+.project-timestamp {
   font-variant-numeric: tabular-nums;
-}
-.timestamp-detail summary {
-  width: fit-content;
-}
-.timestamp-detail > time {
-  display: block;
-  margin-top: 8px;
-  color: var(--dw-text-secondary);
-  font-size: 0.875rem;
+  border-radius: var(--dw-radius);
+  cursor: help;
 }
 
 @media (pointer: coarse) {
