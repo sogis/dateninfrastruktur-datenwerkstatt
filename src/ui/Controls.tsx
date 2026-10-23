@@ -13,6 +13,7 @@ import {
   type ReactNode,
   type HTMLAttributes,
   type Ref,
+  type RefObject,
 } from 'react';
 import {Icon, type IconName} from './Icon';
 export type ControlSize = 'default' | 'compact';
@@ -483,14 +484,44 @@ export function StatusBadge({
 export function Notice({
   tone = 'info',
   className = '',
+  children,
+  onDismiss,
+  dismissFocusRef,
   ...props
-}: HTMLAttributes<HTMLDivElement> & {tone?: 'info' | 'success' | 'warning' | 'danger'}) {
+}: HTMLAttributes<HTMLDivElement> & {
+  tone?: 'info' | 'success' | 'warning' | 'danger';
+  onDismiss?: () => void;
+  dismissFocusRef?: RefObject<HTMLElement | null>;
+}) {
   return (
     <div
       role={tone === 'danger' ? 'alert' : 'status'}
       {...props}
-      className={`dw-notice dw-tone-${tone} ${className}`}
-    />
+      className={`dw-notice dw-tone-${tone} ${onDismiss ? 'dw-notice--dismissible' : ''} ${className}`}
+    >
+      {onDismiss ? (
+        <>
+          <div className="dw-notice-message">{children}</div>
+          <IconButton
+            icon="x-lg"
+            label="Hinweis schliessen"
+            variant="tertiary"
+            onClick={() => {
+              onDismiss();
+              const target = dismissFocusRef?.current;
+              if (target?.isConnected && !target.matches(':disabled')) target.focus();
+            }}
+          />
+        </>
+      ) : (
+        children
+      )}
+    </div>
+  );
+}
+export function ActionStatus({className = '', ...props}: HTMLAttributes<HTMLParagraphElement>) {
+  return (
+    <p role="status" aria-atomic="true" {...props} className={`dw-action-status ${className}`} />
   );
 }
 export function PanelHeader({title, children}: {title: string; children?: ReactNode}) {

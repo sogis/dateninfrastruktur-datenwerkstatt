@@ -25,7 +25,7 @@ import {useStore} from 'zustand';
 import {usePanelHeight} from '../../ui/PanelLayout';
 import type {ImperativePanelGroupHandle} from 'react-resizable-panels';
 import {Chart} from './chart';
-import {RunDetails, runStatusText, runTimeText} from '../results/RunDetails';
+import {RunDetails, RunStatus, runOptionText, runTimeText} from '../results/RunDetails';
 
 export function SqlWorkbench({
   session,
@@ -128,7 +128,7 @@ export function SqlWorkbench({
           Schema
         </Button>
         <span role="status" aria-live={busy ? 'polite' : 'off'}>
-          {busy ?? `SQL · Revision ${analysis.revision}`}
+          {busy ?? `Revision ${analysis.revision}`}
         </span>
         <Button
           variant="tertiary"
@@ -156,11 +156,14 @@ export function SqlWorkbench({
             .map((d) => (
               <details key={d.id}>
                 <summary>{d.sqlName}</summary>
-                {session.document.datasetVersions[d.currentVersionId]!.schema.columns.map((c) => (
-                  <p key={c.name}>
-                    {c.name} · {c.logicalType}
-                  </p>
-                ))}
+                <dl className="dw-meta-list schema-columns">
+                  {session.document.datasetVersions[d.currentVersionId]!.schema.columns.map((c) => (
+                    <div key={c.name}>
+                      <dt>{c.name}</dt>
+                      <dd>{c.logicalType}</dd>
+                    </div>
+                  ))}
+                </dl>
               </details>
             ))}
         </Modal>
@@ -211,18 +214,12 @@ export function SqlWorkbench({
                     <option value="latest">Letzter Lauf</option>
                     {runs.map((r) => (
                       <option key={r.id} value={r.id}>
-                        {runTimeText(r.queuedAt)} · Revision {r.snapshot.analysisRevision} ·{' '}
-                        {runStatusText(r)}
+                        {runOptionText(r)}
                       </option>
                     ))}
                   </Select>
                 </FormField>
-                {run && (
-                  <span>
-                    {runStatusText(run)} · Revision {run.snapshot.analysisRevision} ·{' '}
-                    {run.durationMs ?? '–'} ms
-                  </span>
-                )}
+                {run && <RunStatus run={run} />}
               </Toolbar>
               {run?.error && (
                 <Notice tone="danger" className="result-error">
@@ -273,6 +270,7 @@ function parameterRows(parameters: Analysis['parameters']) {
 export function Parameters({analysis, session}: {analysis: Analysis; session: EditingSession}) {
   const [rows, setRows] = useState(() => parameterRows(analysis.parameters));
   const [error, setError] = useState('');
+  const errorFocusRef = useRef<HTMLButtonElement>(null);
   const form = useFormValidation(
     Object.fromEntries(
       rows.flatMap((row, i) => [
@@ -293,7 +291,7 @@ export function Parameters({analysis, session}: {analysis: Analysis; session: Ed
     <details className="parameters dw-compact">
       <summary>
         Parameter ({Object.keys(analysis.parameters).length})
-        {dirty ? ' · Änderungen noch nicht übernommen' : ''}
+        {dirty && <span className="secondary-text"> (Änderungen noch nicht übernommen)</span>}
       </summary>
       <table>
         <thead>
@@ -422,6 +420,7 @@ export function Parameters({analysis, session}: {analysis: Analysis; session: Ed
           variant="primary"
           disabled={session.readOnly || !dirty}
           onClick={() => {
+            setError('');
             try {
               if (!form.validate()) return;
               const parameters = Object.fromEntries(
@@ -434,11 +433,16 @@ export function Parameters({analysis, session}: {analysis: Analysis; session: Ed
               setError(failureMessage(e));
             }
           }}
+          ref={errorFocusRef}
         >
           Parameter übernehmen
         </Button>
       </ActionGroup>
-      {error && <Notice tone="danger">{error}</Notice>}
+      {error && (
+        <Notice tone="danger" onDismiss={() => setError('')} dismissFocusRef={errorFocusRef}>
+          {error}
+        </Notice>
+      )}
     </details>
   );
 }
@@ -519,11 +523,20 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
         <span className="result-name">
           Ergebnis: <strong>{result.name}</strong>
         </span>
-        <strong>
-          {result.rowCount} Zeilen ·{' '}
-          {result.coverage.kind === 'limited' ? 'begrenzt' : 'vollständig'} ·{' '}
-          {result.retention === 'kept' ? 'aufbewahrt' : 'temporär'}
-        </strong>
+        <dl className="dw-meta-list">
+          <div>
+            <dt>Zeilen</dt>
+            <dd>{result.rowCount}</dd>
+          </div>
+          <div>
+            <dt>Umfang</dt>
+            <dd>{result.coverage.kind === 'limited' ? 'Begrenzt' : 'Vollständig'}</dd>
+          </div>
+          <div>
+            <dt>Aufbewahrung</dt>
+            <dd>{result.retention === 'kept' ? 'Aufbewahrt' : 'Temporär'}</dd>
+          </div>
+        </dl>
         <ActionGroup>
           <Button
             disabled={
@@ -660,7 +673,7 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
             <Button disabled={offset === 0 || loading} onClick={() => setOffset(offset - 100)}>
               Vorherige Seite
             </Button>
-            <span>Seite {Math.floor(offset / 100) + 1} · bis zu 100 Zeilen</span>
+            <span>Seite {Math.floor(offset / 100) + 1} (bis zu 100 Zeilen pro Seite)</span>
             <Button
               disabled={offset + 100 >= Number(result.rowCount) || loading}
               onClick={() => setOffset(offset + 100)}
@@ -673,7 +686,7 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
         <ChartControls result={result} session={session} />
       )}
       <details className="result-data">
-        <summary>Als Datensatz übernehmen · Schema</summary>
+        <summary>Als Datensatz übernehmen und Schema ansehen</summary>
         <p>
           Das vollständige Resultat wird zuerst aufbewahrt und als neue Dateneinbindung gespeichert.
         </p>
@@ -764,9 +777,18 @@ function ChartControls({result, session}: {result: TableResult; session: Editing
   return (
     <div className="chart-area">
       <Toolbar className="result-toolbar">
-        <span className="chart-source">
-          Tabellenergebnis: <strong>{result.name}</strong> · {runTimeText(result.createdAt)}
-        </span>
+        <dl className="dw-meta-list chart-source">
+          <div>
+            <dt>Tabellenergebnis</dt>
+            <dd>{result.name}</dd>
+          </div>
+          <div>
+            <dt>Erstellt</dt>
+            <dd>
+              <time dateTime={result.createdAt}>{runTimeText(result.createdAt)}</time>
+            </dd>
+          </div>
+        </dl>
         <FormField label={<>Diagrammtyp</>}>
           <Select
             required

@@ -4,7 +4,12 @@ import {describe, expect, it} from 'vitest';
 import recipe from '../../fixtures/workspace.recipe.json';
 import {checkedId, parseWorkspace} from '../../src/domain/workspace';
 import type {ExecutionRun, TableResult} from '../../src/domain/model';
-import {RunDetails, runStatusText, runTimeText} from '../../src/features/results/RunDetails';
+import {
+  RunDetails,
+  RunStatus,
+  runStatusText,
+  runTimeText,
+} from '../../src/features/results/RunDetails';
 import type {DatasetAvailabilityContext} from '../../src/features/data/DatasetHistory';
 
 function projectWithRun() {
@@ -98,6 +103,63 @@ function renderRun(
 }
 
 describe('Project provenance presentation', () => {
+  it.each([
+    ['queued', 'Ausführung wartet'],
+    ['running', 'Ausführung läuft'],
+    ['cancelling', 'Ausführung wird beendet'],
+    ['succeeded', 'Ausführung erfolgreich'],
+    ['failed', 'Ausführung fehlgeschlagen'],
+    ['cancelled', 'Ausführung abgebrochen'],
+    ['interrupted', 'Ausführung unterbrochen'],
+  ] as const)(
+    'names the %s state and labels recorded metadata without changing its precision',
+    (status, text) => {
+      const {run} = projectWithRun();
+      run.status = status;
+      run.durationMs = 0.125;
+      const html = renderToStaticMarkup(createElement(RunStatus, {run}));
+      expect(html).toContain(text);
+      expect(html).toContain('<dt>Revision</dt>');
+      expect(html).toContain('<dt>Laufzeit</dt><dd>0.125 ms</dd>');
+      expect(html).not.toContain('·');
+      expect(run.status).toBe(status);
+    },
+  );
+
+  it('distinguishes zero runtime, unavailable metadata, ongoing work and no previous run', () => {
+    const {run} = projectWithRun();
+    expect(renderToStaticMarkup(createElement(RunStatus, {run}))).toContain('0 ms');
+    delete run.durationMs;
+    delete run.snapshot.analysisRevision;
+    const html = renderToStaticMarkup(
+      createElement(RunStatus, {run, busy: 'R wird initialisiert …'}),
+    );
+    expect(html).toContain('R wird initialisiert …');
+    expect(html).toContain('<dt>Revision</dt><dd>nicht angegeben</dd>');
+    expect(html).toContain('<dt>Laufzeit</dt><dd>noch nicht erfasst</dd>');
+    expect(renderToStaticMarkup(createElement(RunStatus))).toContain('Bereit');
+  });
+
+  it.each([false, true])(
+    'only claims hashes have been checked when the check actually ran (%s)',
+    (hashesChecked) => {
+      const project = projectWithRun();
+      const {readable} = renderRun(project, {
+        mode: 'persistent',
+        missingArtifacts: [],
+        hashesChecked,
+        integrity: {referenced: [project.artifactId], missing: [], corrupt: [], orphanPaths: []},
+      });
+      const message = hashesChecked
+        ? 'Ihr Hash wurde in dieser Sitzung geprüft.'
+        : 'Ihr Hash wurde in dieser Sitzung noch nicht geprüft.';
+      expect(readable.split(message)).toHaveLength(3);
+      expect(readable).not.toContain(
+        hashesChecked ? 'noch nicht geprüft' : 'Ihr Hash wurde in dieser Sitzung geprüft.',
+      );
+    },
+  );
+
   it('distinguishes SQL availability from actual usage and preserves exact values without mutating the project', () => {
     const project = projectWithRun();
     project.analysis.archivedAt = '2026-10-15T11:00:00Z';
@@ -123,13 +185,15 @@ describe('Project provenance presentation', () => {
 
   it('does not claim local bytes exist merely because artifact metadata exists', () => {
     const {readable} = renderRun(projectWithRun());
-    expect(readable.match(/Lokale Datei · Verfügbarkeit noch ungeprüft/g)).toHaveLength(2);
+    expect(
+      readable.match(/Die Verfügbarkeit der lokalen Datei wurde noch nicht geprüft./g),
+    ).toHaveLength(2);
     expect(readable).not.toContain('Lokal gesichert');
   });
 
   it.each([
-    {state: 'missing', message: 'Nicht verfügbar · Datei fehlt'},
-    {state: 'corrupt', message: 'Nicht verfügbar · Datei beschädigt'},
+    {state: 'missing', message: 'Nicht verfügbar, da die Datei fehlt.'},
+    {state: 'corrupt', message: 'Nicht verfügbar, da die Datei beschädigt ist.'},
   ] as const)('shows known $state bytes for inputs and retained results', ({state, message}) => {
     const project = projectWithRun();
     const {readable} = renderRun(project, {
@@ -144,7 +208,7 @@ describe('Project provenance presentation', () => {
       },
     });
     expect(readable.split(message)).toHaveLength(3);
-    expect(readable).not.toContain('Hash in dieser Sitzung geprüft');
+    expect(readable).not.toContain('Ihr Hash wurde in dieser Sitzung geprüft.');
   });
 
   it('presents direct R captures without inventing an analysis or a former script run', () => {
@@ -179,8 +243,8 @@ describe('Project provenance presentation', () => {
         orphanPaths: [],
       },
     });
-    expect(readable.split('Nicht verfügbar · Datei fehlt')).toHaveLength(3);
-    expect(readable).not.toContain('Hash in dieser Sitzung geprüft');
+    expect(readable.split('Nicht verfügbar, da die Datei fehlt.')).toHaveLength(3);
+    expect(readable).not.toContain('Ihr Hash wurde in dieser Sitzung geprüft.');
   });
 
   it('uses explicit bound labels and exposes unavailable recipe results without materializing them', () => {
@@ -192,7 +256,7 @@ describe('Project provenance presentation', () => {
     expect(readable).toContain('Explizit gebunden');
     expect(readable).not.toContain('SQL-Projektsnapshot');
     expect(readable).toContain('Projektdatei enthält keine Ergebnisdaten');
-    expect(runStatusText(project.run)).toBe('Erfolgreich');
+    expect(runStatusText(project.run)).toBe('Ausführung erfolgreich');
     expect(runTimeText(project.run.queuedAt)).toBe('2026-10-15 10:00:00.123 UTC');
   });
 });

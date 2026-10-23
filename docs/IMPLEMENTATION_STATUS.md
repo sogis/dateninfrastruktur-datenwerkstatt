@@ -1697,3 +1697,333 @@ Dies ist keine vollständige V1-/Releasefreigabe.
 Nächster konkreter Schritt: lokale Durchsicht der implementierten Änderung und
 des Prüfnachweises; im beauftragten Button-/R-Dateiexportumfang bleibt kein
 bekannter Blocker. Weitergehende Browser-/Releaseabnahme ist ein eigener Abschnitt.
+
+### UI-Texte und Informationshierarchie v1.4 — gezielt geprüft (23. Oktober 2026)
+
+**Status: umgesetzt und im beauftragten UI-Umfang geprüft.** Grundlage sind die
+Projektfassung des Designsystems sowie die Ergänzungen 4.4, 9.1 und 12.2 aus
+`DESIGN_SYSTEM_NEUTRAL_v1.4.md`; sie sind in `DESIGN_SYSTEM.md` übernommen.
+REQ-061–067 / AT-054–058; die unveränderliche Herkunft aus AT-018/058 bleibt
+lesend nachvollziehbar. Verifizierte Basisrevision `faff291` mit lokalen
+Änderungen. Produktiver Änderungsstand (SHA-256):
+`2c912570fc40ea6667f34b7cf937986a0bf10b606f7f778761cdc2a54246e780`.
+Pfadbezogene Quell-/Testhashes, Runtime und genaue Befehle stehen in
+[checks.json](verification/ui-texts-v1.4/checks.json).
+
+| Bereich | Korrektur / Dateien |
+| --- | --- |
+| SQL und R | Gemeinsame `RunStatus`-Darstellung mit Hauptaussage „Ausführung …“ und nachgeordneter Revision/Laufzeit; eindeutige Texte für alle sieben Laufzustände, nicht verfügbare Werte und Laufzeit 0. Keine redundante SQL-Kennung vor der Editorrevision. Laufwahl als verständlicher Text. `src/features/results/RunDetails.tsx`, `sql/SqlWorkbench.tsx`, `r/RWorkbench.tsx` |
+| Resultate und Herkunft | Kennzahlen als Label-Wert-Paare; Erklärungen als Sätze; Quelle, Format, Analyserevision, Portalbezug und Dateigrösse eindeutig zugeordnet. R-Objektnamen und Umfang getrennt dargestellt; Transferpläne benennen Zeilen und geschätzte Datengrösse. `data/{DataSection,DatasetHistory}.tsx`, `results/RunDetails.tsx`, `r/{RWorkbench,Transfer}.tsx`, `catalog/PortalImport.tsx` |
+| Archive und Dateiprüfung | Import-/Exportumfang beschriftet; normales Inventarergebnis ohne farbige Notice. Auffälligkeiten mit unveränderten Zahlen und ausdrücklichem Hinweis, wenn Dateilängen/SHA-256 noch nicht geprüft wurden. Keine Behauptung einer vollständigen Integritätsprüfung nach blosser Bestandsaufnahme. `archive/ArchiveActions.tsx` |
+| Speicher, Sitzung, Diagnose | Vollständige Hinweise zu lokaler/temporärer Speicherung und Schreibschutz; beschriftete Schätzwerte und Diagnosedaten. Fehler der Bereinigung als separate unveränderte Originalmeldungen statt einer `join('; ')`-Kette. `workspaces/{StorageSettings,Diagnostics}.tsx`, `app/router.tsx` |
+| Gestaltung | Bestehende Tokens, kompakte Typografie und umbrechende semantische `dl`-Gruppen in `styles/app.css`; keine neuen Dependencies, Badges oder Icons. |
+
+**Systematische Suche und bewusste Ausnahmen:** `src/` nach `·`, `&middot;`,
+Unicode-/Hex-Escapes, ähnlichen Separatoren, `join()` und dynamischen Status-/
+Metadatentexten durchsucht. In Anwendungstexten der UI bleiben keine
+Mittelpunktketten. Der verbleibende Treffer in `application/rService.ts`
+benennt ein gespeichertes Grafikergebnis (`Analyse · Grafik …`) und bleibt als
+Dokumentinhalt unverändert. Ebenso unverändert: Benutzer-/Datensatznamen,
+SQL-/R-Code, Datenwerte, exakte Zahlen/Zeitstempel, Originalfehlermeldungen,
+technische Rohdaten, Diagnose-/Dateiexporte und Schnittstellen. Kommalisten
+von Namen, NULL-Markern oder R-Klassen sind fachlich zusammengehörige Listen;
+SQL-/URL-/ARIA-Verkettungen bleiben technische Verträge. Schemaänderungen und
+Bereinigungsfehler werden als Listen statt als verkettete Kurztexte angezeigt.
+Keine fachlichen Statuswerte, Prüfabläufe, Engine-/Speicherverträge oder
+Zustandsübergänge geändert.
+
+**Tatsächlich ausgeführte Prüfungen:** Node 22.23.1, npm 11.18.0,
+Playwright 1.63.0, Chromium 153.0.8010.12, macOS. Alle nachfolgenden
+Erfolgsangaben beruhen auf Exit **0**:
+
+- `npm run typecheck`, `npm run lint` einschliesslich Modulgrenzen;
+  [Typecheck](verification/ui-texts-v1.4/typecheck-final.log),
+  [Lint](verification/ui-texts-v1.4/lint-final.log).
+- `npx vitest run tests/unit/provenance.test.ts`: **17/17**. Alle Laufzustände,
+  fehlende Angaben, Laufzeit 0 und 0.125 ms, exakte grosse Zeilenzahlen,
+  Hashprüfung gegenüber Inventar, fehlende/beschädigte Bytes und unverändertes
+  Projektdokument; [Log](verification/ui-texts-v1.4/unit.log).
+- Erster gezielter Chromium-Lauf **8/8**: bestehende echte SQL-/R-Flächenmessung,
+  SQL-Paging/Export/Chart/NULL/Cancel, R-Rundlauf/Reset/Workerabbruch, direkter
+  R-Export und zwei neue Text-/Layoutfälle;
+  [Log](verification/ui-texts-v1.4/chromium-core-initial.log).
+- Zusätzlicher Ansichtenlauf **10/11**, Exit **1**. Erfolgreich: Tooltip,
+  temporärer/lesender Modus, Einstellungen/Diagnose, Portalimport,
+  CSV-Versionsgeschichte, SQL-Laufsnapshots/Archivimport und drei Textfälle.
+  Ein beim Textumbau zu weit gefasster Archivselektor zählte neben drei
+  Übersichtseinträgen auch drei eingeklappte Herkunftseinträge. Auf die
+  Übersicht begrenzt; einzig diesen Fall erneut ausgeführt: **1/1**, Exit **0**.
+  Der erste Lauf wird ausdrücklich nicht als 11/11 ausgegeben.
+  [Sammellog](verification/ui-texts-v1.4/chromium-views.log),
+  [gezielte Wiederholung](verification/ui-texts-v1.4/chromium-archive.log).
+- `APP_BASE_PATH=/lab/ npm run build`: Exit **0**, einschliesslich Assets und
+  Lizenzinventar. Bekannte Warnung zu grossen Editorchunks bleibt bestehen;
+  [Buildlog](verification/ui-texts-v1.4/build.log).
+- `git diff --check`: Exit **0**. Keine Änderungen an historischen
+  Verifikationsdateien, Fixtures, Paketversionen oder Lockfile.
+
+Insgesamt wurden **17 unterschiedliche Chromium-Fälle erfolgreich geprüft**;
+zwei Textfälle wurden in beiden Läufen ausgeführt. Die Textfälle prüfen reale
+leere SQL-Ergebnisse, lange Namen, erhaltene Mittelpunkte in Code/Daten,
+fehlende Speicherwerte, teilweise Dateiprüfungen und Bereinigungsfehler. Nur die
+zusätzlichen Inventar-/Fehler-/Schätzantworten sind ausdrücklich als
+Darstellungsproben injiziert; sie sind keine Engine- oder Speichernachweise.
+
+Geometrie bei 1440 × 900 und 1280 × 800 erfüllt weiterhin den SQL-/R-Vertrag.
+Zusätzlich kein horizontaler Überlauf in SQL bei 640 × 650, in Einstellungen
+bei 390 × 700 sowie mit 200 % Textgrösse bei 1280 × 650. Vergrösserter Text ist
+keine native Browserzoom-Abnahme. Screenshots von SQL-Status, R-Arbeitsfläche,
+Archivdialog und Speicher wurden visuell geprüft. Neue Screenshots und
+Messwerte liegen ausschliesslich unter
+[ui-texts-v1.4/screens](verification/ui-texts-v1.4/screens/).
+Der vorhandene Vite-Prozess 52467 wurde anhand Commandline und cwd geprüft,
+wiederverwendet und erhalten; Browserprüfungen nutzten isolierte Testprofile.
+
+**Nicht ausgeführt:** vollständiges `npm run verify`, vollständige Unit-/
+Integrations-/E2E-Suiten, Firefox-/WebKit- oder Deploymentmatrix, nativer Safari
+und native Zoomprüfung. Die ebenfalls angepassten Selektoren in den übrigen
+Required-Fields-/Workspace-/Golden-/Recovery-/Deploymentfällen wurden typgeprüft
+und gelintet, diese Fälle aber nicht zusätzlich komplett ausgeführt.
+Kein Commit, Push, Deployment oder V1-Release in diesem Abschnitt.
+
+Nächster konkreter Schritt: lokale Durchsicht der Text-/Layoutänderungen und
+Nachweise. Im beauftragten Umfang bleibt kein bekannter Blocker.
+
+### UI — Projektdatei auswählen (23. Oktober 2026)
+
+REQ-061 / AT-057: Auf Nutzerauftrag heisst der sekundäre Button unter
+„Projektdatei importieren“ jetzt „Datei auswählen …“. Die Dateiauswahl führt
+weiterhin zur Prüfung und Importbestätigung. Implementiert in
+`src/features/archive/ArchiveActions.tsx`; bestehende Namensselektoren in
+`tests/e2e/{design-system,p7-ui}.spec.ts` angepasst. Verifizierte Basisrevision:
+`faff2910f9fcadcbff6f9b4566b416fc9d7d918f` mit lokalen Änderungen.
+
+Tatsächlich ausgeführte Prüfungen:
+
+- `npx eslint src/features/archive/ArchiveActions.tsx tests/e2e/design-system.spec.ts tests/e2e/p7-ui.spec.ts`: Exit **0**.
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/design-system.spec.ts tests/e2e/p7-ui.spec.ts tests/e2e/archive.spec.ts --grep 'UI screens: project actions|P7 AT-055–057: native focus|P6 AT-059: recipe' --reporter=list --output=/tmp/datenwerkstatt-import-button-tests`: Exit **1**, **2/3** bestanden. Recipe-Import sowie Fokus-/Einstellungsfall bestanden. Der Designsystemfall bestätigt den neuen Button samt Secondary-Stil, scheitert später an der unabhängigen Sidebar-Prüfung (8 SVGs statt 7).
+- `node --input-type=module` mit direkter Playwright-Probe über stdin: Exit **0**. Neuer Button sichtbar; Secondary-Stil, echter Dateiauswahldialog, Archivprüfung, Bestätigungsdialog vor Navigation, Abbrechen und Fokusrückgabe geprüft. Screenshot `/tmp/datenwerkstatt-import-button.png` visuell geprüft.
+- `npm run typecheck`: Exit **2**, unabhängiger Fehler im vorhandenen Arbeitsstand: `tests/unit/workspace.test.ts:303`, TS2554 (Argument fehlt).
+- `git diff --check`: Exit **0**.
+
+Nicht ausgeführt: vollständiges `npm run verify`, vollständige Suiten und
+Browsermatrix. Keine weiteren Funktionen oder Requirements geändert.
+Nächster konkreter Schritt: unabhängige TypeScript-/Sidebar-Prüffehler im
+parallel bearbeiteten Arbeitsstand beheben; die Buttonumbenennung ist geprüft.
+
+### UI — Roter Hover am Hinweis-Schliessen-Icon (23. Oktober 2026)
+
+REQ-061/062/065, AT-055/057: Auf Nutzerauftrag wechselt das globale
+Schliessen-Icon bei Hover von `text-secondary` zu `error-fg` (`#B42318`).
+Die Hover- und Druckfläche verwendet `danger-subtle-pressed` (`#FEE4E2`),
+damit sie sich vom hellroten Hinweis abhebt. Ruhezustand, Tooltip und
+gemeinsamer Fokusring bleiben erhalten. Implementiert in `src/styles/app.css`;
+Vertrag in `docs/DESIGN_SYSTEM.md` und bestehende Interaktions-Sollwerte in
+`tests/e2e/navigation.spec.ts` entsprechend der Nutzerentscheidung angepasst.
+Verifizierte Basisrevision: `faff2910f9fcadcbff6f9b4566b416fc9d7d918f`
+mit vorhandenen lokalen Änderungen; keine Änderungen an Engine-/Speicherverträgen.
+
+Tatsächlich ausgeführte Prüfungen (Node 22.23.1, npm 11.18.0,
+Playwright 1.63.0 / Chromium):
+
+- `npm run typecheck && npx eslint tests/e2e/navigation.spec.ts && git diff --check`:
+  Exit **0**; der zuvor dokumentierte TypeScript-Fehler tritt im aktuellen
+  Arbeitsstand nicht mehr auf.
+- Erster Versuch mit `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/navigation.spec.ts --grep 'Notices:' --reporter=list --output=/tmp/datenwerkstatt-notice-hover-tests`:
+  Exit **1**, kein Test gestartet, da der Testportal-Port 4174 bereits belegt war.
+  Vorhandenen Vite- und Testportal-Prozess anhand Commandline und cwd geprüft
+  und unverändert erhalten.
+- `DW_REUSE_DEV_SERVER=1 DW_REUSE_TEST_PORTAL=1 npx playwright test --project=chromium tests/e2e/navigation.spec.ts --grep 'Notices:' --reporter=list --output=/tmp/datenwerkstatt-notice-hover-tests`:
+  Exit **0**, **1/1 bestanden**. Prüft Ruhe-/Hover-/Druckzustände samt SVG-Farbe,
+  kurze/lange Hinweise bei 1440 × 900 und 1280 × 800 mit 100/200 % CSS-Zoom,
+  Tooltip, Fokus und Schliessen per Tastatur. Hover-Screenshot bei 200 %
+  visuell geprüft; Artefakte unter `/tmp/datenwerkstatt-notice-hover-tests`.
+- `npm run build > /tmp/datenwerkstatt-notice-hover-build.log 2>&1`:
+  Exit **0**, einschliesslich Assetvorbereitung und Lizenzinventar.
+  Bekannte Warnung zu grossen Editorchunks bleibt bestehen.
+
+Nicht ausgeführt: vollständiges `npm run verify`, vollständige Unit-/Integrations-/
+E2E-Suiten und Browsermatrix. Im beauftragten Hover-Umfang kein bekannter Blocker.
+Nächster konkreter Schritt: lokale Durchsicht des gewählten Rottons.
+
+### UI — dezenter Speicherhinweis und eigene Projektdiagnose (23. Oktober 2026)
+
+**Status: im beauftragten Umfang implementiert und geprüft.**
+REQ-059/060/061/064/067/072/077; AT-054–058 und gezielter Recovery-Nachweis.
+Verifizierte Basisrevision `faff2910f9fcadcbff6f9b4566b416fc9d7d918f` mit bereits
+vorhandenen lokalen Textänderungen. Der währenddessen separat umbenannte Button
+„Datei auswählen …“ und dessen Nachtrag bleiben erhalten. Produktiver
+Änderungsstand einschliesslich statischer Routenfreigabe (SHA-256):
+`ac45c13d26ce5ede95cb229fa49caa0e39c0a9af49a16afededf0a9ec4b7665b`.
+Einzelhashes, Runtime und exakte Prüfbefehle stehen in
+[checks.json](verification/diagnostics-settings/checks.json).
+
+**Geliefert:**
+
+- `src/app/router.tsx`: vier zusammenhängende Einstellungsoptionen, reservierte
+  neutrale Live-Statuszeile ohne Anfangsbestätigung; Erfolg drei Sekunden,
+  Fehler bis zum nächsten Versuch. Neueste Antwort gewinnt; Timer und verspätete
+  Rückmeldungen werden beim Seitenwechsel verworfen.
+- Neue Projekt-Unterroute `/projects/$workspaceId/diagnostics` mit Navigation
+  direkt unter Einstellungen, bestehendem `info-circle`, Tooltip und aktivem
+  Ziel. WorkspaceProvider, Scheduler und Editormodelle bleiben erhalten; ohne
+  geöffnetes Projekt erscheint kein Diagnoseeintrag.
+- `src/features/workspaces/Diagnostics.tsx`: Dateiprüfung und Berichtdownload,
+  live abonnierter Operationsstatus, technische Details zunächst eingeklappt.
+  Berichtformat 1 und dessen Felder bleiben unverändert; Code wird nur nach
+  ausdrücklicher Auswahl aufgenommen. Öffnen startet weder Engine noch Prüfung.
+- `src/features/archive/ArchiveActions.tsx` und `Workspaces.tsx`: Diagnose und
+  normaler Inventarstatus aus der Übersicht entfernt. Relevante Daten-/Prüffehler
+  bleiben mit Link zur Diagnose sichtbar. Inventarwarnungen aktualisieren sich
+  auch nach Abschluss einer Prüfung auf einer anderen Unterseite. Import,
+  Export, Duplizieren und Löschen bleiben an ihren bisherigen Stellen.
+- `WorkspaceEditingSession.inspectIntegrity` behält das letzte Ergebnis bei
+  einem Prüffehler, setzt den Laufzeitfehler und entfernt ihn nach erfolgreicher
+  Wiederholung. Keine Änderung am Prüfverfahren oder Projektdokument.
+- `scripts/deployment.mjs` erlaubt die neue Projekt-Unterroute, ohne unbekannte
+  Routen oder fehlende Assets auf die SPA umzuleiten. Designsystem, SPEC und
+  AT-057 sind nachgeführt; keine Dependencies oder gespeicherten Formate geändert.
+
+**Tatsächliche Prüfungen:** Node 22.23.1, npm 11.18.0, Playwright 1.63.0,
+Chromium 153.0.8010.12, Caddy 2.11.4 auf dem vorhandenen lokalen Testimage.
+
+| Prüfung | Ergebnis / Nachweis |
+| --- | --- |
+| `npm run typecheck` | Exit **0**, [abschliessendes Log](verification/diagnostics-settings/typecheck-delivery.log) |
+| `npm run lint` einschliesslich Modulgrenzen | Exit **0**, [Log](verification/diagnostics-settings/lint-delivery.log) |
+| `npx vitest run scripts/deployment.test.mjs tests/unit/workspace.test.ts tests/unit/provenance.test.ts` | Exit **0**, **29/29**; Routenfreigabe für Root und `/lab/`, Fehler/Wiederholung ohne Dokumentmutation, bestehende Herkunft/Präzision; [Log](verification/diagnostics-settings/unit-final.log) |
+| Neue Speicher-/Diagnosefälle | Zunächst **1/3**, Exit **1**: Testuhr lief neben dem Zeitsprung weiter; programmgesteuerter Fokus nach Mausklick war kein Tastaturfokus. Uhr vor der Änderung pausiert und Tastaturmodalität explizit hergestellt. Nur die beiden fehlgeschlagenen Fälle wiederholt: **2/2**, Exit **0**. [Erster Lauf](verification/diagnostics-settings/chromium-first.log), [Wiederholung](verification/diagnostics-settings/chromium-retry.log) |
+| Betroffene Chromium-Regressionen | Exit **0**, **10/10**: Navigation, reale Ansichten, alle vier P7-Fälle einschliesslich SQL-/R-Geometrie und Cursorhistorie, verschobene Inventar-/Hashzustände sowie tatsächliche OPFS-Korruption/Recovery; [Log](verification/diagnostics-settings/chromium-regressions.log) |
+| `APP_BASE_PATH=/lab/ npm run build` | Exit **0**, einschliesslich Assets und Lizenzinventar; bekannte Editorchunk-Warnung; [Log](verification/diagnostics-settings/build-final.log) |
+| Isolierter Produktionsbuild und echter Caddy-Smoke unter `/lab/` | Exit **0**, **1/1**: Direktaufruf, Reload, aktives Ziel, keine gestarteten Worker, 404 für unbekannte Routen/fehlende Assets; [Log](verification/diagnostics-settings/chromium-static-checked.log) |
+| `git diff --check` | Exit **0** |
+
+Die Speicherprüfung verwendet für Bestätigung und Reload echte IndexedDB-
+Speicherung. Verzögerte/fehlgeschlagene Antworten werden zusätzlich gezielt
+injiziert, um Reihenfolge, Fehlerdauer und Bereinigung beim Verlassen zu prüfen.
+Der neue Diagnosefall verwendet echte DuckDB-/webR-Worker: dieselbe Sitzung,
+R-Scope und R-Objekte bleiben erhalten; ein laufender SQL-Lauf läuft über die
+Navigation weiter. Der Operationsstatus aktualisiert sich und die Dateiprüfung
+bleibt währenddessen gesperrt. Der Abbruch des echten SQL-Laufs wird abgewartet.
+Berichte mit und ohne Code werden auf Felder und Inhalt geprüft; Navigation,
+Dateiprüfung und Berichtdownload verändern das Projektdokument nicht.
+
+Insgesamt **14 unterschiedliche Chromium-Fälle erfolgreich geprüft**. Die
+fehlgeschlagenen Anfangsläufe bleiben als solche dokumentiert; kein grüner
+Gesamtlauf wird daraus abgeleitet. Der erste Typecheck nach Testerweiterung
+hatte Exit **2** wegen zweier Testtypfehler (Store-Konstruktorargument und
+`Node.remove`); beide sind korrigiert und abschliessend typgeprüft.
+
+Beim ersten statischen Test lag im gemeinsam genutzten `dist/` ein Root-Build
+mit `/assets/` vor; der `/lab/`-Lauf hatte Exit **1**. Für den Nachweis wurde
+anschliessend ein eigener Build mit explizitem `--base /lab/ --outDir` erzeugt.
+Eine weitere Wiederholung scheiterte an einer vor Abschluss der Projekterstellung
+abgelesenen Test-URL (Exit **1**). Nach Warten auf die Projektüberschrift bestand
+der gezielte Fall mit Exit **0**. Alle Befehle, Logs und die verwendete lokale
+Server-/Testkonfiguration sind im Nachweisverzeichnis erhalten. Dies ist keine
+vollständige Docker-Deploymentmatrix und keine erneute Root-Caddy-Browserabnahme.
+
+Visuell geprüft: Einstellungen ohne Balken und Diagnose mit eingeklappten sowie
+geöffneten Details. 1440 × 900, 1280 × 800, 390 × 700 und 200 % Textgrösse bei
+1280 × 650 ohne horizontalen Überlauf; bestehender SQL-/R-Flächenvertrag erfüllt.
+Screenshots und Geometriemessungen liegen unter
+[diagnostics-settings/screens](verification/diagnostics-settings/screens/).
+Textvergrösserung ist keine native Zoomabnahme. Historische Nachweise und
+Paket-/Lockfiles blieben unverändert. Vorhandener Vite-Prozess 52467 erhalten;
+nur der eigene lokale Caddy-Prüfcontainer wurde gestartet und wieder entfernt.
+
+**Nicht ausgeführt:** vollständiges `npm run verify`, vollständige Suiten,
+Firefox-/WebKit-Matrix, vollständige Deploymentmatrix, nativer Safari und native
+Browserzoomprüfung. Keine externe Veröffentlichung, kein Commit/Push oder
+V1-Release. Nächster konkreter Schritt: lokale Durchsicht der gelieferten
+Oberfläche und Nachweise; im beauftragten Umfang bleibt kein bekannter Blocker.
+
+### UI — Projektlink in der Diagnose vereinheitlicht (23. Oktober 2026)
+
+**Status: implementiert und gezielt geprüft.** REQ-060/061, AT-057/058.
+Verifizierte Basisrevision `faff2910f9fcadcbff6f9b4566b416fc9d7d918f` mit den
+vorhandenen lokalen Änderungen; diese wurden erhalten. Verifizierter SHA-256
+von `src/features/workspaces/Diagnostics.tsx`:
+`6f48f0e2c4aab9a1868102d74d3363aba89aa488f713db7898a4f2b116c4de65`.
+
+Die Diagnose zeigt wie die Datenseite „Projekt: Name“. Der aktuelle Projektname
+verlinkt mit TanStack Link über die Projekt-ID zur Projektübersicht; bestehende
+`project-context`- und Linkgestaltung werden verwendet.
+`tests/deployment/diagnostics.spec.ts` prüft den neuen Text, das Linkziel nach
+Reload und die tatsächliche Rücknavigation durch Anklicken. Die Datenseite
+bleibt unverändert.
+
+Tatsächlich ausgeführt mit Node 22.23.1 und npm 11.18.0:
+
+- `npm run typecheck > /tmp/datenwerkstatt-project-link-typecheck.log 2>&1`:
+  Exit **0**.
+- `npx eslint src/features/workspaces/Diagnostics.tsx tests/deployment/diagnostics.spec.ts`:
+  Exit **0**.
+- `npm run test:deployment -- tests/deployment/diagnostics.spec.ts --project=chromium-0 --project=chromium-1 --reporter=list --output=/tmp/datenwerkstatt-project-link-deployment > /tmp/datenwerkstatt-project-link-deployment.log 2>&1`:
+  Exit **0**, **2/2 bestanden**, echte statische Caddy-Deployments unter `/` und
+  `/lab/`. Screenshots beider Profile visuell geprüft; Artefakte im angegebenen
+  Ausgabeverzeichnis. Testcontainer wurden vom Testlauf wieder entfernt.
+- `git diff --check`: Exit **0**.
+
+Nicht ausgeführt: vollständiges `npm run verify`, vollständige Suiten sowie
+Firefox-/WebKit-/Safari-Matrix. Kein bekannter Blocker für diese Korrektur.
+Nächster konkreter Schritt: lokale Durchsicht der vereinheitlichten
+Projektanzeige; der beauftragte Implementierungsumfang ist abgeschlossen.
+
+### UI — Aktionsrückmeldungen appweit vereinheitlicht (23. Oktober 2026)
+
+**Status: implementiert und gezielt geprüft.** REQ-064/067/068/076,
+AT-051/055/057/059; UI-Abschnitt innerhalb P7. Basisrevision
+`faff2910f9fcadcbff6f9b4566b416fc9d7d918f` mit vorhandenen lokalen Änderungen,
+die erhalten wurden. Quellhashes, tatsächliche Befehle, Exitcodes, Logs und
+Screenshots: [action-feedback/README.md](verification/action-feedback/README.md).
+
+`src/ui/useActionFeedback.ts` koordiniert pro Ansicht Versuche, Status und
+3-Sekunden-Timer. Nur der aktuelle gemountete Versuch veröffentlicht eine
+Rückmeldung. Beginnen, manuelles Schliessen und Unmount invalidieren frühere
+Antworten; identische neue Erfolge starten die Frist neu. `ActionStatus` und
+optional schliessbare `Notice` in `src/ui/Controls.tsx` verwenden gemeinsame
+Gestaltung in `src/styles/components.css`. Das × verwendet vorhandenes Icon,
+Tooltip, mindestens 40 × 40 px und Fokusrückgabe mit stabilen Fallbacks.
+
+Kurze ungefärbte Erfolge: Einstellungen, Archivexport ohne Auslassungen,
+Dateibereinigung, erfolgreicher Diagnose-Prüfabschluss. Blaue Exportrückmeldung
+mit Auslassungen und Bereinigung mit Teilfehlern bleiben bis zum Schliessen
+sichtbar. Teilfehler erhalten Zusammenfassung und originale Fehlerdetails.
+Datei-/Portalimport-, Parameter- und R-Transfer-Aktionsfehler sind ebenfalls
+schliessbar; Eingaben, Vorschauinvalidierung und Validierung bleiben wirksam.
+Schreibschutz, Speicherprobleme, Datenverfügbarkeit, laufende Vorgänge und
+ausgewählte SQL-/R-Lauf-/Ergebnisdiagnosen bleiben sichtbar. Kein neuer Erfolg
+für bisher stille Aktionen, keine Domain-/Engine-/Speicheränderung.
+
+Angepasste Aufrufer: `src/app/router.tsx`, Archiv-/Daten-/Portalansichten,
+SQL-Parameter, R-Transfer, `StorageSettings` und `Diagnostics`. Designsystem,
+REQ-067 und AT-055 dokumentieren den vereinbarten Vertrag.
+
+Tatsächlich geprüft mit Node 22.23.1 und npm 11.18.0:
+
+- Typecheck, vollständiges Lint einschliesslich Modulgrenzen, 71 Unit-Tests und
+  Produktionsbuild: jeweils Exit **0**. Abschliessendes gezieltes ESLint und
+  Prettier sowie `git diff --check`: Exit **0**.
+- Erster Chromium-Lauf: Exit **1**, **39/40 bestanden**. Der neue Layoutfall
+  fand eine echte CSS-Kollision; sie ist korrigiert und derselbe Fall besteht
+  anschliessend in Chromium, Firefox und WebKit.
+- Neue Feedback-Matrix: Exit **1**, **28/30 bestanden**. Der Testweg über die
+  Browserleiste unterschied sich in Firefox/WebKit. Nach Korrektur des
+  Tastaturwegs innerhalb der Seite bestehen abschliessend **3/3** Fälle,
+  Exit **0**, weiterhin mit Fokus-/Rahmen-/Enter-/Leertastenprüfung.
+- Insgesamt **31 bestehende Chromium-Fälle** und **30 neue Browserfälle**
+  einzeln erfolgreich nachgewiesen; kein grüner Gesamtlauf wird aus den
+  fehlgeschlagenen Anfangsläufen abgeleitet. Echte Archiv-, Import-, SQL-/R-
+  Regressionen und die neuen zehn UI-Fälle über die Dreiermatrix sind enthalten.
+
+Screenshots visuell geprüft: Exporttext und Exportrückmeldung mit ×, mehrzeilige
+Importfehler bei 390/1280/1440 px und 200 % Textgrösse. Das × bleibt rechts und
+vertikal zentriert; kein horizontaler Seitenüberlauf. Vorhandener Vite-Prozess
+erhalten. Keine Paket-/Lockfileänderung, keine Veröffentlichung, kein Commit.
+
+**Nicht ausgeführt:** vollständiges `npm run verify`, vollständige Suiten,
+vollständige Browser-/Deploymentmatrix, nativer Safari und native Zoomprüfung.
+Kein V1-Releaseabschluss. Kein bekannter Blocker im beauftragten Umfang.
+Nächster konkreter Schritt: lokale Durchsicht der vereinheitlichten Rückmeldungen
+und der abgelegten Nachweise; die beauftragte Umsetzung ist abgeschlossen.

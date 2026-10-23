@@ -1,13 +1,24 @@
 import {MenuButton} from '../../ui/ActionMenu';
-import {Button, Input, Select, FormField, ActionGroup, FileInput, Notice} from '../../ui/Controls';
+import {
+  ActionStatus,
+  Button,
+  Input,
+  Select,
+  FormField,
+  ActionGroup,
+  FileInput,
+  Notice,
+} from '../../ui/Controls';
+import {useActionFeedback} from '../../ui/useActionFeedback';
 import {useRef, useState, useSyncExternalStore} from 'react';
-import {useNavigate} from '@tanstack/react-router';
+import {Link, useNavigate} from '@tanstack/react-router';
 import {services} from '../../app/services';
 import {downloadStream} from '../../app/download';
 import {report, router as routerApi} from '../../app/router';
 import {Modal} from '../../ui/Modal';
 import type {EditingSession} from '../../application/workspaceService';
 import type {ArchiveCandidate} from '../../application/workspaceArchive';
+
 export function ArchiveImport() {
   const [candidate, setCandidate] = useState<ArchiveCandidate>(),
     [busy, setBusy] = useState(false);
@@ -17,7 +28,7 @@ export function ArchiveImport() {
     <section className="archive-import">
       <FormField label="Projektdatei importieren">
         <FileInput
-          buttonLabel="Projekt öffnen"
+          buttonLabel="Datei auswählen …"
           type="file"
           accept=".dwproj,.zip"
           disabled={busy || !services.workspaces.canCreate}
@@ -82,9 +93,22 @@ export function ArchiveImport() {
           }
         >
           <p>
-            {candidate.inspection.workspaceName}: {candidate.inspection.datasets} Datensätze ·{' '}
-            {candidate.inspection.analyses} Analysen · {candidate.inspection.includedBytes} Bytes.
+            <strong>{candidate.inspection.workspaceName}</strong>
           </p>
+          <dl className="dw-meta-list">
+            <div>
+              <dt>Datensätze</dt>
+              <dd>{candidate.inspection.datasets}</dd>
+            </div>
+            <div>
+              <dt>Analysen</dt>
+              <dd>{candidate.inspection.analyses}</dd>
+            </div>
+            <div>
+              <dt>Enthaltene Daten</dt>
+              <dd>{candidate.inspection.includedBytes} Bytes</dd>
+            </div>
+          </dl>
           <p>
             {candidate.inspection.containsExecutableCode
               ? 'Enthält SQL-/R-Code. Dieser wird beim Import nicht ausgeführt.'
@@ -101,6 +125,7 @@ export function ArchiveImport() {
 }
 export function ArchiveActions({session}: {session: EditingSession}) {
   useSyncExternalStore(session.persistence.subscribe, () => session.persistence.document);
+  useSyncExternalStore(session.scheduler.subscribe, session.scheduler.getSnapshot);
   const doc = session.document;
   const [dialog, setDialog] = useState<'export' | 'delete'>(),
     [mode, setMode] = useState<'recipe' | 'with-data'>('with-data'),
@@ -108,10 +133,12 @@ export function ArchiveActions({session}: {session: EditingSession}) {
     [external, setExternal] = useState(false),
     [busy, setBusy] = useState(false),
     [revision, setRevision] = useState(0),
-    [message, setMessage] = useState('');
+    [hasOmissions, setHasOmissions] = useState(false);
+  const feedback = useActionFeedback();
+  const exportButton = useRef<HTMLButtonElement>(null);
   const pending = useRef(false);
   const [busyAction, setBusyAction] = useState('');
-  const [integrity, setIntegrity] = useState(session.integrity);
+  const integrity = session.integrity;
   const navigate = useNavigate();
   const temporary = Object.values(doc.results).filter(
     (r) => r.materialization.kind === 'session',
@@ -123,26 +150,31 @@ export function ArchiveActions({session}: {session: EditingSession}) {
     Object.values(doc.datasetVersions).filter((v) => v.backing.kind === 'missing').length +
     (integrity?.missing.length ?? 0) +
     (integrity?.corrupt.length ?? 0);
-  const act = (action: string, work: () => Promise<void>) => {
+  const act = (action: string, work: (attempt: number) => Promise<void>) => {
     if (pending.current) return;
     pending.current = true;
     setBusyAction(action);
     setBusy(true);
-    setMessage('');
+    const attempt = feedback.begin();
+    setHasOmissions(false);
     void Promise.resolve()
-      .then(work)
-      .catch(report)
+      .then(() => work(attempt))
+      .catch((error) => {
+        if (feedback.isCurrent(attempt)) report(error);
+      })
       .finally(() => {
         pending.current = false;
-        setBusyAction('');
-        setBusy(false);
+        if (feedback.isCurrent(attempt)) {
+          setBusyAction('');
+          setBusy(false);
+        }
       });
   };
   return (
     <section className="archive-actions">
       <h2>Projektdatei und Speicher</h2>
       <ActionGroup>
-        <Button disabled={busy} onClick={() => setDialog('export')}>
+        <Button ref={exportButton} disabled={busy} onClick={() => setDialog('export')}>
           Projekt exportieren
         </Button>
         <MenuButton
@@ -167,21 +199,6 @@ export function ArchiveActions({session}: {session: EditingSession}) {
                 }),
             },
             {
-              label: 'Integrität prüfen',
-              disabled: busy,
-              busy: busyAction === 'integrity',
-              busyLabel: 'Integrität wird geprüft …',
-              onSelect: () =>
-                act('integrity', async () => {
-                  const checked = await session.inspectIntegrity(
-                    new AbortController().signal,
-                    true,
-                  );
-                  setIntegrity(checked);
-                  setMessage('Dateilängen und SHA-256 geprüft.');
-                }),
-            },
-            {
               label: 'Projekt löschen',
               tone: 'danger',
               separatorBefore: true,
@@ -201,32 +218,35 @@ export function ArchiveActions({session}: {session: EditingSession}) {
         <p role="status">
           {busyAction === 'duplicate'
             ? 'Projekt wird dupliziert …'
-            : busyAction === 'integrity'
-              ? 'Integrität wird geprüft …'
-              : 'Projektaktion wird verarbeitet …'}
+            : 'Projektaktion wird verarbeitet …'}
         </p>
-      )}
-      {integrity && (
-        <Notice tone="info">
-          {integrity.missing.length} fehlende · {integrity.corrupt.length} beschädigte ·{' '}
-          {integrity.orphanPaths.length} verwaiste Dateien.{' '}
-          {session.hashesChecked
-            ? 'Hashprüfung ausgeführt.'
-            : 'Inventar geprüft; Hashprüfung erfolgt vor Verwendung oder ausdrücklich hier.'}
-        </Notice>
       )}
       {!!missing && (
         <Notice tone="danger">
           Betroffene Daten sind nicht verfügbar. Code und Herkunft bleiben erhalten. Daten über
-          „Daten ersetzen“ als neue Version wieder einbinden.
+          „Daten ersetzen“ als neue Version wieder einbinden. Weitere Angaben stehen in der{' '}
+          <Link to="/projects/$workspaceId/diagnostics" params={{workspaceId: doc.workspace.id}}>
+            Diagnose
+          </Link>
+          .
         </Notice>
       )}
       {session.integrityError && (
         <Notice tone="danger">
-          Dateiinventar konnte nicht geprüft werden: {session.integrityError}
+          Dateiinventar konnte nicht geprüft werden: {session.integrityError}{' '}
+          <Link to="/projects/$workspaceId/diagnostics" params={{workspaceId: doc.workspace.id}}>
+            Diagnose öffnen
+          </Link>
+          .
         </Notice>
       )}
-      {message && <Notice tone="info">{message}</Notice>}
+      {hasOmissions && feedback.message ? (
+        <Notice tone="info" onDismiss={feedback.clear} dismissFocusRef={exportButton}>
+          {feedback.message}
+        </Notice>
+      ) : (
+        <ActionStatus>{feedback.message}</ActionStatus>
+      )}
       {dialog === 'export' && (
         <Modal
           title="Projekt exportieren"
@@ -241,7 +261,7 @@ export function ArchiveActions({session}: {session: EditingSession}) {
                 busy={busyAction === 'export'}
                 busyLabel="Archiv wird erstellt …"
                 onClick={() =>
-                  act('export', async () => {
+                  act('export', async (attempt) => {
                     const result = await session.exportArchive(
                       mode,
                       {keepTemporary: keep && !session.readOnly, includeExternal: external},
@@ -252,10 +272,15 @@ export function ArchiveActions({session}: {session: EditingSession}) {
                       'datenwerkstatt.dwproj',
                       'application/zip',
                     );
-                    setMessage(
-                      result.manifest.omissions.length
+                    if (!feedback.isCurrent(attempt)) return;
+                    const omitted = result.manifest.omissions.length > 0;
+                    setHasOmissions(omitted);
+                    feedback.show(
+                      attempt,
+                      omitted
                         ? `Archiv exportiert mit ${result.manifest.omissions.length} ausdrücklich dokumentierten Auslassungen.`
                         : 'Archiv mit sämtlichen gespeicherten Datenständen exportiert.',
+                      omitted ? 'persistent' : 'brief',
                     );
                     setDialog(undefined);
                   })
@@ -277,15 +302,35 @@ export function ArchiveActions({session}: {session: EditingSession}) {
               <option value="recipe">Rezept ohne lokale Bytes</option>
             </Select>
           </FormField>
+          <dl className="dw-meta-list">
+            <div>
+              <dt>Datensätze</dt>
+              <dd>{Object.keys(doc.datasets).length}</dd>
+            </div>
+            <div>
+              <dt>Resultate</dt>
+              <dd>{Object.keys(doc.results).length}</dd>
+            </div>
+            <div>
+              <dt>Bekannte lokale Daten</dt>
+              <dd>{Object.values(doc.artifacts).reduce((n, a) => n + a.bytes, 0)} Bytes</dd>
+            </div>
+            <div>
+              <dt>Temporäre Resultate</dt>
+              <dd>{temporary}</dd>
+            </div>
+            <div>
+              <dt>Externe Datenstände</dt>
+              <dd>{references}</dd>
+            </div>
+            <div>
+              <dt>Fehlende oder beschädigte Datenstände</dt>
+              <dd>{missing}</dd>
+            </div>
+          </dl>
           <p>
-            {Object.keys(doc.datasets).length} Datensätze · {Object.keys(doc.results).length}{' '}
-            Resultate · {Object.values(doc.artifacts).reduce((n, a) => n + a.bytes, 0)} bekannte
-            lokale Bytes.
-          </p>
-          <p>
-            {temporary} temporäre Resultate · {references} externe Datenstände · {missing}{' '}
-            fehlende/beschädigte Datenstände. Auslassungen werden im Archiv dokumentiert; externe
-            oder fehlende Quellen sind nicht offline verfügbar.
+            Auslassungen werden im Archiv dokumentiert; externe oder fehlende Quellen sind nicht
+            offline verfügbar.
           </p>
           {mode === 'with-data' && (
             <>

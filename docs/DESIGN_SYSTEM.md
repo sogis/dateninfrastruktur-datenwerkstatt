@@ -1,7 +1,7 @@
 # Designsystem Datenwerkstatt – neutrale Oberfläche
 
-**Version:** 1.3
-**Stand:** 21. Oktober 2026
+**Version:** 1.4
+**Stand:** 23. Oktober 2026
 **Standardtheme:** `neutral-blue`
 **Status:** Verbindliche aktuelle Projektfassung; abgestimmte Konventionen sind Bestandteil dieses Designsystems. Umsetzungs- und Prüfnachweise stehen separat im Implementierungsstatus.
 
@@ -23,7 +23,7 @@ führt keine neuen fachlichen Validierungsregeln ein.
 fachlichen oder gestalterischen Grund. „DARF“ bezeichnet eine zulässige Option.
 
 **Massgebliche Fassung:** Diese Datei (`DESIGN_SYSTEM.md`) ist die aktuelle
-Gestaltungsreferenz für die Anwendung. `DESIGN_SYSTEM_NEUTRAL_v1.3.md` enthält
+Gestaltungsreferenz für die Anwendung. `DESIGN_SYSTEM_NEUTRAL_v1.4.md` enthält
 die nachgeführte Referenzfassung; `DESIGN_SYSTEM_NEUTRAL.md` ist historisch.
 Die am 21. Oktober 2026 abgestimmten Regeln sind nachfolgend direkt eingearbeitet
 und benötigen bei der Umsetzung keine erneute Ausnahme oder Übersteuerung.
@@ -285,6 +285,85 @@ Zahlenkolonnen verwenden bei Unterstützung der Schrift
 `font-variant-numeric: tabular-nums`. Die Ausrichtung folgt dem logischen
 Datentyp; numerisch aussehende Identifikatoren werden nicht automatisch als
 Messwerte behandelt.
+
+### 4.4 UI-Kurztexte, Informationshierarchie und Trennzeichen
+
+Die Oberfläche SOLL Informationen in verständlicher Sprache und erkennbarer
+Hierarchie vermitteln. **Der Mittelpunkt (`·`) ist kein allgemeines
+Trennzeichen für Status, Kennzahlen oder Metadaten.** Verkettete Kurztexte nach
+dem Muster `Information · Information · Information` werden vermieden. Sie
+werden nicht lediglich durch senkrechte Striche, Schrägstriche oder Gedankenstriche
+ersetzt; die Gliederung richtet sich nach Inhalt und Bedeutung.
+
+| Art der Information | Bevorzugte Darstellung |
+| --- | --- |
+| Hinweis oder Erklärung | Ein kurzer, vollständiger Satz, der die praktische Bedeutung erklärt. |
+| Ergebnis oder Status | Eine eindeutige Hauptaussage; zusätzliche Lauf-, Revisions- oder Diagnosewerte sind visuell nachgeordnet. |
+| Mehrere Kennzahlen oder Eigenschaften | Klar beschriftete Label-Wert-Paare, bei Bedarf als kompakte Gruppe oder Definition List (`<dl>`). |
+| Technische Metadaten | Sekundärtext oder eine zugängliche Detailansicht; keine Wiederholung des bereits sichtbaren Kontexts. |
+| Mehrere zusammengehörige Bedienelemente | Räumliche Gruppierung und Abstände gemäss Abschnitt 5 statt Trennzeichen im Text. |
+
+Für die Textgestaltung gelten folgende Regeln:
+
+- Informationen SOLLEN **nicht allein durch Satzzeichen aneinandergereiht**
+  werden. Zusammenhänge werden durch Sätze, eindeutige Beschriftungen und
+  passende Abstände sichtbar gemacht. Einfache Metadaten dürfen nebeneinander
+  stehen, wenn ihre Zuordnung und Hierarchie ohne Separator eindeutig bleiben.
+- Der **wichtigste Sachverhalt steht zuerst**: etwa, ob eine Ausführung
+  erfolgreich war. Laufzeit, Revision oder andere Kontextwerte erscheinen
+  kleiner beziehungsweise in `text-secondary` und dürfen auf eine zweite Zeile
+  oder in eine Detailansicht wechseln.
+- **Redundante Angaben entfallen.** In einem eindeutig als SQL gekennzeichneten
+  Bereich ist eine zusätzliche Präfixangabe „SQL“ vor der Revisionsnummer
+  normalerweise unnötig.
+- Der Text SOLL **knapp, aber nicht telegrammartig** sein. Ein verständlicher
+  Satz ist einer Folge isolierter Stichwörter vorzuziehen, wenn eine Aussage
+  erklärt oder ein Ergebnis beurteilt werden muss.
+- Label-Wert-Gruppen SOLLEN eine **konstante Reihenfolge, eindeutige
+  Beschriftungen und semantisch zusammengehöriges HTML** verwenden. Für
+  mehrere Eigenschaften bietet sich `<dl>` mit `<dt>` und `<dd>` an.
+  Reine CSS-Abstände ersetzen nicht die zugängliche Zuordnung der Werte.
+- Einheiten, Zahlenpräzision und fachliche Unterscheidungen bleiben erhalten.
+  Die sprachliche Vereinfachung DARF weder einen erfolgreich geprüften
+  Datenbestand noch eine vollständige Integritätsprüfung vortäuschen, wenn
+  beispielsweise eine Hashprüfung noch aussteht.
+- Der Mittelpunkt DARF dort stehen bleiben, wo er **inhaltlich selbst zum
+  Ausdruck gehört**, beispielsweise in Formeln, Datenwerten oder technischen
+  Originaltexten. Diese Ausnahme gilt nicht als Erlaubnis für verkettete
+  Meldungen der Benutzeroberfläche.
+
+Beispiele für die Anwendung der Regeln (inhaltlich illustrativ):
+
+| Vermeidbares Textmuster | Bessere Darstellung |
+| --- | --- |
+| `Lokal im Browser · Browserdaten sind kein Backup.` | „Die Daten werden lokal in diesem Browser gespeichert und nicht automatisch gesichert.“ |
+| `Erfolgreich · Revision 56 · 53 ms` | „Ausführung erfolgreich“ als Hauptaussage; darunter oder daneben nachgeordnet „Revision 56“ und „Laufzeit 53 ms“. |
+| `SQL · Revision 56` | „Revision 56“, wenn „SQL“ bereits aus der Ansicht hervorgeht. |
+| `0 fehlende · 0 beschädigte · 0 verwaiste Dateien` | „Bei der Inventarprüfung wurden keine fehlenden, beschädigten oder verwaisten Dateien festgestellt.“ Noch ausstehende Prüfungen separat benennen. |
+
+**Darstellungsdichte:** In einer schmalen Werkzeugleiste DARF eine Hauptaussage
+neben einer kurzen sekundären Angabe stehen. Sind mehrere Angaben erforderlich,
+werden sie in einer geordneten Metadatengruppe angezeigt oder in zugängliche
+Details verlagert. Die Oberfläche erhält dadurch nicht automatisch zusätzliche
+Badges, farbige Hinweisboxen oder Karten. Bei wenig Platz dürfen Zeilen
+umbrechen; relevante Inhalte bleiben erreichbar und werden nicht bloss im
+Tooltip versteckt.
+
+Semantisches Beispiel für eine kleine Metadatengruppe:
+
+```html
+<dl class="dw-meta-list">
+  <dt>Revision</dt>
+  <dd>56</dd>
+  <dt>Laufzeit</dt>
+  <dd>53 ms</dd>
+</dl>
+```
+
+Die Basisgestaltung für `dw-meta-list` steht in `src/styles/app.css`.
+Zusammengehörige Label-Wert-Paare dürfen in einem `div` gruppiert werden, damit
+sie in kompakten Werkzeugleisten nebeneinander stehen und bei Bedarf umbrechen.
+Die Liste ist ein Darstellungsbeispiel und begründet keine neue fachliche Komponente.
 
 ## 5. Abstände, Grössen und Oberflächen
 
@@ -639,16 +718,56 @@ Eine Notice verwendet das zugehörige Statusfarbpaar und verständlichen Text.
 Ein passendes Icon kann die Bedeutung ergänzen. Dekorative linke Rahmen und
 Akzentstriche werden nicht verwendet.
 
-Globale schliessbare Hinweise haben rechts einen transparenten IconButton mit
+Eine Notice SOLL einen beachtenswerten Zustand, ein Problem oder eine relevante
+Rückmeldung vermitteln. **Normale Metadaten, unauffällige Kennzahlen und dauerhaft
+erfolgreiche Zustände benötigen nicht automatisch eine farbige Hinweisfläche.**
+Sie können als normaler Text oder beschriftete Metadaten gemäss Abschnitt 4.4
+angezeigt werden. Bei einer Prüfung MUSS die Formulierung klar zwischen einem
+geprüften Teilaspekt und noch ausstehenden Prüfungen unterscheiden.
+
+Schliessbare Hinweise haben rechts einen transparenten IconButton mit
 dem lokalen Bootstrap-Icon `x-lg`, mindestens 40 × 40 px und dem zugänglichen
 Namen sowie Tooltip „Hinweis schliessen“. Seine Iconfarbe ist
-`text-secondary`; sie ist kein fest codiertes Blau. Der Fokusring verwendet
-die gemeinsame Fokusrolle.
+`text-secondary`; bei Hover verwendet das Icon `error-fg` auf einer hellroten
+Fläche (`danger-subtle-pressed`), die auch beim Drücken erhalten bleibt.
+Der Fokusring verwendet die gemeinsame Fokusrolle.
 
 Das Schliessen-Icon bleibt zur gesamten Meldung vertikal zentriert. Text darf
 mehrzeilig werden und wird weder unter das Icon gelegt noch abgeschnitten.
 Im Hinweis dürfen nur tatsächlich mögliche fachliche Handlungen angeboten
 werden.
+
+Einstellungen zeigen unter der gesamten Optionsgruppe eine reservierte,
+ungefärbte Statuszeile. Beim Öffnen ist sie leer. Nach einer Änderung zeigt sie
+den laufenden Speichervorgang und anschliessend für drei Sekunden die
+Speicherbestätigung. Fehler bleiben bis zum nächsten Speicherversuch sichtbar;
+es zählt nur die Rückmeldung des neuesten Versuchs.
+
+Diese Unterscheidung gilt appweit für vorhandene Aktionsrückmeldungen:
+
+| Art | Darstellung und Lebensdauer |
+| --- | --- |
+| Einfacher Erfolg | Kleine ungefärbte Statuszeile; nach drei Sekunden leer. |
+| Beachtenswerte Aktionsmeldung | Notice mit Schliessen-Icon; ohne Zeitlimit. |
+| Laufender Vorgang oder fortbestehender Zustand | Bleibt für die Dauer des Vorgangs beziehungsweise Zustands sichtbar. |
+
+Kurze Erfolge sind insbesondere Export ohne Auslassungen, erfolgreiche
+Dateibereinigung und abgeschlossene Dateiprüfung. Export mit Auslassungen
+bleibt eine blaue, manuell schliessbare Information, auch bei bewusst gewähltem
+Rezeptexport. Bereinigungsberichte mit Teilfehlern zeigen die Zusammenfassung
+und die originalen Fehlerdetails gemeinsam in einer schliessbaren Warnung.
+Aktionsfehler bei Datei-/Portalimport, Parameterübernahme und R-Transfer sind
+ebenfalls manuell schliessbar. Schliessen entfernt nur die Rückmeldung und
+gibt den Fokus an die zugehörige Aktion zurück; Eingaben, Vorschauvalidität
+und fachliche Prüfbedingungen bleiben erhalten.
+
+Jeder neue Versuch entfernt seine vorherige Rückmeldung. Ein erneuter
+identischer Erfolg startet die drei Sekunden neu. Veraltete Antworten und
+Timer dürfen neuere Versuche nicht überschreiben; beim Verlassen der Ansicht
+werden Timer aufgeräumt. Dauerhafte Speicherprobleme, Schreibschutz,
+Feldvalidierungen, Verfügbarkeitsangaben und ausgewählte SQL-/R-Laufdiagnosen
+bleiben sichtbar. Daraus entstehen keine zusätzlichen Bestätigungen für bisher
+stille Aktionen.
 
 Relevante, neu eintretende Statusänderungen verwenden gezielte Live-Regionen.
 Dringliche neue Fehler können als Alert angekündigt werden; nicht jede
@@ -817,6 +936,7 @@ Es gibt keine Unicode-Ersatzbilder, Iconfonts oder externen Iconabrufe.
 | SQL / DuckDB          | `database`       |
 | R / webR              | `bar-chart-line` |
 | Einstellungen         | `gear`           |
+| Diagnose              | `info-circle`    |
 
 Navigationsicons sind 20 × 20 px auf mindestens 40 × 40 px grossen
 Bedienflächen. Eingeklappt erscheint ein Tooltip, ausgeklappt zusätzlich das
@@ -841,8 +961,9 @@ Portaleinstieg. Ohne geöffnetes Projekt zeigt sie Navigation umschalten,
 Projekte und Einstellungen.
 
 Im Projekt stehen Übersicht, Daten, SQL und R zwischen Projekte und
-Einstellungen. Einstellungen folgt direkt nach R. Im Header gibt es keinen
-zusätzlichen Einstellungslink.
+Einstellungen. Einstellungen folgt direkt nach R; darunter steht bei geöffnetem
+Projekt „Diagnose“. Diagnose ist eine Projekt-Unterseite und erhält die laufende
+Sitzung. Im Header gibt es keinen zusätzlichen Einstellungslink.
 
 Ausserhalb eines Projekts gilt der persönliche Einklappstandard; manuelles
 Umschalten bleibt sitzungslokal. Projektansichten behalten ihren gespeicherten
@@ -889,6 +1010,11 @@ Die Reihenfolge bleibt:
 Layoutreset und R-Reset stehen im Menü. Parameter und Optionen sind
 einblendbar. Ergebnis-, Paging- und Grafikaktionen stehen am zugehörigen
 Ergebnis und verwenden eine gemeinsame ActionGroup.
+
+Status- und Metadatentexte in Werkzeugleisten folgen Abschnitt 4.4: Ein Status
+wird eindeutig benannt, technische Angaben wie Revision und Laufzeit sind
+nachgeordnet. Die vorhandene Anzeige wird nicht durch Ketten mit Mittelpunkten
+oder anderen universellen Textseparatoren verdichtet.
 
 ### 12.3 Tabellen
 
@@ -1018,8 +1144,12 @@ eingeführt.
 
 Die Übersicht zeigt Projektangaben, gespeicherte Analysen und eine kompakte
 lesende Datenliste mit „Daten verwalten“. Vollständige Datenaktionen gehören
-auf die Datenseite. Projektdatei- und Speicheraktionen folgen unten;
-Diagnose bleibt eingeklappt.
+auf die Datenseite. Projektdatei- und Speicheraktionen folgen unten.
+Diagnosebericht sowie Inventar- und Hashprüfung stehen auf der eigenen
+Diagnoseseite unter `/projects/$workspaceId/diagnostics`. Die Übersicht zeigt nur
+relevante Warnungen über fehlende/beschädigte Daten oder eine fehlgeschlagene
+Inventarprüfung und verlinkt zur Diagnose. Technische IDs und Buildangaben
+bleiben dort zunächst eingeklappt.
 
 Datenstände und Herkunft werden je Datensatz eingeklappt dargestellt. Der
 aktuelle Stand ist explizit markiert. Quelle, Umfang, Schema, Nachweis und
@@ -1326,7 +1456,7 @@ Grenzen werden im Implementierungsstatus dokumentiert. Nicht ausgeführte
 Prüfungen werden benannt. Die Buttonerweiterung v1.3 verwendet `verification/buttons-v1.3/`; historische
 Nachweise der neutralen Migration unter `verification/neutral-v1.2/` werden nicht überschrieben.
 Die abgestimmten Regeln sind in dieser Projektfassung und der nachgeführten
-Referenz `DESIGN_SYSTEM_NEUTRAL_v1.3.md` enthalten.
+Referenz `DESIGN_SYSTEM_NEUTRAL_v1.4.md` enthalten.
 
 ## 16. Anhang: rechnerische Farbprüfung
 

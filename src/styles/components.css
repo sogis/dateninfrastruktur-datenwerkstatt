@@ -278,6 +278,35 @@
 .dw-notice > :last-child {
   margin-bottom: 0;
 }
+.dw-notice.dw-notice--dismissible {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--dw-space-2);
+}
+.dw-notice-message {
+  min-width: 0;
+}
+.dw-notice-message > :first-child {
+  margin-top: 0;
+}
+.dw-notice-message > :last-child {
+  margin-bottom: 0;
+}
+.dw-notice--dismissible .dw-icon-button {
+  --dw-button-hover: var(--dw-danger-subtle-pressed);
+  --dw-button-pressed: var(--dw-danger-subtle-pressed);
+  color: var(--dw-text-secondary);
+}
+.dw-notice--dismissible .dw-icon-button:hover:not(:disabled) {
+  color: var(--dw-error-fg);
+}
+.dw-action-status {
+  min-height: 1.5em;
+  margin-block: var(--dw-space-2) var(--dw-space-4);
+  font-size: 0.875rem;
+  color: var(--dw-text-secondary);
+}
 .dw-empty {
   padding: 24px;
   color: var(--dw-text-secondary);

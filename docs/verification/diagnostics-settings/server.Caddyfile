@@ -1,0 +1,33 @@
+{
+  admin off
+  auto_https off
+  persist_config off
+}
+:8080 {
+  root * /srv
+  header {
+    X-Content-Type-Options nosniff
+    Referrer-Policy no-referrer
+    
+    Cross-Origin-Resource-Policy same-origin
+  }
+  @rWorker path /lab/vendor/webr/0.6.0/webr-worker.js
+  @mainPolicy not path /lab/vendor/webr/0.6.0/webr-worker.js
+  header @mainPolicy Content-Security-Policy "default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; connect-src 'self' blob: ; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+  header @rWorker Content-Security-Policy "default-src 'none'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval'; worker-src 'self' blob:; connect-src 'self' blob: ; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+  @dynamic not path /lab/assets/* /lab/vendor/*
+  header @dynamic Cache-Control no-cache
+  @immutable path /lab/assets/* /lab/vendor/*
+  header @immutable Cache-Control "public, max-age=31536000, immutable"
+  redir /lab /lab/ 308
+  handle_path /lab/* {
+    route {
+      @navigation path_regexp navigation ^/(|projects(/[^/.]+(/(data|diagnostics|sql/[^/.]+|r/[^/.]+))?)?/?|settings/?|open/?)$
+      rewrite @navigation /index.html
+      file_server
+    }
+  }
+  handle {
+    respond "Not Found" 404
+  }
+}

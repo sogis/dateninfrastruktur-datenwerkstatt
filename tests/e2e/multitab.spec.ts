@@ -19,7 +19,7 @@ test('P6 AT-065: absent Web Locks permits existing project only as reader, archi
   });
   await page.reload();
   await page.getByRole('button', {name: 'Gesicherte Projekte nur lesen'}).click();
-  await expect(page.getByText(/Nur lesend/)).toBeVisible();
+  await expect(page.getByText(/Das Projekt ist schreibgeschützt/)).toBeVisible();
   await expect(page.getByLabel('Beschreibung', {exact: true})).toBeDisabled();
   await expect(page.getByLabel('Beschreibung', {exact: true})).toHaveValue('Dauerhafter Stand');
   await expect(page.getByRole('button', {name: 'Neue Analyse', exact: true})).toBeDisabled();
@@ -40,5 +40,10 @@ test('P6 AT-065: absent Web Locks permits existing project only as reader, archi
   await expect(next).toHaveURL(/\/projects$/);
   await next.getByLabel('Name des neuen Projekts').fill('Temporär');
   await next.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
-  await expect(next.getByText('Nur diese Sitzung · kein Backup', {exact: true})).toBeVisible();
+  await expect(
+    next.getByText(
+      'Änderungen sind nur in dieser Sitzung verfügbar und werden nicht automatisch gesichert.',
+      {exact: true},
+    ),
+  ).toBeVisible();
 });

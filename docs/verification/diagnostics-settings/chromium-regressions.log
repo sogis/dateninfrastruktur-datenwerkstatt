@@ -1,0 +1,19 @@
+[WebServer] (node:40957) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 10 tests using 1 worker
+
+(node:40958) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/design-system.spec.ts:663:1 › UI screens: project actions, forms, navigation and settings at target viewports (1.3s)
+  ✓   2 [chromium] › tests/e2e/navigation.spec.ts:5:1 › Navigation: settings remain reachable on global pages, with session toggle and saved default (1.2s)
+  ✓   3 [chromium] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view (13.6s)
+  ✓   4 [chromium] › tests/e2e/p7-ui.spec.ts:16:1 › P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layout reset and reload (18.7s)
+  ✓   5 [chromium] › tests/e2e/p7-ui.spec.ts:158:1 › P7 AT-055–057: native focus trap/return, settings, storage cleanup and data-free diagnostics (3.9s)
+  ✓   6 [chromium] › tests/e2e/p7-ui.spec.ts:245:1 › P7 AT-025 AT-055 AT-056: selected SQL is snapshotted and cell markup remains text (3.6s)
+  ✓   7 [chromium] › tests/e2e/p7-ui.spec.ts:274:1 › P7 AT-058: browser history restores the analysis cursor and layout does not edit the domain (2.5s)
+  ✓   8 [chromium] › tests/e2e/ui-texts.spec.ts:32:1 › UI texts: inventory and hash checks stay distinct; archive and storage use labelled values at narrow widths (982ms)
+  ✓   9 [chromium] › tests/e2e/ui-texts.spec.ts:144:1 › UI texts: partial checks and cleanup errors retain counts and original diagnostic text (914ms)
+  ✓  10 [chromium] › tests/integration/recovery.spec.ts:132:1 › P6 AT-012 AT-015 AT-017 AT-061: tab death interrupts real query, saved results remain, missing/corrupt bytes preserve code (4.4s)
+
+  10 passed (51.6s)

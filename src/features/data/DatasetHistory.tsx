@@ -18,24 +18,25 @@ export function datasetAvailability(
   context: DatasetAvailabilityContext,
 ): string {
   if (version.backing.kind === 'public-parquet')
-    return 'Referenz · Externer Stand nicht eingefroren';
+    return 'Der externe Datenstand wird referenziert und ist nicht eingefroren.';
   if (version.backing.kind === 'missing')
     return version.backing.reason === 'recipe-import'
-      ? 'Nicht verfügbar · Im Projektarchiv ohne Datenbytes enthalten'
-      : 'Nicht verfügbar · Quelle fehlt';
+      ? 'Nicht verfügbar, da das Projektarchiv keine Datenbytes enthält.'
+      : 'Nicht verfügbar, da die Quelle fehlt.';
   const artifactId = version.backing.artifactId;
-  if (context.integrity?.corrupt.includes(artifactId)) return 'Nicht verfügbar · Datei beschädigt';
+  if (context.integrity?.corrupt.includes(artifactId))
+    return 'Nicht verfügbar, da die Datei beschädigt ist.';
   if (
     context.missingArtifacts?.includes(artifactId) ||
     context.integrity?.missing.includes(artifactId)
   )
-    return 'Nicht verfügbar · Datei fehlt';
+    return 'Nicht verfügbar, da die Datei fehlt.';
   if (context.mode === 'temporary') return 'Nur diese Sitzung';
   if (context.hashesChecked && context.integrity?.referenced.includes(artifactId))
-    return 'Lokal vorhanden · Hash in dieser Sitzung geprüft';
+    return 'Die Datei ist lokal vorhanden. Ihr Hash wurde in dieser Sitzung geprüft.';
   if (context.missingArtifacts || context.integrity?.referenced.includes(artifactId))
-    return 'Lokal vorhanden · Hash in dieser Sitzung noch nicht geprüft';
-  return 'Lokale Datei · Verfügbarkeit noch ungeprüft';
+    return 'Die Datei ist lokal vorhanden. Ihr Hash wurde in dieser Sitzung noch nicht geprüft.';
+  return 'Die Verfügbarkeit der lokalen Datei wurde noch nicht geprüft.';
 }
 
 function Timestamp({value}: {value: string}) {
@@ -91,7 +92,7 @@ function SourceDetails({
       <>
         <dt>Quelle</dt>
         <dd>
-          Datei {origin.fileName} · {origin.format.toUpperCase()}
+          Datei {origin.fileName} ({origin.format.toUpperCase()})
           {origin.csvOptions && <CsvOptions options={origin.csvOptions} />}
         </dd>
       </>
@@ -100,14 +101,22 @@ function SourceDetails({
     return (
       <>
         <dt>Quelle</dt>
-        <dd>Portal · {origin.providerId}</dd>
-        <dt>Portalbezug</dt>
-        <dd>
-          {origin.target.kind === 'dataset'
-            ? `Datensatz ${origin.target.entryId}`
-            : `Serie ${origin.target.seriesId} · Ausgabe ${origin.target.issueId}`}
-          {' · '}Tabelle {origin.tableId}
-        </dd>
+        <dd>Portal {origin.providerId}</dd>
+        {origin.target.kind === 'dataset' ? (
+          <>
+            <dt>Portaldatensatz</dt>
+            <dd>{origin.target.entryId}</dd>
+          </>
+        ) : (
+          <>
+            <dt>Serie</dt>
+            <dd>{origin.target.seriesId}</dd>
+            <dt>Ausgabe</dt>
+            <dd>{origin.target.issueId}</dd>
+          </>
+        )}
+        <dt>Portaltabelle</dt>
+        <dd>{origin.tableId}</dd>
         <dt>Quelle beobachtet</dt>
         <dd>
           <Timestamp value={origin.observedAt} />
@@ -130,7 +139,7 @@ function SourceDetails({
   return (
     <>
       <dt>Quelle</dt>
-      <dd>Ergebnis{result ? ` · ${result.name}` : ''}</dd>
+      <dd>{result ? `Ergebnis „${result.name}“` : 'Ergebnis nicht verfügbar'}</dd>
       {run && (
         <>
           <dt>Lauf</dt>
@@ -140,11 +149,13 @@ function SourceDetails({
           <dt>Analyse</dt>
           <dd>
             {analysis
-              ? `${analysis.name}${analysis.archivedAt ? ' (archiviert)' : ''} · Revision ${run.snapshot.analysisRevision ?? 'nicht angegeben'}`
+              ? `${analysis.name}${analysis.archivedAt ? ' (archiviert)' : ''}`
               : run.trigger === 'r-object-capture'
                 ? 'R-Objektübernahme ohne gespeicherte Analyse'
                 : 'Keine gespeicherte Analyse zugeordnet'}
           </dd>
+          <dt>Analyserevision beim Start</dt>
+          <dd>{run.snapshot.analysisRevision ?? 'Nicht angegeben'}</dd>
         </>
       )}
     </>
@@ -185,13 +196,12 @@ export function DatasetHistory({
             </div>
             <dl className="dataset-version-metadata">
               <SourceDetails version={version} workspaceDocument={workspaceDocument} />
-              <dt>Umfang</dt>
+              <dt>Zeilen</dt>
               <dd>
-                {version.rowCount === undefined
-                  ? 'Zeilenanzahl nicht ermittelt'
-                  : `${version.rowCount} Zeilen`}{' '}
-                · {version.schema.columns.length} Spalten
+                {version.rowCount === undefined ? 'Zeilenanzahl nicht ermittelt' : version.rowCount}
               </dd>
+              <dt>Spalten</dt>
+              <dd>{version.schema.columns.length}</dd>
               <dt>Herkunftsnachweis</dt>
               <dd>
                 {version.evidence.kind === 'sha256' ? (
@@ -199,7 +209,7 @@ export function DatasetHistory({
                     Gespeicherter SHA-256: <code>{version.evidence.value}</code>
                   </>
                 ) : version.evidence.kind === 'publisher-version' ? (
-                  <>Anbieterversion: {version.evidence.value} · Kein Inhalts-Hash</>
+                  <>Anbieterversion: {version.evidence.value}. Ein Inhalts-Hash liegt nicht vor.</>
                 ) : (
                   'Kein geprüfter Herkunftsnachweis'
                 )}
@@ -207,18 +217,20 @@ export function DatasetHistory({
               <dt>Ablage</dt>
               <dd>
                 {version.backing.kind === 'artifact' ? (
-                  <>
-                    Lokale Parquet-Datei
-                    {workspaceDocument.artifacts[version.backing.artifactId]
-                      ? ` · ${workspaceDocument.artifacts[version.backing.artifactId]!.bytes} Bytes`
-                      : ''}
-                  </>
+                  <>Lokale Parquet-Datei</>
                 ) : version.backing.kind === 'public-parquet' ? (
-                  <>Externe Parquet-Referenz · {version.backing.url}</>
+                  <>Externe Parquet-Referenz: {version.backing.url}</>
                 ) : (
                   'Keine verfügbaren Datenbytes'
                 )}
               </dd>
+              {version.backing.kind === 'artifact' &&
+                workspaceDocument.artifacts[version.backing.artifactId] && (
+                  <>
+                    <dt>Dateigrösse</dt>
+                    <dd>{workspaceDocument.artifacts[version.backing.artifactId]!.bytes} Bytes</dd>
+                  </>
+                )}
               <dt>Verfügbarkeit</dt>
               <dd>{datasetAvailability(version, availability)}</dd>
             </dl>

@@ -148,7 +148,9 @@ test('P6 AT-059: recipe inspection/confirmation without engine or empty fake tab
   await expect(page.getByRole('dialog')).toContainText('3 Datenstände fehlen');
   await page.getByRole('button', {name: 'Als neues Projekt importieren'}).click();
   await page.getByRole('link', {name: 'Daten', exact: true}).click();
-  await expect(page.locator('.dataset-list').getByText(/Zeilen · Nicht verfügbar/)).toHaveCount(3);
+  await expect(
+    page.locator('.dataset-list > li > div > span').filter({hasText: /Nicht verfügbar, da/}),
+  ).toHaveCount(3);
   expect(workers).toEqual([]);
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Projekt exportieren', exact: true}).click();

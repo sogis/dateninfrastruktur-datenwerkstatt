@@ -1,0 +1,29 @@
+vite v8.1.2 building client environment for production...
+[2K
+transforming...✓ 1421 modules transformed.
+
+(!) outDir /tmp/datenwerkstatt-diagnostics-lab.bbYNXd is not inside project root and will not be emptied.
+Use --emptyOutDir to override.
+
+rendering chunks...
+computing gzip size...
+../../../../../tmp/datenwerkstatt-diagnostics-lab.bbYNXd/index.html                                           0.36 kB │ gzip:   0.26 kB
+../../../../../tmp/datenwerkstatt-diagnostics-lab.bbYNXd/.vite/manifest.json                                  1.94 kB │ gzip:   0.50 kB
+../../../../../tmp/datenwerkstatt-diagnostics-lab.bbYNXd/assets/JetBrainsMono-Regular-BQaDgvhP.woff2         92.16 kB
+../../../../../tmp/datenwerkstatt-diagnostics-lab.bbYNXd/assets/codicon-ngg6Pgfi.ttf                        121.97 kB
+../../../../../tmp/datenwerkstatt-diagnostics-lab.bbYNXd/assets/SourceSans3VF-Italic.ttf-Bt9VkdQ3.woff2     137.99 kB
+../../../../../tmp/datenwerkstatt-diagnostics-lab.bbYNXd/licenses/npm-bundle.json                           161.40 kB │ gzip:  25.79 kB
+../../../../../tmp/datenwerkstatt-diagnostics-lab.bbYNXd/assets/SourceSans3VF-Upright.ttf-BsWL4Kly.woff2    170.18 kB
+../../../../../tmp/datenwerkstatt-diagnostics-lab.bbYNXd/assets/editor.worker-Cn2oRESe.js                   279.94 kB
+../../../../../tmp/datenwerkstatt-diagnostics-lab.bbYNXd/assets/index-BYsxeONW.css                           28.61 kB │ gzip:   6.36 kB
+../../../../../tmp/datenwerkstatt-diagnostics-lab.bbYNXd/assets/CodeEditorImpl-B3IiO00J.css                 145.99 kB │ gzip:  22.62 kB
+../../../../../tmp/datenwerkstatt-diagnostics-lab.bbYNXd/assets/sql-NEE52Syq.js                               8.84 kB │ gzip:   3.73 kB
+../../../../../tmp/datenwerkstatt-diagnostics-lab.bbYNXd/assets/index-B5pVYdi1.js                           987.18 kB │ gzip: 290.08 kB
+../../../../../tmp/datenwerkstatt-diagnostics-lab.bbYNXd/assets/CodeEditorImpl-UWGN-suu.js                3,629.87 kB │ gzip: 925.24 kB
+
+✓ built in 504ms
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

@@ -1,0 +1,131 @@
+{
+  "baseRevision": "faff2910f9fcadcbff6f9b4566b416fc9d7d918f",
+  "sourceState": "uncommitted UI changes on baseRevision",
+  "sourceFingerprint": "2c912570fc40ea6667f34b7cf937986a0bf10b606f7f778761cdc2a54246e780",
+  "fingerprintMethod": "SHA-256 of each sorted changed src path, NUL, file bytes, LF",
+  "fileSha256": {
+    "src/app/router.tsx": "d0d53b9b736da392873b07a6be26057651a19de2f4cc76ff80c9415d5ce90a0a",
+    "src/features/archive/ArchiveActions.tsx": "70b4dd53c9eee677a731e43eb68f7cea1d451e8d40544eb83ae1f16e8ead636b",
+    "src/features/catalog/PortalImport.tsx": "61bf436d94bdf8da6ffc48b9021336552aebc9d74660f7f6f39a9df778c539bc",
+    "src/features/data/DataSection.tsx": "64cccde6291bf9fe737136f4ce7502c0c064a4093d012fd2668bb0279f1de121",
+    "src/features/data/DatasetHistory.tsx": "63a16dced334ad0834b4fa74cb9bb4294e2db099effd44af8027eff0be490fb8",
+    "src/features/r/RWorkbench.tsx": "9bd960a35efa2a5a556316a5acdc7943a7d48fa4e67b66f8956ff62aa54b2b97",
+    "src/features/r/Transfer.tsx": "6d895247330ac3998a498938ba6c7eb64f6744eb63508b41f8d88da4a48cfbc0",
+    "src/features/results/RunDetails.tsx": "8f87adaf579696cf7faac8a221c69cc42ef12fc445bb852ee88360b274724cba",
+    "src/features/sql/SqlWorkbench.tsx": "e374e61a9b6be881a1b5f305108c3d12a3c8d17fadbfb4efcc768cd16714da93",
+    "src/features/workspaces/Diagnostics.tsx": "7b64c0f36b8cdae1cf1506f69a8a2e1cb08ce3e680bd8452a901dcb22ff0fd2e",
+    "src/features/workspaces/StorageSettings.tsx": "18407f401d7890bff7a14ee4d04ccc7c899826293dc3e0a8d4f800d4ebc14644",
+    "src/styles/app.css": "d2c71e5f58b585b0e57b235e531c568d06b491390820747e193f33db471d8e1e",
+    "tests/deployment/network-flow.spec.ts": "d8100e2982f3f6f5f13eb78696f322a4545e93ae8cdc86ba4b4677c8d571e5b0",
+    "tests/deployment/static.spec.ts": "c3d140a544bab16478b437ea3e5155f0860d41894d498159520f7b196d61ccce",
+    "tests/design-system/reference.tsx": "cdfea66c4774c509328b01821b68d4e7a32f694af7d60dd824485682c717454d",
+    "tests/e2e/archive.spec.ts": "63d512ea8a99217f4b3ed1058b1fa58bc0290215472b0a8eb6bc8e900e9186c7",
+    "tests/e2e/design-system.spec.ts": "e2e9e4acf35e9c9d49d9027d8fa63bd87b6ca31b9ab602f4042064dfd4be9df4",
+    "tests/e2e/imports.spec.ts": "c609269ff21ff81a89845cdb8859d701268fc3a13c2474749ae724488804dd60",
+    "tests/e2e/multitab.spec.ts": "037941e7561fd70980a8b65af97783a263525456d388d307c17caf8fc3f115f2",
+    "tests/e2e/p8-golden.spec.ts": "8743adad1f8d1c036701cb094bd1d7c6f9967381424af561f12ae5bad7aaad8e",
+    "tests/e2e/portal.spec.ts": "7039cec165a1bedad65b0abe9f9d73d110104237b19b7cc5eb127fa0c7329d1b",
+    "tests/e2e/projects.spec.ts": "0cbe5e9c759e187e1d9fdc09b52d750d207f3c4a9722003542cbfddb882d32af",
+    "tests/e2e/r-export.spec.ts": "2a3327ea01147afecbf9e9eb703a17b06460237eeb001632c6015d4a231239f5",
+    "tests/e2e/r.spec.ts": "1762dec56e102ffdc5c5c7310537a13e52d4dc7dd367b122c00cfcbae62b200e",
+    "tests/e2e/required-fields.spec.ts": "cfeafcb916028f235bfc46c5c886e2c5cb859fcd453dc65f235700d715694fb5",
+    "tests/e2e/sql.spec.ts": "3b51ee280ecd0aab9da1a6a2da5328c551711324279a9ac45b5f68ea27e7eafa",
+    "tests/e2e/ui-texts.spec.ts": "99f05676cf2d54e71002ee032bc98941f03eaaa130c604f654f6247d13c1cf92",
+    "tests/e2e/workspaces.spec.ts": "7d6502aac02a7c4ed30223b8c098978f28868c0b083ff5594a8da6872f77711d",
+    "tests/integration/recovery.spec.ts": "c6b76dfa8eb1ed54e35c4fa791351de6bad60bcc97a705fb9c5a9a172af6709d",
+    "tests/unit/provenance.test.ts": "5bcaa303e95151b239ee8d53794d003039ec060b7fb4ded531ad112b1d338977"
+  },
+  "runtime": {
+    "node": "v22.23.1",
+    "chromium": "153.0.8010.12",
+    "platform": "darwin",
+    "npm": "11.18.0",
+    "playwright": "1.63.0"
+  },
+  "checks": [
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "log": "typecheck-initial.log"
+    },
+    {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "log": "lint-initial.log"
+    },
+    {
+      "command": "npx vitest run tests/unit/provenance.test.ts",
+      "exitCode": 0,
+      "log": "unit-initial.log",
+      "result": "7/7 before extending state coverage"
+    },
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "log": "lint.log"
+    },
+    {
+      "command": "npx vitest run tests/unit/provenance.test.ts",
+      "exitCode": 0,
+      "log": "unit.log",
+      "result": "17/17"
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/ui-texts.spec.ts tests/e2e/sql.spec.ts tests/e2e/r.spec.ts tests/e2e/r-export.spec.ts tests/e2e/p7-ui.spec.ts --grep 'UI texts:|P3 /|P5 AT-|R direct export UI:|measured SQL/R geometry' --output=test-results/ui-texts-v1.4-core",
+      "exitCode": 0,
+      "log": "chromium-core-initial.log",
+      "result": "8/8"
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/ui-texts.spec.ts tests/e2e/projects.spec.ts tests/e2e/portal.spec.ts tests/e2e/archive.spec.ts tests/e2e/imports.spec.ts tests/e2e/multitab.spec.ts tests/e2e/design-system.spec.ts tests/e2e/p7-ui.spec.ts --grep 'UI texts:|CSV replacement|two SQL run snapshots|P4 AT-038|P6 AT-059|AT-016: denied|P6 AT-065|UI tooltips: hover delay|native focus trap/return' --output=test-results/ui-texts-v1.4-views",
+      "exitCode": 1,
+      "log": "chromium-views.log",
+      "result": "10/11; archive selector also counted collapsed history; fixed and rerun below"
+    },
+    {
+      "command": "APP_BASE_PATH=/lab/ npm run build",
+      "exitCode": 0,
+      "log": "build.log",
+      "result": "Existing large editor chunk warning"
+    },
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "log": "typecheck-final.log"
+    },
+    {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "log": "lint-final.log"
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/archive.spec.ts --grep 'P6 AT-059' --output=test-results/ui-texts-v1.4-archive",
+      "exitCode": 0,
+      "log": "chromium-archive.log",
+      "result": "1/1"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "notRun": [
+    "npm run verify",
+    "full unit/integration/E2E suites",
+    "Firefox/WebKit matrix",
+    "deployment matrix",
+    "native browser zoom",
+    "native Safari"
+  ],
+  "notes": [
+    "17 distinct Chromium cases ultimately passed; view batch itself retained exit 1, only failed case rerun.",
+    "UI probes inject inventory/cleanup/estimate responses only to cover presentation states; engine paths use real DuckDB/webR.",
+    "New evidence stored separately; historical verification files unchanged.",
+    "Log trailing whitespace normalized without changing content or outcomes."
+  ]
+}

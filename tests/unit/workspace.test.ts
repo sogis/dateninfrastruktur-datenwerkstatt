@@ -296,3 +296,54 @@ describe('AT-006 immutable execution/result references', () => {
     );
   });
 });
+
+describe('Session inventory feedback', () => {
+  it('retains the last report on failure and clears the error after a successful retry without changing the document', async () => {
+    const {MemoryArtifactStore} = await import('../../src/infrastructure/storage/artifactStore');
+    const artifacts = new MemoryArtifactStore(1048576);
+    const doc = parseWorkspace(empty);
+    const artifact = await artifacts.write(
+      doc.workspace.id,
+      new Blob(['original']).stream(),
+      'text/plain',
+      new AbortController().signal,
+    );
+    doc.artifacts[artifact.id] = artifact;
+    const session = new WorkspaceEditingSession(
+      doc,
+      {workspaceId: doc.workspace.id, mode: 'writer', release: async () => {}},
+      {
+        repository: repository(doc),
+        artifacts,
+        lock: {
+          acquire: async () => {
+            throw Error('unused');
+          },
+        },
+        newId: () => checkedId(crypto.randomUUID()),
+        now: () => new Date().toISOString(),
+      },
+    );
+    await session.inspectIntegrity(new AbortController().signal);
+    const before = JSON.stringify(session.document);
+    const report = session.integrity;
+    vi.spyOn(artifacts, 'exists').mockRejectedValueOnce(Error('Inventory read failed'));
+    await expect(session.inspectIntegrity(new AbortController().signal)).rejects.toThrow(
+      'Inventory read failed',
+    );
+    expect(session.integrity).toBe(report);
+    expect(session.integrityError).toBe('Inventory read failed');
+    expect(session.hashesChecked).toBe(false);
+    await session.inspectIntegrity(new AbortController().signal, true);
+    expect(session.integrityError).toBeUndefined();
+    expect(session.hashesChecked).toBe(true);
+    expect(session.integrity).toEqual({
+      referenced: [artifact.id],
+      missing: [],
+      corrupt: [],
+      orphanPaths: [],
+    });
+    expect(JSON.stringify(session.document)).toBe(before);
+    await session.close();
+  });
+});

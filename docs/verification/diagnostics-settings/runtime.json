@@ -1,0 +1,9 @@
+{
+  "node": "v22.23.1",
+  "npm": "11.18.0",
+  "playwright": "1.63.0",
+  "chromium": "153.0.8010.12",
+  "platform": "darwin",
+  "caddy": "2.11.4",
+  "caddyImage": "sha256:b92d9809a30cd71365c0bbcee6e02f2fd250b2b64699ed0111c7b528e1dfe912"
+}

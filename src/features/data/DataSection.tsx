@@ -9,8 +9,10 @@ import {
   FileInput,
   EmptyState,
   Notice,
+  ActionStatus,
   PanelHeader,
 } from '../../ui/Controls';
+import {useActionFeedback} from '../../ui/useActionFeedback';
 import {useFormValidation, useNameField} from '../../ui/useFormValidation';
 import {
   displayNameError,
@@ -133,18 +135,27 @@ export function DataSection() {
   const [busyAction, setBusyAction] = useState('');
   const pending = useRef(false);
   const [inventory, setInventory] = useState<{missing: string[]; orphans: string[]}>();
-  const [cleanupMessage, setCleanupMessage] = useState('');
-  const refresh = () =>
-    session.getDatasets().inventory(new AbortController().signal).then(setInventory);
-  const act = (action: string, work: () => Promise<unknown>) => {
+  const cleanupFeedback = useActionFeedback();
+  const refresh = (attempt: number) =>
+    session
+      .getDatasets()
+      .inventory(new AbortController().signal)
+      .then((value) => {
+        if (cleanupFeedback.isCurrent(attempt)) setInventory(value);
+      });
+  const act = (action: string, work: (attempt: number) => Promise<unknown>) => {
     if (pending.current) return;
+    const attempt = cleanupFeedback.begin();
     pending.current = true;
     setBusyAction(action);
     setBusy(true);
     void Promise.resolve()
-      .then(work)
-      .catch(report)
+      .then(() => work(attempt))
+      .catch((error: unknown) => {
+        if (cleanupFeedback.isCurrent(attempt)) report(error);
+      })
       .finally(() => {
+        if (!cleanupFeedback.isCurrent(attempt)) return;
         pending.current = false;
         setBusy(false);
         setBusyAction('');
@@ -199,9 +210,8 @@ export function DataSection() {
                     {version.rowCount === undefined
                       ? 'Zeilenanzahl nicht ermittelt'
                       : `${version.rowCount} Zeilen`}
-                    {' · '}
-                    {datasetAvailability(version, availability)}
                   </span>
+                  <span>{datasetAvailability(version, availability)}</span>
                 </div>
                 <ActionGroup>
                   <Button
@@ -323,13 +333,13 @@ export function DataSection() {
             busyLabel="Dateien werden bereinigt …"
             onClick={() => {
               if (session.readOnly) return;
-              act('cleanup', () =>
+              act('cleanup', (attempt) =>
                 session
                   .getDatasets()
                   .cleanOrphans(new AbortController().signal)
                   .then(async (count) => {
-                    setCleanupMessage(`${count} verwaiste Dateien entfernt.`);
-                    await refresh();
+                    await refresh(attempt);
+                    cleanupFeedback.show(attempt, `${count} verwaiste Dateien entfernt.`, 'brief');
                   }),
               );
             }}
@@ -338,12 +348,12 @@ export function DataSection() {
           </Button>
         </p>
       )}
-      {cleanupMessage && <Notice tone="info">{cleanupMessage}</Notice>}
+      {cleanupFeedback.message && <ActionStatus>{cleanupFeedback.message}</ActionStatus>}
       {busy && <Notice tone="info">Daten werden geprüft …</Notice>}
       {preview && (
         <div className="data-preview">
           <Button onClick={() => setPreview(undefined)}>Vorschau schliessen</Button>
-          <p>Vorschau · maximal 200 Zeilen. NULL und Leerstring sind unterscheidbar.</p>
+          <p>Die Vorschau zeigt maximal 200 Zeilen. NULL und Leerstring sind unterscheidbar.</p>
           <PreviewTable preview={preview} />
         </div>
       )}
@@ -401,16 +411,13 @@ function schemaDiff(previous: TableSchema, next: TableSchema) {
     ...previous.columns.map((c) => c.name),
     ...next.columns.map((c) => c.name),
   ]);
-  return (
-    [...names]
-      .map((name) => {
-        const old = previous.columns.find((c) => c.name === name)?.logicalType;
-        const now = next.columns.find((c) => c.name === name)?.logicalType;
-        return old === now ? null : `${name}: ${old ?? 'neu'} → ${now ?? 'entfällt'}`;
-      })
-      .filter(Boolean)
-      .join('; ') || 'Keine Schemaänderung'
-  );
+  return [...names]
+    .map((name) => {
+      const old = previous.columns.find((c) => c.name === name)?.logicalType;
+      const now = next.columns.find((c) => c.name === name)?.logicalType;
+      return old === now ? null : `${name}: ${old ?? 'neu'} → ${now ?? 'entfällt'}`;
+    })
+    .filter((change): change is string => change !== null);
 }
 function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}) {
   const {session} = useWorkspace();
@@ -428,6 +435,9 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
   const [busyAction, setBusyAction] = useState<'preview' | 'confirm'>();
   const pending = useRef(false);
   const [error, setError] = useState('');
+  const fileDropRef = useRef<HTMLDivElement>(null);
+  const previewButtonRef = useRef<HTMLButtonElement>(null);
+  const errorFocusRef = useRef<HTMLElement>(null);
   const occupied = Object.values(session.document.datasets)
     .filter((d) => d.id !== replace)
     .map((d) => d.sqlName);
@@ -463,6 +473,8 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
   );
   const select = (chosen: File | undefined) => {
     if (!chosen) return;
+    errorFocusRef.current = fileDropRef.current?.querySelector('button') ?? null;
+    setError('');
     // A newly chosen file invalidates the previous preview even when unsupported.
     // Otherwise confirming after an XLSX selection would still import the old CSV.
     if (key.current) void service.discard(key.current);
@@ -492,6 +504,7 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
   };
   const load = () => {
     if (pending.current || session.readOnly) return;
+    setError('');
     if (
       !form.validate([
         'file',
@@ -537,6 +550,7 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
   };
   const confirm = () => {
     if (pending.current || session.readOnly || !preview || dirty) return;
+    setError('');
     if (!form.validate(['name', 'sqlName'])) return;
     controller.current = new AbortController();
     pending.current = true;
@@ -577,7 +591,10 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
                 disabled={!preview || dirty || busy}
                 busy={busyAction === 'confirm'}
                 busyLabel="Datei wird importiert …"
-                onClick={confirm}
+                onClick={(event) => {
+                  errorFocusRef.current = event.currentTarget;
+                  confirm();
+                }}
               >
                 Import bestätigen
               </Button>
@@ -595,11 +612,13 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
       }
     >
       <div
+        ref={fileDropRef}
         className="file-drop"
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
           e.preventDefault();
           if (!busy) {
+            errorFocusRef.current = fileDropRef.current?.querySelector('button') ?? null;
             if (e.dataTransfer.files.length !== 1) setError('Bitte genau eine Datei wählen.');
             else select(e.dataTransfer.files[0]);
           }
@@ -647,7 +666,11 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
       </div>
       {format === 'csv' && (
         <fieldset disabled={busy}>
-          <legend>CSV-Vertrag · UTF-8 · Quote und Escape: doppelte Anführungszeichen</legend>
+          <legend>CSV-Importoptionen</legend>
+          <p>
+            Die Datei wird als UTF-8 gelesen. Als Anführungs- und Escapezeichen dienen doppelte
+            Anführungszeichen.
+          </p>
           <div className="import-fields">
             <FormField label={<>Trennzeichen</>}>
               <Select
@@ -763,10 +786,14 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
         </fieldset>
       )}
       <Button
+        ref={previewButtonRef}
         disabled={busy}
         busy={busyAction === 'preview'}
         busyLabel="Vorschau wird geladen …"
-        onClick={load}
+        onClick={(event) => {
+          errorFocusRef.current = event.currentTarget;
+          load();
+        }}
       >
         Vorschau laden
       </Button>
@@ -777,19 +804,39 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
             strikt.
           </p>
           {previous && (
-            <p className="schema-diff">
-              Schemaänderung:{' '}
+            <div className="schema-diff">
+              <p>Schemaänderungen</p>
               {schemaDiff(
                 session.document.datasetVersions[previous.currentVersionId]!.schema,
                 preview.schema,
+              ).length ? (
+                <ul>
+                  {schemaDiff(
+                    session.document.datasetVersions[previous.currentVersionId]!.schema,
+                    preview.schema,
+                  ).map((change) => (
+                    <li key={change}>{change}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>Keine Schemaänderung.</p>
               )}
-            </p>
+            </div>
           )}
           <PreviewTable preview={preview} />
         </>
       )}
       {error && (
-        <Notice tone="danger" className="error">
+        <Notice
+          tone="danger"
+          className="error"
+          onDismiss={() => {
+            if (!errorFocusRef.current?.isConnected || errorFocusRef.current.matches(':disabled'))
+              errorFocusRef.current = previewButtonRef.current;
+            setError('');
+          }}
+          dismissFocusRef={errorFocusRef}
+        >
           {error}
         </Notice>
       )}

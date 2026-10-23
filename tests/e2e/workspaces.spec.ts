@@ -109,7 +109,7 @@ test('AT-012: another tab opens read-only and explicitly reacquires after writer
   const url = page.url();
   const other = await context.newPage();
   await other.goto(url);
-  await expect(other.getByText(/Nur lesend/)).toBeVisible();
+  await expect(other.getByText(/Das Projekt ist schreibgeschützt/)).toBeVisible();
   await expect(other.getByLabel('Beschreibung', {exact: true})).toBeDisabled();
   await expect(other.getByRole('button', {name: 'Neue Analyse', exact: true})).toBeDisabled();
   await page.getByLabel('Beschreibung', {exact: true}).fill('Neuer Stand');

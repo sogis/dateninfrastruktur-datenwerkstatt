@@ -171,7 +171,7 @@ test('P6 AT-012 AT-015 AT-017 AT-061: tab death interrupts real query, saved res
     .toBe(true);
   const reader = await context.newPage();
   await reader.goto(url);
-  await expect(reader.getByText(/Nur lesend/)).toBeVisible();
+  await expect(reader.getByText(/Das Projekt ist schreibgeschützt/)).toBeVisible();
   await expect(reader.getByRole('button', {name: 'Neue Analyse', exact: true})).toBeDisabled();
   await page.close();
   await reader.getByRole('button', {name: 'Schreibrecht erneut anfordern'}).click();
@@ -204,9 +204,15 @@ test('P6 AT-012 AT-015 AT-017 AT-061: tab death interrupts real query, saved res
   expect(recovered.status).toBe('interrupted');
   expect(recovered.rows.rows).toEqual([['73']]);
   await reader.reload();
-  await reader.getByRole('button', {name: 'Projektaktionen', exact: true}).click();
-  await reader.getByRole('menuitem', {name: 'Integrität prüfen'}).click();
-  await expect(reader.getByText(/1 beschädigte/)).toBeVisible();
+  await reader.getByRole('link', {name: 'Diagnose', exact: true}).click();
+  await reader.getByRole('button', {name: 'Integrität prüfen', exact: true}).click();
+  await expect(
+    reader
+      .getByRole('region', {name: 'Dateiprüfung'})
+      .locator('dl > div')
+      .filter({hasText: 'Beschädigte Dateien'})
+      .locator('dd'),
+  ).toHaveText('1');
   await reader.goto(`${url}/sql/${state.a}`);
   await expect(reader.getByRole('alert').filter({hasText: 'ARTIFACT_CORRUPT'})).toBeVisible();
   await expect(reader.locator('.result-grid tbody tr')).toHaveCount(0);

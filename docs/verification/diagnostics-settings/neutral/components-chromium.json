@@ -1,0 +1,104 @@
+[
+  {
+    "size": {
+      "width": 1440,
+      "height": 900
+    },
+    "label": {
+      "gap": 8,
+      "fontSize": "14px",
+      "fontWeight": "500",
+      "inputHeight": 40,
+      "background": "rgb(255, 255, 255)",
+      "scrollWidth": 1440
+    },
+    "rects": [
+      {
+        "left": 194,
+        "right": 331.109375,
+        "top": 407,
+        "bottom": 447
+      },
+      {
+        "left": 194,
+        "right": 369.796875,
+        "top": 455,
+        "bottom": 495
+      },
+      {
+        "left": 194,
+        "right": 373.71875,
+        "top": 503,
+        "bottom": 543
+      }
+    ]
+  },
+  {
+    "size": {
+      "width": 1280,
+      "height": 800
+    },
+    "label": {
+      "gap": 8,
+      "fontSize": "14px",
+      "fontWeight": "500",
+      "inputHeight": 40,
+      "background": "rgb(255, 255, 255)",
+      "scrollWidth": 1280
+    },
+    "rects": [
+      {
+        "left": 114,
+        "right": 251.109375,
+        "top": 407,
+        "bottom": 447
+      },
+      {
+        "left": 114,
+        "right": 289.796875,
+        "top": 455,
+        "bottom": 495
+      },
+      {
+        "left": 114,
+        "right": 293.71875,
+        "top": 503,
+        "bottom": 543
+      }
+    ]
+  },
+  {
+    "size": {
+      "width": 720,
+      "height": 450
+    },
+    "label": {
+      "gap": 8,
+      "fontSize": "14px",
+      "fontWeight": "500",
+      "inputHeight": 40,
+      "background": "rgb(255, 255, 255)",
+      "scrollWidth": 720
+    },
+    "rects": [
+      {
+        "left": 16,
+        "right": 153.109375,
+        "top": 447,
+        "bottom": 487
+      },
+      {
+        "left": 16,
+        "right": 191.796875,
+        "top": 495,
+        "bottom": 535
+      },
+      {
+        "left": 16,
+        "right": 195.71875,
+        "top": 543,
+        "bottom": 583
+      }
+    ]
+  }
+]

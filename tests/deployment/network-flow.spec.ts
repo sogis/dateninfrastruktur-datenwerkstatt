@@ -95,7 +95,7 @@ test('P7 AT-056 AT-068: static public/local → SQL → R → SQL → PNG/archiv
     expect((await readFile((await (await pngDownload).path())!)).subarray(1, 4).toString()).toBe(
       'PNG',
     );
-    await page.getByRole('button', {name: /vergleich · 1 × 2/}).click();
+    await page.getByRole('button', {name: /vergleich 1 Zeile, 2 Spalten/}).click();
     await page.getByRole('button', {name: 'Objekt als Datensatz', exact: true}).click();
     await page.getByRole('button', {name: 'Datensatz übernehmen', exact: true}).click();
     await expect(page.getByRole('dialog')).toHaveCount(0);

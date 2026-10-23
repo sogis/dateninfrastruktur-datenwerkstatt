@@ -1,0 +1,8 @@
+
+ RUN  v4.1.11 /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt
+
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  18:37:00
+   Duration  163ms (transform 44ms, setup 0ms, import 90ms, tests 16ms, environment 0ms)

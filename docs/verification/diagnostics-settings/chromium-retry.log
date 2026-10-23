@@ -1,0 +1,11 @@
+[WebServer] (node:36462) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:36463) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/diagnostics-settings.spec.ts:34:1 › Settings feedback: silent entry, grouped options, three-second confirmation and real persistence (887ms)
+  ✓  2 [chromium] › tests/e2e/diagnostics-settings.spec.ts:147:1 › Project diagnostics: real SQL/R session, report compatibility, live operations, navigation and layout (17.2s)
+
+  2 passed (18.5s)

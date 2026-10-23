@@ -61,7 +61,11 @@ test('P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/C
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.result-grid tbody td')).toHaveText(['42']);
   await page.getByRole('button', {name: 'Aufbewahren', exact: true}).click();
-  await expect(page.getByText('1 Zeilen · vollständig · aufbewahrt', {exact: true})).toBeVisible();
+  await expect(
+    page
+      .locator('.result-toolbar .dw-meta-list')
+      .filter({hasText: /Zeilen\s*1\s*Umfang\s*Vollständig\s*Aufbewahrung\s*Aufbewahrt/}),
+  ).toBeVisible();
   await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
     'data-save-state',
     'saved',
@@ -128,7 +132,7 @@ test('UI assets: local SVGs, Source Sans 3, JetBrains Mono, fallback and notices
   await expect(page.locator('header').getByRole('link', {name: 'Einstellungen'})).toHaveCount(0);
   await page.getByLabel('Name des neuen Projekts').fill('Lokale UI-Assets');
   await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
-  await expect(page.locator('.sidebar svg')).toHaveCount(7);
+  await expect(page.locator('.sidebar svg')).toHaveCount(8);
   await page.getByRole('button', {name: 'SQL', exact: true}).click();
   await expect(page.locator('.monaco-editor')).toBeVisible();
   await page.evaluate(async () => {

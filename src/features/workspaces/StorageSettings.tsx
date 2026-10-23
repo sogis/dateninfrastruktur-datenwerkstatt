@@ -1,5 +1,6 @@
 import {MenuButton} from '../../ui/ActionMenu';
-import {Button, ActionGroup, Notice} from '../../ui/Controls';
+import {Button, ActionGroup, ActionStatus, Notice} from '../../ui/Controls';
+import {useActionFeedback} from '../../ui/useActionFeedback';
 import {useEffect, useRef, useState} from 'react';
 import {Link} from '@tanstack/react-router';
 import {services} from '../../app/services';
@@ -9,8 +10,10 @@ export function StorageSettings() {
   const [estimate, setEstimate] = useState<Awaited<ReturnType<typeof services.storageEstimate>>>(),
     [confirm, setConfirm] = useState(false),
     [busy, setBusy] = useState(false),
-    [receipt, setReceipt] = useState('');
+    [receipt, setReceipt] = useState<{removed: number; failures: string[]}>();
   const cleaning = useRef(false);
+  const manageFocus = useRef<HTMLButtonElement>(null);
+  const feedback = useActionFeedback();
   const refresh = () => void services.storageEstimate().then(setEstimate).catch(report);
   useEffect(refresh, []);
   const bytes = (value: number | undefined) =>
@@ -22,14 +25,27 @@ export function StorageSettings() {
       <h2>Browser-Speicher</h2>
       <p>
         {services.mode === 'temporary'
-          ? 'Nur diese Sitzung · kein dauerhafter Speicher'
-          : 'Lokal im Browser · Browserdaten sind kein Backup.'}
+          ? 'Die Daten sind nur in dieser Sitzung verfügbar und gehen beim Neuladen verloren.'
+          : 'Die Daten werden lokal in diesem Browser gespeichert und nicht automatisch gesichert.'}
       </p>
-      <p>
-        Geschätzter Verbrauch: {bytes(estimate?.usage)} · Browserbudget: {bytes(estimate?.quota)}.
-        Die Schätzung reserviert keinen Speicher.
-      </p>
-      <div className="storage-settings-actions">
+      <dl className="dw-meta-list">
+        <div>
+          <dt>Geschätzter Verbrauch</dt>
+          <dd>{bytes(estimate?.usage)}</dd>
+        </div>
+        <div>
+          <dt>Browserbudget</dt>
+          <dd>{bytes(estimate?.quota)}</dd>
+        </div>
+      </dl>
+      <p>Die Schätzung reserviert keinen Speicher.</p>
+      <div
+        className="storage-settings-actions"
+        ref={(node) => {
+          manageFocus.current =
+            node?.querySelector<HTMLButtonElement>('button[aria-haspopup="menu"]') ?? null;
+        }}
+      >
         <ActionGroup>
           <Button onClick={refresh}>Speicherstatus aktualisieren</Button>
           <MenuButton
@@ -48,7 +64,27 @@ export function StorageSettings() {
           />
         </ActionGroup>
       </div>
-      {receipt && <Notice tone="info">{receipt}</Notice>}
+      {feedback.message &&
+        (receipt ? (
+          <Notice
+            tone="warning"
+            dismissFocusRef={manageFocus}
+            onDismiss={() => {
+              feedback.clear();
+              setReceipt(undefined);
+            }}
+          >
+            <p>{feedback.message}</p>
+            <p>{receipt.failures.length} Dateien konnten nicht bereinigt werden.</p>
+            <ul>
+              {receipt.failures.map((failure, index) => (
+                <li key={index}>{failure}</li>
+              ))}
+            </ul>
+          </Notice>
+        ) : (
+          <ActionStatus>{feedback.message}</ActionStatus>
+        ))}
       {confirm && (
         <Modal
           title="Projektreste bereinigen?"
@@ -66,18 +102,31 @@ export function StorageSettings() {
                 onClick={() => {
                   if (cleaning.current) return;
                   cleaning.current = true;
+                  const attempt = feedback.begin();
+                  setReceipt(undefined);
                   setBusy(true);
                   void services.workspaces
                     .cleanAbandoned(new AbortController().signal)
                     .then((r) => {
-                      setReceipt(`${r.removed.length} Dateien bereinigt. ${r.failures.join('; ')}`);
+                      if (!feedback.isCurrent(attempt)) return;
+                      if (r.failures.length > 0)
+                        setReceipt({removed: r.removed.length, failures: r.failures});
+                      feedback.show(
+                        attempt,
+                        r.removed.length === 0
+                          ? 'Es wurden keine Dateien bereinigt.'
+                          : `${r.removed.length} Dateien wurden bereinigt.`,
+                        r.failures.length > 0 ? 'persistent' : 'brief',
+                      );
                       setConfirm(false);
                       refresh();
                     })
-                    .catch(report)
+                    .catch((error) => {
+                      if (feedback.isCurrent(attempt)) report(error);
+                    })
                     .finally(() => {
                       cleaning.current = false;
-                      setBusy(false);
+                      if (feedback.isCurrent(attempt)) setBusy(false);
                     });
                 }}
               >

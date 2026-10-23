@@ -48,6 +48,8 @@ export function PortalImport({
   const [busyAction, setBusyAction] = useState('');
   const pending = useRef<symbol | undefined>(undefined);
   const [error, setError] = useState('');
+  const contextButtonRef = useRef<HTMLButtonElement>(null);
+  const errorFocusRef = useRef<HTMLButtonElement>(null);
   const occupied =
     target === 'new'
       ? []
@@ -105,6 +107,7 @@ export function PortalImport({
   };
   useEffect(() => {
     controller.current = new AbortController();
+    errorFocusRef.current = contextButtonRef.current;
     void services.workspaces.list().then(setWorkspaces);
     if (initial) void act(() => resolve(initial));
     return () => {
@@ -115,6 +118,7 @@ export function PortalImport({
     // This dialog captures its initial route selection once; editing uses the explicit load action.
   }, []);
   const load = () => {
+    setError('');
     if (!form.validate(['provider', 'table', 'target'])) return;
     return act(async () => {
       const table = tables.find((t) => t.tableId === selected);
@@ -164,7 +168,9 @@ export function PortalImport({
               disabled={busy}
               busy={busyAction === 'confirm'}
               busyLabel="Portalimport wird übernommen …"
-              onClick={() => {
+              onClick={(event) => {
+                errorFocusRef.current = event.currentTarget;
+                setError('');
                 if (!form.validate(['provider', 'table', 'target', 'name', 'sqlName'])) return;
                 void act(async () => {
                   const table = tables.find((t) => t.tableId === selected)!;
@@ -259,10 +265,13 @@ export function PortalImport({
             />
           </FormField>
           <Button
+            ref={contextButtonRef}
             disabled={busy}
             busy={busyAction === 'resolve'}
             busyLabel="Kontext wird geladen …"
-            onClick={() => {
+            onClick={(event) => {
+              errorFocusRef.current = event.currentTarget;
+              setError('');
               if (form.validate(['provider', 'value']))
                 void act(() => resolve(access.selection(provider, value)));
             }}
@@ -278,7 +287,8 @@ export function PortalImport({
                 disabled={busy}
                 busy={busyAction === 'search'}
                 busyLabel="Index wird durchsucht …"
-                onClick={() => {
+                onClick={(event) => {
+                  errorFocusRef.current = event.currentTarget;
                   form.reset();
                   void act(
                     async () =>
@@ -294,15 +304,16 @@ export function PortalImport({
                   <li key={e.key}>
                     <Button
                       disabled={busy}
-                      onClick={() =>
+                      onClick={(event) => {
+                        errorFocusRef.current = event.currentTarget;
                         void act(() =>
                           resolve({
                             providerId: provider,
                             target: e.target,
                             ...(e.tableId ? {tableId: e.tableId} : {}),
                           }),
-                        )
-                      }
+                        );
+                      }}
                     >
                       {e.title}
                     </Button>
@@ -357,7 +368,10 @@ export function PortalImport({
                 disabled={busy}
                 busy={busyAction === 'preview'}
                 busyLabel="Portalvorschau wird geladen …"
-                onClick={() => void load()}
+                onClick={(event) => {
+                  errorFocusRef.current = event.currentTarget;
+                  void load();
+                }}
               >
                 Portalvorschau laden
               </Button>
@@ -400,7 +414,7 @@ export function PortalImport({
               <p>
                 {local
                   ? 'Datei wird mit geprüftem Hash gesichert.'
-                  : 'Referenz · Externer Stand nicht eingefroren. Bei jeder Verwendung erneut geprüft.'}
+                  : 'Der externe Datenstand wird referenziert und ist nicht eingefroren. Er wird bei jeder Verwendung erneut geprüft.'}
               </p>
               {replace && (
                 <p>
@@ -417,7 +431,19 @@ export function PortalImport({
           )}
         </>
       )}
-      {error && <Notice tone="danger">{error}</Notice>}
+      {error && (
+        <Notice
+          tone="danger"
+          onDismiss={() => {
+            if (!errorFocusRef.current?.isConnected || errorFocusRef.current.matches(':disabled'))
+              errorFocusRef.current = contextButtonRef.current;
+            setError('');
+          }}
+          dismissFocusRef={errorFocusRef}
+        >
+          {error}
+        </Notice>
+      )}
       {busy && <Notice tone="info">Portal wird geprüft …</Notice>}
     </Modal>
   );

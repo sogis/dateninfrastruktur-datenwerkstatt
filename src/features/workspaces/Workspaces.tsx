@@ -10,7 +10,6 @@ import {
   PanelHeader,
   Tooltip,
 } from '../../ui/Controls';
-import {Diagnostics} from './Diagnostics';
 import {ArchiveActions, ArchiveImport} from '../archive/ArchiveActions';
 import {useRef, useState} from 'react';
 import {Link, useNavigate} from '@tanstack/react-router';
@@ -298,7 +297,6 @@ export function ProjectOverview() {
         </ul>
       </section>
       <ArchiveActions session={session} />
-      <Diagnostics session={session} />
     </div>
   );
 }

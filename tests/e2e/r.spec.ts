@@ -31,11 +31,15 @@ test('P5 AT-040 AT-042 AT-046 AT-048: complete UI transfer, lazy worker survives
   expect(workers.filter((w) => w.url.includes('webr'))).toHaveLength(0);
   await page.getByRole('button', {name: 'In R', exact: true}).click();
   await page.getByRole('button', {name: 'Transfer prüfen', exact: true}).click();
-  await expect(page.getByText(/350 Zeilen .*Bytes Transferpayload/)).toBeVisible({timeout: 60000});
+  await expect(
+    page
+      .locator('.dw-dialog .dw-meta-list')
+      .filter({hasText: /Zeilen\s*350\s*Geschätzte Datengrösse\s*[\d’'\s]+ Bytes/}),
+  ).toBeVisible({timeout: 60000});
   await page.getByRole('button', {name: 'In R übernehmen', exact: true}).click();
   await expect(page.locator('.r-workbench')).toBeVisible();
   const rUrl = page.url();
-  await expect(page.getByRole('button', {name: /daten · 350 × 1/})).toBeEnabled();
+  await expect(page.getByRole('button', {name: /daten 350 Zeilen, 1 Spalte/})).toBeEnabled();
   await expect(page.locator('.run-status')).toContainText('Bereit');
   await code(
     page,
@@ -46,7 +50,7 @@ test('P5 AT-040 AT-042 AT-046 AT-048: complete UI transfer, lazy worker survives
   await expect(page.getByRole('log')).toContainText('vollständig');
   await page.getByRole('button', {name: 'Grafik aufbewahren', exact: true}).click();
   await expect(page.getByRole('button', {name: 'Grafik aufbewahren', exact: true})).toBeDisabled();
-  await page.getByRole('button', {name: /vergleich · 1 × 1/}).click();
+  await page.getByRole('button', {name: /vergleich 1 Zeile, 1 Spalte/}).click();
   await page.getByRole('button', {name: 'Objekt als Datensatz', exact: true}).click();
   await page.getByRole('button', {name: 'Datensatz übernehmen', exact: true}).click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
@@ -55,30 +59,34 @@ test('P5 AT-040 AT-042 AT-046 AT-048: complete UI transfer, lazy worker survives
   await expect(page.locator('.dataset-history')).toContainText(
     'R-Objektübernahme ohne gespeicherte Analyse',
   );
-  await expect(page.locator('.dataset-history')).toContainText('Ergebnis · vergleich');
+  await expect(page.locator('.dataset-history')).toContainText('Ergebnis „vergleich“');
   // Internal navigation preserves the WorkspaceSession and its live R objects.
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.locator(`a[href="${new URL(sqlUrl).pathname}"]`).click();
   await expect(
-    page.getByText('350 Zeilen · vollständig · aufbewahrt', {exact: true}),
+    page
+      .locator('.result-toolbar .dw-meta-list')
+      .filter({hasText: /Zeilen\s*350\s*Umfang\s*Vollständig\s*Aufbewahrung\s*Aufbewahrt/}),
   ).toBeVisible();
   await code(page, 'SELECT n FROM vergleich');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.result-grid tbody td')).toHaveText(['350']);
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.locator(`a[href="${new URL(rUrl).pathname}"]`).click();
-  await expect(page.getByRole('button', {name: /x · numeric/})).toBeVisible();
+  await expect(page.getByRole('button', {name: /x Klasse: numeric/})).toBeVisible();
   expect(workers.filter((w) => w.url.includes('webr'))).toHaveLength(1);
   await page.getByRole('button', {name: 'Weitere Aktionen', exact: true}).click();
   await page.getByRole('menuitem', {name: 'R zurücksetzen', exact: true}).click();
   await page.getByRole('button', {name: 'Reset bestätigen', exact: true}).click();
   await expect.poll(() => workers.filter((w) => w.url.includes('webr') && w.closed).length).toBe(1);
-  await expect(page.getByRole('button', {name: /x · numeric/})).toHaveCount(0);
+  await expect(page.getByRole('button', {name: /x Klasse: numeric/})).toHaveCount(0);
   await code(page, 'repeat { 1+1 }');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.run-status')).toContainText('R ausführen', {timeout: 60000});
   // Running snapshot appears only after initialization and before evaluating the loop.
-  await expect(page.locator('.run-status option').filter({hasText: 'Läuft'})).toHaveCount(1, {
+  await expect(
+    page.locator('.run-status option').filter({hasText: 'Ausführung läuft'}),
+  ).toHaveCount(1, {
     timeout: 60000,
   });
   await page.getByRole('button', {name: 'Abbrechen', exact: true}).click();

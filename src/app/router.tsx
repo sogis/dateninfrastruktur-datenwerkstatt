@@ -1,6 +1,8 @@
-import {Button, IconButton, Input, Select, FormField, Notice} from '../ui/Controls';
+import {ActionStatus, Button, IconButton, Input, Select, FormField, Notice} from '../ui/Controls';
+import {useActionFeedback} from '../ui/useActionFeedback';
 import {NavigationItem} from '../ui/NavigationItem';
 import {StorageSettings} from '../features/workspaces/StorageSettings';
+import {Diagnostics} from '../features/workspaces/Diagnostics';
 import {WorkspaceViewController} from '../state/workspaceView';
 import {failureMessage} from '../application/errors';
 import {RWorkbench} from '../features/r/RWorkbench';
@@ -25,7 +27,7 @@ import {appStore} from '../state/appStore';
 import {createWorkspaceStore} from '../state/workspaceStore';
 import {CodeModels} from '../infrastructure/monaco/models';
 import type {EditingSession} from '../application/workspaceService';
-import type {AnalysisId} from '../domain/model';
+import type {AnalysisId, WorkspaceId} from '../domain/model';
 import {checkedId} from '../domain/workspace';
 import {SqlWorkbench} from '../features/sql/SqlWorkbench';
 import {ProjectList, ProjectOverview} from '../features/workspaces/Workspaces';
@@ -84,6 +86,11 @@ const dataRoute = createRoute({
   path: 'data',
   component: ProjectDataPage,
 });
+const diagnosticsRoute = createRoute({
+  getParentRoute: () => workspaceRoute,
+  path: 'diagnostics',
+  component: Diagnostics,
+});
 const sqlRoute = createRoute({
   getParentRoute: () => workspaceRoute,
   path: 'sql/$analysisId',
@@ -113,7 +120,7 @@ export const router = createRouter({
     indexRoute,
     openRoute,
     listRoute,
-    workspaceRoute.addChildren([detailRoute, dataRoute, sqlRoute, rRoute]),
+    workspaceRoute.addChildren([detailRoute, dataRoute, sqlRoute, rRoute, diagnosticsRoute]),
     settingsRoute,
   ]),
   basepath: import.meta.env.BASE_URL,
@@ -146,7 +153,7 @@ function Shell() {
           <Brand config={brand} />
         </Link>
         {services.mode === 'temporary' && (
-          <span className="build-status">Nur diese Sitzung · Verlust bei Reload</span>
+          <span className="build-status">Daten gehen beim Neuladen verloren.</span>
         )}
       </header>
       {error && (
@@ -177,10 +184,12 @@ function AppNavigation({
   expanded,
   onToggle,
   children,
+  workspaceId,
 }: {
   expanded: boolean;
   onToggle: () => void;
   children?: ReactNode;
+  workspaceId?: WorkspaceId;
 }) {
   const routeId = useRouterState({select: (s) => s.matches.at(-1)?.routeId});
   return (
@@ -209,6 +218,20 @@ function AppNavigation({
       >
         <Link to="/settings" activeOptions={{exact: true}} />
       </NavigationItem>
+      {workspaceId && (
+        <NavigationItem
+          icon="info-circle"
+          label="Diagnose"
+          expanded={expanded}
+          current={routeId === diagnosticsRoute.id}
+        >
+          <Link
+            to="/projects/$workspaceId/diagnostics"
+            params={{workspaceId}}
+            activeOptions={{exact: true}}
+          />
+        </NavigationItem>
+      )}
     </nav>
   );
 }
@@ -281,9 +304,14 @@ function WorkspaceProvider() {
       session.persistence.generation !== session.persistence.savedGeneration,
     shouldBlockFn: async ({next}) => {
       if (
-        [workspaceRoute.id, detailRoute.id, dataRoute.id, sqlRoute.id, rRoute.id].some(
-          (id) => id === next.routeId,
-        ) &&
+        [
+          workspaceRoute.id,
+          detailRoute.id,
+          dataRoute.id,
+          sqlRoute.id,
+          rRoute.id,
+          diagnosticsRoute.id,
+        ].some((id) => id === next.routeId) &&
         'workspaceId' in next.params &&
         next.params.workspaceId === session.document.workspace.id
       )
@@ -303,6 +331,7 @@ function WorkspaceProvider() {
         <AppNavigation
           expanded={expanded}
           onToggle={() => ctx.view.patch({sidebarCollapsed: expanded})}
+          workspaceId={session.document.workspace.id}
         >
           <NavigationItem
             icon="folder2-open"
@@ -331,7 +360,7 @@ function WorkspaceProvider() {
           <NavigationItem
             icon="database"
             label="SQL"
-            tooltip="SQL · DuckDB"
+            tooltip="SQL mit DuckDB"
             expanded={expanded}
             current={routeId === sqlRoute.id}
           >
@@ -340,7 +369,7 @@ function WorkspaceProvider() {
           <NavigationItem
             icon="bar-chart-line"
             label="R"
-            tooltip="R · webR"
+            tooltip="R mit webR"
             expanded={expanded}
             current={routeId === rRoute.id}
           >
@@ -351,9 +380,9 @@ function WorkspaceProvider() {
           {(session.readOnly || session.mode === 'temporary' || state !== 'saved') && (
             <div className="save-status" aria-live="polite">
               {session.readOnly
-                ? 'Nur lesend · Schreibrecht liegt in einem anderen Tab oder Web Locks fehlen.'
+                ? 'Das Projekt ist schreibgeschützt, weil ein anderer Tab das Schreibrecht hat oder Web Locks fehlen.'
                 : state === 'saved'
-                  ? 'Nur diese Sitzung · kein Backup'
+                  ? 'Änderungen sind nur in dieser Sitzung verfügbar und werden nicht automatisch gesichert.'
                   : state === 'saving'
                     ? 'Speichert …'
                     : state === 'error'
@@ -442,17 +471,19 @@ function AnalysisEditor({
 
 function SettingsPage() {
   const settings = useStore(appStore, (s) => s.settings);
-  const [saveState, setSaveState] = useState('Einstellungen gespeichert');
+  const feedback = useActionFeedback();
   const save = (next: typeof settings) => {
+    const attempt = feedback.begin();
     appStore.setState({settings: next});
-    setSaveState('Einstellungen werden gespeichert …');
+    feedback.show(attempt, 'Einstellungen werden gespeichert …');
     void services.settings
       .save(next)
       .then(() => {
-        if (appStore.getState().settings === next) setSaveState('Einstellungen gespeichert');
+        feedback.show(attempt, 'Einstellungen gespeichert', 'brief');
       })
       .catch((error) => {
-        setSaveState('Speichern fehlgeschlagen');
+        if (!feedback.isCurrent(attempt)) return;
+        feedback.show(attempt, 'Speichern fehlgeschlagen');
         report(error);
       });
   };
@@ -487,15 +518,15 @@ function SettingsPage() {
             onChange={(e) => save({...settings, wordWrap: e.target.checked})}
           />
         </FormField>
+        <FormField label={<>Seitenleiste standardmässig eingeklappt</>}>
+          <Input
+            type="checkbox"
+            checked={settings.sidebarCollapsed}
+            onChange={(e) => save({...settings, sidebarCollapsed: e.target.checked})}
+          />
+        </FormField>
       </div>
-      <Notice tone="info">{saveState}</Notice>
-      <FormField label={<>Seitenleiste standardmässig eingeklappt</>}>
-        <Input
-          type="checkbox"
-          checked={settings.sidebarCollapsed}
-          onChange={(e) => save({...settings, sidebarCollapsed: e.target.checked})}
-        />
-      </FormField>
+      <ActionStatus className="settings-save-status">{feedback.message}</ActionStatus>
       <StorageSettings />
     </main>
   );

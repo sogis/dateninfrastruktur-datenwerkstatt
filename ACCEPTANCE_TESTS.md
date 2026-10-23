@@ -450,6 +450,8 @@ Für Wiederholbarkeit: isoliertes Browserprofil pro Testgruppe, feste Fixtures, 
 
 **Menü-/Split-Ergänzung v1.3:** Menü-Button öffnet ausschliesslich das Menü; Split-Hauptaktion und Pfeil sind separat fokussierbar. CSV bleibt nach Parquet-Auswahl die Hauptaktion. Enter/Space, Pfeile, Home/End, Escape, Tab/Shift+Tab, deaktivierte Einträge, Dialogübergang, Fokusrückgabe und Viewportpositionierung prüfen. Eine laufende Hauptaktion sperrt nur fachlich unverfügbare Alternativen.
 
+**Aktionsrückmeldungen:** Einfache Erfolge sind bis 2999 ms sichtbar und nach 3000 ms leer; Wiederholung startet die Frist neu. Alte Antworten/Timer und Antworten nach Verlassen der Ansicht ändern keine neuere Meldung. Export mit Auslassungen bleibt blau und über drei Sekunden hinaus sichtbar; Teilbereinigung erhält Zusammenfassung und originale Fehlerdetails. Datei-/Portalimport-, Parameter- und R-Transfer-Aktionsfehler bleiben ebenfalls bis zum Schliessen oder nächsten Versuch sichtbar. × per Maus, Enter und Leertaste bedienen; zugänglicher Name/Tooltip „Hinweis schliessen“, mindestens 40 × 40 px, Fokusrückgabe zur Aktion. Bei 390/1280/1440 px und vergrössertem Text keine Überlagerung oder abgeschnittenen Inhalte. Schliessen ändert keine Eingaben, Vorschauvalidität oder Validierungsbedingungen. Fortbestehende Zustände und SQL-/R-Lauf-/Ergebnisdiagnosen bleiben sichtbar.
+
 ### AT-056 — Bösartige URL-/Metadateninhalte sind kein Code
 
 **Requirements:** REQ-005, REQ-030, REQ-032, REQ-033, REQ-071, REQ-072 · **Phase:** P4 · **Ebene:** Security/Browser
@@ -465,6 +467,8 @@ Für Wiederholbarkeit: isoliertes Browserprofil pro Testgruppe, feste Fixtures, 
 **Gegeben:** Produktionsprofil ohne Testseeds.
 **Wenn:** Navigation, leere Zustände, Einstellungen und Originalbranding prüfen.
 **Dann:** Kein Loginavatar/Freigaben/KI/ClickHouse-Menü, keine doppelten Workspace-Listen; nur implementierte Settings; echtes Logo oder expliziter Releaseblocker.
+
+Einstellungen zeigen beim Öffnen keine Speicherbestätigung. Nach einer Änderung ist Erfolg drei Sekunden sichtbar; Fehler bleiben bis zum nächsten Versuch sichtbar. Nur die neueste Antwort bestimmt die Rückmeldung. Diagnose folgt bei geöffnetem Projekt unter Einstellungen, erhält beim Seitenwechsel die Sitzung und bündelt Bericht sowie Inventar-/Hashprüfung. Technische Details sind zunächst eingeklappt; Code gelangt nur nach ausdrücklicher Auswahl in den Bericht.
 
 ### AT-058 — Routen, Modelle und Viewzustand
 

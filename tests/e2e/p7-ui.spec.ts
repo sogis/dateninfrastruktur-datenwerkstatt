@@ -177,13 +177,13 @@ test('P7 AT-055–057: native focus trap/return, settings, storage cleanup and d
   await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await enter(page, "SELECT 'PRIVATE_CODE_MARKER' AS wert");
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByText('Lokale Diagnose', {exact: true}).click();
+  await page.getByRole('link', {name: 'Diagnose', exact: true}).click();
   let downloaded = page.waitForEvent('download');
   await page.getByRole('button', {name: 'Diagnosebericht herunterladen'}).click();
   let path = await (await downloaded).path();
   const {readFile} = await import('node:fs/promises');
   expect(await readFile(path!, 'utf8')).not.toContain('PRIVATE_CODE_MARKER');
-  await page.getByLabel('Analysecode ausdrücklich aufnehmen').check();
+  await page.getByLabel('Analysecode in den Bericht aufnehmen').check();
   downloaded = page.waitForEvent('download');
   await page.getByRole('button', {name: 'Diagnosebericht herunterladen'}).click();
   path = await (await downloaded).path();
@@ -239,7 +239,7 @@ test('P7 AT-055–057: native focus trap/return, settings, storage cleanup and d
       name: /Reste abgebrochener Projekte|Nicht referenzierte Projektreste/,
     }),
   ).toHaveCount(0);
-  await expect(page.getByRole('button', {name: 'Projekt öffnen', exact: true})).toBeVisible();
+  await expect(page.getByRole('button', {name: 'Datei auswählen …', exact: true})).toBeVisible();
 });
 
 test('P7 AT-025 AT-055 AT-056: selected SQL is snapshotted and cell markup remains text', async ({

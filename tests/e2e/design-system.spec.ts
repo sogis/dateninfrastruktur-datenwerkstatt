@@ -1,8 +1,8 @@
 import {test, expect} from '../persistentBrowser';
 import {mkdir, writeFile} from 'node:fs/promises';
 import type {Locator, Page} from '@playwright/test';
-const evidence = 'docs/verification/buttons-v1.3/neutral';
-const tooltipEvidence = 'docs/verification/buttons-v1.3/neutral/tooltips';
+const evidence = 'docs/verification/diagnostics-settings/neutral';
+const tooltipEvidence = 'docs/verification/diagnostics-settings/neutral/tooltips';
 async function tooltipGeometry(trigger: Locator) {
   return trigger.evaluate((control) => {
     const tooltip = control.parentElement!.querySelector<HTMLElement>('[role="tooltip"]')!;
@@ -104,12 +104,12 @@ test('UI components: labels, native submit, checkbox, errors, busy state, menu a
   await expect(open).toBeFocused();
   const sql = page.getByRole('button', {name: 'SQL', exact: true});
   await sql.focus();
-  await expect(page.getByRole('tooltip', {name: 'SQL · DuckDB'})).toBeVisible();
+  await expect(page.getByRole('tooltip', {name: 'SQL mit DuckDB'})).toBeVisible();
   await expect(sql).toHaveAttribute('aria-current', 'page');
   await page.keyboard.press('Escape');
-  await expect(page.getByRole('tooltip', {name: 'SQL · DuckDB'})).not.toBeVisible();
+  await expect(page.getByRole('tooltip', {name: 'SQL mit DuckDB'})).not.toBeVisible();
   await page.getByRole('button', {name: 'R', exact: true}).hover();
-  await expect(page.getByRole('tooltip', {name: 'R · webR'})).toBeVisible();
+  await expect(page.getByRole('tooltip', {name: 'R mit webR'})).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
   expect(
     await page.evaluate(
@@ -350,17 +350,17 @@ test('UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmo
   await page.clock.runFor(249);
   await expect(visible).toHaveCount(0);
   await page.clock.runFor(1);
-  await expect(visible).toHaveText('SQL · DuckDB');
-  await expect(sql).toHaveAccessibleDescription('SQL · DuckDB');
+  await expect(visible).toHaveText('SQL mit DuckDB');
+  await expect(sql).toHaveAccessibleDescription('SQL mit DuckDB');
   const {anchor, tip} = await tooltipGeometry(sql);
   expect(tip.left - anchor.right).toBeCloseTo(8, 2);
   // Crossing the transparent gap and hovering the tooltip must preserve it.
   await page.mouse.move(anchor.right + 4, (anchor.top + anchor.bottom) / 2);
   await page.clock.runFor(300);
-  await expect(visible).toHaveText('SQL · DuckDB');
+  await expect(visible).toHaveText('SQL mit DuckDB');
   await visible.hover();
   await page.clock.runFor(300);
-  await expect(visible).toHaveText('SQL · DuckDB');
+  await expect(visible).toHaveText('SQL mit DuckDB');
   await page.mouse.move(600, 100);
   await page.clock.runFor(119);
   await expect(visible).toHaveCount(1);
@@ -377,7 +377,7 @@ test('UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmo
   await page.clock.runFor(249);
   await expect(visible).toHaveCount(0);
   await page.clock.runFor(1);
-  await expect(visible).toHaveText('R · webR');
+  await expect(visible).toHaveText('R mit webR');
   await page.keyboard.press('Escape');
   await page.clock.runFor(300);
   await expect(visible).toHaveCount(0);
@@ -389,14 +389,14 @@ test('UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmo
   await expect(visible).toHaveCount(0);
   await r.press(backTab);
   await expect(sql).toBeFocused();
-  await expect(visible).toHaveText('SQL · DuckDB');
+  await expect(visible).toHaveText('SQL mit DuckDB');
   await page.mouse.move(600, 100);
   await page.clock.runFor(300);
-  await expect(visible).toHaveText('SQL · DuckDB');
+  await expect(visible).toHaveText('SQL mit DuckDB');
   await visible.hover();
   await page.getByRole('textbox', {name: 'Projektname', exact: true}).focus();
   await page.clock.runFor(300);
-  await expect(visible).toHaveText('SQL · DuckDB');
+  await expect(visible).toHaveText('SQL mit DuckDB');
   await page.mouse.move(600, 100);
   await page.clock.runFor(120);
   await expect(visible).toHaveCount(0);
@@ -468,20 +468,20 @@ test('UI tooltips: no misplaced frames, collapsed/expanded navigation, scroll an
   ]) {
     await page.setViewportSize(viewport);
     await sql.hover();
-    await expect(visible).toHaveText('SQL · DuckDB');
+    await expect(visible).toHaveText('SQL mit DuckDB');
     await expectRightCentered(sql);
     measurements.push({viewport, expanded: false, geometry: await tooltipGeometry(sql)});
     await page.getByRole('button', {name: 'Navigation ausklappen', exact: true}).click();
     await expect(visible).toHaveCount(0);
     await sql.hover();
-    await expect(visible).toHaveText('SQL · DuckDB');
+    await expect(visible).toHaveText('SQL mit DuckDB');
     await expectRightCentered(sql);
     measurements.push({viewport, expanded: true, geometry: await tooltipGeometry(sql)});
     await page.screenshot({
       path: `${tooltipEvidence}/navigation-${info.project.name}-${viewport.width}.png`,
     });
     await r.hover();
-    await expect(visible).toHaveText('R · webR');
+    await expect(visible).toHaveText('R mit webR');
     await expectRightCentered(r);
     await page.getByRole('button', {name: 'Navigation einklappen', exact: true}).click();
     await expect(visible).toHaveCount(0);
@@ -499,7 +499,7 @@ test('UI tooltips: no misplaced frames, collapsed/expanded navigation, scroll an
 
   await page.getByRole('button', {name: 'Navigation ausklappen', exact: true}).click();
   await sql.hover();
-  await expect(visible).toHaveText('SQL · DuckDB');
+  await expect(visible).toHaveText('SQL mit DuckDB');
   await page.setViewportSize({width: 720, height: 300});
   await expectRightCentered(sql);
   const narrow = await tooltipGeometry(sql);
@@ -510,7 +510,7 @@ test('UI tooltips: no misplaced frames, collapsed/expanded navigation, scroll an
   await page.keyboard.press('Tab');
   await sql.focus();
   await page.mouse.move(600, 100);
-  await expect(visible).toHaveText('SQL · DuckDB');
+  await expect(visible).toHaveText('SQL mit DuckDB');
   const beforeScroll = await tooltipGeometry(sql);
   await page.evaluate(() => window.scrollBy(0, 100));
   await expectRightCentered(sql);
@@ -667,7 +667,7 @@ test('UI screens: project actions, forms, navigation and settings at target view
   await expect(page.getByRole('button', {name: 'Neues Projekt', exact: true})).toHaveClass(
     /dw-button--primary/,
   );
-  await expect(page.getByRole('button', {name: 'Projekt öffnen', exact: true})).toHaveClass(
+  await expect(page.getByRole('button', {name: 'Datei auswählen …', exact: true})).toHaveClass(
     /dw-button--secondary/,
   );
   await capture(page, `overview-${info.project.name}`);
@@ -701,7 +701,7 @@ test('UI screens: project actions, forms, navigation and settings at target view
     await capture(page, `import-${info.project.name}-${size.width}`);
     await page.keyboard.press('Escape');
   }
-  await expect(page.locator('.sidebar svg')).toHaveCount(7);
+  await expect(page.locator('.sidebar svg')).toHaveCount(8);
   await page.getByRole('button', {name: 'Navigation ausklappen'}).click();
   expect((await page.locator('.sidebar').boundingBox())!.width).toBe(212);
   await page.getByRole('link', {name: 'Einstellungen', exact: true}).click();

@@ -1,0 +1,140 @@
+[WebServer] (node:66460) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+
+Running 30 tests using 1 worker
+
+(node:66461) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/30] [chromium] › tests/e2e/action-feedback.spec.ts:23:1 › Action feedback: complete archive uses plain three-second confirmation and repeated exports restart it
+[2/30] [chromium] › tests/e2e/action-feedback.spec.ts:52:1 › Action feedback: recipe omissions persist, can be dismissed by pointer and keyboard and recur on export
+[3/30] [chromium] › tests/e2e/action-feedback.spec.ts:98:1 › Action feedback: an export rejection after leaving the project does not leak into the next view
+[4/30] [chromium] › tests/e2e/action-feedback.spec.ts:130:1 › Action feedback: multiline import errors retain details, retry state, target size and layout
+[5/30] [chromium] › tests/e2e/action-feedback.spec.ts:192:1 › Action feedback: dismissing a parameter-apply error preserves edited values and retry reports it again
+[6/30] [chromium] › tests/e2e/action-feedback.spec.ts:236:1 › Action feedback: a changed CSV option returns dismissal focus to preview when the failed confirm action is disabled
+[7/30] [chromium] › tests/e2e/action-feedback.spec.ts:272:1 › Action feedback: transfer errors dismiss without creating a plan and retry retains the original error
+[8/30] [chromium] › tests/e2e/action-feedback.spec.ts:308:1 › Action feedback: portal load errors dismiss and retry without changing the selected provider or input
+[9/30] [chromium] › tests/e2e/action-feedback.spec.ts:345:1 › Action feedback: storage cleanup success expires and partial failures preserve summary and original details
+[10/30] [chromium] › tests/e2e/action-feedback.spec.ts:395:1 › Action feedback: date-check completion expires while real orphan-file findings remain visible
+(node:66517) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[11/30] [firefox] › tests/e2e/action-feedback.spec.ts:23:1 › Action feedback: complete archive uses plain three-second confirmation and repeated exports restart it
+[12/30] [firefox] › tests/e2e/action-feedback.spec.ts:52:1 › Action feedback: recipe omissions persist, can be dismissed by pointer and keyboard and recur on export
+  1) [firefox] › tests/e2e/action-feedback.spec.ts:52:1 › Action feedback: recipe omissions persist, can be dismissed by pointer and keyboard and recur on export 
+
+    Error: expect(locator).toBeFocused() failed
+
+    Locator:  locator('.archive-actions .dw-notice').filter({ hasText: 'Auslassungen.' }).getByRole('button', { name: 'Hinweis schliessen', exact: true })
+    Expected: focused
+    Received: inactive
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toBeFocused" locator('.archive-actions .dw-notice').filter({ hasText: 'Auslassungen.' }).getByRole('button', { name: 'Hinweis schliessen', exact: true }) with timeout 10000ms
+      - waiting for locator('.archive-actions .dw-notice').filter({ hasText: 'Auslassungen.' }).getByRole('button', { name: 'Hinweis schliessen', exact: true })
+        24 × locator resolved to <button type="button" aria-describedby="_r_s_" aria-label="Hinweis schliessen" class="dw-button dw-button--tertiary dw-button--tone-default  dw-icon-button ">…</button>
+           - unexpected value "inactive"
+
+
+      79 |   await page.keyboard.press('Tab');
+      80 |   await page.keyboard.press('Shift+Tab');
+    > 81 |   await expect(close).toBeFocused();
+         |                       ^
+      82 |   expect(await close.evaluate((button) => button.matches(':focus-visible'))).toBe(true);
+      83 |   const outline = await close.evaluate((button) => getComputedStyle(button).outlineStyle);
+      84 |   expect(outline).not.toBe('none');
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/action-feedback.spec.ts:81:23
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-feedback-final/e2e-action-feedback-Action-34b53-eyboard-and-recur-on-export-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../tmp/datenwerkstatt-feedback-final/e2e-action-feedback-Action-34b53-eyboard-and-recur-on-export-firefox/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-feedback-final/e2e-action-feedback-Action-34b53-eyboard-and-recur-on-export-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../tmp/datenwerkstatt-feedback-final/e2e-action-feedback-Action-34b53-eyboard-and-recur-on-export-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:66541) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[13/30] [firefox] › tests/e2e/action-feedback.spec.ts:98:1 › Action feedback: an export rejection after leaving the project does not leak into the next view
+[14/30] [firefox] › tests/e2e/action-feedback.spec.ts:130:1 › Action feedback: multiline import errors retain details, retry state, target size and layout
+[15/30] [firefox] › tests/e2e/action-feedback.spec.ts:192:1 › Action feedback: dismissing a parameter-apply error preserves edited values and retry reports it again
+[16/30] [firefox] › tests/e2e/action-feedback.spec.ts:236:1 › Action feedback: a changed CSV option returns dismissal focus to preview when the failed confirm action is disabled
+[17/30] [firefox] › tests/e2e/action-feedback.spec.ts:272:1 › Action feedback: transfer errors dismiss without creating a plan and retry retains the original error
+[18/30] [firefox] › tests/e2e/action-feedback.spec.ts:308:1 › Action feedback: portal load errors dismiss and retry without changing the selected provider or input
+[19/30] [firefox] › tests/e2e/action-feedback.spec.ts:345:1 › Action feedback: storage cleanup success expires and partial failures preserve summary and original details
+[20/30] [firefox] › tests/e2e/action-feedback.spec.ts:395:1 › Action feedback: date-check completion expires while real orphan-file findings remain visible
+(node:66630) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[21/30] [webkit] › tests/e2e/action-feedback.spec.ts:23:1 › Action feedback: complete archive uses plain three-second confirmation and repeated exports restart it
+[22/30] [webkit] › tests/e2e/action-feedback.spec.ts:52:1 › Action feedback: recipe omissions persist, can be dismissed by pointer and keyboard and recur on export
+  2) [webkit] › tests/e2e/action-feedback.spec.ts:52:1 › Action feedback: recipe omissions persist, can be dismissed by pointer and keyboard and recur on export 
+
+    Error: expect(locator).toBeFocused() failed
+
+    Locator:  locator('.archive-actions .dw-notice').filter({ hasText: 'Auslassungen.' }).getByRole('button', { name: 'Hinweis schliessen', exact: true })
+    Expected: focused
+    Received: inactive
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toBeFocused" locator('.archive-actions .dw-notice').filter({ hasText: 'Auslassungen.' }).getByRole('button', { name: 'Hinweis schliessen', exact: true }) with timeout 10000ms
+      - waiting for locator('.archive-actions .dw-notice').filter({ hasText: 'Auslassungen.' }).getByRole('button', { name: 'Hinweis schliessen', exact: true })
+        24 × locator resolved to <button type="button" aria-describedby="_r_s_" aria-label="Hinweis schliessen" class="dw-button dw-button--tertiary dw-button--tone-default  dw-icon-button ">…</button>
+           - unexpected value "inactive"
+
+
+      79 |   await page.keyboard.press('Tab');
+      80 |   await page.keyboard.press('Shift+Tab');
+    > 81 |   await expect(close).toBeFocused();
+         |                       ^
+      82 |   expect(await close.evaluate((button) => button.matches(':focus-visible'))).toBe(true);
+      83 |   const outline = await close.evaluate((button) => getComputedStyle(button).outlineStyle);
+      84 |   expect(outline).not.toBe('none');
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/action-feedback.spec.ts:81:23
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-feedback-final/e2e-action-feedback-Action-34b53-eyboard-and-recur-on-export-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../tmp/datenwerkstatt-feedback-final/e2e-action-feedback-Action-34b53-eyboard-and-recur-on-export-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-feedback-final/e2e-action-feedback-Action-34b53-eyboard-and-recur-on-export-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../tmp/datenwerkstatt-feedback-final/e2e-action-feedback-Action-34b53-eyboard-and-recur-on-export-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:66671) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[23/30] [webkit] › tests/e2e/action-feedback.spec.ts:98:1 › Action feedback: an export rejection after leaving the project does not leak into the next view
+[24/30] [webkit] › tests/e2e/action-feedback.spec.ts:130:1 › Action feedback: multiline import errors retain details, retry state, target size and layout
+[25/30] [webkit] › tests/e2e/action-feedback.spec.ts:192:1 › Action feedback: dismissing a parameter-apply error preserves edited values and retry reports it again
+[26/30] [webkit] › tests/e2e/action-feedback.spec.ts:236:1 › Action feedback: a changed CSV option returns dismissal focus to preview when the failed confirm action is disabled
+[27/30] [webkit] › tests/e2e/action-feedback.spec.ts:272:1 › Action feedback: transfer errors dismiss without creating a plan and retry retains the original error
+[28/30] [webkit] › tests/e2e/action-feedback.spec.ts:308:1 › Action feedback: portal load errors dismiss and retry without changing the selected provider or input
+[29/30] [webkit] › tests/e2e/action-feedback.spec.ts:345:1 › Action feedback: storage cleanup success expires and partial failures preserve summary and original details
+[30/30] [webkit] › tests/e2e/action-feedback.spec.ts:395:1 › Action feedback: date-check completion expires while real orphan-file findings remain visible
+  2 failed
+    [firefox] › tests/e2e/action-feedback.spec.ts:52:1 › Action feedback: recipe omissions persist, can be dismissed by pointer and keyboard and recur on export 
+    [webkit] › tests/e2e/action-feedback.spec.ts:52:1 › Action feedback: recipe omissions persist, can be dismissed by pointer and keyboard and recur on export 
+  28 passed (1.2m)

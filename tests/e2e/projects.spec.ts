@@ -3,7 +3,7 @@ import type {Page, Route} from '@playwright/test';
 import type {WorkspaceDocument} from '../../src/domain/model';
 import {mkdir, readFile} from 'node:fs/promises';
 
-const evidence = 'docs/verification/buttons-v1.3/projects';
+const evidence = 'docs/verification/ui-texts-v1.4/projects';
 
 async function createProject(page: Page, name: string) {
   await page.goto('/projects');
@@ -199,7 +199,7 @@ test('Projects: distinct overview/data pages preserve one session and live SQL/R
   await expect(page.locator('.result-grid tbody td')).toHaveText(['30']);
   await page.getByRole('button', {name: 'R', exact: true}).click();
   await expect(page).toHaveURL(rUrl);
-  await expect(page.getByRole('button', {name: /merkzahl · numeric/})).toBeVisible();
+  await expect(page.getByRole('button', {name: /merkzahl Klasse: numeric/})).toBeVisible();
   const after = await documentOf(page);
   expect(after.sessionId).toBe(initial.sessionId);
   expect(immutableHistory(after.document)).toEqual(immutableHistory(before.document));
@@ -228,9 +228,9 @@ test('Projects: CSV replacement keeps both immutable versions with current/newes
   const rows = history.locator('.dataset-version');
   await expect(rows).toHaveCount(2);
   await expect(rows.nth(0)).toContainText('Aktueller Datenstand');
-  await expect(rows.nth(0)).toContainText('Datei zweite.csv · CSV');
+  await expect(rows.nth(0)).toContainText('Datei zweite.csv (CSV)');
   await expect(rows.nth(1)).toContainText('Früherer Datenstand');
-  await expect(rows.nth(1)).toContainText('Datei erste.csv · CSV');
+  await expect(rows.nth(1)).toContainText('Datei erste.csv (CSV)');
   expect(
     await rows
       .locator('time')
@@ -367,7 +367,9 @@ test('Projects: two SQL run snapshots stay readable and kept results survive edi
     await expect(page.locator('.result-grid tbody tr')).toHaveCount(100);
     await page.getByRole('button', {name: 'Aufbewahren', exact: true}).click();
     await expect(
-      page.getByText('150 Zeilen · vollständig · aufbewahrt', {exact: true}),
+      page
+        .locator('.result-toolbar .dw-meta-list')
+        .filter({hasText: /Zeilen\s*150\s*Umfang\s*Vollständig\s*Aufbewahrung\s*Aufbewahrt/}),
     ).toBeVisible();
   }
   await code(page, 'SELECT 999 AS noch_nicht_ausgefuehrt');
@@ -429,7 +431,7 @@ test('Projects: two SQL run snapshots stay readable and kept results survive edi
   await page.getByText('Laufdetails und eingefrorener Code', {exact: true}).click();
   await expect(page.locator('.run-inputs')).toContainText('messung');
   await expect(page.locator('.run-inputs')).toContainText(
-    'Nicht verfügbar · Im Projektarchiv ohne Datenbytes enthalten',
+    'Nicht verfügbar, da das Projektarchiv keine Datenbytes enthält.',
   );
   await expect(page.locator('.run-results')).toContainText(
     'Nicht verfügbar: Projektdatei enthält keine Ergebnisdaten',

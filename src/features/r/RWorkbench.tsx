@@ -20,7 +20,7 @@ import {PreviewTable} from '../data/DataSection';
 import {useWorkspace} from '../../app/router';
 import {useStore} from 'zustand';
 import type {ImperativePanelGroupHandle} from 'react-resizable-panels';
-import {RunDetails, runStatusText, runTimeText} from '../results/RunDetails';
+import {RunDetails, RunStatus, runOptionText} from '../results/RunDetails';
 export function RWorkbench({
   session,
   analysis,
@@ -257,12 +257,12 @@ export function RWorkbench({
             <option value="latest">Letzter Lauf</option>
             {runs.map((r) => (
               <option key={r.id} value={r.id}>
-                {runTimeText(r.queuedAt)} · {runStatusText(r)}
+                {runOptionText(r)}
               </option>
             ))}
           </Select>
         </FormField>
-        <span>{busy ?? (run ? runStatusText(run) : 'Bereit')}</span>
+        <RunStatus run={run} busy={busy ?? undefined} />
         {!service.scope && !busy && !session.readOnly && (
           <Button
             busy={busyAction === 'activate'}
@@ -320,10 +320,18 @@ export function RWorkbench({
                 </p>
                 <details>
                   <summary>Technischer Sitzungsscope</summary>
-                  <p>
-                    Scope <code>{service.scope?.key ?? 'nicht aktiv'}</code> · R-Epoche{' '}
-                    {service.epoch}
-                  </p>
+                  <dl className="dw-meta-list">
+                    <div>
+                      <dt>Scope</dt>
+                      <dd>
+                        <code>{service.scope?.key ?? 'nicht aktiv'}</code>
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>R-Epoche</dt>
+                      <dd>{service.epoch}</dd>
+                    </div>
+                  </dl>
                 </details>
                 <ActionGroup>
                   {service.objectList.map((o) => (
@@ -346,15 +354,22 @@ export function RWorkbench({
                         );
                       }}
                     >
-                      {o.ref.name} ·{' '}
-                      {o.isDataFrame ? `${o.rowCount} × ${o.columnCount}` : o.classes.join(', ')}
+                      <span className="r-object-label">
+                        <span>{o.ref.name}</span>
+                        <span className="secondary-text">
+                          {o.isDataFrame
+                            ? `${o.rowCount ?? 'Unbekannte Anzahl'} ${o.rowCount === 1 ? 'Zeile' : 'Zeilen'}, ${o.columnCount ?? 'unbekannte Anzahl'} ${o.columnCount === 1 ? 'Spalte' : 'Spalten'}`
+                            : `Klasse: ${o.classes.join(', ') || 'nicht angegeben'}`}
+                        </span>
+                      </span>
                     </Button>
                   ))}
                 </ActionGroup>
                 <h3>Eingaben</h3>
                 {analysis.inputs.map((i) => (
                   <p key={i.name}>
-                    <code>{i.name}</code> · {i.source.kind}
+                    <code>{i.name}</code> aus{' '}
+                    {i.source.kind === 'dataset' ? 'Datensatz' : 'Ergebnis'}
                   </p>
                 ))}
                 {object && (

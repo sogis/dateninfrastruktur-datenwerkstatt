@@ -1,0 +1,47 @@
+
+Running 1 test using 1 worker
+
+(node:47919) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › tests/deployment/diagnostics.spec.ts:3:1 › Diagnostics static route: direct load and reload with strict asset fallback (10.6s)
+
+
+  1) [chromium] › tests/deployment/diagnostics.spec.ts:3:1 › Diagnostics static route: direct load and reload with strict asset fallback
+
+    Error: expect(page).toHaveURL(expected) failed
+
+    Expected: "http://127.0.0.1:4188/lab/projects/diagnostics"
+    Received: "http://127.0.0.1:4188/lab/projects/0ccb01cf-d945-49b7-820f-89c3f639c3fa/diagnostics"
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toHaveURL" with timeout 10000ms
+        24 × locator resolved to <html lang="de-CH">…</html>
+           - unexpected value "http://127.0.0.1:4188/lab/projects/0ccb01cf-d945-49b7-820f-89c3f639c3fa/diagnostics"
+
+
+      17 |   await link.click();
+      18 |   const url = `${projectUrl}/diagnostics`;
+    > 19 |   await expect(page).toHaveURL(url);
+         |                      ^
+      20 |   await expect(link).toHaveAttribute('aria-current', 'page');
+      21 |   await expect(page.getByRole('heading', {name: 'Diagnose', exact: true})).toBeVisible();
+      22 |   await page.reload();
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/deployment/diagnostics.spec.ts:19:22
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/diagnostics-static-final/diagnostics-Diagnostics-st-4e5e4--with-strict-asset-fallback-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/diagnostics-static-final/diagnostics-Diagnostics-st-4e5e4--with-strict-asset-fallback-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/diagnostics-static-final/diagnostics-Diagnostics-st-4e5e4--with-strict-asset-fallback-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/diagnostics-static-final/diagnostics-Diagnostics-st-4e5e4--with-strict-asset-fallback-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/deployment/diagnostics.spec.ts:3:1 › Diagnostics static route: direct load and reload with strict asset fallback

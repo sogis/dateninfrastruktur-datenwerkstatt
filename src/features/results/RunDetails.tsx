@@ -16,14 +16,44 @@ const uncheckedAvailability: DatasetAvailabilityContext = {
 
 export function runStatusText(run: ExecutionRun) {
   return {
-    queued: 'Wartet',
-    running: 'Läuft',
-    cancelling: 'Wird beendet',
-    succeeded: 'Erfolgreich',
-    failed: 'Fehlgeschlagen',
-    cancelled: 'Abgebrochen',
-    interrupted: 'Unterbrochen',
+    queued: 'Ausführung wartet',
+    running: 'Ausführung läuft',
+    cancelling: 'Ausführung wird beendet',
+    succeeded: 'Ausführung erfolgreich',
+    failed: 'Ausführung fehlgeschlagen',
+    cancelled: 'Ausführung abgebrochen',
+    interrupted: 'Ausführung unterbrochen',
   }[run.status];
+}
+
+export function RunStatus({
+  run,
+  busy,
+}: {
+  run?: ExecutionRun | undefined;
+  busy?: string | undefined;
+}) {
+  return (
+    <div className="run-summary" role="status" aria-live="polite">
+      <span className="run-summary-message">{busy ?? (run ? runStatusText(run) : 'Bereit')}</span>
+      {run && (
+        <dl className="dw-meta-list">
+          <div>
+            <dt>Revision</dt>
+            <dd>{run.snapshot.analysisRevision ?? 'nicht angegeben'}</dd>
+          </div>
+          <div>
+            <dt>Laufzeit</dt>
+            <dd>{run.durationMs === undefined ? 'noch nicht erfasst' : `${run.durationMs} ms`}</dd>
+          </div>
+        </dl>
+      )}
+    </div>
+  );
+}
+
+export function runOptionText(run: ExecutionRun) {
+  return `${runStatusText(run)} vom ${runTimeText(run.queuedAt)} (Revision ${run.snapshot.analysisRevision ?? 'nicht angegeben'})`;
 }
 
 /** Preserve the recorded instant, including fractional seconds, and state its time zone. */
@@ -46,8 +76,8 @@ function parameterText(value: ParameterValue) {
 
 function resultExtent(result: Result) {
   return result.kind === 'plot'
-    ? `PNG-Grafik · ${result.width} × ${result.height} Pixel`
-    : `Tabelle · ${result.rowCount} Zeilen · ${result.schema.columns.length} Spalten · ${result.coverage.kind === 'complete' ? 'vollständig' : 'begrenzt; ursprüngliche Gesamtzahl unbekannt'}`;
+    ? `PNG-Grafik mit ${result.width} × ${result.height} Pixeln.`
+    : `Tabelle mit ${result.rowCount} Zeilen und ${result.schema.columns.length} Spalten. ${result.coverage.kind === 'complete' ? 'Das Ergebnis ist vollständig.' : 'Das Ergebnis ist begrenzt; die ursprüngliche Gesamtzahl ist unbekannt.'}`;
 }
 
 function resultAvailability(
@@ -59,20 +89,21 @@ function resultAvailability(
   if (materialization.kind === 'session') return 'Nur in dieser Sitzung verfügbar';
   if (materialization.kind === 'artifact') {
     const artifactId = materialization.artifactId;
-    if (!workspaceDocument.artifacts[artifactId]) return 'Nicht verfügbar · Dateieintrag fehlt';
+    if (!workspaceDocument.artifacts[artifactId])
+      return 'Nicht verfügbar, da der Dateieintrag fehlt.';
     if (context.integrity?.corrupt.includes(artifactId))
-      return 'Nicht verfügbar · Datei beschädigt';
+      return 'Nicht verfügbar, da die Datei beschädigt ist.';
     if (
       context.missingArtifacts?.includes(artifactId) ||
       context.integrity?.missing.includes(artifactId)
     )
-      return 'Nicht verfügbar · Datei fehlt';
+      return 'Nicht verfügbar, da die Datei fehlt.';
     if (context.mode === 'temporary') return 'Nur diese Sitzung';
     if (context.hashesChecked && context.integrity?.referenced.includes(artifactId))
-      return 'Lokal vorhanden · Hash in dieser Sitzung geprüft';
+      return 'Die Datei ist lokal vorhanden. Ihr Hash wurde in dieser Sitzung geprüft.';
     if (context.missingArtifacts || context.integrity?.referenced.includes(artifactId))
-      return 'Lokal vorhanden · Hash in dieser Sitzung noch nicht geprüft';
-    return 'Lokale Datei · Verfügbarkeit noch ungeprüft';
+      return 'Die Datei ist lokal vorhanden. Ihr Hash wurde in dieser Sitzung noch nicht geprüft.';
+    return 'Die Verfügbarkeit der lokalen Datei wurde noch nicht geprüft.';
   }
   return `Nicht verfügbar: ${
     {
@@ -100,12 +131,21 @@ function ResultDescription({
     : undefined;
   return (
     <>
-      <strong>{result.name}</strong> · {resultExtent(result)}
-      <p>
-        Erstellt: <time dateTime={result.createdAt}>{runTimeText(result.createdAt)}</time> ·{' '}
-        {result.retention === 'kept' ? 'Aufbewahrt' : 'Temporär'} ·{' '}
-        {resultAvailability(result, workspaceDocument, availability)}
-      </p>
+      <strong>{result.name}</strong>
+      <p>{resultExtent(result)}</p>
+      <dl className="dw-meta-list">
+        <div>
+          <dt>Erstellt</dt>
+          <dd>
+            <time dateTime={result.createdAt}>{runTimeText(result.createdAt)}</time>
+          </dd>
+        </div>
+        <div>
+          <dt>Aufbewahrung</dt>
+          <dd>{result.retention === 'kept' ? 'Aufbewahrt' : 'Temporär'}</dd>
+        </div>
+      </dl>
+      <p>{resultAvailability(result, workspaceDocument, availability)}</p>
       {sourceRun && (
         <p>
           {sourceRun.trigger === 'r-object-capture' ? 'Direkte R-Objektübernahme' : 'Lauf'} vom{' '}
@@ -115,7 +155,7 @@ function ResultDescription({
           {analysis && (
             <>
               {' '}
-              · Analyse „{analysis.name}“{analysis.archivedAt ? ' (archiviert)' : ''}
+              zur Analyse „{analysis.name}“{analysis.archivedAt ? ' (archiviert)' : ''}
             </>
           )}
         </p>
@@ -137,7 +177,9 @@ function InputDescription({
     const result = workspaceDocument.results[input.resultId];
     return (
       <>
-        <code>{input.bindingName}</code> · Explizit gebundenes Ergebnis
+        <p>
+          Explizit gebundenes Ergebnis als <code>{input.bindingName}</code>.
+        </p>
         <div>
           {result ? (
             <ResultDescription
@@ -159,15 +201,17 @@ function InputDescription({
     : 'Datenstand nicht verfügbar';
   return (
     <>
-      <code>{input.bindingName}</code> ·{' '}
-      {input.usage === 'bound' ? 'Explizit gebunden' : 'Möglicherweise verwendet'}
+      <p>
+        {input.usage === 'bound' ? 'Explizit gebunden' : 'Möglicherweise verwendet'} als{' '}
+        <code>{input.bindingName}</code>.
+      </p>
       <p>
         <strong>{dataset?.name ?? 'Datensatz nicht verfügbar'}</strong>
         {dataset?.removedAt ? ' (entfernt)' : ''}
         {dataset && (
           <>
             {' '}
-            · SQL-Name: <code>{dataset.sqlName}</code>
+            (SQL-Name: <code>{dataset.sqlName}</code>)
           </>
         )}
       </p>
@@ -179,15 +223,17 @@ function InputDescription({
             {dataset &&
               (dataset.currentVersionId === version.id
                 ? ' (aktueller Datenstand)'
-                : ' (älterer Datenstand)')}{' '}
-            ·{' '}
-            {version.rowCount === undefined ? 'Zeilenzahl unbekannt' : `${version.rowCount} Zeilen`}
+                : ' (älterer Datenstand)')}
+            .{' '}
+            {version.rowCount === undefined
+              ? 'Die Zeilenzahl ist unbekannt.'
+              : `Er umfasst ${version.rowCount} Zeilen.`}
           </>
         ) : (
           'Metadaten des eingefrorenen Datenstands fehlen'
-        )}{' '}
-        · {inputAvailability}
+        )}
       </p>
+      <p>{inputAvailability}</p>
     </>
   );
 }
@@ -219,17 +265,21 @@ export function RunDetails({
             {analysis ? (
               <>
                 {analysis.name}
-                {analysis.archivedAt ? ' (archiviert)' : ''} · Revision{' '}
-                {run.snapshot.analysisRevision ?? 'unbekannt'}
-                {run.snapshot.analysisRevision !== undefined &&
-                  analysis.revision !== run.snapshot.analysisRevision &&
-                  ` (aktuelle Analyse: Revision ${analysis.revision})`}
+                {analysis.archivedAt ? ' (archiviert)' : ''}
               </>
             ) : run.trigger === 'r-object-capture' ? (
               'Direkte R-Objektübernahme ohne gespeicherte Analyse'
             ) : (
               'Analyse nicht mehr verfügbar'
             )}
+          </dd>
+          <dt>Analyserevision beim Start</dt>
+          <dd>
+            {run.snapshot.analysisRevision ?? 'Nicht angegeben'}
+            {analysis &&
+              run.snapshot.analysisRevision !== undefined &&
+              analysis.revision !== run.snapshot.analysisRevision &&
+              ` (aktuelle Analyse: Revision ${analysis.revision})`}
           </dd>
           <dt>Status</dt>
           <dd>{runStatusText(run)}</dd>
@@ -384,9 +434,12 @@ export function RunDetails({
             <ul>
               {visualizations.map((visualization) => (
                 <li key={visualization.id}>
-                  {visualization.name} · Tabellenergebnis:{' '}
-                  {workspaceDocument.results[visualization.tableResultId]?.name ??
-                    'nicht verfügbar'}
+                  <strong>{visualization.name}</strong>
+                  <p>
+                    Tabellenergebnis:{' '}
+                    {workspaceDocument.results[visualization.tableResultId]?.name ??
+                      'nicht verfügbar'}
+                  </p>
                 </li>
               ))}
             </ul>

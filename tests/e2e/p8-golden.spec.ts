@@ -176,14 +176,18 @@ test('P8 AT-072: portal population + local CSV, unchanged Golden SQL/R, process 
     );
     await page.getByRole('button', {name: 'In R', exact: true}).click();
     await page.getByRole('button', {name: 'Transfer prüfen', exact: true}).click();
-    await expect(page.getByText(/4 Zeilen .*Bytes Transferpayload/)).toBeVisible({timeout: 60000});
+    await expect(
+      page
+        .locator('.dw-dialog .dw-meta-list')
+        .filter({hasText: /Zeilen\s*4\s*Geschätzte Datengrösse\s*[\d’'\s]+ Bytes/}),
+    ).toBeVisible({timeout: 60000});
     for (const checkbox of await page.getByRole('dialog').getByRole('checkbox').all())
       await checkbox.check();
     await page.getByRole('button', {name: 'In R übernehmen', exact: true}).click();
     await expect(page.locator('.r-workbench')).toBeVisible();
     await editor(page, files['02-vergleich.R']!, 'Golden R');
     await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
-    await page.getByRole('button', {name: /vergleich · 4 × 7/}).click();
+    await page.getByRole('button', {name: /vergleich 4 Zeilen, 7 Spalten/}).click();
     await expect(page.locator('.r-output tbody tr')).toHaveCount(4);
     expect(await tableRows(page, '.r-output tbody tr', [2, 3, 4, 5])).toEqual(
       expectedRows(files['golden/r-vergleich.json']!),

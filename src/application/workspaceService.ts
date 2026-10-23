@@ -9,7 +9,7 @@ import type {Analysis, AnalysisId, WorkspaceId, WorkspaceDocument, Id} from '../
 import {checkedId, emptyWorkspace, nameSchema, parseWorkspace} from '../domain/workspace';
 import type {WorkspaceRepository, WorkspaceLock, WorkspaceLease} from './ports';
 import {PersistenceCoordinator} from './persistenceCoordinator';
-import {AppFailure} from './errors';
+import {AppFailure, failureMessage} from './errors';
 import {DatasetService} from './datasetService';
 import type {ManagedArtifactStore} from './storagePorts';
 import type {FileImportEngine} from './importPorts';
@@ -97,14 +97,20 @@ export class WorkspaceEditingSession {
   async inspectIntegrity(signal: AbortSignal, hashes = false) {
     if (!this.deps.artifacts) return;
     return this.scheduler.run('Dateien prüfen', signal, async (joined) => {
-      const report = await new RecoveryService(this.deps.artifacts!).inspect(
-        this.document,
-        joined,
-        hashes,
-      );
-      this.integrity = report;
-      this.hashesChecked = hashes;
-      return report;
+      try {
+        const report = await new RecoveryService(this.deps.artifacts!).inspect(
+          this.document,
+          joined,
+          hashes,
+        );
+        this.integrity = report;
+        this.hashesChecked = hashes;
+        this.integrityError = undefined;
+        return report;
+      } catch (error) {
+        this.integrityError = failureMessage(error);
+        throw error;
+      }
     });
   }
   async exportArchive(

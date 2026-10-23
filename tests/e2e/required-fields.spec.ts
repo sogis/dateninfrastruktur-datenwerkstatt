@@ -299,8 +299,8 @@ test('Required fields: SQL dataset and R transfer validate before keeping result
   await expect(page.locator('.r-workbench')).toBeVisible();
   await expect(page.locator('.run-status')).toContainText('Bereit', {timeout: 60000});
   await runCode(page, 'vergleich <- data.frame(wert=1L)');
-  await expect(page.getByRole('button', {name: /vergleich · 1 × 1/})).toBeVisible();
-  await page.getByRole('button', {name: /vergleich · 1 × 1/}).click();
+  await expect(page.getByRole('button', {name: /vergleich 1 Zeile, 1 Spalte/})).toBeVisible();
+  await page.getByRole('button', {name: /vergleich 1 Zeile, 1 Spalte/}).click();
   await page.getByRole('button', {name: 'Objekt als Datensatz', exact: true}).click();
   await expect(dialog.getByLabel('Datensatzname', {exact: true})).toBeVisible();
   const captureBefore = await snapshot(page, true);
@@ -314,7 +314,7 @@ test('Required fields: SQL dataset and R transfer validate before keeping result
   expect(Object.values((await snapshot(page)).document.datasets).map((d) => d.sqlName)).toEqual([
     'vergleich',
   ]);
-  await page.getByRole('button', {name: /vergleich · 1 × 1/}).click();
+  await page.getByRole('button', {name: /vergleich 1 Zeile, 1 Spalte/}).click();
   await page.getByRole('button', {name: 'Objekt als Datensatz', exact: true}).click();
   const replacement = Object.values((await snapshot(page)).document.datasets)[0]!;
   const technicalName = dialog.getByLabel('SQL-Name', {exact: true});
@@ -414,7 +414,7 @@ test('Required fields: read-only project metadata keeps its semantics and cannot
   await createProject(page);
   const other = await context.newPage();
   await other.goto(page.url());
-  await expect(other.getByText(/Nur lesend/)).toBeVisible();
+  await expect(other.getByText(/Das Projekt ist schreibgeschützt/)).toBeVisible();
   const name = other.getByLabel('Projektname', {exact: true});
   await expect(name).toHaveAttribute('required');
   await expect(name).toBeDisabled();

@@ -1,0 +1,64 @@
+[WebServer] (node:28962) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 11 tests using 1 worker
+
+(node:28963) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   1 [chromium] › tests/e2e/archive.spec.ts:141:1 › P6 AT-059: recipe inspection/confirmation without engine or empty fake tables (11.4s)
+(node:31374) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 [chromium] › tests/e2e/design-system.spec.ts:336:1 › UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmount (1.1s)
+  ✓   3 [chromium] › tests/e2e/imports.spec.ts:61:1 › P2 / AT-016: denied OPFS requires explicit temporary mode and never claims local persistence (1.8s)
+  ✓   4 [chromium] › tests/e2e/multitab.spec.ts:2:1 › P6 AT-065: absent Web Locks permits existing project only as reader, archive export remains possible (1.3s)
+  ✓   5 [chromium] › tests/e2e/p7-ui.spec.ts:158:1 › P7 AT-055–057: native focus trap/return, settings, storage cleanup and data-free diagnostics (3.0s)
+  ✓   6 [chromium] › tests/e2e/portal.spec.ts:3:1 › P4 AT-038 AT-056: explicit deep-link preview, replacement history and no autorun (5.3s)
+  ✓   7 [chromium] › tests/e2e/projects.spec.ts:210:1 › Projects: CSV replacement keeps both immutable versions with current/newest labels and readable origin/schema (3.3s)
+  ✓   8 [chromium] › tests/e2e/projects.spec.ts:354:1 › Projects: two SQL run snapshots stay readable and kept results survive edits, paging and reload without rerunning (6.4s)
+  ✓   9 [chromium] › tests/e2e/ui-texts.spec.ts:32:1 › UI texts: inventory and hash checks stay distinct; archive and storage use labelled values at narrow widths (966ms)
+  ✓  10 [chromium] › tests/e2e/ui-texts.spec.ts:90:1 › UI texts: real SQL status hierarchy, empty results and original text survive enlarged text and narrow work areas (3.4s)
+  ✓  11 [chromium] › tests/e2e/ui-texts.spec.ts:143:1 › UI texts: partial checks and cleanup errors retain counts and original diagnostic text (916ms)
+
+
+  1) [chromium] › tests/e2e/archive.spec.ts:141:1 › P6 AT-059: recipe inspection/confirmation without engine or empty fake tables
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.dataset-list').getByText(/Nicht verfügbar, da/)
+    Expected: 3
+    Received: 6
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.dataset-list').getByText(/Nicht verfügbar, da/) with timeout 10000ms
+      - waiting for locator('.dataset-list').getByText(/Nicht verfügbar, da/)
+        24 × locator resolved to 6 elements
+           - unexpected value "6"
+
+
+      149 |   await page.getByRole('button', {name: 'Als neues Projekt importieren'}).click();
+      150 |   await page.getByRole('link', {name: 'Daten', exact: true}).click();
+    > 151 |   await expect(page.locator('.dataset-list').getByText(/Nicht verfügbar, da/)).toHaveCount(3);
+          |                                                                                ^
+      152 |   expect(workers).toEqual([]);
+      153 |   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
+      154 |   await page.getByRole('button', {name: 'Projekt exportieren', exact: true}).click();
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/archive.spec.ts:151:80
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/ui-texts-v1.4-views/e2e-archive-P6-AT-059-reci-e4de8-engine-or-empty-fake-tables-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/ui-texts-v1.4-views/e2e-archive-P6-AT-059-reci-e4de8-engine-or-empty-fake-tables-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/ui-texts-v1.4-views/e2e-archive-P6-AT-059-reci-e4de8-engine-or-empty-fake-tables-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/ui-texts-v1.4-views/e2e-archive-P6-AT-059-reci-e4de8-engine-or-empty-fake-tables-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/archive.spec.ts:141:1 › P6 AT-059: recipe inspection/confirmation without engine or empty fake tables
+  10 passed (39.7s)

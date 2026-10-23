@@ -77,6 +77,7 @@ test('Navigation: settings follow R and leaving the workspace saves edits and it
     'SQL',
     'R',
     'Einstellungen',
+    'Diagnose',
   ]);
   await nav.getByRole('button', {name: 'Navigation ausklappen'}).click();
   await page.getByLabel('Beschreibung', {exact: true}).fill('Beim Wechsel zuverlässig gespeichert');
@@ -192,12 +193,12 @@ async function noticeGeometry(page: Page, info: TestInfo, name: string) {
   await close.hover();
   try {
     for (const [state, background] of [
-      ['hover', 'rgb(243, 245, 247)'],
-      ['active', 'rgb(231, 235, 239)'],
+      ['hover', 'rgb(254, 228, 226)'],
+      ['active', 'rgb(254, 228, 226)'],
     ] as const) {
       if (state === 'active') await page.mouse.down();
-      await expect(close).toHaveCSS('color', geometry.color);
-      await expect(close.locator('svg')).toHaveCSS('fill', geometry.color);
+      await expect(close).toHaveCSS('color', 'rgb(180, 35, 24)');
+      await expect(close.locator('svg')).toHaveCSS('fill', 'rgb(180, 35, 24)');
       await expect(close).toHaveCSS('background-color', background);
       await page.screenshot({path: info.outputPath(`${name}-${state}.png`)});
     }
@@ -210,7 +211,7 @@ async function noticeGeometry(page: Page, info: TestInfo, name: string) {
   return geometry;
 }
 
-test('Notices: regular error text, neutral SVG and neutral interaction states with keyboard dismissal', async ({
+test('Notices: regular error text, neutral SVG and red interaction states with keyboard dismissal', async ({
   page,
   browserName,
 }, info) => {

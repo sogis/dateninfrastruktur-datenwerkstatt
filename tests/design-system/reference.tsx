@@ -319,13 +319,13 @@ function Reference() {
               <NavigationItem
                 icon="database"
                 label="SQL"
-                tooltip="SQL · DuckDB"
+                tooltip="SQL mit DuckDB"
                 expanded={false}
                 current
               >
                 <Button />
               </NavigationItem>
-              <NavigationItem icon="bar-chart-line" label="R" tooltip="R · webR" expanded={false}>
+              <NavigationItem icon="bar-chart-line" label="R" tooltip="R mit webR" expanded={false}>
                 <Button />
               </NavigationItem>
             </nav>

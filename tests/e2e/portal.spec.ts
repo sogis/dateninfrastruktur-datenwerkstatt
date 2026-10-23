@@ -29,7 +29,10 @@ test('P4 AT-038 AT-056: explicit deep-link preview, replacement history and no a
   await expect(
     page
       .locator('.dataset-list > li > div > span')
-      .filter({hasText: 'Lokal vorhanden · Hash in dieser Sitzung noch nicht geprüft'}),
+      .filter({
+        hasText:
+          'Die Datei ist lokal vorhanden. Ihr Hash wurde in dieser Sitzung noch nicht geprüft.',
+      }),
   ).toBeVisible();
   await request.post('http://127.0.0.1:4174/__change');
   await page.reload();

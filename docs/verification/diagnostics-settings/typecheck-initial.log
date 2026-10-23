@@ -1,0 +1,6 @@
+
+> datenwerkstatt@0.1.0 typecheck
+> tsc --noEmit
+
+tests/e2e/diagnostics-settings.spec.ts(261,44): error TS2339: Property 'remove' does not exist on type 'Node'.
+tests/unit/workspace.test.ts(303,23): error TS2554: Expected 1 arguments, but got 0.

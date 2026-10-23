@@ -35,9 +35,17 @@ export function PlanView({
 }) {
   return (
     <>
+      <dl className="dw-meta-list">
+        <div>
+          <dt>Zeilen</dt>
+          <dd>{plan.rowCount}</dd>
+        </div>
+        <div>
+          <dt>Geschätzte Datengrösse</dt>
+          <dd>{plan.estimatedBytes.toLocaleString('de-CH')} Bytes</dd>
+        </div>
+      </dl>
       <p>
-        {plan.rowCount} Zeilen · {plan.estimatedBytes.toLocaleString('de-CH')} Bytes
-        {purpose === 'export' ? ' Tabellendaten.' : ' Transferpayload.'}{' '}
         {purpose === 'export'
           ? 'Es werden alle Tabellenzeilen exportiert.'
           : 'Es werden alle Resultatzeilen übernommen.'}
@@ -93,6 +101,8 @@ export function TransferToR({
   const [busyAction, setBusyAction] = useState<'plan' | 'commit'>();
   const pending = useRef(false);
   const [error, setError] = useState('');
+  const planButtonRef = useRef<HTMLButtonElement>(null);
+  const errorFocusRef = useRef<HTMLButtonElement>(null);
   const form = useFormValidation({
     analysis: () => requiredValueError(analysisId),
     variable: () => bindingNameError(variable),
@@ -123,10 +133,13 @@ export function TransferToR({
       footer={
         <>
           <Button
+            ref={planButtonRef}
             disabled={busy}
             busy={busyAction === 'plan'}
             busyLabel="Transfer wird geprüft …"
-            onClick={() => {
+            onClick={(event) => {
+              errorFocusRef.current = event.currentTarget;
+              setError('');
               if (!form.validate(['analysis', 'variable'])) return;
               void act('plan', async () => {
                 const id =
@@ -149,7 +162,9 @@ export function TransferToR({
               disabled={busy}
               busy={busyAction === 'commit'}
               busyLabel="Resultat wird übernommen …"
-              onClick={() => {
+              onClick={(event) => {
+                errorFocusRef.current = event.currentTarget;
+                setError('');
                 if (!form.validate()) return;
                 void act('commit', async () => {
                   await session.getR().commitToR(plan.id, approved, new AbortController().signal);
@@ -209,7 +224,19 @@ export function TransferToR({
           </p>
         </>
       )}
-      {error && <Notice tone="danger">{error}</Notice>}
+      {error && (
+        <Notice
+          tone="danger"
+          onDismiss={() => {
+            if (!errorFocusRef.current?.isConnected || errorFocusRef.current.matches(':disabled'))
+              errorFocusRef.current = planButtonRef.current;
+            setError('');
+          }}
+          dismissFocusRef={errorFocusRef}
+        >
+          {error}
+        </Notice>
+      )}
       {busy && <Notice tone="info">Transfer wird verarbeitet …</Notice>}
     </Modal>
   );

@@ -1,0 +1,59 @@
+{
+  "index.html": {
+    "file": "assets/index-B5pVYdi1.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "dynamicImports": [
+      "src/ui/CodeEditorImpl.tsx"
+    ],
+    "css": [
+      "assets/index-BYsxeONW.css"
+    ],
+    "assets": [
+      "assets/SourceSans3VF-Upright.ttf-BsWL4Kly.woff2",
+      "assets/SourceSans3VF-Italic.ttf-Bt9VkdQ3.woff2",
+      "assets/JetBrainsMono-Regular-BQaDgvhP.woff2"
+    ]
+  },
+  "node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon/codicon.ttf": {
+    "file": "assets/codicon-ngg6Pgfi.ttf",
+    "src": "node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon/codicon.ttf"
+  },
+  "node_modules/monaco-editor/esm/vs/basic-languages/sql/sql.js": {
+    "file": "assets/sql-NEE52Syq.js",
+    "name": "sql",
+    "src": "node_modules/monaco-editor/esm/vs/basic-languages/sql/sql.js",
+    "isDynamicEntry": true
+  },
+  "src/assets/fonts/JetBrainsMono-Regular.woff2": {
+    "file": "assets/JetBrainsMono-Regular-BQaDgvhP.woff2",
+    "src": "src/assets/fonts/JetBrainsMono-Regular.woff2"
+  },
+  "src/assets/fonts/source-sans-3/SourceSans3VF-Italic.ttf.woff2": {
+    "file": "assets/SourceSans3VF-Italic.ttf-Bt9VkdQ3.woff2",
+    "src": "src/assets/fonts/source-sans-3/SourceSans3VF-Italic.ttf.woff2"
+  },
+  "src/assets/fonts/source-sans-3/SourceSans3VF-Upright.ttf.woff2": {
+    "file": "assets/SourceSans3VF-Upright.ttf-BsWL4Kly.woff2",
+    "src": "src/assets/fonts/source-sans-3/SourceSans3VF-Upright.ttf.woff2"
+  },
+  "src/ui/CodeEditorImpl.tsx": {
+    "file": "assets/CodeEditorImpl-UWGN-suu.js",
+    "name": "CodeEditorImpl",
+    "src": "src/ui/CodeEditorImpl.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
+    ],
+    "dynamicImports": [
+      "node_modules/monaco-editor/esm/vs/basic-languages/sql/sql.js"
+    ],
+    "css": [
+      "assets/CodeEditorImpl-B3IiO00J.css"
+    ],
+    "assets": [
+      "assets/codicon-ngg6Pgfi.ttf"
+    ]
+  }
+}

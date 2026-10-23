@@ -26,7 +26,11 @@ test('P3 / AT-022 AT-027 AT-032 AT-049 AT-055 AT-058: SQL, paging, keep, exports
   await workspace(page);
   await editor(page, 'SELECT i, random() AS r FROM range(350) t(i)');
   await page.getByRole('textbox', {name: 'Analysecode'}).press('ControlOrMeta+Enter');
-  await expect(page.getByText('350 Zeilen · vollständig · temporär', {exact: true})).toBeVisible();
+  await expect(
+    page
+      .locator('.result-toolbar .dw-meta-list')
+      .filter({hasText: /Zeilen\s*350\s*Umfang\s*Vollständig\s*Aufbewahrung\s*Temporär/}),
+  ).toBeVisible();
   await expect(page.locator('.result-grid tbody tr')).toHaveCount(100);
   const first = await page.locator('.result-grid tbody tr').first().innerText();
   await page.getByRole('button', {name: 'Nächste Seite'}).click();
@@ -39,7 +43,9 @@ test('P3 / AT-022 AT-027 AT-032 AT-049 AT-055 AT-058: SQL, paging, keep, exports
   });
   await page.getByRole('button', {name: 'Aufbewahren', exact: true}).click();
   await expect(
-    page.getByText('350 Zeilen · vollständig · aufbewahrt', {exact: true}),
+    page
+      .locator('.result-toolbar .dw-meta-list')
+      .filter({hasText: /Zeilen\s*350\s*Umfang\s*Vollständig\s*Aufbewahrung\s*Aufbewahrt/}),
   ).toBeVisible();
   const pending = page.waitForEvent('download');
   await page.getByRole('button', {name: 'CSV exportieren'}).click();
@@ -66,7 +72,9 @@ test('P3 / AT-022 AT-027 AT-032 AT-049 AT-055 AT-058: SQL, paging, keep, exports
   await info.attach('sql-workspace', {body: await page.screenshot(), contentType: 'image/png'});
   await page.reload();
   await expect(
-    page.getByText('350 Zeilen · vollständig · aufbewahrt', {exact: true}),
+    page
+      .locator('.result-toolbar .dw-meta-list')
+      .filter({hasText: /Zeilen\s*350\s*Umfang\s*Vollständig\s*Aufbewahrung\s*Aufbewahrt/}),
   ).toBeVisible();
   await expect(page.locator('.result-grid tbody tr').first()).toHaveText(first, {
     useInnerText: true,
@@ -93,9 +101,13 @@ test('P3 / AT-025 AT-030: parameters, explicit cancel and failed runs never show
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.getByRole('button', {name: 'Abbrechen', exact: true})).toBeVisible();
   // Wait for the actual running state before cancellation, not initialization.
-  await expect(page.locator('.result-toolbar').getByText(/Läuft · Revision/)).toBeVisible();
+  await expect(
+    page.locator('.result-toolbar').getByText('Ausführung läuft', {exact: true}),
+  ).toBeVisible();
   await page.getByRole('button', {name: 'Abbrechen', exact: true}).click();
-  await expect(page.locator('.result-toolbar').getByText(/Abgebrochen · Revision/)).toBeVisible({
+  await expect(
+    page.locator('.result-toolbar').getByText('Ausführung abgebrochen', {exact: true}),
+  ).toBeVisible({
     timeout: 10000,
   });
   await expect(page.locator('.result-grid')).toHaveCount(0);
@@ -117,7 +129,11 @@ test('P3 / AT-049: rendered bars and line gaps preserve NULL, PNG contains actua
     'SELECT i AS x, CASE WHEN i = 1 THEN NULL ELSE i+1 END AS y FROM range(3) t(i) ORDER BY i DESC',
   );
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
-  await expect(page.getByText('3 Zeilen · vollständig · temporär', {exact: true})).toBeVisible();
+  await expect(
+    page
+      .locator('.result-toolbar .dw-meta-list')
+      .filter({hasText: /Zeilen\s*3\s*Umfang\s*Vollständig\s*Aufbewahrung\s*Temporär/}),
+  ).toBeVisible();
   await page.evaluate(() => {
     const original = CanvasRenderingContext2D.prototype.fillRect;
     const line = CanvasRenderingContext2D.prototype.lineTo;

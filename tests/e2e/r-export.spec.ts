@@ -15,7 +15,7 @@ test('R direct export UI: full downloads from preview, stable CSV default and un
   await page.keyboard.insertText('x <- data.frame(id=seq_len(350L), text=rep("001",350L))');
   await editor.press('ControlOrMeta+s');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
-  await page.getByRole('button', {name: 'x · 350 × 2', exact: true}).click();
+  await page.getByRole('button', {name: 'x 350 Zeilen, 2 Spalten', exact: true}).click();
   await expect(page.locator('.r-output tbody tr')).toHaveCount(200);
   const documentText = () =>
     page.evaluate(async () => {
@@ -49,7 +49,7 @@ test('R direct export UI: full downloads from preview, stable CSV default and un
   await page.keyboard.insertText('x <- data.frame(f=factor("b",levels=c("a","b","unused")))');
   await editor.press('ControlOrMeta+s');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
-  await page.getByRole('button', {name: 'x · 1 × 1', exact: true}).click();
+  await page.getByRole('button', {name: 'x 1 Zeile, 1 Spalte', exact: true}).click();
   const factorBefore = await documentText();
   await page.getByRole('button', {name: 'Weitere Exportformate', exact: true}).click();
   await page.getByRole('menuitem', {name: 'Parquet exportieren', exact: true}).click();

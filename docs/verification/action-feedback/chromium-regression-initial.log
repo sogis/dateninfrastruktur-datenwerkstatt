@@ -1,0 +1,88 @@
+[WebServer] (node:63331) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+
+Running 40 tests using 1 worker
+
+(node:63332) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/40] [chromium] › tests/e2e/action-feedback.spec.ts:23:1 › Action feedback: complete archive uses plain three-second confirmation and repeated exports restart it
+[2/40] [chromium] › tests/e2e/action-feedback.spec.ts:52:1 › Action feedback: recipe omissions persist, can be dismissed by pointer and keyboard and recur on export
+[3/40] [chromium] › tests/e2e/action-feedback.spec.ts:98:1 › Action feedback: an export rejection after leaving the project does not leak into the next view
+[4/40] [chromium] › tests/e2e/action-feedback.spec.ts:130:1 › Action feedback: multiline import errors retain details, retry state, target size and layout
+  1) [chromium] › tests/e2e/action-feedback.spec.ts:130:1 › Action feedback: multiline import errors retain details, retry state, target size and layout 
+
+    Error: expect(received).toBeLessThan(expected)
+
+    Expected: < 2
+    Received:   104
+
+      164 |     expect(target.width).toBeGreaterThanOrEqual(40);
+      165 |     expect(target.height).toBeGreaterThanOrEqual(40);
+    > 166 |     expect(Math.abs(target.y + target.height / 2 - panel.y - panel.height / 2)).toBeLessThan(2);
+          |                                                                                 ^
+      167 |     expect(target.x).toBeGreaterThanOrEqual(panel.x);
+      168 |     expect(target.x + target.width).toBeLessThanOrEqual(panel.x + panel.width);
+      169 |     expect(await dialog.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/action-feedback.spec.ts:166:81
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-feedback-e2e/e2e-action-feedback-Action-75846-tate-target-size-and-layout-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../tmp/datenwerkstatt-feedback-e2e/e2e-action-feedback-Action-75846-tate-target-size-and-layout-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-feedback-e2e/e2e-action-feedback-Action-75846-tate-target-size-and-layout-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../tmp/datenwerkstatt-feedback-e2e/e2e-action-feedback-Action-75846-tate-target-size-and-layout-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:63354) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[5/40] [chromium] › tests/e2e/action-feedback.spec.ts:192:1 › Action feedback: dismissing a parameter-apply error preserves edited values and retry reports it again
+[6/40] [chromium] › tests/e2e/action-feedback.spec.ts:236:1 › Action feedback: transfer errors dismiss without creating a plan and retry retains the original error
+[7/40] [chromium] › tests/e2e/action-feedback.spec.ts:272:1 › Action feedback: portal load errors dismiss and retry without changing the selected provider or input
+[8/40] [chromium] › tests/e2e/action-feedback.spec.ts:309:1 › Action feedback: storage cleanup success expires and partial failures preserve summary and original details
+[9/40] [chromium] › tests/e2e/action-feedback.spec.ts:359:1 › Action feedback: date-check completion expires while real orphan-file findings remain visible
+[10/40] [chromium] › tests/e2e/archive.spec.ts:6:1 › P6 AT-051 AT-053 AT-063: Golden archive in fresh profile, graph remap, real SQL/PNG, duplicate and independent deletion
+[11/40] [chromium] › tests/e2e/archive.spec.ts:141:1 › P6 AT-059: recipe inspection/confirmation without engine or empty fake tables
+[12/40] [chromium] › tests/e2e/design-system.spec.ts:43:1 › UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard
+[13/40] [chromium] › tests/e2e/design-system.spec.ts:336:1 › UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmount
+[14/40] [chromium] › tests/e2e/design-system.spec.ts:423:1 › UI tooltips: no misplaced frames, collapsed/expanded navigation, scroll and resize
+[15/40] [chromium] › tests/e2e/design-system.spec.ts:529:1 › UI tooltips: shared IconButton flips at viewport edge and follows measured size
+[16/40] [chromium] › tests/e2e/design-system.spec.ts:577:1 › UI geometry: 8 px wrapped actions, form labels, narrow/zoom equivalent and failed local font
+[17/40] [chromium] › tests/e2e/design-system.spec.ts:663:1 › UI screens: project actions, forms, navigation and settings at target viewports
+[18/40] [chromium] › tests/e2e/diagnostics-settings.spec.ts:34:1 › Settings feedback: silent entry, grouped options, three-second confirmation and real persistence
+[19/40] [chromium] › tests/e2e/diagnostics-settings.spec.ts:79:1 › Settings feedback: latest response wins, failure persists and navigation clears timers and pending feedback
+[20/40] [chromium] › tests/e2e/diagnostics-settings.spec.ts:147:1 › Project diagnostics: real SQL/R session, report compatibility, live operations, navigation and layout
+[21/40] [chromium] › tests/e2e/imports.spec.ts:22:1 › P2 / AT-008 AT-010 AT-018: confirmed import, reload, data preview, independent alias and complete Parquet download
+[22/40] [chromium] › tests/e2e/imports.spec.ts:61:1 › P2 / AT-016: denied OPFS requires explicit temporary mode and never claims local persistence
+[23/40] [chromium] › tests/e2e/imports.spec.ts:90:1 › P2 / AT-013: real import surfaces OPFS quota failure without publishing partial metadata
+[24/40] [chromium] › tests/e2e/imports.spec.ts:118:1 › P2 / AT-002 AT-024 partial: one import worker survives routes and closes before another workspace opens
+[25/40] [chromium] › tests/e2e/navigation.spec.ts:5:1 › Navigation: settings remain reachable on global pages, with session toggle and saved default
+[26/40] [chromium] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view
+[27/40] [chromium] › tests/e2e/navigation.spec.ts:214:1 › Notices: regular error text, neutral SVG and red interaction states with keyboard dismissal
+[28/40] [chromium] › tests/e2e/portal.spec.ts:3:1 › P4 AT-038 AT-056: explicit deep-link preview, replacement history and no autorun
+[29/40] [chromium] › tests/e2e/r.spec.ts:10:1 › P5 AT-040 AT-042 AT-046 AT-048: complete UI transfer, lazy worker survives routes, capture, reset and cancel
+[30/40] [chromium] › tests/e2e/sql.spec.ts:20:1 › P3 / AT-022 AT-027 AT-032 AT-049 AT-055 AT-058: SQL, paging, keep, exports, chart, resize and reload
+[31/40] [chromium] › tests/e2e/sql.spec.ts:87:1 › P3 / AT-025 AT-030: parameters, explicit cancel and failed runs never show a previous output
+[32/40] [chromium] › tests/e2e/sql.spec.ts:123:1 › P3 / AT-049: rendered bars and line gaps preserve NULL, PNG contains actual pixels
+[33/40] [chromium] › tests/e2e/ui-texts.spec.ts:32:1 › UI texts: inventory and hash checks stay distinct; archive and storage use labelled values at narrow widths
+[34/40] [chromium] › tests/e2e/ui-texts.spec.ts:91:1 › UI texts: real SQL status hierarchy, empty results and original text survive enlarged text and narrow work areas
+[35/40] [chromium] › tests/e2e/ui-texts.spec.ts:144:1 › UI texts: partial checks and cleanup errors retain counts and original diagnostic text
+[36/40] [chromium] › tests/integration/imports.spec.ts:7:1 › P2 / AT-008 AT-010: strict CSV → hashed OPFS → fresh DuckDB retains values, NULL and empty strings
+[37/40] [chromium] › tests/integration/imports.spec.ts:63:1 › P2 / AT-009 AT-020: late conversion error, header-only CSV and invalid bytes
+[38/40] [chromium] › tests/integration/imports.spec.ts:123:1 › P2 / AT-014 AT-017: reload finds true orphans, writer cleanup preserves referenced and foreign bytes
+[39/40] [chromium] › tests/integration/imports.spec.ts:197:1 › P2 / AT-010: imported file survives browser process restart and removal of input file
+[40/40] [chromium] › tests/integration/imports.spec.ts:268:1 › P2 / AT-061 partial: changed byte is rejected as ARTIFACT_CORRUPT before use
+  1 failed
+    [chromium] › tests/e2e/action-feedback.spec.ts:130:1 › Action feedback: multiline import errors retain details, retry state, target size and layout 
+  39 passed (2.5m)
