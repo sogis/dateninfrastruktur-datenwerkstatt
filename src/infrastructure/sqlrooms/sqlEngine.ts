@@ -274,7 +274,7 @@ export class SqlRoomsSqlEngine implements ResultSqlEngine {
       const file = `${fresh()}.${format}`;
       try {
         await c.query(
-          `COPY (SELECT ${internal ? '*' : columnsSql(table.schema)} FROM ${relation} ORDER BY ${sqlIdentifier(ordinal)}) TO ${literal(file)} (FORMAT ${format.toUpperCase()}${format === 'csv' ? ", HEADER true, NULL '\\N', FORCE_QUOTE *" : ''})`,
+          `COPY (SELECT ${internal ? '*' : columnsSql(table.schema)} FROM ${relation} ORDER BY ${sqlIdentifier(ordinal)}) TO ${literal(file)} (FORMAT ${format.toUpperCase()}${format === 'csv' ? ", HEADER true, DELIMITER ';', NEW_LINE '\\n', NULL '\\N', FORCE_QUOTE *" : ''})`,
         );
         const bytes = await room.connector.getDb().copyFileToBuffer(file);
         return new Blob([new Uint8Array(bytes)]).stream();

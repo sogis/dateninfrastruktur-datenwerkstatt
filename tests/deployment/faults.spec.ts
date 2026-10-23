@@ -36,7 +36,8 @@ test('P7 AT-069: missing/wrong MIME runtime assets fail explicitly; retry owns o
   });
   await start(page, baseURL!);
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.getByRole('alert').filter({hasText: 'SOURCE_UNAVAILABLE'})).toContainText(
     'HTTP 404',
@@ -95,7 +96,8 @@ test('P7 AT-046 AT-068–069: R worker CSP failure times out, corrected retry an
   });
   await start(page, baseURL!);
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neues R-Skript', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neues R-Skript', exact: true}).click();
   await expect(page.getByRole('alert').filter({hasText: 'TIMEOUT'})).toBeVisible({timeout: 75000});
   await expect
     .poll(() => workers.filter((w) => w.url.includes('webr') && !w.closed).length)

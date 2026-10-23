@@ -1,0 +1,147 @@
+{
+  "date": "2026-10-23",
+  "timezone": "Europe/Zurich",
+  "baseRevision": "243ad731d29f9539ce6d646a7cb745f339fc1b83",
+  "worktree": "uncommitted",
+  "sourceFingerprintSha256": "6f97689c3c08f63aaa205fc5f0f10b8522dce138b09d511215956ab4419d9dee",
+  "fileSha256": {
+    "src/application/rPorts.ts": "eb720588e6ae8cd3a25253f0fe83b7251034e34e08c2e804bdb4f87d5a109795",
+    "src/application/rService.ts": "bdb8da1fdd6c497b3f1a01a87e99c7e12d74293103dbaee97ae5bd2fbbaecb9f",
+    "src/features/archive/ArchiveActions.tsx": "1257d6d3b4082697eedca28d73190dbec6cdbf46b8c06c0415696e9e21427540",
+    "src/features/data/DataSection.tsx": "d2d1e43c462b7462093f897c8bb0e846b225e96b4bc3cc11abe03d1a2d7596b5",
+    "src/features/r/RTableExport.tsx": "9984746868261c997f623fec635fd7ee08d7785c2ed40ad94e87c126f3c9f1a4",
+    "src/features/r/RWorkbench.tsx": "45416958eaf36fdfbfcab848074d0e561d25cb956ffcbd929804e75a18bba7c1",
+    "src/features/r/Transfer.tsx": "1fb796a2ca47b0712d56b899f3473c71481b28251cf22ec7fc4081e05a516f5d",
+    "src/features/sql/SqlWorkbench.tsx": "00fb5ca3c670537b4f623186e9494b7fabea48cc28b9e84b5bef00fc46fae4a9",
+    "src/features/workspaces/StorageSettings.tsx": "74a39f5894618661d4fc8427346ec7d2e80ef015e193cc72a5175541f74a91d4",
+    "src/features/workspaces/Workspaces.tsx": "04fd5e0c1b4f9cc563b26329913bde89a0e4eda841393bd533ea50ac691df950",
+    "src/infrastructure/sqlrooms/sqlEngine.ts": "fe55a84b2baaaf95d46f424c33c8388b1d6cbc2872af5c39a3a4090397af0b73",
+    "src/styles/app.css": "2f4cc12b9f13d9af3bb10711579caf77f10179cc564590ca188e275373ad9149",
+    "src/styles/components.css": "612d7c8e4b74a7e974f60023bcea1cd223c41ca3e31f724a2b4686630003114f",
+    "src/ui/ActionMenu.tsx": "18af432871b81188448cf304e0ee236fcc7461f09428e5a763736bc3d44233c5",
+    "tests/deployment/faults.spec.ts": "1752e0ffae4705a9e93a4d945baf5fa74c22aa69958bbc626afe2d208e44ba21",
+    "tests/deployment/network-flow.spec.ts": "eb697d750947953bc861c50043d4cf1396e9ee7fc41112a67a7ca832b6888fe7",
+    "tests/deployment/projects.spec.ts": "7224c1481256b2dbb6787356892c50a40c6a2f7ab45ae53e358ceab495c93903",
+    "tests/deployment/static.spec.ts": "10c5321368b56d8c98c0b3039b96dbc9e21230bfbf4f27bf9d8548edaaf619bb",
+    "tests/design-system/reference.tsx": "814e643f907b217408d6754afb94770a2203e27923c1c659f1332dd1a477e3d2",
+    "tests/e2e/action-buttons.spec.ts": "6158fefdde525825ade63d3989a4f9d4737e0c62dcfd84b3886da671635061f1",
+    "tests/e2e/archive.spec.ts": "5bcc773682290435c4b75a9db89265ad720bc1cb82c1ee2ff3561eb10b32afd8",
+    "tests/e2e/design-system.spec.ts": "945ea545ddb39932ff74d3ce8b2774fbe0be62e10ebca410ca035db031663e0c",
+    "tests/e2e/imports.spec.ts": "b6dbb934ca75e832eea604d4ebead706ef98d867b707eb0588c5abd500422f86",
+    "tests/e2e/multitab.spec.ts": "26daf84950398b92a379e3713ab925fae331fcdd8a3c128dd5b0eb138e70c9ce",
+    "tests/e2e/neutral-ui.spec.ts": "7b8a6fc4136ca3a7e9ddcdbc3830188cec27bc56f09f4ceede4c8e96ad25f1f6",
+    "tests/e2e/optional-labels.spec.ts": "8dcc7ef6ee32984834266f6769dc342e2fa98b41d1269723a39597c5ba6eeea2",
+    "tests/e2e/p7-ui.spec.ts": "a9a96dea3616f73d7cbaa0cf10690378cac193445f1d700d6e6e66a0856f53ea",
+    "tests/e2e/p8-golden.spec.ts": "07a25ea2e449c66fe4c759896807372ab0d6fe5c0ea7051d433f73774b7f0dde",
+    "tests/e2e/p8-imports.spec.ts": "da0a39c5d6a04c55c10cf843a4a01a37859a0dc41336dfea2d7eacf3ab8951cc",
+    "tests/e2e/projects.spec.ts": "442f1e4a2298c04d705bb0d890522e7e9c28afb326ee9415d404d0ec6372498d",
+    "tests/e2e/r-export.spec.ts": "b86b55b402dfefa32713ec7ba3f927ca6ace34379d4f3617115cd25904317cc1",
+    "tests/e2e/r.spec.ts": "ecc620dfb0e21a07928e868b72dd802717e679f529066c6b858fdb94d31bdb68",
+    "tests/e2e/required-fields.spec.ts": "3605a5eebaedb0dc21a35b2e64bf135ac72cc0b246568d20d7e9d07b9d85a8ee",
+    "tests/e2e/sql.spec.ts": "50376d335fd12b8c53e6945d52d95c38823b3de598429e14d8aacdc4607e4cae",
+    "tests/e2e/workspaces.spec.ts": "72d447425625d32d1debf4ff79c9bb996eb44be479fbbe1d1fa53a5f2cc898dd",
+    "tests/integration/imports.spec.ts": "585ad891cfc176855c691181dc12afd0f457664bb703abdd28eaae780159f763",
+    "tests/integration/r-export.spec.ts": "81a3e980a581945dc3a5c2e06e48fc57bd1c7a12c177357db39fda33135ba81f",
+    "tests/integration/recovery.spec.ts": "9ab059ce19cc5a22f5a92d20e55ab55cc3c673760e97615865a569b98f8306ed",
+    "tests/neutral/assets.spec.ts": "021285afd6c1b839e8ccbb0c54f260ba3e182e1ea3a6f85136364a01c3b8fe2e",
+    "tests/spike/sqlHarness.ts": "688e31ce1818ec76cf349a70edfc47f1380a6397e376e47c00777ff046264e7b"
+  },
+  "runtime": {
+    "node": "v22.23.1",
+    "chromium": "153.0.8010.12",
+    "platform": "darwin"
+  },
+  "checks": [
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "log": "typecheck-delivery.log"
+    },
+    {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "log": "lint-delivery.log"
+    },
+    {
+      "command": "npx vitest run tests/unit/r-codec.test.ts tests/unit/run.test.ts tests/unit/workspace.test.ts",
+      "exitCode": 0,
+      "passed": 14,
+      "log": "unit.log"
+    },
+    {
+      "command": "APP_BASE_PATH=/lab/ npm run build",
+      "exitCode": 0,
+      "log": "build-delivery.log"
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/integration/r-export.spec.ts --output=test-results/buttons-v1.3-r --reporter=list",
+      "exitCode": 0,
+      "passed": 4,
+      "log": "r-engines-final.log"
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/integration/r-export.spec.ts -g 'exact annotated' --output=test-results/buttons-v1.3-types --reporter=list",
+      "exitCode": 0,
+      "passed": 1,
+      "log": "r-exact-types.log"
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/integration/r-export.spec.ts -g 'hard row/byte' --output=test-results/buttons-v1.3-limits --reporter=list",
+      "exitCode": 0,
+      "passed": 1,
+      "log": "r-limits.log"
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/r-export.spec.ts tests/e2e/action-buttons.spec.ts tests/e2e/neutral-ui.spec.ts tests/e2e/p7-ui.spec.ts tests/e2e/workspaces.spec.ts tests/e2e/sql.spec.ts tests/e2e/r.spec.ts --reporter=list",
+      "exitCode": 0,
+      "passed": 17,
+      "log": null,
+      "note": "Toolausgabe dieses Chats; erster gezielter UI-Lauf. Die damaligen P7-Artefakte wurden später gezielt neu erhoben."
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/projects.spec.ts tests/e2e/imports.spec.ts tests/e2e/archive.spec.ts tests/e2e/multitab.spec.ts tests/e2e/required-fields.spec.ts tests/e2e/optional-labels.spec.ts tests/e2e/p8-imports.spec.ts tests/e2e/p8-golden.spec.ts tests/e2e/design-system.spec.ts tests/integration/imports.spec.ts tests/integration/recovery.spec.ts --output=test-results/buttons-v1.3-regressions --reporter=list",
+      "exitCode": 1,
+      "passed": 38,
+      "failed": 2,
+      "log": "affected-regressions-final.log",
+      "resolution": "Zwei alte UI-Testannahmen angepasst und im nachfolgenden final-ui-Lauf erfolgreich gezielt wiederholt. Kein vollständiger grüner 40er-Sammellauf behauptet."
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/action-buttons.spec.ts tests/e2e/r-export.spec.ts tests/e2e/design-system.spec.ts tests/e2e/projects.spec.ts -g 'Action buttons v1.3|R direct export UI|UI components:|late real editor' --output=test-results/buttons-v1.3-final-ui --reporter=list",
+      "exitCode": 0,
+      "passed": 5,
+      "log": "final-ui.log"
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/action-buttons.spec.ts --output=test-results/buttons-v1.3-targets --reporter=list",
+      "exitCode": 0,
+      "passed": 2,
+      "log": "touch-targets.log"
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/p7-ui.spec.ts -g 'P7 AT-054' --output=test-results/buttons-v1.3-geometry --reporter=list",
+      "exitCode": 0,
+      "passed": 1,
+      "log": "geometry.log"
+    },
+    {
+      "command": "npx playwright test -c playwright.neutral.config.ts --output=test-results/buttons-v1.3-assets-checked --reporter=list",
+      "exitCode": 0,
+      "passed": 1,
+      "log": "lab-assets-checked.log"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "notRun": [
+    "npm run verify",
+    "full unit/integration/e2e suites",
+    "Firefox/WebKit matrix",
+    "Docker deployment matrix",
+    "native Safari",
+    "native 200% browser zoom"
+  ],
+  "scope": "gezielte Button-/Export-Erweiterung; keine V1-Releaseabnahme"
+}

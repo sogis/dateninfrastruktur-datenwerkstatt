@@ -2,7 +2,7 @@ import {numericColumn} from '../../ui/table';
 import {Button, Input, Select, FormField, ActionGroup, Toolbar, Notice} from '../../ui/Controls';
 import {useNameField, useFormValidation} from '../../ui/useFormValidation';
 import {displayNameError, sqlNameError} from '../../domain/fieldValidation';
-import {ActionMenu} from '../../ui/ActionMenu';
+import {SplitButton} from '../../ui/ActionMenu';
 import {Modal} from '../../ui/Modal';
 import {failureMessage} from '../../application/errors';
 import {TransferToR} from '../r/Transfer';
@@ -121,6 +121,7 @@ export function SqlWorkbench({
           </Button>
         </ActionGroup>
         <Button
+          variant="tertiary"
           aria-pressed={layout.dataPanelVisible}
           onClick={() => view.patch({dataPanelVisible: !layout.dataPanelVisible})}
         >
@@ -129,18 +130,17 @@ export function SqlWorkbench({
         <span role="status" aria-live={busy ? 'polite' : 'off'}>
           {busy ?? `SQL · Revision ${analysis.revision}`}
         </span>
-        <ActionMenu
-          actions={[
-            {
-              label: 'Arbeitsfläche zurücksetzen',
-              icon: 'arrow-repeat',
-              onSelect: () => {
-                view.reset();
-                panels.current?.setLayout([45, 55]);
-              },
-            },
-          ]}
-        />
+        <Button
+          variant="tertiary"
+          className="layout-reset"
+          icon="arrow-repeat"
+          onClick={() => {
+            view.reset();
+            panels.current?.setLayout([45, 55]);
+          }}
+        >
+          Arbeitsfläche zurücksetzen
+        </Button>
       </Toolbar>
       <Parameters key={analysis.id} analysis={analysis} session={session} />
       {layout.dataPanelVisible && (
@@ -499,6 +499,20 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
     };
   }, [service, result.id, offset, sort]);
   const unavailable = result.materialization.kind === 'unavailable';
+  const exportResult = (format: 'csv' | 'parquet') => {
+    if (unavailable) return;
+    act(`export-${format}`, () =>
+      service
+        .export(result.id, format, new AbortController().signal)
+        .then((stream) =>
+          downloadStream(
+            stream,
+            `${result.name}.${format}`,
+            format === 'csv' ? 'text/csv' : 'application/vnd.apache.parquet',
+          ),
+        ),
+    );
+  };
   return (
     <>
       <Toolbar className="result-toolbar">
@@ -535,30 +549,24 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
             In R
           </Button>
         </ActionGroup>
-        {(['csv', 'parquet'] as const).map((format) => (
-          <Button
-            key={format}
-            disabled={!!busy || !!busyAction || unavailable}
-            busy={busyAction === `export-${format}`}
-            busyLabel={`${format.toUpperCase()} wird exportiert …`}
-            onClick={() => {
-              if (unavailable) return;
-              act(`export-${format}`, () =>
-                service
-                  .export(result.id, format, new AbortController().signal)
-                  .then((stream) =>
-                    downloadStream(
-                      stream,
-                      `${result.name}.${format}`,
-                      format === 'csv' ? 'text/csv' : 'application/vnd.apache.parquet',
-                    ),
-                  ),
-              );
-            }}
-          >
-            {format.toUpperCase()} exportieren
-          </Button>
-        ))}
+        <SplitButton
+          label="CSV exportieren"
+          menuLabel="Weitere Exportformate"
+          contextKey={result.id}
+          disabled={!!busy || !!busyAction || unavailable}
+          busy={busyAction === 'export-csv'}
+          busyLabel="CSV wird exportiert …"
+          onClick={() => exportResult('csv')}
+          actions={[
+            {
+              label: 'Parquet exportieren',
+              disabled: !!busy || !!busyAction || unavailable,
+              busy: busyAction === 'export-parquet',
+              busyLabel: 'Parquet wird exportiert …',
+              onSelect: () => exportResult('parquet'),
+            },
+          ]}
+        />
         <Button
           disabled={unavailable}
           onClick={() => setView(view === 'table' ? 'chart' : 'table')}
@@ -566,6 +574,10 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
           {view === 'table' ? 'Diagramm' : 'Tabelle'}
         </Button>
       </Toolbar>
+      <p className="export-note">
+        CSV enthält keine Typinformationen. Exportiert werden alle Zeilen des bezeichneten
+        Ergebnisses.
+      </p>
       {transfer && (
         <TransferToR session={session} resultId={result.id} onClose={() => setTransfer(false)} />
       )}

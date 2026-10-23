@@ -1,3 +1,4 @@
+import {ActionMenu, MenuButton} from '../../ui/ActionMenu';
 import {
   Button,
   Input,
@@ -135,6 +136,8 @@ export function ProjectOverview() {
   const datasets = Object.values(doc.datasets).filter((dataset) => !dataset.removedAt);
   const analyses = Object.values(doc.analyses).filter((analysis) => !analysis.archivedAt);
   const navigate = useNavigate();
+  const analysesHost = useRef<HTMLUListElement>(null);
+  const newAnalysis = useRef<HTMLDivElement>(null);
   const create = (kind: 'sql' | 'r') => {
     try {
       const id = session.createAnalysis(kind);
@@ -226,19 +229,21 @@ export function ProjectOverview() {
       </section>
       <section>
         <PanelHeader title="Analysen">
-          <ActionGroup>
-            <Button disabled={session.readOnly} onClick={() => create('sql')}>
-              Neue SQL-Abfrage
-            </Button>
-            <Button disabled={session.readOnly} onClick={() => create('r')}>
-              Neues R-Skript
-            </Button>
-          </ActionGroup>
+          <div ref={newAnalysis}>
+            <MenuButton
+              label="Neue Analyse"
+              disabled={session.readOnly}
+              actions={[
+                {label: 'Neue SQL-Abfrage', onSelect: () => create('sql')},
+                {label: 'Neues R-Skript', onSelect: () => create('r')},
+              ]}
+            />
+          </div>
         </PanelHeader>
         {analyses.length === 0 && (
           <EmptyState>Noch keine Analysen. Erstelle eine SQL-Abfrage oder ein R-Skript.</EmptyState>
         )}
-        <ul className="analysis-list">
+        <ul className="analysis-list" ref={analysesHost}>
           {analyses.map((a) => (
             <li key={a.id}>
               <Link
@@ -252,32 +257,42 @@ export function ProjectOverview() {
                 {a.name}
               </Link>
               <StatusBadge>{a.kind.toUpperCase()}</StatusBadge>
-              <ActionGroup>
-                <Button
-                  disabled={session.readOnly}
-                  onClick={() => {
-                    try {
-                      session.duplicateAnalysis(a.id);
-                    } catch (e) {
-                      report(e);
-                    }
-                  }}
-                >
-                  Duplizieren
-                </Button>
-                <Button
-                  disabled={session.readOnly}
-                  onClick={() => {
-                    try {
-                      session.archiveAnalysis(a.id);
-                    } catch (e) {
-                      report(e);
-                    }
-                  }}
-                >
-                  Archivieren
-                </Button>
-              </ActionGroup>
+              <ActionMenu
+                label={`Aktionen für ${a.name}`}
+                iconOnly
+                disabled={session.readOnly}
+                actions={[
+                  {
+                    label: 'Duplizieren',
+                    onSelect: () => {
+                      try {
+                        session.duplicateAnalysis(a.id);
+                      } catch (error) {
+                        report(error);
+                      }
+                    },
+                  },
+                  {
+                    label: 'Archivieren',
+                    onSelect: () => {
+                      try {
+                        const links = Array.from(
+                          analysesHost.current?.querySelectorAll('li > a') ?? [],
+                        );
+                        const index = analyses.findIndex((item) => item.id === a.id);
+                        const target = links[index + 1] ?? links[index - 1];
+                        session.archiveAnalysis(a.id);
+                        requestAnimationFrame(() => {
+                          if (target instanceof HTMLElement && target.isConnected) target.focus();
+                          else newAnalysis.current?.querySelector('button')?.focus();
+                        });
+                      } catch (error) {
+                        report(error);
+                      }
+                    },
+                  },
+                ]}
+              />
             </li>
           ))}
         </ul>

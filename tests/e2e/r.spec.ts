@@ -22,7 +22,8 @@ test('P5 AT-040 AT-042 AT-046 AT-048: complete UI transfer, lazy worker survives
   await page.getByLabel('Name des neuen Projekts').fill('R Rundlauf');
   await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   const sqlUrl = page.url();
   await code(page, 'SELECT i::INTEGER AS id FROM range(350) t(i)');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();

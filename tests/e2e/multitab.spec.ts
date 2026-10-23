@@ -22,8 +22,13 @@ test('P6 AT-065: absent Web Locks permits existing project only as reader, archi
   await expect(page.getByText(/Nur lesend/)).toBeVisible();
   await expect(page.getByLabel('Beschreibung', {exact: true})).toBeDisabled();
   await expect(page.getByLabel('Beschreibung', {exact: true})).toHaveValue('Dauerhafter Stand');
-  await expect(page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true})).toBeDisabled();
-  await expect(page.getByRole('button', {name: 'Projekt löschen', exact: true})).toBeDisabled();
+  await expect(page.getByRole('button', {name: 'Neue Analyse', exact: true})).toBeDisabled();
+  await page.getByRole('button', {name: 'Projektaktionen', exact: true}).click();
+  await expect(page.getByRole('menuitem', {name: 'Projekt löschen', exact: true})).toHaveAttribute(
+    'aria-disabled',
+    'true',
+  );
+  await page.keyboard.press('Escape');
   await page.getByRole('button', {name: 'Projekt exportieren', exact: true}).click();
   await page.getByLabel('Archivmodus').selectOption('recipe');
   const download = page.waitForEvent('download');

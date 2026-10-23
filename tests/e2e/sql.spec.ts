@@ -14,7 +14,8 @@ async function workspace(page: Page) {
   await page.getByLabel('Name des neuen Projekts').fill('SQL Werkstatt');
   await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
 }
 test('P3 / AT-022 AT-027 AT-032 AT-049 AT-055 AT-058: SQL, paging, keep, exports, chart, resize and reload', async ({
   page,

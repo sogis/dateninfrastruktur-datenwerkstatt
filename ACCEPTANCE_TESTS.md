@@ -262,6 +262,8 @@ Für Wiederholbarkeit: isoliertes Browserprofil pro Testgruppe, feste Fixtures, 
 **Wenn:** Aufbewahren, CSV/Parquet exportieren, Reload.
 **Dann:** 350 Zeilen in Datei und nach Reopen; interne Ordinalspalte nicht exportiert; temporäres anderes Resultat nach Reload nicht fälschlich vorhanden.
 
+**Zusatzfall direkter R-Dateiexport (v1.3):** Ausgewählten vollständigen Dataframe als CSV/Parquet exportieren, ohne Datensatz oder dauerhaften Capture-Lauf anzulegen. 350 Zeilen trotz 200-Zeilen-Vorschau, Typ-/NULL-Erhalt, explizite Umwandlungswarnungen, unverändertes Projektdokument und freigegebene temporäre Relationen prüfen. Harte Zeilen-/Bytegrenzen, veraltete Session-/Scope-/Mutationsstände, Fehler, echter Abbruch und Timeout werden separat nachgewiesen.
+
 ### AT-033 — Portal-Dataset-Kontext v4
 
 **Requirements:** REQ-029, REQ-030 · **Phase:** P4 · **Ebene:** HTTP/Browser
@@ -445,6 +447,8 @@ Für Wiederholbarkeit: isoliertes Browserprofil pro Testgruppe, feste Fixtures, 
 **Gegeben:** Workspace mit SQL/R und geöffnetem Dialog.
 **Wenn:** Tastaturnavigation, Escape, Ctrl/Cmd+S/Enter, Pfeiltasten am Splitter.
 **Dann:** Fokus sichtbar/korrekt zurückgesetzt; Save/Run wie beschrieben; keine Browser-Speicherseite; Screenreader-Namen für Iconbuttons vorhanden.
+
+**Menü-/Split-Ergänzung v1.3:** Menü-Button öffnet ausschliesslich das Menü; Split-Hauptaktion und Pfeil sind separat fokussierbar. CSV bleibt nach Parquet-Auswahl die Hauptaktion. Enter/Space, Pfeile, Home/End, Escape, Tab/Shift+Tab, deaktivierte Einträge, Dialogübergang, Fokusrückgabe und Viewportpositionierung prüfen. Eine laufende Hauptaktion sperrt nur fachlich unverfügbare Alternativen.
 
 ### AT-056 — Bösartige URL-/Metadateninhalte sind kein Code
 

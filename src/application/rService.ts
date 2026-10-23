@@ -23,7 +23,7 @@ import type {
   ArtifactStore,
   TableTransferService,
 } from './ports';
-import type {ManagedREngine, RLimits} from './rPorts';
+import type {ManagedREngine, RLimits, RTableExportService, TableExportFormat} from './rPorts';
 import type {AnalysisService} from './analysisService';
 import type {ResultSqlEngine} from './sqlPorts';
 import type {WorkspaceScheduler} from './scheduler';
@@ -68,8 +68,9 @@ export interface ConsoleLine {
   kind: 'stdout' | 'stderr' | 'warning' | 'message';
   text: string;
 }
-export class RService implements TableTransferService {
+export class RService implements TableTransferService, RTableExportService {
   private plans = new Map<string, PlanState>();
+  private exportPlans = new Map<string, PlanState & {format: TableExportFormat}>();
   private scopes = new Map<AnalysisId, RScope>();
   private runScopes = new Map<RunId, RScope>();
   private history: RScope[] = [];
@@ -130,6 +131,7 @@ export class RService implements TableTransferService {
       'R initialisieren',
       new AbortController().signal,
       async (signal) => {
+        this.exportPlans.clear();
         this.selectedScope = await this.scopeFor(this.analysis(id), signal);
         await this.refreshObjects();
         return this.selectedScope;
@@ -145,6 +147,7 @@ export class RService implements TableTransferService {
   }
   selectRun(id: RunId) {
     return this.deps.scheduler.run('R Lauf auswählen', new AbortController().signal, async () => {
+      this.exportPlans.clear();
       this.selectedScope = this.runScopes.get(id);
       await this.refreshObjects();
       await this.prune();
@@ -169,6 +172,7 @@ export class RService implements TableTransferService {
     this.selectedScope = undefined;
     this.objects = [];
     this.plans.clear();
+    this.exportPlans.clear();
     this.plots.clear();
     this.deps.edit((d) => {
       for (const r of Object.values(d.results))
@@ -222,6 +226,7 @@ export class RService implements TableTransferService {
     this.deps.assertWriter();
     const a = structuredClone(this.analysis(id));
     this.plans.clear();
+    this.exportPlans.clear();
     const doc = structuredClone(this.deps.document());
     return this.deps.scheduler.run('R ausführen', new AbortController().signal, async (signal) => {
       const scope = await this.scopeFor(a, signal, true);
@@ -593,6 +598,106 @@ export class RService implements TableTransferService {
       return plan;
     });
   }
+  planExport(ref: RObjectRef, format: TableExportFormat, signal: AbortSignal) {
+    this.deps.assertWriter();
+    const deadline = AbortSignal.timeout(this.deps.limits.timeoutMs);
+    const bounded = AbortSignal.any([signal, deadline]);
+    const epochBefore = this.epoch;
+    this.exportPlans.clear();
+    return this.deps.scheduler
+      .run('R Export prüfen', bounded, async (joined) => {
+        if (
+          ref.scope.sessionId !== this.deps.sessionId ||
+          ref.scope.key !== this.selectedScope?.key
+        )
+          throw new AppFailure(
+            'RUNTIME_RESET',
+            'R-Objekt gehört nicht zum angezeigten Sitzungsscope.',
+          );
+        const epoch = this.epoch,
+          mutation = this.deps.r.mutation;
+        const payload = await this.deps.r.readDataFrame(ref, joined);
+        joined.throwIfAborted();
+        if (epoch !== this.epoch || mutation !== this.deps.r.mutation)
+          throw new AppFailure(
+            'RUNTIME_RESET',
+            'R-Objekt wurde während der Exportprüfung geändert.',
+          );
+        const extra: ConversionIssue[] = payload.schema.columns
+          .filter((column) => column.metadata.factorLevels !== undefined)
+          .map((column) => ({
+            id: `export-factor-${column.name}`,
+            column: column.name,
+            kind: 'representation-change',
+            requiresApproval: true,
+            message: `${column.name}: Faktorwerte werden als Text exportiert; unbenutzte Levels und die Faktorordnung sind nicht Teil der Datei.`,
+          }));
+        const plan = this.plan(payload, ref.scope, extra);
+        this.exportPlans.set(plan.id, {
+          plan,
+          payload,
+          scope: ref.scope,
+          object: ref,
+          epoch,
+          mutation,
+          format,
+        });
+        return plan;
+      })
+      .catch((error: unknown) => {
+        if (this.epoch !== epochBefore) this.invalidate();
+        if (deadline.aborted && !signal.aborted)
+          throw new AppFailure(
+            'TIMEOUT',
+            'R-Exportprüfung überschritt das Laufzeitlimit; die Berechnung wurde beendet.',
+          );
+        throw error;
+      });
+  }
+  discardExport(id: string) {
+    this.exportPlans.delete(id);
+  }
+  exportTable(id: string, approved: string[], signal: AbortSignal) {
+    this.deps.assertWriter();
+    const deadline = AbortSignal.timeout(this.deps.limits.timeoutMs);
+    const bounded = AbortSignal.any([signal, deadline]);
+    return this.deps.scheduler
+      .run('R Tabelle exportieren', bounded, async (joined) => {
+        let handle: TableHandle | undefined;
+        try {
+          const p = this.exportPlans.get(id);
+          if (
+            !p ||
+            p.epoch !== this.epoch ||
+            p.mutation !== this.deps.r.mutation ||
+            p.scope.sessionId !== this.deps.sessionId ||
+            p.scope.key !== this.selectedScope?.key
+          )
+            throw new AppFailure('RUNTIME_RESET', 'Exportplan veraltet. Bitte erneut exportieren.');
+          if (p.plan.issues.some((issue) => issue.requiresApproval && !approved.includes(issue.id)))
+            throw new AppFailure(
+              'CONVERSION_APPROVAL_REQUIRED',
+              'Exportwarnungen zuerst bestätigen.',
+            );
+          handle = await this.deps.sql.importColumnar(p.payload, joined);
+          const stream = await this.deps.sql.exportFile(handle, p.format, joined);
+          joined.throwIfAborted();
+          return stream;
+        } finally {
+          this.exportPlans.delete(id);
+          if (handle) await this.deps.sql.release(handle);
+        }
+      })
+      .catch((error: unknown) => {
+        this.exportPlans.delete(id);
+        if (deadline.aborted && !signal.aborted)
+          throw new AppFailure(
+            'TIMEOUT',
+            'R-Tabellenexport überschritt das Laufzeitlimit; die Berechnung wurde beendet.',
+          );
+        throw error;
+      });
+  }
   commitFromR(
     id: string,
     name: string,
@@ -714,6 +819,7 @@ export class RService implements TableTransferService {
     await this.deps.scheduler.close();
     await this.deps.r.dispose();
     this.plans.clear();
+    this.exportPlans.clear();
     this.plots.clear();
     this.logs.clear();
     this.scopes.clear();

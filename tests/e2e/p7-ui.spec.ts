@@ -19,7 +19,8 @@ test('P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layou
   await page.setViewportSize({width: 1440, height: 900});
   await create(page);
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await enter(page, 'SELECT 77 AS wert');
   await page.getByRole('textbox', {name: 'Analysecode'}).press('ControlOrMeta+Enter');
   await expect(page.locator('.result-grid tbody td')).toHaveText(['77']);
@@ -124,8 +125,12 @@ test('P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layou
       .toBe(Number(changed));
     await page.reload();
     await expect(splitter).toHaveAttribute('aria-valuenow', changed!);
-    await page.getByRole('button', {name: 'Weitere Aktionen', exact: true}).click();
-    await page.getByRole('menuitem', {name: 'Arbeitsfläche zurücksetzen'}).click();
+    if (kind === 'sql')
+      await page.getByRole('button', {name: 'Arbeitsfläche zurücksetzen'}).click();
+    else {
+      await page.getByRole('button', {name: 'Weitere Aktionen', exact: true}).click();
+      await page.getByRole('menuitem', {name: 'Arbeitsfläche zurücksetzen'}).click();
+    }
     await expect(splitter).toHaveAttribute('aria-valuenow', kind === 'sql' ? '45' : '50');
   }
   await writeFile(
@@ -155,8 +160,9 @@ test('P7 AT-055–057: native focus trap/return, settings, storage cleanup and d
 }, info) => {
   await create(page);
   await page.getByRole('link', {name: 'Daten', exact: true}).click();
-  const open = page.getByRole('button', {name: 'Datei hinzufügen', exact: true});
+  const open = page.getByRole('button', {name: 'Daten hinzufügen', exact: true});
   await open.click();
+  await page.getByRole('menuitem', {name: 'Datei hinzufügen', exact: true}).click();
   const dialog = page.getByRole('dialog', {name: 'Datei importieren'});
   await expect(dialog).toBeVisible();
   for (let i = 0; i < 25; i++) {
@@ -167,7 +173,8 @@ test('P7 AT-055–057: native focus trap/return, settings, storage cleanup and d
   await expect(dialog).toHaveCount(0);
   await expect(open).toBeFocused();
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await enter(page, "SELECT 'PRIVATE_CODE_MARKER' AS wert");
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByText('Lokale Diagnose', {exact: true}).click();
@@ -190,12 +197,12 @@ test('P7 AT-055–057: native focus trap/return, settings, storage cleanup and d
   await page.reload();
   await expect(page.getByLabel('Seitenleiste standardmässig eingeklappt')).not.toBeChecked();
   const storage = page.getByRole('region', {name: 'Browser-Speicher'});
-  const cleanup = storage.getByRole('button', {
+  const storageMenu = storage.getByRole('button', {name: 'Speicher verwalten', exact: true});
+  const cleanup = storage.getByRole('menuitem', {
     name: 'Nicht referenzierte Projektreste bereinigen',
   });
-  const manage = storage.getByRole('link', {name: 'Projekte verwalten und gezielt löschen'});
+  const manage = storage.getByRole('menuitem', {name: 'Projekte verwalten und gezielt löschen'});
   await expect(storage.locator('details')).toHaveCount(0);
-  await expect(cleanup).toHaveCount(1);
   for (const viewport of [
     {width: 1440, height: 900},
     {width: 1280, height: 800},
@@ -204,25 +211,25 @@ test('P7 AT-055–057: native focus trap/return, settings, storage cleanup and d
     const refreshBox = (await storage
       .getByRole('button', {name: 'Speicherstatus aktualisieren'})
       .boundingBox())!;
-    const manageBox = (await manage.boundingBox())!;
-    const cleanupBox = (await cleanup.boundingBox())!;
-    expect(refreshBox.height).toBeGreaterThanOrEqual(40);
-    expect(manageBox.height).toBe(refreshBox.height);
-    expect(manageBox.y).toBe(refreshBox.y);
-    expect(manageBox.x - refreshBox.x - refreshBox.width).toBeCloseTo(8);
-    expect(cleanupBox.y - refreshBox.y - refreshBox.height).toBeCloseTo(16);
-    expect(cleanupBox.x).toBe(refreshBox.x);
+    const menuBox = (await storageMenu.boundingBox())!;
+    expect(menuBox.height).toBeGreaterThanOrEqual(40);
+    expect(menuBox.y).toBe(refreshBox.y);
+    expect(menuBox.x - refreshBox.x - refreshBox.width).toBeCloseTo(8);
+    await storageMenu.click();
+    await expect(manage).toHaveAttribute('href', '/projects');
+    await expect(cleanup).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
     await page.screenshot({path: info.outputPath(`settings-storage-${viewport.width}.png`)});
+    await page.keyboard.press('Escape');
   }
+  await storageMenu.click();
   await cleanup.click();
   await expect(page.getByRole('dialog')).toBeVisible();
   await page.keyboard.press('Escape');
-  await expect(
-    page.getByRole('button', {name: 'Nicht referenzierte Projektreste bereinigen'}),
-  ).toBeFocused();
+  await expect(storageMenu).toBeFocused();
+  await storageMenu.click();
   await expect(page.getByText(/Login|ClickHouse|Freigaben|KI-Assistent/)).toHaveCount(0);
   await manage.click();
   await expect(page).toHaveURL(/\/projects$/);
@@ -240,7 +247,8 @@ test('P7 AT-025 AT-055 AT-056: selected SQL is snapshotted and cell markup remai
 }) => {
   await create(page);
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await enter(page, 'SELECT absent FROM absent_table;\nSELECT 42 AS selected');
   const editor = page.getByRole('textbox', {name: 'Analysecode'});
   await editor.press('ControlOrMeta+End');
@@ -268,7 +276,8 @@ test('P7 AT-058: browser history restores the analysis cursor and layout does no
 }) => {
   await create(page);
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await enter(page, 'SELECT 11 AS wert');
   const sqlUrl = page.url();
   const editor = page.getByRole('textbox', {name: 'Analysecode'});
@@ -315,8 +324,7 @@ test('P7 AT-058: browser history restores the analysis cursor and layout does no
   const splitter = page.getByRole('separator', {name: 'Grösse von Editor und Resultat ändern'});
   await splitter.focus();
   await splitter.press('ArrowDown');
-  await page.getByRole('button', {name: 'Weitere Aktionen', exact: true}).click();
-  await page.getByRole('menuitem', {name: 'Arbeitsfläche zurücksetzen'}).click();
+  await page.getByRole('button', {name: 'Arbeitsfläche zurücksetzen'}).click();
   expect(await state()).toEqual(before);
   expect(before.runs).toEqual([]);
 });

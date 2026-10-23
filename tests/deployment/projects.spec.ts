@@ -11,11 +11,13 @@ test('Projects: canonical deep routes reload under root/lab and retired workspac
   await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await expect(page).toHaveURL(/\/projects\/[0-9a-f-]+$/);
   const overviewUrl = page.url();
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await expect(page).toHaveURL(/\/sql\/[0-9a-f-]+$/);
   const sqlUrl = page.url();
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neues R-Skript', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neues R-Skript', exact: true}).click();
   await expect(page).toHaveURL(/\/r\/[0-9a-f-]+$/);
   await expect(page.locator('.r-workbench')).toBeVisible();
   const rUrl = page.url();

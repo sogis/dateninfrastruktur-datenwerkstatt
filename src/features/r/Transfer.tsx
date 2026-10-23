@@ -25,8 +25,10 @@ export function PlanView({
   approved,
   onChange,
   validation,
+  purpose = 'transfer',
 }: {
   plan: TransferPlan;
+  purpose?: 'transfer' | 'export';
   approved: string[];
   onChange(ids: string[]): void;
   validation: ReturnType<typeof useFormValidation>;
@@ -35,7 +37,10 @@ export function PlanView({
     <>
       <p>
         {plan.rowCount} Zeilen · {plan.estimatedBytes.toLocaleString('de-CH')} Bytes
-        Transferpayload. Es werden alle Resultatzeilen übernommen.
+        {purpose === 'export' ? ' Tabellendaten.' : ' Transferpayload.'}{' '}
+        {purpose === 'export'
+          ? 'Es werden alle Tabellenzeilen exportiert.'
+          : 'Es werden alle Resultatzeilen übernommen.'}
       </p>
       <ul>
         {plan.issues.map((i) => (

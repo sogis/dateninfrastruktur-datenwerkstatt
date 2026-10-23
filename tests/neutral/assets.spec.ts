@@ -1,7 +1,7 @@
 import {test, expect} from '../deployment/fixture';
 import {mkdir} from 'node:fs/promises';
 
-const evidence = 'docs/verification/neutral-v1.2';
+const evidence = 'docs/verification/buttons-v1.3/assets';
 
 test('Neutral assets: local fonts, SVG, licences and fallback under /lab/', async ({
   page,

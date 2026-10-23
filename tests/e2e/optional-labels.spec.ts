@@ -4,7 +4,7 @@ import {mkdir} from 'node:fs/promises';
 
 test.setTimeout(15_000);
 
-const evidence = 'docs/verification/optional-labels';
+const evidence = 'docs/verification/buttons-v1.3/optional-labels';
 async function capture(page: Page, name: string) {
   await mkdir(evidence, {recursive: true});
   await page.screenshot({path: `${evidence}/${name}.png`, fullPage: true});
@@ -93,7 +93,8 @@ test('Optional labels: SQL toolbar alignment and conditional parameter values', 
   await page.goto('/projects');
   await page.getByLabel('Name des neuen Projekts', {exact: true}).fill('Beschriftungen');
   await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await expect(page.locator('.monaco-editor')).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
   const name = page.getByRole('textbox', {name: 'Analysename', exact: true});

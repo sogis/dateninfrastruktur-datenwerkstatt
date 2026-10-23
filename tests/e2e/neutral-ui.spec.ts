@@ -2,7 +2,7 @@ import {test, expect} from '../persistentBrowser';
 import type {Locator, Page} from '@playwright/test';
 import {mkdir} from 'node:fs/promises';
 
-const evidence = 'docs/verification/neutral-v1.2';
+const evidence = 'docs/verification/buttons-v1.3/neutral';
 async function capture(page: Page, name: string) {
   await mkdir(evidence, {recursive: true});
   await page.screenshot({path: `${evidence}/${name}.png`, fullPage: true});
@@ -117,15 +117,17 @@ test('Neutral UI: real project navigation, aligned tables, optional fields and e
   await capture(page, 'projects-table');
   await row.getByRole('link', {name: 'Neutrale Datenwerkstatt', exact: true}).click();
   await nav.getByRole('link', {name: 'Daten', exact: true}).click();
-  const importButton = page.getByRole('button', {name: 'Datei hinzufügen', exact: true});
+  const importButton = page.getByRole('button', {name: 'Daten hinzufügen', exact: true});
   await importButton.click();
+  await page.getByRole('menuitem', {name: 'Datei hinzufügen', exact: true}).click();
   await expect(page.getByRole('dialog', {name: 'Datei importieren'})).toBeVisible();
   await capture(page, 'import-dialog');
   await page.keyboard.press('Escape');
   await expect(importButton).toBeFocused();
   await nav.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await nav.getByRole('button', {name: 'Navigation einklappen', exact: true}).click();
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await expect(page.locator('.monaco-editor')).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
   const analysisName = page.getByRole('textbox', {name: 'Analysename', exact: true});

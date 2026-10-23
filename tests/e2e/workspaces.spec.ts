@@ -35,7 +35,8 @@ test('AT-005 AT-058: saved SQL and R, separate models, duplicate, archive, no co
   page.on('pageerror', (e) => errors.push(e.message));
   await create(page);
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await page.getByLabel('Analysename', {exact: true}).fill('Kennzahlen');
   await page.getByRole('button', {name: 'Speichern', exact: true}).click();
   const sqlUrl = page.url();
@@ -51,7 +52,8 @@ test('AT-005 AT-058: saved SQL and R, separate models, duplicate, archive, no co
     'saved',
   );
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neues R-Skript', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neues R-Skript', exact: true}).click();
   await page.locator('.monaco-editor').click();
   await page.getByRole('textbox', {name: 'Analysecode'}).press('ControlOrMeta+a');
   await expect(page.locator('.selected-text').first()).toBeVisible();
@@ -91,9 +93,11 @@ test('AT-005 AT-058: saved SQL and R, separate models, duplicate, archive, no co
   const item = page
     .locator('li')
     .filter({has: page.getByRole('link', {name: 'Kennzahlen', exact: true})});
-  await item.getByRole('button', {name: 'Duplizieren', exact: true}).click();
+  await item.getByRole('button', {name: 'Aktionen für Kennzahlen', exact: true}).click();
+  await item.getByRole('menuitem', {name: 'Duplizieren', exact: true}).click();
   await expect(page.getByRole('link', {name: 'Kennzahlen (Kopie)', exact: true})).toBeVisible();
-  await item.getByRole('button', {name: 'Archivieren', exact: true}).click();
+  await item.getByRole('button', {name: 'Aktionen für Kennzahlen', exact: true}).click();
+  await item.getByRole('menuitem', {name: 'Archivieren', exact: true}).click();
   await expect(page.getByRole('link', {name: 'Kennzahlen', exact: true})).toHaveCount(0);
   expect(errors).toEqual([]);
 });
@@ -107,7 +111,7 @@ test('AT-012: another tab opens read-only and explicitly reacquires after writer
   await other.goto(url);
   await expect(other.getByText(/Nur lesend/)).toBeVisible();
   await expect(other.getByLabel('Beschreibung', {exact: true})).toBeDisabled();
-  await expect(other.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true})).toBeDisabled();
+  await expect(other.getByRole('button', {name: 'Neue Analyse', exact: true})).toBeDisabled();
   await page.getByLabel('Beschreibung', {exact: true}).fill('Neuer Stand');
   await page.getByRole('button', {name: 'Speichern', exact: true}).click();
   await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
@@ -125,7 +129,8 @@ test('AT-054 AT-057 partial: compact chrome and implemented settings persist', a
   await page.setViewportSize({width: 1440, height: 900});
   await create(page);
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await expect(page.locator('.code-editor')).toBeVisible();
   await expect(page.locator('.view-lines')).toContainText('SELECT');
   const boxes = await page.evaluate(() => ({

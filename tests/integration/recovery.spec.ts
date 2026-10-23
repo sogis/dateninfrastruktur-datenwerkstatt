@@ -172,7 +172,7 @@ test('P6 AT-012 AT-015 AT-017 AT-061: tab death interrupts real query, saved res
   const reader = await context.newPage();
   await reader.goto(url);
   await expect(reader.getByText(/Nur lesend/)).toBeVisible();
-  await expect(reader.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true})).toBeDisabled();
+  await expect(reader.getByRole('button', {name: 'Neue Analyse', exact: true})).toBeDisabled();
   await page.close();
   await reader.getByRole('button', {name: 'Schreibrecht erneut anfordern'}).click();
   await expect(reader.getByLabel('Beschreibung', {exact: true})).toBeEnabled();
@@ -204,7 +204,8 @@ test('P6 AT-012 AT-015 AT-017 AT-061: tab death interrupts real query, saved res
   expect(recovered.status).toBe('interrupted');
   expect(recovered.rows.rows).toEqual([['73']]);
   await reader.reload();
-  await reader.getByRole('button', {name: 'Integrität prüfen'}).click();
+  await reader.getByRole('button', {name: 'Projektaktionen', exact: true}).click();
+  await reader.getByRole('menuitem', {name: 'Integrität prüfen'}).click();
   await expect(reader.getByText(/1 beschädigte/)).toBeVisible();
   await reader.goto(`${url}/sql/${state.a}`);
   await expect(reader.getByRole('alert').filter({hasText: 'ARTIFACT_CORRUPT'})).toBeVisible();

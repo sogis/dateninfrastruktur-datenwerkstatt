@@ -237,7 +237,8 @@ test('P2 / AT-010: imported file survives browser process restart and removal of
     await page.getByLabel('Name des neuen Projekts').fill('Neustart');
     await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
     await page.getByRole('link', {name: 'Daten', exact: true}).click();
-    await page.getByRole('button', {name: 'Datei hinzufügen', exact: true}).click();
+    await page.getByRole('button', {name: 'Daten hinzufügen', exact: true}).click();
+    await page.getByRole('menuitem', {name: 'Datei hinzufügen', exact: true}).click();
     await page.getByLabel('Datei (CSV oder Parquet, maximal 128 MiB)').setInputFiles(source);
     await page.getByRole('button', {name: 'Vorschau laden', exact: true}).click();
     await expect(page.getByRole('button', {name: 'Import bestätigen'})).toBeEnabled();

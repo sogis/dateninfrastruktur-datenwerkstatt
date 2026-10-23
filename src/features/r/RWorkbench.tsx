@@ -1,3 +1,4 @@
+import {RTableExport} from './RTableExport';
 import {Button, Input, Select, FormField, ActionGroup, Toolbar, Notice} from '../../ui/Controls';
 import {useNameField, useFormValidation} from '../../ui/useFormValidation';
 import {displayNameError, sqlNameError} from '../../domain/fieldValidation';
@@ -80,6 +81,11 @@ export function RWorkbench({
     sqlName: () => (replace === 'new' ? sqlNameError(sqlName, occupied) : undefined),
   });
   const [preview, setPreview] = useState<Awaited<ReturnType<typeof service.previewObject>>>();
+  useEffect(() => {
+    setPreview(undefined);
+    setObject(undefined);
+    setPlan(undefined);
+  }, [service.epoch, service.scope?.key]);
   const pending = useRef(false);
   const [busyAction, setBusyAction] = useState('');
   const act = (action: string, work: () => Promise<unknown>) => {
@@ -160,12 +166,14 @@ export function RWorkbench({
         </ActionGroup>
         <ActionGroup>
           <Button
+            variant="tertiary"
             aria-pressed={objectsOpen}
             onClick={() => view.patch({rObjectsVisible: !objectsOpen})}
           >
             Objekte / Eingaben
           </Button>
           <Button
+            variant="tertiary"
             aria-pressed={consoleOpen}
             onClick={() => view.patch({rConsoleVisible: !consoleOpen})}
           >
@@ -173,15 +181,9 @@ export function RWorkbench({
           </Button>
         </ActionGroup>
         <ActionMenu
+          contextKey={analysis.id}
           actions={[
             {label: 'R-Optionen', onSelect: () => setOptionsOpen(true)},
-            {
-              label: 'R zurücksetzen',
-              disabled: !!busy || !!busyAction || session.readOnly,
-              variant: 'tertiary',
-              tone: 'danger',
-              onSelect: () => setReset(true),
-            },
             {
               label: 'Arbeitsfläche zurücksetzen',
               icon: 'arrow-repeat',
@@ -190,6 +192,14 @@ export function RWorkbench({
                 columns.current?.setLayout([50, 50]);
                 rows.current?.setLayout([75, 25]);
               },
+            },
+            {
+              label: 'R zurücksetzen',
+              separatorBefore: true,
+              disabled: !!busy || !!busyAction || session.readOnly,
+              variant: 'tertiary',
+              tone: 'danger',
+              onSelect: () => setReset(true),
             },
           ]}
         />
@@ -397,6 +407,13 @@ export function RWorkbench({
                     {preview ? (
                       <>
                         <Button onClick={() => setPreview(undefined)}>Grafiken anzeigen</Button>
+                        {object && (
+                          <RTableExport
+                            key={`${object.scope.key}-${object.scope.engineEpoch}-${object.name}`}
+                            session={session}
+                            object={object}
+                          />
+                        )}
                         <PreviewTable preview={preview} />
                       </>
                     ) : plots.length ? (

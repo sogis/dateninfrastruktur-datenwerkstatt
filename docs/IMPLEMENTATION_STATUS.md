@@ -1570,3 +1570,130 @@ bewusst nicht zusätzlich ausgeführt.
 weiteren Browser ausgeführt. Vorhandener Nutzerserver auf 4173 nach Pfad-/
 Prozessprüfung wiederverwendet und erhalten. Nächster Schritt: lokale Änderung
 durchsehen; für diesen Abschnitt kein Commit/Push ausgeführt.
+
+### Menü-/Split-Buttons v1.3 und direkte R-Exporte — Prüfverlauf (23. Oktober 2026)
+
+Auftrag: REQ-038/048/054/059/061–067, gezielte Erweiterung ohne Releasefreigabe.
+Ausgangsrevision `243ad73`, Arbeitsbaum vor Beginn sauber. Bestehender Vite-Prozess
+52467 anhand Commandline und cwd als Zielprojekt bestätigt und wiederverwendet.
+Keine Dependencies oder Projektformate geändert. R-Exporte verwenden geprüfte
+vollständige Payloads und temporäre Relationen des vorhandenen Connectors;
+keine OPFS-/Metadatenpublikation. Gemeinsame Menükomponenten/Ansichtsmigration
+und Abnahme sind noch in Arbeit.
+
+Bisherige tatsächliche Prüfungen: erster Typecheck Exit 0, nach Ergänzung neuer
+Integrationstests Typecheck Exit 2 (JSON-Testkonfiguration noch nicht typisiert).
+Erster echter Chromium-R-Exportlauf Exit 1, 0/3: DuckDB akzeptiert `NEWLINE`
+nicht als COPY-Option; zwei weitere Assertions lasen irrtümlich Error.toString
+statt strukturierter Fehlercodes. Korrekturen: `NEW_LINE`, typisierte
+Testkonfiguration und strukturierte Fehlerprüfung. Wiederholung läuft.
+Kein Bestandstest gelöscht oder deaktiviert; keine fachlichen Goldenwerte
+geändert. Nächster Schritt: R-Export-Nachweis abschliessen, danach UI migrieren.
+
+Zwischenprüfung: erster echter R-Lauf nach COPY-Korrektur Exit 0, 3/3.
+Komponenten-Smoke Exit 0, 2/2. Gezielte UI-/Engine-Regression Exit 0, 17/17:
+Komponenten, neutrale reale Ansichten, vier P7-Fälle, direkter R-Dateidownload,
+bestehender R-Rundlauf/Workerabbruch, SQL/Diagramme und Projekt-/Lesemodusfälle.
+Typecheck und Lint/Grenzen Exit 0. Erweiterter R-Nachweis (Parquet-Reimport,
+Cleanup-Fault, echtes Timeout) zunächst Exit 1, 2/4: neue Erwartung hatte den
+Anzeigevertrag `readPage` (exakte Strings) übersehen; ein parallel versuchter
+zweiter Playwright-Prozess löschte dessen Trace-Verzeichnis und scheiterte selbst
+vor Teststart am belegten Portalport 4174. Tests nun seriell mit getrennten
+Ausgabeverzeichnissen; fachliche Assertions nach tatsächlichem Anzeigevertrag
+präzisiert. Historische PNG-Nachweise aus dem ersten UI-Lauf wiederhergestellt;
+neue Belege liegen ausschliesslich unter `verification/buttons-v1.3/`.
+
+### Menü-/Split-Buttons v1.3 und direkte R-Exporte — gezielt abgenommen (23. Oktober 2026)
+
+**Status: implementiert und im beauftragten Umfang geprüft.** Kein Commit, Push,
+Deployment oder V1-Release durchgeführt. Verifizierte Basisrevision `243ad73`
+mit uncommittierten Änderungen; SHA-256 des produktiven Änderungsstands:
+`6f97689c3c08f63aaa205fc5f0f10b8522dce138b09d511215956ab4419d9dee`.
+Dateihashes, exakte Prüfbefehle und Exitcodes stehen in
+[checks.json](verification/buttons-v1.3/checks.json).
+
+| Requirement / Abnahme | Geliefert | Relevante Dateien |
+| --- | --- | --- |
+| REQ-061/064/067; AT-055/057/058 | Gemeinsame Menüinfrastruktur, MenuButton, SplitButton, Overflow; Tastatur, ARIA, Disabled-/Busy-Aktionen, echte Router-Links, Fokus und Viewportpositionierung | `src/ui/ActionMenu.tsx`, `src/styles/components.css`, Komponentenreferenz und neue Button-E2E |
+| REQ-061–067; AT-054/055/057/058 | Daten hinzufügen / Neue Analyse als Menü; Analyseaktionen im Overflow; CSV als stabile Split-Hauptaktion; Verwaltung gruppiert; SQL-Reset direkt; R-Ansichtstoggles sichtbar | Ansichten unter `src/features/{data,workspaces,archive,sql,r}/`, `src/styles/app.css` |
+| REQ-038/048/054/059; AT-032/043–046/055 | Vollständiger direkter R-CSV-/Parquet-Export ohne Datensatz oder dauerhaften Capture; Warnungen, Session-/Scope-/Epoch-/Mutationsbindung, Limits, Cleanup, echter Cancel/Timeout | `src/application/rPorts.ts`, `rService.ts`, `src/features/r/RTableExport.tsx`, `Transfer.tsx`, bestehender DuckDB-Dateiexporter |
+| Designsystem / Vertrag | Aktuelle Projektfassung auf v1.3 nachgeführt; direkte R-Exporte und zusätzliche Abnahmefälle konkretisiert | `docs/DESIGN_SYSTEM.md`, `SPEC.md`, `ACCEPTANCE_TESTS.md` |
+
+Der neue Application-Vertrag enthält `planExport`, `exportTable` und
+`discardExport`. Payloads und Pläne bleiben ausschliesslich in der Sitzung.
+Export nutzt den vorhandenen Connector mit temporären Relationen; die Streams
+sind nach der Dateierzeugung unabhängig vom freigegebenen TableHandle. Keine
+zusätzliche OPFS-/Metadatenpublikation, neue Dependency, Schema- oder
+Projektformatmigration. Normale R-Dateiexporte lassen das Projektdokument
+nachweislich unverändert. Ein notwendiger PostMessage-Workerreset verwirft wie
+bisher ungesicherte R-Objekte und aktualisiert deren Verfügbarkeit.
+
+CSV verwendet explizit Semikolon und LF; NULL, Leerstring, Unicode und rohe
+Formelpräfixe bleiben unterscheidbar beziehungsweise unverändert. CSV-Typverlust
+ist sichtbar. Faktorwerte erfordern wegen Verlust von Levels/Ordnung eine
+explizite Bestätigung. Parquet wird mit dem bestehenden Typvertrag erzeugt;
+interne Ordinalspalten werden nicht exportiert. Der Default bleibt nach einer
+Parquet-Auswahl CSV. Split-Teilflächen haben getrennten Fokus und mindestens
+44 × 44 px bei grobem Zeiger, ohne überlappende Bedienziele.
+
+**Tatsächliche Prüfungen:** Node 22.23.1, npm 11.18.0, Playwright 1.63.0,
+Chromium 153.0.8010.12 auf macOS. Folgende Aufrufe hatten Exit **0**:
+
+- `npm run typecheck` und `npm run lint`, einschliesslich Modulgrenzen;
+  [Typecheck](verification/buttons-v1.3/typecheck-delivery.log),
+  [Lint](verification/buttons-v1.3/lint-delivery.log).
+- `npx vitest run tests/unit/r-codec.test.ts tests/unit/run.test.ts tests/unit/workspace.test.ts`:
+  **14/14**; [Log](verification/buttons-v1.3/unit.log).
+- `APP_BASE_PATH=/lab/ npm run build`: Produktionsbuild und Lizenzinventar;
+  [Log](verification/buttons-v1.3/build-delivery.log). Die bekannte Warnung zu
+  grossen Editorchunks bleibt bestehen.
+- Echte R-Exportfälle: **4/4** im Kernlauf, danach je **1/1** für die annotierten
+  Typgrenzen und harten Limits/fremden Scopes. Belegt sind vollständiger
+  350-Zeilen-Export trotz 200-Zeilen-Vorschau, Parquet-Reimport, BIGINT/DECIMAL/DATE,
+  NULL/NA getrennt von NaN/Infinity, leere Tabellen, Faktorwarnung, verworfene und
+  veraltete Pläne, Fehler-Cleanup sowie tatsächliche Workerbeendigung bei Cancel
+  und Timeout mit anschliessender Nutzung.
+  [Kern](verification/buttons-v1.3/r-engines-final.log),
+  [Typen](verification/buttons-v1.3/r-exact-types.log),
+  [Limits und Scope](verification/buttons-v1.3/r-limits.log).
+- Erster gezielter UI-/Engine-Lauf **17/17**. Abschliessender Fokuslauf **5/5**
+  einschliesslich R-Downloads und Faktorbestätigung; zusätzliche Prüfung der
+  nicht überlappenden Split-/Touch-Ziele **2/2**.
+  [Finale UI](verification/buttons-v1.3/final-ui.log),
+  [Bedienziele](verification/buttons-v1.3/touch-targets.log).
+- Reale SQL-/R-Geometrie **1/1** bei 1440 × 900 und 1280 × 800 mit echten
+  Ergebnissen, Resize, Reset und Reload. Nachweise wurden nach Verlust der
+  ersten temporären Playwright-Ausgabe gezielt neu erhoben.
+  [Log](verification/buttons-v1.3/geometry.log),
+  [Messwerte](verification/buttons-v1.3/geometry/p7-geometry-chromium.json).
+- Produktionsvorschau unter `/lab/` **1/1**: lokale Fonts/SVGs/Lizenzen und
+  Font-Fallback; [Log](verification/buttons-v1.3/lab-assets-checked.log).
+- `git diff --check`: Exit **0**. Keine Änderungen an historischen
+  Verifikationsdateien, Fixtures, Paketversionen oder Lockfile.
+
+Der zusätzliche Sammellauf über betroffene Import-/Archiv-/Projekt-/UI-Fälle
+endete mit Exit **1**, **38/40 bestanden**. Seine zwei Fehler waren konkrete
+veraltete Testannahmen: der zuvor bereits auf „Vorschau“ gesetzte Referenzstatus
+und der entfallene SQL-Overflow-Auslöser im Test für verspätetes Editorladen.
+Die Prüfungen erhalten ihre fachliche Aussage (deaktivierte Aktion verändert
+nichts; Fokus und Reset bleiben beim echten Lazy-Load erhalten) und wurden
+gezielt korrigiert und erfolgreich im 5/5-Fokuslauf wiederholt. Kein grüner
+40er-Gesamtlauf wird behauptet. Der bestandene Anteil enthält unter anderem
+Golden-Archiv, Multitab, OPFS-Fehler, Import/Ersetzen, Recovery und Golden Path
+mit Prozessneustart. [Vollständiges Sammellog](verification/buttons-v1.3/affected-regressions-final.log).
+
+Visuell geprüft wurden Projektübersicht und SQL-Fehlerlayout. Weitere Screenshots
+und Messwerte liegen unter `verification/buttons-v1.3/`. Die Referenz prüft
+vergrösserten Text, geringe Höhe, Umbruch und emulierte Touch-Ziele; dies ist
+keine native Browserzoom- oder physische Touch-Abnahme. Historische Nachweise
+wurden wiederhergestellt; die Testausgaben verwenden nun eigene v1.3-Pfade.
+
+**Nicht ausgeführt:** vollständiges `npm run verify`, vollständige Unit-/
+Integrations-/E2E-Suiten, Firefox-/WebKit-Matrix, Docker-Deploymentmatrix und
+nativer Safari. Die angepassten Deployment-Testselektoren wurden typgeprüft und
+gelintet; deren Browser-/Containerläufe sind nicht erneut abgenommen.
+Dies ist keine vollständige V1-/Releasefreigabe.
+
+Nächster konkreter Schritt: lokale Durchsicht der implementierten Änderung und
+des Prüfnachweises; im beauftragten Button-/R-Dateiexportumfang bleibt kein
+bekannter Blocker. Weitergehende Browser-/Releaseabnahme ist ein eigener Abschnitt.

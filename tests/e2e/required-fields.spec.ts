@@ -25,7 +25,8 @@ async function snapshot(page: Page, settlePreviousChanges = false) {
 
 async function openSql(page: Page) {
   await createProject(page);
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await expect(page.locator('.monaco-editor')).toBeVisible();
 }
 
@@ -45,7 +46,7 @@ async function saved(page: Page) {
 }
 async function capture(page: Page, name: string) {
   await page.screenshot({
-    path: `docs/verification/required-fields/${test.info().project.name}-${name}.png`,
+    path: `docs/verification/buttons-v1.3/required-fields/${test.info().project.name}-${name}.png`,
     fullPage: true,
   });
 }
@@ -75,8 +76,9 @@ for (const kind of ['sql', 'r']) {
     page,
   }) => {
     await createProject(page);
+    await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
     await page
-      .getByRole('button', {
+      .getByRole('menuitem', {
         name: kind === 'sql' ? 'Neue SQL-Abfrage' : 'Neues R-Skript',
         exact: true,
       })
@@ -117,7 +119,8 @@ test('Required fields: file selection, drag and drop, import validation and data
 }) => {
   await createProject(page);
   await page.getByRole('link', {name: 'Daten', exact: true}).click();
-  await page.getByRole('button', {name: 'Datei hinzufügen', exact: true}).click();
+  await page.getByRole('button', {name: 'Daten hinzufügen', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Datei hinzufügen', exact: true}).click();
   const dialog = page.getByRole('dialog');
   const file = dialog.locator('input[type=file]');
   await expect(file).toHaveAttribute('required');
@@ -175,7 +178,8 @@ test('Required fields: CSV column errors prevent preview work and keep the last 
 }) => {
   await createProject(page);
   await page.getByRole('link', {name: 'Daten', exact: true}).click();
-  await page.getByRole('button', {name: 'Datei hinzufügen', exact: true}).click();
+  await page.getByRole('button', {name: 'Daten hinzufügen', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Datei hinzufügen', exact: true}).click();
   const dialog = page.getByRole('dialog');
   await dialog.locator('input[type=file]').setInputFiles({
     name: 'spalten.csv',

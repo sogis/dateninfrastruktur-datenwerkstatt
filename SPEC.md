@@ -284,6 +284,8 @@ Eine Abfrage mit bewusstem `LIMIT 10` und zehn Zeilen ist vollständig bezüglic
 
 CSV „Für Tabellenkalkulation entschärfen“ optional und standardmässig aus: gefährliche textuelle Formelpräfixe kennzeichnen/entschärfen und sichtbar sagen, dass diese Exportoption Datenrepräsentation verändert. Maschineller Standardexport verändert Strings nicht still. Exportfehler/Downloadabbruch ist kein erfolgreicher Datei-Download.
 
+Direkter Export eines ausgewählten R-Dataframes verwendet ebenfalls den vollständigen geprüften Tabellenstand und den Typvertrag. Er erzeugt nur die CSV-/Parquet-Datei, ohne neuen Datensatz oder dauerhaften Capture-Lauf. Typ-/Formatwarnungen werden vor dem Download angezeigt; zustimmungspflichtige Umwandlungen bleiben ausdrücklich zu bestätigen.
+
 ## 11. R-Laufzeit, Skripte und SQL–R-Transfer
 
 **REQ-049 — Lazy R-Lifecycle.** webR startet erst bei Bedarf und gehört zur WorkspaceSession, nicht zum sichtbaren RPanel. SQL→R→SQL beendet R nicht. Initialisierung ist idempotent, parallel eintreffende Starts teilen ein Initialisierungspromise. Fehlende Pakete/WASM-Dateien sind nachvollziehbare Init-Fehler mit Retry. Start und Dispose berücksichtigen React StrictMode. Baseline webR wird selbst gehostet; kuratierte Paketliste aus vorhandenem Lock/Mirror übernehmen. In V1 kein UI für beliebige CRAN-Installationen. [S01, S12, S13]
@@ -371,7 +373,7 @@ SQL und R behalten ihre Laufauswahl und verwenden gemeinsame lesbare Laufdetails
 
 ## 14. Visueller und Bedienvertrag
 
-**REQ-065 — Arbeitsfläche vor Dekoration.** Kein Hero-/Skylinebild, keine Slogans, keine Eyebrow-Überschrift „KANTON SOLOTHURN“ über dem Inhalt, keine dauerhafte Erklärung „Was ist ein Projekt?“. Gemäss ausdrücklicher Nutzerentscheidung vom 21. Oktober 2026 gilt das neutrale Designsystem v1.2: zentral austauschbare Marke mit DW-Platzhalter und Produktname als Standard; ein Organisationslogo ist optional und wird nur als Original-Asset eingebunden. Proportionen und Schutzraum wahren. Schrift nur mit zulässigem Asset/License-Kontext, sonst seriöser Systemfont-Fallback; keine Fontdateien aus diesem Spezifikationspaket erwarten. Die Mockups sind Ideen, nicht die Quelle für echte Logos oder echte Daten.
+**REQ-065 — Arbeitsfläche vor Dekoration.** Kein Hero-/Skylinebild, keine Slogans, keine Eyebrow-Überschrift „KANTON SOLOTHURN“ über dem Inhalt, keine dauerhafte Erklärung „Was ist ein Projekt?“. Gemäss ausdrücklicher Nutzerentscheidung vom 21. Oktober 2026 gilt das neutrale Designsystem v1.3: zentral austauschbare Marke mit DW-Platzhalter und Produktname als Standard; ein Organisationslogo ist optional und wird nur als Original-Asset eingebunden. Proportionen und Schutzraum wahren. Schrift nur mit zulässigem Asset/License-Kontext, sonst seriöser Systemfont-Fallback; keine Fontdateien aus diesem Spezifikationspaket erwarten. Die Mockups sind Ideen, nicht die Quelle für echte Logos oder echte Daten.
 
 **REQ-066 — Geometrie bei 1440×900 CSS-Pixeln.** Browser-Chrome nicht Teil der Messung. Kompakte App-Kopfzeile Ziel 56 px; Analysentabs/Toolbar zusammen höchstens weitere 88 px, ausser notwendiger zugänglicher Zoomansicht. Sidebar einklappbar, collapsed 48–56 px, expanded 200–224 px. Auf SQL/R beim ersten Öffnen collapsed. Mit geschlossenem Schema-/Info-Panel stehen mindestens 90 % der Breite rechts neben der Iconleiste der Arbeitsfläche zur Verfügung. Editor+Ergebnis beziehungsweise Editor+Plot+Konsole belegen mindestens 75 % der Viewporthöhe. Keine ständige rechte Infospalte zur Erfüllung künstlicher Dashboard-Symmetrie.
 

@@ -15,7 +15,7 @@ import {
   Textarea,
   Toolbar,
 } from '../../src/ui/Controls';
-import {ActionMenu} from '../../src/ui/ActionMenu';
+import {ActionMenu, MenuButton, SplitButton} from '../../src/ui/ActionMenu';
 import {Modal} from '../../src/ui/Modal';
 import {NavigationItem} from '../../src/ui/NavigationItem';
 import '../../src/styles/app.css';
@@ -201,6 +201,84 @@ function Reference() {
               </tr>
             </tbody>
           </table>
+        </section>
+        <section aria-label="Menü- und Split-Buttons">
+          <PanelHeader title="Menü- und Split-Buttons" />
+          <ActionGroup>
+            <MenuButton
+              label="Daten hinzufügen"
+              actions={[
+                {label: 'Datei hinzufügen', onSelect: () => setAction('Datei')},
+                {label: 'Aus Portal hinzufügen', onSelect: () => setAction('Portal')},
+                {label: 'Dialog aus Menü', onSelect: () => setModal(true)},
+                {label: 'Zur Referenz', link: <a href="#reference" />},
+              ]}
+            />
+            <SplitButton
+              label="CSV exportieren"
+              menuLabel="Weitere Exportformate"
+              onClick={() => setAction('CSV')}
+              actions={[
+                {label: 'Parquet exportieren', onSelect: () => setAction('Parquet')},
+                {
+                  label: 'Deaktiviertes Format',
+                  disabled: true,
+                  onSelect: () => setAction('FEHLER'),
+                },
+              ]}
+            />
+            <SplitButton
+              label="Laufender Export"
+              busy
+              busyLabel="Export läuft"
+              menuLabel="Verfügbare Alternativen"
+              onClick={() => setAction('FEHLER')}
+              actions={[
+                {label: 'Andere verfügbare Variante', onSelect: () => setAction('Alternative')},
+              ]}
+            />
+            <SplitButton
+              label="Ohne Alternativen"
+              menuLabel="Nicht anzeigen"
+              actions={[]}
+              onClick={() => setAction('Einzelaktion')}
+            />
+            <MenuButton
+              label="Gesperrtes Menü"
+              actions={[{label: 'Gesperrt', disabled: true, onSelect: () => setAction('FEHLER')}]}
+            />
+            <ActionMenu
+              iconOnly
+              label="Aktionen für Beispiel"
+              actions={[{label: 'Beispiel duplizieren', onSelect: () => setAction('Duplikat')}]}
+            />
+          </ActionGroup>
+          <ActionGroup>
+            {(['default', 'danger'] as const).flatMap((tone) =>
+              (['primary', 'secondary', 'tertiary'] as const).map((variant) => (
+                <SplitButton
+                  key={`${tone}-${variant}`}
+                  label={`Split ${variant} ${tone}`}
+                  menuLabel={`Varianten ${variant} ${tone}`}
+                  variant={variant}
+                  tone={tone}
+                  size="compact"
+                  onClick={() => setAction('Variante')}
+                  actions={[{label: 'Alternative', tone, onSelect: () => setAction('Variante')}]}
+                />
+              )),
+            )}
+            <MenuButton
+              label="Ein lang beschrifteter Menü-Button mit mehreren verständlichen Wörtern"
+              actions={[
+                {
+                  label:
+                    'Ein langer Menüeintrag, der auch an der Viewportkante vollständig lesbar bleibt',
+                  onSelect: () => setAction('Lang'),
+                },
+              ]}
+            />
+          </ActionGroup>
         </section>
         <section>
           <PanelHeader title="Menü und Dialog" />

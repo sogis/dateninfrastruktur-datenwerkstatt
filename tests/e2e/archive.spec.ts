@@ -110,14 +110,16 @@ test('P6 AT-051 AT-053 AT-063: Golden archive in fresh profile, graph remap, rea
     expect(Object.keys(proof.after.artifacts)).toHaveLength(Object.keys(next.artifacts).length);
     expect(workers.filter((w) => w.includes('webr'))).toHaveLength(0);
     await imported.reload();
-    await imported.getByRole('button', {name: 'Projekt duplizieren', exact: true}).click();
+    await imported.getByRole('button', {name: 'Projektaktionen', exact: true}).click();
+    await imported.getByRole('menuitem', {name: 'Projekt duplizieren', exact: true}).click();
     await expect(
       imported.getByRole('heading', {name: 'Archiv Golden (Kopie)', exact: true}),
     ).toBeVisible();
     const copyUrl = imported.url();
     await imported.getByRole('link', {name: 'Projekte', exact: true}).click();
     await imported.getByRole('link', {name: 'Archiv Golden', exact: true}).click();
-    await imported.getByRole('button', {name: 'Projekt löschen', exact: true}).click();
+    await imported.getByRole('button', {name: 'Projektaktionen', exact: true}).click();
+    await imported.getByRole('menuitem', {name: 'Projekt löschen', exact: true}).click();
     await expect(imported.getByRole('dialog')).toContainText('gesicherte Resultate');
     await imported.getByRole('button', {name: 'Endgültig löschen'}).click();
     await expect(imported.getByRole('heading', {name: 'Projekte', exact: true})).toBeVisible();

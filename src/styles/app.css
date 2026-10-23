@@ -861,3 +861,23 @@ main > [aria-label='Browser-Speicher'] {
     padding-inline: 3px;
   }
 }
+
+.analysis-toolbar > .layout-reset {
+  margin-inline-start: auto;
+}
+.export-note {
+  margin: 4px 12px;
+  color: var(--dw-text-secondary);
+  font-size: 0.875rem;
+}
+.r-table-export {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--dw-space-2);
+  margin-block: var(--dw-space-2);
+}
+.r-table-export .export-note {
+  flex-basis: 100%;
+  margin: 0;
+}

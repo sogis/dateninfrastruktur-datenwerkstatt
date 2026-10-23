@@ -55,7 +55,8 @@ test('P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/C
   await page.getByLabel('Name des neuen Projekts').fill('Statische Prüfung');
   await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await code(page, 'SELECT 42 AS wert');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.result-grid tbody td')).toHaveText(['42']);
@@ -70,7 +71,8 @@ test('P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/C
   await expect(page.locator('.result-grid tbody td')).toHaveText(['42']);
   expect(page.url()).toBe(url);
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neues R-Skript', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neues R-Skript', exact: true}).click();
   await code(
     page,
     'x <- data.frame(n=42L); stopifnot(as.Date("2024-01-01")==as.Date(19723,origin="1970-01-01")); plot(1:4); cat("R bereit")',

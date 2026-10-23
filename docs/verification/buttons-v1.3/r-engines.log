@@ -1,0 +1,77 @@
+[WebServer] (node:89546) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:89548) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › tests/integration/r-export.spec.ts:4:1 › R direct exports: complete CSV/Parquet, typed values and no project publication (11.9s)
+(node:89614) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [chromium] › tests/integration/r-export.spec.ts:64:1 › R direct exports: approvals, stale scope/mutation/reset and discarded plans (10.9s)
+  ✘  3 [chromium] › tests/integration/r-export.spec.ts:99:51 › R direct exports: genuine cancel terminates a busy R reader and permits recovery (17.6s)
+(node:89713) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [chromium] › tests/integration/r-export.spec.ts:99:51 › R direct exports: genuine timeout terminates a busy R reader and permits recovery (18.2s)
+
+
+  1) [chromium] › tests/integration/r-export.spec.ts:4:1 › R direct exports: complete CSV/Parquet, typed values and no project publication
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Array [
+    -   1,
+    +   "1",
+        "001",
+        null,
+      ]
+
+      52 |   expect(proof.imported.rows).toHaveLength(200);
+      53 |   expect(proof.roundtrip.rows).toHaveLength(350);
+    > 54 |   expect(proof.roundtrip.rows[0]).toEqual([1,'001',null]);
+         |                                   ^
+      55 |   expect(Number.isNaN(proof.roundtrip.rows[1]![2])).toBe(true);
+      56 |   expect(proof.roundtrip.rows[2]![2]).toBe(Infinity);
+      57 |   expect(proof.roundtrip.rows[3]![1]).toBeNull();
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/integration/r-export.spec.ts:54:35
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/integration-r-export-R-dir-c4a52--and-no-project-publication-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/integration-r-export-R-dir-c4a52--and-no-project-publication-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/integration-r-export-R-dir-c4a52--and-no-project-publication-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/integration-r-export-R-dir-c4a52--and-no-project-publication-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/integration/r-export.spec.ts:99:51 › R direct exports: genuine cancel terminates a busy R reader and permits recovery
+
+    Error: browserContext.close: ENOENT: no such file or directory, open '/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/.playwright-artifacts-1/traces/8be6e2a3d4a739873291-e3f0611014334354287a-recording2.network'
+
+       at persistentBrowser.ts:26
+
+      24 |         await cleanup();
+      25 |       } finally {
+    > 26 |         await context.close();
+         |         ^
+      27 |         await rm(path, {recursive: true, force: true});
+      28 |       }
+      29 |     }
+        at Object.context (/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/persistentBrowser.ts:26:9)
+
+    Error: ENOENT: no such file or directory, open '/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/.playwright-artifacts-1/e290e43270c1b59cd1533315f0d9dcdd.zip'
+
+    Error Context: test-results/integration-r-export-R-dir-e85d9-reader-and-permits-recovery-chromium/error-context.md
+
+  2 failed
+    [chromium] › tests/integration/r-export.spec.ts:4:1 › R direct exports: complete CSV/Parquet, typed values and no project publication
+    [chromium] › tests/integration/r-export.spec.ts:99:51 › R direct exports: genuine cancel terminates a busy R reader and permits recovery
+  2 passed (1.0m)

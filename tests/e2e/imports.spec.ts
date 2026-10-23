@@ -8,7 +8,8 @@ async function create(page: Page) {
 }
 async function importCsv(page: Page) {
   await page.getByRole('link', {name: 'Daten', exact: true}).click();
-  await page.getByRole('button', {name: 'Datei hinzufügen', exact: true}).click();
+  await page.getByRole('button', {name: 'Daten hinzufügen', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Datei hinzufügen', exact: true}).click();
   await page
     .getByLabel('Datei (CSV oder Parquet, maximal 128 MiB)')
     .setInputFiles('fixtures/csv-edge-cases.csv');
@@ -44,7 +45,8 @@ test('P2 / AT-008 AT-010 AT-018: confirmed import, reload, data preview, indepen
   const path = await download.path();
   expect(path).toBeTruthy();
   await page.getByRole('link', {name: 'Daten', exact: true}).click();
-  await page.getByRole('button', {name: 'Datei hinzufügen', exact: true}).click();
+  await page.getByRole('button', {name: 'Daten hinzufügen', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Datei hinzufügen', exact: true}).click();
   await page.getByLabel('Datei (CSV oder Parquet, maximal 128 MiB)').setInputFiles({
     name: 'csv-edge-cases.parquet',
     mimeType: 'application/vnd.apache.parquet',
@@ -86,7 +88,8 @@ test('P2 / AT-013: real import surfaces OPFS quota failure without publishing pa
   await create(page);
   await importCsv(page);
   await page.getByRole('link', {name: 'Daten', exact: true}).click();
-  await page.getByRole('button', {name: 'Datei hinzufügen', exact: true}).click();
+  await page.getByRole('button', {name: 'Daten hinzufügen', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Datei hinzufügen', exact: true}).click();
   await page
     .getByLabel('Datei (CSV oder Parquet, maximal 128 MiB)')
     .setInputFiles('fixtures/gemeinden.csv');
@@ -146,7 +149,8 @@ test('P2 / AT-002 AT-024 partial: one import worker survives routes and closes b
   await importCsv(page);
   expect(await engineCount()).toBe(1);
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await page.getByRole('link', {name: 'Daten', exact: true}).click();
   await page.getByRole('button', {name: 'Daten ansehen', exact: true}).click();
   await expect(page.getByRole('cell', {name: '001', exact: true})).toBeVisible();

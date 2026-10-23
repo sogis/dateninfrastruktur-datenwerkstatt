@@ -18,6 +18,7 @@ export async function sqlHarness(
 ) {
   const repository = new MemoryWorkspaceRepository();
   const rEngines: WebREngine[] = [];
+  const sqlEngines: SqlRoomsSqlEngine[] = [];
   const artifacts = artifactStore ?? new MemoryArtifactStore(V1_LIMITS.importFileBytes);
   const service = new WorkspaceService({
     repository,
@@ -54,13 +55,15 @@ export async function sqlHarness(
     },
     createEngines: (sessionId, source) => {
       const runtime = new DuckDbRuntime(sessionId);
+      const sql = new SqlRoomsSqlEngine(runtime, source, 'test');
+      sqlEngines.push(sql);
       return {
         files: new DuckDbFileImportEngine(V1_LIMITS.importFileBytes, runtime),
-        sql: new SqlRoomsSqlEngine(runtime, source, 'test'),
+        sql,
       };
     },
   });
   const document = await service.create('SQL Integration');
   const session = await service.open(document.workspace.id);
-  return {service, session, repository, artifacts, rEngines};
+  return {service, session, repository, artifacts, rEngines, sqlEngines};
 }

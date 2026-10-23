@@ -3,7 +3,7 @@ import type {Page, Route} from '@playwright/test';
 import type {WorkspaceDocument} from '../../src/domain/model';
 import {mkdir, readFile} from 'node:fs/promises';
 
-const evidence = 'docs/verification/projects';
+const evidence = 'docs/verification/buttons-v1.3/projects';
 
 async function createProject(page: Page, name: string) {
   await page.goto('/projects');
@@ -39,8 +39,12 @@ async function servicesModuleOf(page: Page) {
 
 async function importCsv(page: Page, filename: string, csv: string, replace = false) {
   await page.getByRole('link', {name: 'Daten', exact: true}).click();
+  if (!replace) await page.getByRole('button', {name: 'Daten hinzufügen', exact: true}).click();
   await page
-    .getByRole('button', {name: replace ? 'Daten ersetzen' : 'Datei hinzufügen', exact: true})
+    .getByRole(replace ? 'button' : 'menuitem', {
+      name: replace ? 'Daten ersetzen' : 'Datei hinzufügen',
+      exact: true,
+    })
     .click();
   await page.getByLabel('Datei (CSV oder Parquet, maximal 128 MiB)').setInputFiles({
     name: filename,
@@ -68,7 +72,7 @@ function immutableHistory(document: WorkspaceDocument) {
   };
 }
 
-test('Projects: a late real editor module preserves toolbar menu focus and its reset action', async ({
+test('Projects: a late real editor module preserves direct reset focus and its action', async ({
   page,
 }) => {
   await page.setViewportSize({width: 1440, height: 900});
@@ -92,7 +96,8 @@ test('Projects: a late real editor module preserves toolbar menu focus and its r
   await page.route(modulePattern, holdEditorModule);
   try {
     await createProject(page, 'Verzögerter Editor');
-    await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+    await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+    await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
     await expect.poll(() => moduleIntercepted).toBe(true);
     await expect(page.getByText('Editor wird geladen …', {exact: true})).toBeVisible();
     await expect(page.locator('.monaco-editor')).toHaveCount(0);
@@ -104,11 +109,8 @@ test('Projects: a late real editor module preserves toolbar menu focus and its r
     await splitter.press('ArrowDown');
     await expect(splitter).not.toHaveAttribute('aria-valuenow', '45');
 
-    const trigger = page.getByRole('button', {name: 'Weitere Aktionen', exact: true});
-    await trigger.click();
-    const menu = page.getByRole('menu', {name: 'Weitere Aktionen', exact: true});
-    const reset = menu.getByRole('menuitem', {name: 'Arbeitsfläche zurücksetzen', exact: true});
-    await expect(menu).toBeVisible();
+    const reset = page.getByRole('button', {name: 'Arbeitsfläche zurücksetzen', exact: true});
+    await reset.focus();
     await expect(reset).toBeFocused();
     releaseEditor();
 
@@ -116,13 +118,10 @@ test('Projects: a late real editor module preserves toolbar menu focus and its r
     // Monaco keeps its unfocused input textarea at zero size in Firefox.
     await expect(page.getByRole('textbox', {name: 'Analysecode'})).toBeAttached();
     await expect(page.getByText('Editor wird geladen …', {exact: true})).toHaveCount(0);
-    await expect(trigger).toHaveAttribute('aria-expanded', 'true');
-    await expect(menu).toBeVisible();
     await expect(reset).toBeFocused();
     await reset.press('Enter');
     await expect(splitter).toHaveAttribute('aria-valuenow', '45');
-    await expect(menu).toHaveCount(0);
-    await expect(trigger).toBeFocused();
+    await expect(reset).toBeFocused();
   } finally {
     releaseEditor();
     try {
@@ -153,7 +152,7 @@ test('Projects: distinct overview/data pages preserve one session and live SQL/R
   );
   await expect(page.getByLabel('Projektname', {exact: true})).toBeVisible();
   await expect(page.getByRole('heading', {name: 'Analysen', exact: true})).toBeVisible();
-  await expect(page.getByRole('button', {name: 'Datei hinzufügen', exact: true})).toHaveCount(0);
+  await expect(page.getByRole('button', {name: 'Daten hinzufügen', exact: true})).toHaveCount(0);
   await expect(page.locator('.dataset-list')).toHaveCount(0);
   expect(workers).toEqual([]);
   const initial = await documentOf(page);
@@ -163,7 +162,7 @@ test('Projects: distinct overview/data pages preserve one session and live SQL/R
   await expect(page.getByRole('heading', {name: 'Daten', exact: true})).toBeVisible();
   await expect(page.getByLabel('Projektname', {exact: true})).toHaveCount(0);
   await expect(page.getByRole('button', {name: 'Projekt exportieren', exact: true})).toHaveCount(0);
-  await expect(page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true})).toHaveCount(0);
+  await expect(page.getByRole('button', {name: 'Neue Analyse', exact: true})).toHaveCount(0);
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await expect(page.getByRole('region', {name: 'Datenübersicht'})).toContainText('messung');
   await expect(page.getByRole('region', {name: 'Datenübersicht'})).toContainText('2 Zeilen');
@@ -172,7 +171,8 @@ test('Projects: distinct overview/data pages preserve one session and live SQL/R
     path: `${evidence}/${info.project.name}-project-overview.png`,
     fullPage: true,
   });
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   const sqlUrl = page.url();
   await code(page, 'SELECT sum(wert) AS summe FROM data.messung');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
@@ -357,7 +357,8 @@ test('Projects: two SQL run snapshots stay readable and kept results survive edi
   await createProject(page, 'Eingefrorene Läufe');
   await importCsv(page, 'messung.csv', 'id;wert\n1;10\n');
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   const firstCode = 'SELECT i, wert + 11 AS wert FROM range(150) t(i), data.messung ORDER BY i';
   const secondCode = 'SELECT i, wert + 22 AS wert FROM range(150) t(i), data.messung ORDER BY i';
   for (const text of [firstCode, secondCode]) {

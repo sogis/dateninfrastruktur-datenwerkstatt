@@ -1,8 +1,8 @@
 import {test, expect} from '../persistentBrowser';
 import {mkdir, writeFile} from 'node:fs/promises';
 import type {Locator, Page} from '@playwright/test';
-const evidence = 'docs/verification/neutral-v1.2';
-const tooltipEvidence = 'docs/verification/neutral-v1.2/tooltips';
+const evidence = 'docs/verification/buttons-v1.3/neutral';
+const tooltipEvidence = 'docs/verification/buttons-v1.3/neutral/tooltips';
 async function tooltipGeometry(trigger: Locator) {
   return trigger.evaluate((control) => {
     const tooltip = control.parentElement!.querySelector<HTMLElement>('[role="tooltip"]')!;
@@ -77,6 +77,11 @@ test('UI components: labels, native submit, checkbox, errors, busy state, menu a
   await expect(page.getByRole('menuitem', {name: 'Letzte Aktion'})).toBeFocused();
   await page.keyboard.press('Home');
   await expect(page.getByRole('menuitem', {name: 'Erste Aktion'})).toBeFocused();
+  await page.keyboard.press('ArrowDown');
+  await expect(page.getByRole('menuitem', {name: 'Nicht verfügbar'})).toBeFocused();
+  const beforeDisabled = await page.getByLabel('Aktionsstatus').innerText();
+  await page.keyboard.press('Enter');
+  await expect(page.getByLabel('Aktionsstatus')).toHaveText(beforeDisabled);
   await page.keyboard.press('ArrowDown');
   await expect(page.getByRole('menuitem', {name: 'Letzte Aktion'})).toBeFocused();
   await page.keyboard.press('End');
@@ -677,13 +682,21 @@ test('UI screens: project actions, forms, navigation and settings at target view
     await page.setViewportSize(size);
     await expect(page.locator('.sidebar [aria-current="page"]')).toHaveCount(1);
     await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-    const actions = await gaps(page.locator('.archive-actions > .dw-actions > .dw-actions'));
+    const actions = await page
+      .locator('.archive-actions > .dw-actions button')
+      .evaluateAll((buttons) =>
+        buttons.map((b) => {
+          const r = b.getBoundingClientRect();
+          return {left: r.left, right: r.right, top: r.top, bottom: r.bottom};
+        }),
+      );
     for (let i = 1; i < actions.length; i++)
       if (actions[i]!.top === actions[i - 1]!.top)
         expect(actions[i]!.left - actions[i - 1]!.right).toBeCloseTo(8, 2);
     await capture(page, `project-${info.project.name}-${size.width}`);
     await page.getByRole('link', {name: 'Daten', exact: true}).click();
-    await page.getByRole('button', {name: 'Datei hinzufügen', exact: true}).click();
+    await page.getByRole('button', {name: 'Daten hinzufügen', exact: true}).click();
+    await page.getByRole('menuitem', {name: 'Datei hinzufügen', exact: true}).click();
     await expect(page.getByRole('dialog')).toBeVisible();
     await capture(page, `import-${info.project.name}-${size.width}`);
     await page.keyboard.press('Escape');

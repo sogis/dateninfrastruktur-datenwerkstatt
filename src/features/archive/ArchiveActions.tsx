@@ -1,3 +1,4 @@
+import {MenuButton} from '../../ui/ActionMenu';
 import {Button, Input, Select, FormField, ActionGroup, FileInput, Notice} from '../../ui/Controls';
 import {useRef, useState, useSyncExternalStore} from 'react';
 import {useNavigate} from '@tanstack/react-router';
@@ -141,62 +142,70 @@ export function ArchiveActions({session}: {session: EditingSession}) {
     <section className="archive-actions">
       <h2>Projektdatei und Speicher</h2>
       <ActionGroup>
-        <ActionGroup>
-          <Button disabled={busy} onClick={() => setDialog('export')}>
-            Projekt exportieren
-          </Button>
-          <Button
-            disabled={busy || !services.workspaces.canCreate}
-            busy={busyAction === 'duplicate'}
-            busyLabel="Projekt wird dupliziert …"
-            onClick={() =>
-              act('duplicate', async () => {
-                const d = await services.workspaces.duplicate(
-                  doc.workspace.id,
-                  new AbortController().signal,
-                );
-                await navigate({
-                  to: '/projects/$workspaceId',
-                  params: {workspaceId: d.workspace.id},
-                });
-              })
-            }
-          >
-            Projekt duplizieren
-          </Button>
-          <Button
-            disabled={busy}
-            busy={busyAction === 'integrity'}
-            busyLabel="Integrität wird geprüft …"
-            onClick={() =>
-              act('integrity', async () => {
-                const checked = await session.inspectIntegrity(new AbortController().signal, true);
-                setIntegrity(checked);
-                setMessage('Dateilängen und SHA-256 geprüft.');
-              })
-            }
-          >
-            Integrität prüfen
-          </Button>
-        </ActionGroup>
-        <Button
-          variant="secondary"
-          tone="danger"
-          disabled={busy || session.readOnly}
-          busy={busyAction === 'delete-dialog'}
-          busyLabel="Projekt wird vorbereitet …"
-          onClick={() =>
-            act('delete-dialog', async () => {
-              if (session.readOnly) return;
-              await session.flush();
-              setRevision(session.document.revision);
-              setDialog('delete');
-            })
-          }
-        >
-          Projekt löschen
+        <Button disabled={busy} onClick={() => setDialog('export')}>
+          Projekt exportieren
         </Button>
+        <MenuButton
+          label="Projektaktionen"
+          variant="tertiary"
+          actions={[
+            {
+              label: 'Projekt duplizieren',
+              disabled: busy || !services.workspaces.canCreate,
+              busy: busyAction === 'duplicate',
+              busyLabel: 'Projekt wird dupliziert …',
+              onSelect: () =>
+                act('duplicate', async () => {
+                  const d = await services.workspaces.duplicate(
+                    doc.workspace.id,
+                    new AbortController().signal,
+                  );
+                  await navigate({
+                    to: '/projects/$workspaceId',
+                    params: {workspaceId: d.workspace.id},
+                  });
+                }),
+            },
+            {
+              label: 'Integrität prüfen',
+              disabled: busy,
+              busy: busyAction === 'integrity',
+              busyLabel: 'Integrität wird geprüft …',
+              onSelect: () =>
+                act('integrity', async () => {
+                  const checked = await session.inspectIntegrity(
+                    new AbortController().signal,
+                    true,
+                  );
+                  setIntegrity(checked);
+                  setMessage('Dateilängen und SHA-256 geprüft.');
+                }),
+            },
+            {
+              label: 'Projekt löschen',
+              tone: 'danger',
+              separatorBefore: true,
+              disabled: busy || session.readOnly,
+              onSelect: () =>
+                act('delete-dialog', async () => {
+                  if (session.readOnly) return;
+                  await session.flush();
+                  setRevision(session.document.revision);
+                  setDialog('delete');
+                }),
+            },
+          ]}
+        />
       </ActionGroup>
+      {busy && (
+        <p role="status">
+          {busyAction === 'duplicate'
+            ? 'Projekt wird dupliziert …'
+            : busyAction === 'integrity'
+              ? 'Integrität wird geprüft …'
+              : 'Projektaktion wird verarbeitet …'}
+        </p>
+      )}
       {integrity && (
         <Notice tone="info">
           {integrity.missing.length} fehlende · {integrity.corrupt.length} beschädigte ·{' '}

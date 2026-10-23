@@ -1,0 +1,14 @@
+[WebServer] (node:90984) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 5 tests using 1 worker
+
+(node:90985) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/action-buttons.spec.ts:3:1 › Action buttons v1.3: menu, split, overflow, keyboard, busy and dialog focus (787ms)
+  ✓  2 [chromium] › tests/e2e/action-buttons.spec.ts:65:1 › Action buttons v1.3: connected geometry, viewport edges, enlarged text and touch targets (952ms)
+  ✓  3 [chromium] › tests/e2e/design-system.spec.ts:43:1 › UI components: labels, native submit, checkbox, errors, busy state, menu and dialog keyboard (4.2s)
+  ✓  4 [chromium] › tests/e2e/projects.spec.ts:75:1 › Projects: a late real editor module preserves direct reset focus and its action (1.6s)
+  ✓  5 [chromium] › tests/e2e/r-export.spec.ts:4:1 › R direct export UI: full downloads from preview, stable CSV default and unchanged project (13.6s)
+
+  5 passed (21.6s)

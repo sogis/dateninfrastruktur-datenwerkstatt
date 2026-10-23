@@ -1,3 +1,4 @@
+import {MenuButton} from '../../ui/ActionMenu';
 import {numericColumn} from '../../ui/table';
 import {
   Button,
@@ -173,14 +174,15 @@ export function DataSection() {
   return (
     <section>
       <PanelHeader title="Datensätze">
-        <ActionGroup>
-          <Button disabled={session.readOnly || busy} onClick={() => setImporting({})}>
-            Datei hinzufügen
-          </Button>
-          <Button disabled={session.readOnly || busy} onClick={() => setPortal({})}>
-            Aus Portal hinzufügen
-          </Button>
-        </ActionGroup>
+        <MenuButton
+          label="Daten hinzufügen"
+          variant="primary"
+          disabled={session.readOnly || busy}
+          actions={[
+            {label: 'Datei hinzufügen', onSelect: () => setImporting({})},
+            {label: 'Aus Portal hinzufügen', onSelect: () => setPortal({})},
+          ]}
+        />
       </PanelHeader>
       {datasets.length === 0 ? (
         <EmptyState>Noch keine Datensätze.</EmptyState>

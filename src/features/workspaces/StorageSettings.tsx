@@ -1,3 +1,4 @@
+import {MenuButton} from '../../ui/ActionMenu';
 import {Button, ActionGroup, Notice} from '../../ui/Controls';
 import {useEffect, useRef, useState} from 'react';
 import {Link} from '@tanstack/react-router';
@@ -31,14 +32,20 @@ export function StorageSettings() {
       <div className="storage-settings-actions">
         <ActionGroup>
           <Button onClick={refresh}>Speicherstatus aktualisieren</Button>
-          <Link to="/projects" className="dw-button dw-button--secondary">
-            Projekte verwalten und gezielt löschen
-          </Link>
-        </ActionGroup>
-        <ActionGroup>
-          <Button disabled={busy} onClick={() => setConfirm(true)}>
-            Nicht referenzierte Projektreste bereinigen
-          </Button>
+          <MenuButton
+            label="Speicher verwalten"
+            variant="tertiary"
+            actions={[
+              {label: 'Projekte verwalten und gezielt löschen', link: <Link to="/projects" />},
+              {
+                label: 'Nicht referenzierte Projektreste bereinigen',
+                disabled: busy,
+                tone: 'danger',
+                separatorBefore: true,
+                onSelect: () => setConfirm(true),
+              },
+            ]}
+          />
         </ActionGroup>
       </div>
       {receipt && <Notice tone="info">{receipt}</Notice>}

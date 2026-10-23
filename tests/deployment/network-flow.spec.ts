@@ -32,7 +32,8 @@ test('P7 AT-056 AT-068: static public/local → SQL → R → SQL → PNG/archiv
   await page.getByLabel('Name des neuen Projekts').fill('Netzwerk Rundlauf');
   await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await page.getByRole('link', {name: 'Daten', exact: true}).click();
-  await page.getByRole('button', {name: 'Datei hinzufügen', exact: true}).click();
+  await page.getByRole('button', {name: 'Daten hinzufügen', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Datei hinzufügen', exact: true}).click();
   await page.getByLabel('Datei (CSV oder Parquet, maximal 128 MiB)').setInputFiles({
     name: 'lokal.csv',
     mimeType: 'text/csv',
@@ -42,7 +43,8 @@ test('P7 AT-056 AT-068: static public/local → SQL → R → SQL → PNG/archiv
   await page.getByRole('button', {name: 'Import bestätigen', exact: true}).click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
-  await page.getByRole('button', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   const sqlUrl = page.url();
   await code(page, 'SELECT * FROM lokal');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
@@ -57,7 +59,8 @@ test('P7 AT-056 AT-068: static public/local → SQL → R → SQL → PNG/archiv
   );
   try {
     await page.getByRole('link', {name: 'Daten', exact: true}).click();
-    await page.getByRole('button', {name: 'Aus Portal hinzufügen', exact: true}).click();
+    await page.getByRole('button', {name: 'Daten hinzufügen', exact: true}).click();
+    await page.getByRole('menuitem', {name: 'Aus Portal hinzufügen', exact: true}).click();
     await page.getByLabel('Dataset-ID oder Portal-URL').fill(key);
     await page.getByRole('button', {name: 'Kontext laden', exact: true}).click();
     await page.getByRole('button', {name: 'Portalvorschau laden', exact: true}).click();

@@ -1,6 +1,6 @@
 # Designsystem Datenwerkstatt – neutrale Oberfläche
 
-**Version:** 1.2
+**Version:** 1.3
 **Stand:** 21. Oktober 2026
 **Standardtheme:** `neutral-blue`
 **Status:** Verbindliche aktuelle Projektfassung; abgestimmte Konventionen sind Bestandteil dieses Designsystems. Umsetzungs- und Prüfnachweise stehen separat im Implementierungsstatus.
@@ -23,7 +23,7 @@ führt keine neuen fachlichen Validierungsregeln ein.
 fachlichen oder gestalterischen Grund. „DARF“ bezeichnet eine zulässige Option.
 
 **Massgebliche Fassung:** Diese Datei (`DESIGN_SYSTEM.md`) ist die aktuelle
-Gestaltungsreferenz für die Anwendung. `DESIGN_SYSTEM_NEUTRAL_v1.2.md` enthält
+Gestaltungsreferenz für die Anwendung. `DESIGN_SYSTEM_NEUTRAL_v1.3.md` enthält
 die nachgeführte Referenzfassung; `DESIGN_SYSTEM_NEUTRAL.md` ist historisch.
 Die am 21. Oktober 2026 abgestimmten Regeln sind nachfolgend direkt eingearbeitet
 und benötigen bei der Umsetzung keine erneute Ausnahme oder Übersteuerung.
@@ -399,6 +399,112 @@ Spezifikation autorisiert keine Änderung des Löschverhaltens.
   sichtbare Reihenfolge stimmen überein.
 - Ein Link wird nicht mit `href="#"` als Aktionsbutton verwendet.
 
+### 6.5 Musterwahl: direkte Aktion, MenuButton, SplitButton und ActionMenu
+
+Die Anzahl sichtbarer Buttons wird nicht durch möglichst viele Menüs minimiert.
+Die **Häufigkeit, fachliche Zusammengehörigkeit und Vorhersagbarkeit** einer
+Aktion bestimmen ihre Darstellung. Verwandte Funktionen dürfen zusammengefasst
+werden; wichtige oder zeitkritische Aktionen bleiben unmittelbar erreichbar.
+
+| Muster | Verhalten | Geeigneter Einsatz |
+| --- | --- | --- |
+| `Button` | Aktivierung führt die beschriftete Aktion unmittelbar aus. | Einzelne, häufige oder führende Aktion. |
+| `MenuButton` | Der gesamte Button öffnet ein Menü; er führt selbst keine fachliche Aktion aus. | Mehrere gleichwertige Aktionen ohne sinnvollen Standard. |
+| `SplitButton` | Hauptfläche führt die ausdrücklich beschriftete Standardaktion aus; separater Pfeil öffnet alternative Ausführungen derselben Aktion. | Eine klar dominierende Standardaktion mit wenigen eng verwandten Varianten. |
+| `ActionMenu` (Overflow-Menü) | Beschriftung „Weitere Aktionen“ oder ein eindeutig benanntes Drei-Punkte-Icon öffnet untergeordnete Aktionen. | Selten genutzte, kontextuelle oder administrative Aktionen. |
+
+- Ein `SplitButton` ist **kein** gewöhnlicher Dropdown-Button: Seine Hauptfläche
+  führt sofort eine Aktion aus. Bei einem `MenuButton` und `ActionMenu` öffnet
+  jede Aktivierung zunächst nur das Menü.
+- Ein `SplitButton` SOLL nur verwendet werden, wenn die Standardaktion aus
+  Nutzersicht naheliegt und die Menüeinträge Varianten **derselben Operation**
+  sind, beispielsweise verschiedene Ausgabeformate. Gleichrangige Wege zu
+  einem Ziel rechtfertigen keinen willkürlichen Standard; dafür ist ein
+  `MenuButton` vorgesehen.
+- Zusammengehörige Aktionen werden nicht allein deshalb in einem
+  `SplitButton` gruppiert, weil sie auf derselben Werkzeugleiste stehen.
+  Ansichtsumschaltung, Zustandsauswahl und Navigation werden bei Bedarf als
+  Tabs, Auswahl-Controls oder Links gestaltet, nicht als Split-Aktionen.
+- Ein Overflow-Menü SOLL keine regelmässig benötigten Hauptaktionen verstecken.
+  Bei nur einer untergeordneten Aktion ist ein direkt sichtbarer Tertiary-Button
+  in der Regel verständlicher, sofern der verfügbare Platz dies zulässt.
+- Einträge mit destruktiver Bedeutung werden **nicht** als Varianten einer
+  harmlosen Split-Hauptaktion angeboten. In Menüs bleiben sie sprachlich
+  eindeutig, erhalten die Danger-Rolle und respektieren vorhandene
+  Bestätigungs- und Berechtigungsregeln.
+
+### 6.6 MenuButton und SplitButton: sichtbarer Aufbau
+
+`MenuButton` und `SplitButton` übernehmen `variant`, `tone` und `size` aus
+Abschnitt 6.1 und verwenden die vorhandenen semantischen Tokens. Sie begründen
+keine neue Aktionsfarbe oder Buttongewichtung.
+
+**MenuButton:** Er besteht aus einer beschrifteten Schaltfläche mit optionalem
+nach unten zeigendem Chevron (`chevron-down`). Die Beschriftung beschreibt die
+Aktionsfamilie, zum Beispiel „Exportieren“; sie verspricht keine sofortige
+Ausführung. Das ganze Control ist eine einzige interaktive Schaltfläche.
+
+**SplitButton:** Er besteht aus zwei unmittelbar verbundenen, **separat
+fokussierbaren** nativen Buttons. Links steht die konkrete Hauptaktion,
+rechts der Menüauslöser mit Chevron. Ein Klick auf die Hauptfläche führt
+**ohne Menüöffnung** genau die beschriftete Aktion aus; ein Klick auf den Pfeil
+öffnet **ohne Ausführung** das Variantenmenü. Zwischen beiden Flächen liegt
+lediglich eine feine Trennung. Es gibt keinen Abstand wie zwischen
+unabhängigen Buttons. Aussenkontur und äussere Radien bilden optisch ein
+zusammenhängendes Control; innere Ecken sind nicht gerundet.
+
+- Der Menüauslöser eines `SplitButton` MUSS einen aussagekräftigen zugänglichen
+  Namen besitzen, etwa „Weitere Exportformate“. Der Chevron allein genügt
+  nicht. Nur dieser zweite Button erhält die Menü-ARIA-Eigenschaften; die
+  Hauptaktion bleibt ein normaler Button.
+- Der Hauptbutton führt eine **stabile** Standardaktion aus. Die Hauptaktion
+  darf nach Wahl eines Menüeintrags nicht unbemerkt auf „zuletzt verwendet“
+  umschalten. Eine ausdrücklich einstellbare Standardaktion wäre eine separate,
+  sichtbar erklärte Produktfunktion, nicht das Standardverhalten.
+- Beide Teilflächen behalten eine eigenständige Tastatur-Fokusmarkierung,
+  verständliche Hover-/Pressed-Zustände und die im Designsystem festgelegten
+  Mindestgrössen. Auch der Pfeilauslöser muss mit grobem Zeiger ausreichend
+  gross bedienbar sein; eine schmale dekorative Pfeilfläche ist nicht zulässig.
+- Disabled- und Busy-Zustände werden **aktionsbezogen** gehandhabt: Eine
+  laufende Hauptaktion verhindert Doppelaufrufe; weiterhin zulässige
+  Alternativen dürfen erreichbar bleiben. Ein vollständiges Deaktivieren der
+  Gruppe ist nur zulässig, wenn keine ihrer Aktionen verfügbar ist. Die
+  Gründe sind bei Bedarf zugänglich erklärbar.
+- Wenn keine Alternativen vorhanden sind, wird aus einem `SplitButton` ein
+  normaler `Button`. Ein leeres Menü oder ein dauerhaft funktionsloser Pfeil
+  wird nicht angezeigt.
+
+### 6.7 ActionMenu (Overflow) und gemeinsame Menüinfrastruktur
+
+`ActionMenu` bleibt der Name für das bestehende Menü mit untergeordneten
+Aktionen. In einer Werkzeugleiste ist „Weitere Aktionen“ eine verständliche
+Beschriftung. In engen Tabellenzeilen DARF ein Icon-only-Button mit lokalem
+Bootstrap-Icon `three-dots` verwendet werden, sofern sein zugänglicher Name
+präzise ist, zum Beispiel „Aktionen für [Elementname]“. Ein solches
+Overflow-Menü besitzt **keine** direkt ausführbare Standardaktion.
+
+`MenuButton`, der Menüpfeil eines `SplitButton` und `ActionMenu` SOLLEN dieselbe
+Menüinfrastruktur und dieselben Regeln aus Abschnitt 10.2 verwenden. Die
+Muster unterscheiden sich im Auslöser und in der Auswahl der Aktionen,
+**nicht** in der Tastatur- oder Fokuslogik. Damit entsteht keine parallele
+Implementierung für jede Buttonart.
+
+Gemeinsame visuelle Regeln:
+
+- Menüflächen verwenden `surface`, Text `text`, passende Hover-/Fokusrollen,
+  den vorhandenen Controlradius und einen Schatten ausschliesslich auf dem
+  schwebenden Menü. Lange Einträge dürfen lesbar umbrechen.
+- Menügruppen dürfen durch neutrale Trennlinien gegliedert werden. Einträge
+  besitzen aussagekräftige Beschriftungen und ein ausreichend grosses
+  Bedienziel; reine Icons sind im Menü nicht der Standard.
+- Menüs überlagern die Arbeitsfläche, verändern ihr Layout nicht und werden an
+  den Viewportgrenzen umpositioniert. Eine seitliche oder vertikale
+  abgeschnittene Darstellung ist nicht zulässig.
+
+Die Einbindung neuer Muster ändert **keine** fachlichen Abläufe, Dialoge,
+Autorisierungsregeln oder Bestätigungen. Die Entscheidung, welche konkreten
+Aktionen unter welchem Auslöser erscheinen, bleibt Sache der jeweiligen Ansicht.
+
 ## 7. Zustände und ihr Zusammenspiel
 
 | Zustand                   | Bedeutung                             | Verbindliches Verhalten                                                                                           |
@@ -581,16 +687,47 @@ umbrechen; Buttons und Inhalte bleiben auch bei geringer Höhe erreichbar.
 Ein überhoher Dialog erhält zugängliches Scrollen. Fokus und Fehlermeldungen
 dürfen nicht durch fixierte Bereiche verdeckt werden.
 
-### 10.2 ActionMenu
+### 10.2 Gemeinsames Aktionsmenü und Tastaturbedienung
 
-Ein ActionMenu unterstützt Tastaturöffnung, Pfeiltasten, Home/End, Escape und
-Fokusrückgabe. Offener Zustand, Auslöser und Menü sind semantisch verknüpft.
-Die Positionierung bleibt innerhalb des Viewports. Ein geöffnetes Menü
-überlagert Inhalte, ohne sie umzubrechen.
+Das bestehende `ActionMenu` und die in Abschnitt 6.5–6.7 beschriebenen
+Menüauslöser verwenden einen gemeinsamen zugänglichen Menüvertrag. Für Menüs
+mit Befehlen gelten die WAI-ARIA-Menu-Button- und Menu-Patterns. [7][8]
+
+- **Auslöser:** Ein natives `<button type="button">` besitzt einen zugänglichen
+  Namen, `aria-haspopup="menu"` und ein zum Sichtbarkeitszustand passendes
+  `aria-expanded="true"` oder `"false"`. `aria-controls` DARF zusätzlich die
+  ID des zugeordneten Menüs referenzieren, sofern das Ziel vorhanden ist.
+  Bei einem Split-Button trägt ausschliesslich sein Pfeilbutton diese Angaben.
+- **Öffnen:** `Enter` und `Space` am Auslöser öffnen das Menü und fokussieren
+  den ersten verfügbaren Menüeintrag. `ArrowDown` DARF dasselbe tun;
+  `ArrowUp` DARF öffnen und den letzten verfügbaren Eintrag fokussieren.
+  Ein blosses Hover öffnet kein Aktionsmenü.
+- **Im Menü:** `ArrowDown`/`ArrowUp` bewegen den Fokus zwischen Einträgen;
+  `Home`/`End` springen zum ersten/letzten Eintrag. `Enter` bzw. `Space`
+  aktivieren eine gewählte Aktion. Das gewählte Element und das Menü
+  schliessen sich anschliessend, sofern die Aktion nicht ausdrücklich eine
+  andere Interaktion verlangt. Deaktivierte Aktionen dürfen nicht ausgeführt
+  werden; `aria-disabled` allein verhindert keine Aktivierung.
+- **Schliessen:** `Escape` schliesst das Menü und bringt den Fokus zum
+  auslösenden Button zurück. Ein Klick ausserhalb oder eine abgeschlossene
+  Aktion schliesst ebenfalls. `Tab`/`Shift+Tab` verlassen das Menü in der
+  logischen Fokusreihenfolge und schliessen es, ohne den Fokus darin zu fangen.
+- **Semantik:** Die Menüfläche besitzt `role="menu"`; Befehle werden als
+  `menuitem` mit einem verständlichen Namen angeboten. Links dürfen im
+  Menü die Linknavigation beibehalten. Menüeinträge sind nicht unverbundene
+  Buttons mit aufgemalten ARIA-Rollen; Fokusführung und Tastaturverhalten
+  MÜSSEN die gewählte Semantik tatsächlich erfüllen.
+- **Layout:** Der Menüinhalt wird innerhalb des sichtbaren Viewports
+  positioniert und schwebt über dem Inhalt, ohne ihn umzubrechen. Bei
+  Scrollen, Viewportänderungen, Kontextwechseln und Unmount wird die Position
+  korrigiert beziehungsweise das Menü sauber geschlossen.
 
 Menüeinträge verwenden klare Aktionsnamen. Destruktive Einträge sind textlich
 eindeutig, erhalten die Danger-Rolle und werden bei Bedarf durch Abstand oder
-eine neutrale Trennlinie von häufigen Aktionen getrennt.
+eine neutrale Trennlinie von häufigen Aktionen getrennt. Fachliche Sperren und
+Bestätigungen bleiben wirksam. Enthält ein Popup Formulare, komplexe
+Einstellungen oder frei fokussierbare Inhalte, ist es **kein** solches
+Aktionsmenü; dafür wird das passende Popover- oder Dialogmuster verwendet.
 
 ### 10.3 Tooltip
 
@@ -1103,8 +1240,9 @@ reine Vite-Entwicklungsansicht ohne Workspace-/Engine-Abhängigkeit und wird
 nicht in den Produktbuild aufgenommen.
 
 Sie zeigt alle Buttongewichtungen mit beiden Bedeutungen, IconButtons,
-Formulare, Checkboxen, Radios, Statusmeldungen, Badges, Navigation, leere
-Zustände, Tabellen, Dialoge, Menüs und Tooltips. Lange Beschriftungen und
+MenuButtons, SplitButtons, ActionMenus, Formulare, Checkboxen, Radios,
+Statusmeldungen, Badges, Navigation, leere Zustände, Tabellen, Dialoge, Menüs
+und Tooltips. Lange Beschriftungen und
 mehrzeilige Texte gehören ausdrücklich dazu.
 
 ### 15.1 Visuelle und funktionale Abnahme
@@ -1127,6 +1265,15 @@ mehrzeilige Texte gehören ausdrücklich dazu.
       Optionalzusatz, native `required`-Semantik und Fehlerzuordnung funktionieren.
 - [ ] Menüs und Dialoge sind mit Tastatur bedienbar; Fokusbegrenzung und
       Fokusrückgabe funktionieren. Tooltips erfüllen den beschriebenen Lebenszyklus.
+- [ ] `MenuButton`, `SplitButton` und `ActionMenu` unterscheiden sich
+      sichtbar und im Verhalten: Menüöffnung ohne Aktion, direkte stabile
+      Standardaktion plus separater Pfeil, beziehungsweise Overflow-Menü.
+- [ ] Split-Hauptfläche und Pfeil sind separat fokussierbar und bedienbar;
+      Fokus, Busy, Disabled, Danger und die Zielgrössen sind auch im verbundenen
+      Control korrekt. Die Wahl einer Variante ändert die Standardaktion nicht.
+- [ ] Alle Aktionsmenüs besitzen korrekte ARIA-Zustände, Fokusführung und
+      Tastaturbedienung (Enter, Space, Pfeile, Home/End, Escape und Tab);
+      Menüschliessung und Fokus-Rückgabe funktionieren bei Kontextwechseln.
 - [ ] Busy verhindert doppelte Ausführung; fachlich verfügbares Abbrechen
       bleibt erreichbar. Bestehende Sperren und Bestätigungen wirken weiter.
 - [ ] Bei 1440 × 900, 1280 × 800, geringer Höhe und 200 % Zoom überlagern sich
@@ -1154,7 +1301,8 @@ mehrzeilige Texte gehören ausdrücklich dazu.
 Für die neutrale Designmigration gelten Typecheck, ein Produktionsbuild und
 fünf gezielte Chromium-Fälle:
 
-1. Komponentenreferenz mit Rollen, Zuständen, Tastaturbedienung und Kontrasten.
+1. Komponentenreferenz mit Rollen, Zuständen, Menü-/Split-Button-Mustern,
+   Tastaturbedienung und Kontrasten.
 2. Tooltip-Lebenszyklus einschliesslich Zeigerwechsel und Timerbereinigung.
 3. Reale Ansichten mit Navigation, Tabellen, Optionalzusätzen und Fehlerlayout.
 4. Der bestehende einzelne SQL-/R-Geometriefall mit echten Ergebnissen.
@@ -1175,10 +1323,10 @@ Browserzoom-Abnahme bezeichnet.
 
 Tatsächliche Befehle, Exitcodes, geprüfte Revision, Screenshots und verbleibende
 Grenzen werden im Implementierungsstatus dokumentiert. Nicht ausgeführte
-Prüfungen werden benannt. Die neutrale Migration verwendet
-`verification/neutral-v1.2/`; historische Nachweise werden nicht überschrieben.
+Prüfungen werden benannt. Die Buttonerweiterung v1.3 verwendet `verification/buttons-v1.3/`; historische
+Nachweise der neutralen Migration unter `verification/neutral-v1.2/` werden nicht überschrieben.
 Die abgestimmten Regeln sind in dieser Projektfassung und der nachgeführten
-Referenz `DESIGN_SYSTEM_NEUTRAL_v1.2.md` enthalten.
+Referenz `DESIGN_SYSTEM_NEUTRAL_v1.3.md` enthalten.
 
 ## 16. Anhang: rechnerische Farbprüfung
 
@@ -1237,6 +1385,11 @@ der Schrift; sie schreiben diese konkrete Palette nicht vor.
   <https://github.com/adobe-fonts/source-sans/blob/release/source-sans-3VF.css>
 - **[6] W3C – WCAG 2.2, Understanding SC 1.4.13: Content on Hover or Focus:**
   <https://www.w3.org/WAI/WCAG22/Understanding/content-on-hover-or-focus.html>
+
+- **[7] W3C WAI-ARIA APG – Menu Button Pattern:**
+  <https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/>
+- **[8] W3C WAI-ARIA APG – Menu and Menubar Pattern:**
+  <https://www.w3.org/WAI/ARIA/apg/patterns/menubar/>
 
 Die W3C-Understanding-Dokumente erläutern die normativen Kriterien. Die
 normative WCAG-2.2-Spezifikation steht unter <https://www.w3.org/TR/WCAG22/>.
