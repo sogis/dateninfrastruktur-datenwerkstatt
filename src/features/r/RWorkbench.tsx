@@ -101,11 +101,12 @@ export function RWorkbench({
       });
   };
   useEffect(() => {
-    if (!started.current && !session.readOnly) {
+    // Returning from another project page must not compete with an ongoing run.
+    if (!started.current && !session.readOnly && !busy) {
       started.current = true;
       void service.activate(analysis.id).catch(report);
     }
-  }, [service, session, analysis.id]);
+  }, [service, session, analysis.id, busy]);
   const runs = Object.values(session.document.runs)
     .filter((r) => r.snapshot.analysisId === analysis.id)
     .reverse()

@@ -1,0 +1,198 @@
+
+Running 21 tests using 1 worker
+
+(node:81777) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/navigation.spec.ts:57:1 › Navigation: project settings follow R and preserve edits and the sidebar view (20.5s)
+  ✓   2 [chromium] › tests/e2e/project-settings.spec.ts:75:1 › Project settings: engine-free navigation, saved sidebar, global options, keyboard and responsive layout (1.8s)
+  ✓   3 [chromium] › tests/e2e/project-settings.spec.ts:139:1 › Project settings: real SQL/R results, model identity, undo, editor options and live scope survive (17.1s)
+  ✓   4 [chromium] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active SQL continues through settings and cancels after return (7.1s)
+  ✓   5 [chromium] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active R continues through settings and cancels after return (22.2s)
+  ✓   6 [chromium] › tests/e2e/project-settings.spec.ts:278:1 › Project settings: writer lease and stored files survive cleanup while reader edits personal settings (1.4s)
+  ✓   7 [chromium] › tests/e2e/projects.spec.ts:262:1 › Projects: a failed metadata save blocks external navigation and preserves the editing session until retry (1.1s)
+(node:83991) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   8 [firefox] › tests/e2e/navigation.spec.ts:57:1 › Navigation: project settings follow R and preserve edits and the sidebar view (16.9s)
+  ✓   9 [firefox] › tests/e2e/project-settings.spec.ts:75:1 › Project settings: engine-free navigation, saved sidebar, global options, keyboard and responsive layout (2.9s)
+  ✘  10 [firefox] › tests/e2e/project-settings.spec.ts:139:1 › Project settings: real SQL/R results, model identity, undo, editor options and live scope survive (12.1s)
+(node:84114) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  11 [firefox] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active SQL continues through settings and cancels after return (12.1s)
+(node:84145) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  12 [firefox] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active R continues through settings and cancels after return (27.0s)
+(node:84213) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [firefox] › tests/e2e/project-settings.spec.ts:278:1 › Project settings: writer lease and stored files survive cleanup while reader edits personal settings (3.5s)
+  ✓  14 [firefox] › tests/e2e/projects.spec.ts:262:1 › Projects: a failed metadata save blocks external navigation and preserves the editing session until retry (3.0s)
+(node:84260) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  15 [webkit] › tests/e2e/navigation.spec.ts:57:1 › Navigation: project settings follow R and preserve edits and the sidebar view (17.9s)
+  ✓  16 [webkit] › tests/e2e/project-settings.spec.ts:75:1 › Project settings: engine-free navigation, saved sidebar, global options, keyboard and responsive layout (2.2s)
+  ✓  17 [webkit] › tests/e2e/project-settings.spec.ts:139:1 › Project settings: real SQL/R results, model identity, undo, editor options and live scope survive (19.5s)
+  ✓  18 [webkit] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active SQL continues through settings and cancels after return (9.3s)
+  ✘  19 [webkit] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active R continues through settings and cancels after return (28.6s)
+(node:84574) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  20 [webkit] › tests/e2e/project-settings.spec.ts:278:1 › Project settings: writer lease and stored files survive cleanup while reader edits personal settings (2.1s)
+  ✓  21 [webkit] › tests/e2e/projects.spec.ts:262:1 › Projects: a failed metadata save blocks external navigation and preserves the editing session until retry (1.5s)
+
+
+  1) [firefox] › tests/e2e/project-settings.spec.ts:139:1 › Project settings: real SQL/R results, model identity, undo, editor options and live scope survive
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  getByRole('textbox', { name: 'Analysecode' })
+    Expected: visible
+    Received: hidden
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toBeVisible" getByRole('textbox', { name: 'Analysecode' }) with timeout 10000ms
+      - waiting for getByRole('textbox', { name: 'Analysecode' })
+        19 × locator resolved to <textarea wrap="off" tabindex="0" data-mprt="7" role="textbox" autocorrect="off" autocomplete="off" spellcheck="false" autocapitalize="off" aria-required="false" aria-multiline="true" aria-label="Analysecode" aria-autocomplete="both" aria-roledescription="editor" class="inputarea monaco-mouse-cursor-text"></textarea>
+           - unexpected value "hidden"
+
+
+      48 |
+      49 | async function enter(page: Page, value: string) {
+    > 50 |   await expect(page.getByRole('textbox', {name: 'Analysecode'})).toBeVisible();
+         |                                                                  ^
+      51 |   const input = page.getByRole('textbox', {name: 'Analysecode'});
+      52 |   await input.press('ControlOrMeta+a');
+      53 |   await page.keyboard.insertText(value);
+        at enter (/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/project-settings.spec.ts:50:66)
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/project-settings.spec.ts:154:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-matrix/e2e-project-settings-Proje-a9d37-ions-and-live-scope-survive-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../tmp/datenwerkstatt-project-settings-matrix/e2e-project-settings-Proje-a9d37-ions-and-live-scope-survive-firefox/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-matrix/e2e-project-settings-Proje-a9d37-ions-and-live-scope-survive-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../tmp/datenwerkstatt-project-settings-matrix/e2e-project-settings-Proje-a9d37-ions-and-live-scope-survive-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [firefox] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active SQL continues through settings and cancels after return
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  getByRole('textbox', { name: 'Analysecode' })
+    Expected: visible
+    Received: hidden
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toBeVisible" getByRole('textbox', { name: 'Analysecode' }) with timeout 10000ms
+      - waiting for getByRole('textbox', { name: 'Analysecode' })
+        19 × locator resolved to <textarea wrap="off" tabindex="0" data-mprt="7" role="textbox" autocorrect="off" autocomplete="off" spellcheck="false" autocapitalize="off" aria-required="false" aria-multiline="true" aria-label="Analysecode" aria-autocomplete="both" aria-roledescription="editor" class="inputarea monaco-mouse-cursor-text"></textarea>
+           - unexpected value "hidden"
+
+
+      48 |
+      49 | async function enter(page: Page, value: string) {
+    > 50 |   await expect(page.getByRole('textbox', {name: 'Analysecode'})).toBeVisible();
+         |                                                                  ^
+      51 |   const input = page.getByRole('textbox', {name: 'Analysecode'});
+      52 |   await input.press('ControlOrMeta+a');
+      53 |   await page.keyboard.insertText(value);
+        at enter (/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/project-settings.spec.ts:50:66)
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/project-settings.spec.ts:238:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-matrix/e2e-project-settings-Proje-90beb-gs-and-cancels-after-return-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../tmp/datenwerkstatt-project-settings-matrix/e2e-project-settings-Proje-90beb-gs-and-cancels-after-return-firefox/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-matrix/e2e-project-settings-Proje-90beb-gs-and-cancels-after-return-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../tmp/datenwerkstatt-project-settings-matrix/e2e-project-settings-Proje-90beb-gs-and-cancels-after-return-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [firefox] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active R continues through settings and cancels after return
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  getByRole('textbox', { name: 'Analysecode' })
+    Expected: visible
+    Received: hidden
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toBeVisible" getByRole('textbox', { name: 'Analysecode' }) with timeout 10000ms
+      - waiting for getByRole('textbox', { name: 'Analysecode' })
+        24 × locator resolved to <textarea wrap="off" tabindex="0" data-mprt="7" role="textbox" autocorrect="off" autocomplete="off" spellcheck="false" autocapitalize="off" aria-required="false" aria-multiline="true" aria-label="Analysecode" aria-autocomplete="both" aria-roledescription="editor" class="inputarea monaco-mouse-cursor-text"></textarea>
+           - unexpected value "hidden"
+
+
+      48 |
+      49 | async function enter(page: Page, value: string) {
+    > 50 |   await page.locator('.monaco-editor').click();
+         |                                                ^
+      51 |   const input = page.getByRole('textbox', {name: 'Analysecode'});
+      52 |   await input.press('ControlOrMeta+a');
+      53 |   await page.keyboard.insertText(value);
+        at enter (/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/project-settings.spec.ts:50:66)
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/project-settings.spec.ts:238:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-matrix/e2e-project-settings-Proje-061ab-gs-and-cancels-after-return-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../tmp/datenwerkstatt-project-settings-matrix/e2e-project-settings-Proje-061ab-gs-and-cancels-after-return-firefox/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-matrix/e2e-project-settings-Proje-061ab-gs-and-cancels-after-return-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../tmp/datenwerkstatt-project-settings-matrix/e2e-project-settings-Proje-061ab-gs-and-cancels-after-return-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [webkit] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active R continues through settings and cancels after return
+
+    Error: expect(received).toBeNull()
+
+    Received: "R initialisieren"
+
+    Call Log:
+    - Timeout 10000ms exceeded while waiting on the predicate
+
+      261 |       expect((await sessionOf(page)).id).toBe(before.id);
+      262 |       await page.getByRole('button', {name: 'Abbrechen', exact: true}).click();
+    > 263 |       await expect.poll(async () => (await sessionOf(page)).busy).toBeNull();
+          |                                                                   ^
+      264 |       await expect(page.locator('.run-summary-message')).toHaveText('Ausführung abgebrochen');
+      265 |       await expect(page.getByRole('button', {name: 'Ausführen', exact: true})).toBeEnabled({
+      266 |         timeout: 60000,
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/project-settings.spec.ts:263:67
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-matrix/e2e-project-settings-Proje-061ab-gs-and-cancels-after-return-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../tmp/datenwerkstatt-project-settings-matrix/e2e-project-settings-Proje-061ab-gs-and-cancels-after-return-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-matrix/e2e-project-settings-Proje-061ab-gs-and-cancels-after-return-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../tmp/datenwerkstatt-project-settings-matrix/e2e-project-settings-Proje-061ab-gs-and-cancels-after-return-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [firefox] › tests/e2e/project-settings.spec.ts:139:1 › Project settings: real SQL/R results, model identity, undo, editor options and live scope survive
+    [firefox] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active SQL continues through settings and cancels after return
+    [firefox] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active R continues through settings and cancels after return
+    [webkit] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active R continues through settings and cancels after return
+  17 passed (3.9m)

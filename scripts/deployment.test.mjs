@@ -16,6 +16,8 @@ describe('Static navigation allowlist', () => {
       for (const path of [
         '/projects/abc/diagnostics',
         '/projects/abc/diagnostics/',
+        '/projects/abc/settings',
+        '/projects/abc/settings/',
         '/projects/abc/data',
         '/projects/abc/sql/def',
         '/settings',
@@ -26,6 +28,8 @@ describe('Static navigation allowlist', () => {
         '/projects/abc/diagnostics/extra',
         '/projects/abc/other',
         '/projects/abc/diagnostics.js',
+        '/projects/abc/settings/extra',
+        '/projects/abc/settings.js',
         '/assets/missing.js',
         '/vendor/missing.wasm',
         '/workspaces/abc/diagnostics',

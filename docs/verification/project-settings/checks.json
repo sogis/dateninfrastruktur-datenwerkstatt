@@ -1,0 +1,83 @@
+{
+  "date": "2026-10-24",
+  "baseRevision": "d52281463aaf10281c31fee94c922f2339acc40a",
+  "checks": [
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 npm run verify",
+      "exitCode": 0,
+      "unit": 110,
+      "integration": 67,
+      "ui": 90,
+      "log": "verify.log"
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 DW_REUSE_TEST_PORTAL=1 npx playwright test tests/e2e/project-settings.spec.ts --reporter=list --output=/tmp/datenwerkstatt-project-settings-final",
+      "exitCode": 0,
+      "passed": 15,
+      "log": "browser-matrix-final.log"
+    },
+    {
+      "command": "DW_REUSE_TEST_PORTAL=1 npx playwright test -c playwright.deploy.config.ts tests/deployment/project-settings.spec.ts tests/deployment/static.spec.ts --grep 'Project settings static route|UI assets' --reporter=list --output=/tmp/datenwerkstatt-project-settings-deployment",
+      "exitCode": 0,
+      "passed": 18,
+      "log": "deployment.log"
+    },
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "log": "typecheck-final.log"
+    },
+    {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "log": "lint-final.log"
+    },
+    {
+      "command": "npx vitest run scripts/deployment.test.mjs tests/unit/workspace-view.test.ts",
+      "exitCode": 0,
+      "passed": 4,
+      "log": "unit-focused.log"
+    },
+    {
+      "command": "npx prettier --check src/app/router.tsx src/features/r/RWorkbench.tsx src/styles/app.css scripts/deployment.mjs scripts/deployment.test.mjs tests/e2e/project-settings.spec.ts tests/e2e/projects.spec.ts tests/e2e/navigation.spec.ts tests/deployment/project-settings.spec.ts tests/deployment/static.spec.ts SPEC.md ACCEPTANCE_TESTS.md IMPLEMENTATION_PLAN.md",
+      "exitCode": 0,
+      "log": "format-final.log"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    {
+      "command": "Final SHA-256 comparison against source-fingerprint.json",
+      "exitCode": 0,
+      "files": 222
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 npx playwright test tests/e2e/project-settings.spec.ts tests/e2e/projects.spec.ts tests/e2e/navigation.spec.ts --project=chromium --grep 'Project settings:|failed metadata save|project settings follow' --reporter=list --output=/tmp/datenwerkstatt-project-settings-first",
+      "exitCode": 1,
+      "passed": 3,
+      "failed": 4,
+      "log": "chromium-first.log"
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 npx playwright test tests/e2e/project-settings.spec.ts --project=chromium --grep 'engine-free|real SQL/R|active SQL|active R' --reporter=list --output=/tmp/datenwerkstatt-project-settings-retry",
+      "exitCode": 1,
+      "passed": 3,
+      "failed": 1,
+      "log": "chromium-retry.log"
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 npx playwright test tests/e2e/project-settings.spec.ts --project=chromium --grep 'engine-free|writer lease' --reporter=list --output=/tmp/datenwerkstatt-project-settings-responsive",
+      "exitCode": 0,
+      "passed": 2,
+      "log": "chromium-responsive.log"
+    },
+    {
+      "command": "DW_REUSE_DEV_SERVER=1 DW_REUSE_TEST_PORTAL=1 npx playwright test tests/e2e/project-settings.spec.ts tests/e2e/projects.spec.ts tests/e2e/navigation.spec.ts --grep 'Project settings:|failed metadata save|project settings follow' --reporter=list --output=/tmp/datenwerkstatt-project-settings-matrix",
+      "exitCode": 1,
+      "passed": 17,
+      "failed": 4,
+      "log": "browser-matrix.log"
+    }
+  ]
+}

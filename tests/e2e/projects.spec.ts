@@ -298,7 +298,7 @@ test('Projects: a failed metadata save blocks external navigation and preserves 
     }, servicesModule);
     expect(pending.description).toBe('Dieser Entwurf muss erhalten bleiben');
     expect(pending.generation).toBeGreaterThan(pending.savedGeneration);
-    await page.getByRole('link', {name: 'Einstellungen', exact: true}).click();
+    await page.getByRole('link', {name: 'Projekte', exact: true}).click();
     expect(
       await page.evaluate(() => Reflect.get(globalThis, '__projectCommitFailureReached')),
     ).toBe(true);
@@ -319,6 +319,23 @@ test('Projects: a failed metadata save blocks external navigation and preserves 
       };
     }, servicesModule);
     expect(retained).toEqual({sessionId: before.sessionId, dirty: true});
+    // Settings is now internal: a failed save must not discard the draft or block it.
+    await page.getByRole('link', {name: 'Einstellungen', exact: true}).click();
+    await expect(page).toHaveURL(`${url}/settings`);
+    await expect(page.getByText('Speichern fehlgeschlagen', {exact: true})).toBeVisible();
+    await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
+    await expect(page.getByLabel('Beschreibung', {exact: true})).toHaveValue(
+      'Dieser Entwurf muss erhalten bleiben',
+    );
+    const afterSettings = await page.evaluate(async (path) => {
+      const {services} = (await import(path)) as typeof import('../../src/app/services');
+      const session = await services.workspaces.open(location.pathname.split('/')[2]!);
+      return {
+        sessionId: session.sessionId,
+        dirty: session.persistence.generation > session.persistence.savedGeneration,
+      };
+    }, servicesModule);
+    expect(afterSettings).toEqual(retained);
   } finally {
     await page.evaluate(() => {
       const saved: unknown = Reflect.get(globalThis, '__projectCommitBeforeFailure');

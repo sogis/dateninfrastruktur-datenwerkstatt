@@ -1,5 +1,16 @@
 # Implementierungsplan P0–P8
 
+## Ergänzung — Einstellungen im Projektkontext (24. Oktober 2026)
+
+REQ-059/060/064, AT-012/057/058: neue Unterroute
+`/projects/:workspaceId/settings` mit gemeinsamer Einstellungsseite, voller
+Projektnavigation und erhaltener Sitzung/Writer-Lease. R-Aktivierung wartet bei
+Rückkehr auf den freien Scheduler. Persönliche Optionen und globale Route bleiben
+erhalten; kein Speicher-/Archivformatwechsel. Gate: echte SQL-/R-Ergebnisse und
+laufende Jobs, Modellidentität/Undo, Speicherfehler, Multitab/Bereinigung,
+Tastatur/Geometrie, gezielte Dreiermatrix, statische Root-/lab-Profile und
+`npm run verify`. Tatsächliche Nachweise im Implementierungsstatus.
+
 ## Ergänzung — Schreibschutz und erneute Anforderung (24. Oktober 2026)
 
 REQ-020/REQ-076, AT-012/AT-065: konkreter Lesergrund, sichtbare Prüfzustände,

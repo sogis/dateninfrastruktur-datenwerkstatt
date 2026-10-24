@@ -104,6 +104,8 @@ Ergänzend für CSV: gewählte Textbegrenzung, Escape und fehlende Werte bleiben
 **Wenn:** Tab A schreibt; B versucht Mutation und fordert das weiterhin belegte Schreibrecht erneut an. Anschliessend A schliessen und in B erneut Schreibrecht anfordern; einen Projektwechsel während einer verzögerten Prüfung auslösen.
 **Dann:** B zuerst sichtbar read-only ohne Laufstart mit konkretem Sperrgrund. Die Prüfung hat Busy- und Ergebnisrückmeldung, Mehrfachklicks erzeugen keine zweite Übernahme. Solange belegt, bleiben Lesesitzung und Ansicht erhalten; nach Lockfreigabe wird die aktuelle Revision geladen und dieselbe Unterseite bearbeitbar. Tastaturfokus und Statusansagen bleiben sinnvoll, Erfolg wird drei Sekunden bestätigt. Fehler bieten Details/Retry; überholte Antworten öffnen kein altes Projekt und hinterlassen keinen Lock. Ein alleiniger Tab bleibt nach Reload Writer. Simulierter Revisionkonflikt überschreibt nichts.
 
+Der Writer behält sein Schreibrecht beim Wechsel zu Projekt-Einstellungen. Ein zweiter Tab bleibt lesend und darf persönliche Einstellungen ändern. Bereinigung entfernt keine aktiven Projektdateien; der bewusste Wechsel zur Projektliste gibt das Schreibrecht nach erfolgreichem Flush frei.
+
 ### AT-013 — OPFS voll während Import oder Keep
 
 **Requirements:** REQ-018, REQ-022, REQ-076 · **Phase:** P2 · **Ebene:** Fault/Browser
@@ -474,6 +476,8 @@ Ergänzend für CSV: gewählte Textbegrenzung, Escape und fehlende Werte bleiben
 
 Einstellungen zeigen beim Öffnen keine Speicherbestätigung. Nach einer Änderung ist Erfolg drei Sekunden sichtbar; Fehler bleiben bis zum nächsten Versuch sichtbar. Nur die neueste Antwort bestimmt die Rückmeldung. Diagnose folgt bei geöffnetem Projekt unter Einstellungen, erhält beim Seitenwechsel die Sitzung und bündelt Bericht sowie Inventar-/Hashprüfung. Technische Details sind zunächst eingeklappt; Code gelangt nur nach ausdrücklicher Auswahl in den Bericht.
 
+Bei geöffnetem Projekt führt Einstellungen zu `/projects/:workspaceId/settings`: acht Navigationseinträge und genau ein aktives Ziel, Projektverweis mit Rücklink und Hinweis auf browserweite Gültigkeit. Ohne Projekt bleibt `/settings` mit globaler Navigation erreichbar. Änderungen am Einklappstandard verändern keine gespeicherte Projektansicht. Ein frisch geöffnetes Projekt startet auch durch Einstellungen keine Engines.
+
 ### AT-058 — Routen, Modelle und Viewzustand
 
 **Requirements:** REQ-019, REQ-034, REQ-058, REQ-059, REQ-060 · **Phase:** P3/P7 · **Ebene:** Browser
@@ -481,6 +485,8 @@ Einstellungen zeigen beim Öffnen keine Speicherbestätigung. Nach einer Änderu
 **Gegeben:** Mehrere Analysen eines Workspaces.
 **Wenn:** Back/Forward, Analyse-/SQL-R-Wechsel, Layout ändern und Reload.
 **Dann:** Richtige Analyse-/Workspace-Zugehörigkeit; Undo/Cursor und Sitzung bleiben beim Wechsel zwischen Übersicht/Daten/SQL/R erhalten; Layoutsave ist keine fachliche Revision. Alle App-Routen liegen unter `/projects`; alte `/workspaces`-URLs liefern im statischen Deployment 404. Direkter Aufruf/Reload funktionieren auch unter `/lab/`. Ungültige Routen kontrolliert. Übersicht und Daten haben verschiedene Inhalte und genau ein aktives Navigationsziel.
+
+Projekt-Einstellungen ergänzen die internen Wechsel: Sitzungs-ID, Monaco-Modelle samt Undo/Cursor, SQL-Resultate, R-Scope/Epoch und Objekte/Plots bleiben bei Zurück/Vorwärts erhalten; kein Analysecode wird erneut ausgeführt. Laufende echte SQL-/R-Ausführungen überstehen den Wechsel und lassen sich nach Rückkehr tatsächlich abbrechen; kein konkurrierendes R-Initialisieren. Ein Reload lädt den gespeicherten Stand in einer neuen Sitzung. Bei gezieltem Metadatenspeicherfehler bleibt der interne Wechsel möglich und erhält Entwurf/Fehler; der Wechsel zur Projektliste bleibt bis zur erfolgreichen Wiederholung blockiert.
 
 ### AT-059 — Recipe-Archiv mit fehlenden Daten
 

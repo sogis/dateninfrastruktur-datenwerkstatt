@@ -92,6 +92,11 @@ const diagnosticsRoute = createRoute({
   path: 'diagnostics',
   component: Diagnostics,
 });
+const projectSettingsRoute = createRoute({
+  getParentRoute: () => workspaceRoute,
+  path: 'settings',
+  component: ProjectSettingsPage,
+});
 const sqlRoute = createRoute({
   getParentRoute: () => workspaceRoute,
   path: 'sql/$analysisId',
@@ -121,7 +126,14 @@ export const router = createRouter({
     indexRoute,
     openRoute,
     listRoute,
-    workspaceRoute.addChildren([detailRoute, dataRoute, sqlRoute, rRoute, diagnosticsRoute]),
+    workspaceRoute.addChildren([
+      detailRoute,
+      dataRoute,
+      sqlRoute,
+      rRoute,
+      diagnosticsRoute,
+      projectSettingsRoute,
+    ]),
     settingsRoute,
   ]),
   basepath: import.meta.env.BASE_URL,
@@ -215,9 +227,17 @@ function AppNavigation({
         icon="gear"
         label="Einstellungen"
         expanded={expanded}
-        current={routeId === settingsRoute.id}
+        current={routeId === settingsRoute.id || routeId === projectSettingsRoute.id}
       >
-        <Link to="/settings" activeOptions={{exact: true}} />
+        {workspaceId ? (
+          <Link
+            to="/projects/$workspaceId/settings"
+            params={{workspaceId}}
+            activeOptions={{exact: true}}
+          />
+        ) : (
+          <Link to="/settings" activeOptions={{exact: true}} />
+        )}
       </NavigationItem>
       {workspaceId && (
         <NavigationItem
@@ -322,6 +342,7 @@ function WorkspaceProvider() {
           sqlRoute.id,
           rRoute.id,
           diagnosticsRoute.id,
+          projectSettingsRoute.id,
         ].some((id) => id === next.routeId) &&
         'workspaceId' in next.params &&
         next.params.workspaceId === session.document.workspace.id
@@ -467,7 +488,13 @@ function AnalysisEditor({
   );
 }
 
-function SettingsPage() {
+function ProjectSettingsPage() {
+  const {state} = useWorkspace();
+  const workspace = useStore(state.store, (s) => s.document.workspace);
+  return <SettingsPage project={workspace} />;
+}
+
+function SettingsPage({project}: {project?: {id: WorkspaceId; name: string}}) {
   const settings = useStore(appStore, (s) => s.settings);
   const feedback = useActionFeedback();
   const save = (next: typeof settings) => {
@@ -488,6 +515,17 @@ function SettingsPage() {
   return (
     <main className="settings-page">
       <h1>Einstellungen</h1>
+      {project && (
+        <>
+          <p className="project-context">
+            Projekt:{' '}
+            <Link to="/projects/$workspaceId" params={{workspaceId: project.id}}>
+              {project.name}
+            </Link>
+          </p>
+          <p>Diese Einstellungen gelten für alle Projekte in diesem Browser.</p>
+        </>
+      )}
       <div className="form-fields">
         <FormField label={<>Editor-Schriftgrösse</>}>
           <Select

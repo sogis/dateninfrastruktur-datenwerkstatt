@@ -117,3 +117,16 @@ Darstellung/Tastaturbedienung bei 390/1280/1440 px und 200 % Text geprüft.
 Zwischenfehler und begründete Korrekturen zweier veralteter Testannahmen sind im
 [Prüfbericht](verification/csv-import-options/README.md) dokumentiert.
 Keine erneute vollständige Safari-/Deployment-/Releaseabnahme.
+
+## Ergänzung — Einstellungen im Projektkontext (24. Oktober 2026)
+
+REQ-059/060/064, AT-012/055/057/058: neue Projekt-Unterroute mit erhaltener
+Sitzung/Writer-Lease, voller Navigation, gemeinsamen persönlichen Einstellungen
+und sicherem internen Wechsel bei Speicherfehlern. Echte SQL-/R-Läufe, Abbruch
+und Folgeausführung, stabile Resultate/Scopes/Modelle/Undo/Cursor sowie
+Multitab/Bereinigung sind in Chromium/Firefox/WebKit nachgewiesen (**15/15**).
+Statische Root-/lab-Profile einschliesslich isoliertem Profil: **18/18**.
+`npm run verify`: **Exit 0**, 110 Unit-, 67 Integrations- und 90 UI-Fälle.
+[Quellstand, tatsächliche Befehle, Logs, Zwischenfehler und Grenzen](verification/project-settings/README.md).
+Kein neuer nativer Safari-/VoiceOver-Nachweis und keine neue vollständige
+Firefox-/WebKit- oder V1-Releaseabnahme.

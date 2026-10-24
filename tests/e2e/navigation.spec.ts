@@ -54,7 +54,7 @@ test('Navigation: settings remain reachable on global pages, with session toggle
   expect(workers).toEqual([]);
 });
 
-test('Navigation: settings follow R and leaving the workspace saves edits and its sidebar view', async ({
+test('Navigation: project settings follow R and preserve edits and the sidebar view', async ({
   page,
 }, info) => {
   const errors: string[] = [];
@@ -82,8 +82,8 @@ test('Navigation: settings follow R and leaving the workspace saves edits and it
   await nav.getByRole('button', {name: 'Navigation ausklappen'}).click();
   await page.getByLabel('Beschreibung', {exact: true}).fill('Beim Wechsel zuverlässig gespeichert');
   await nav.getByRole('link', {name: 'Einstellungen', exact: true}).click();
-  await expect(page).toHaveURL(/\/settings$/);
-  await expect(nav.locator('.dw-nav-item')).toHaveCount(3);
+  await expect(page).toHaveURL(/\/projects\/[0-9a-f-]+\/settings$/);
+  await expect(nav.locator('.dw-nav-item')).toHaveCount(8);
   await page.goBack();
   await expect(page.getByLabel('Beschreibung', {exact: true})).toHaveValue(
     'Beim Wechsel zuverlässig gespeichert',

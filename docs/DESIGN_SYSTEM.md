@@ -962,8 +962,11 @@ Projekte und Einstellungen.
 
 Im Projekt stehen Übersicht, Daten, SQL und R zwischen Projekte und
 Einstellungen. Einstellungen folgt direkt nach R; darunter steht bei geöffnetem
-Projekt „Diagnose“. Diagnose ist eine Projekt-Unterseite und erhält die laufende
-Sitzung. Im Header gibt es keinen zusätzlichen Einstellungslink.
+Projekt „Diagnose“. Einstellungen und Diagnose sind Projekt-Unterseiten und
+erhalten die laufende Sitzung. Einstellungen zeigt einen kompakten Projektverweis
+mit Rücklink und den Hinweis „Diese Einstellungen gelten für alle Projekte in
+diesem Browser.“ Ohne Projekt bleibt der globale Einstieg `/settings` verfügbar.
+Im Header gibt es keinen zusätzlichen Einstellungslink.
 
 Ausserhalb eines Projekts gilt der persönliche Einklappstandard; manuelles
 Umschalten bleibt sitzungslokal. Projektansichten behalten ihren gespeicherten

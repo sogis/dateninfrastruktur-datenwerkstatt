@@ -196,12 +196,12 @@ test('UI assets: local SVGs, Source Sans 3, JetBrains Mono, fallback and notices
     }),
   ).toEqual(['error', 'error']);
   await nav.getByRole('link', {name: 'Einstellungen', exact: true}).click();
-  await expect(page).toHaveURL(`${baseURL}settings`);
+  await expect(page).toHaveURL(/\/projects\/[0-9a-f-]+\/settings$/);
   await expect(nav.getByRole('link', {name: 'Einstellungen', exact: true})).toHaveAttribute(
     'aria-current',
     'page',
   );
-  await expect(nav.locator('.dw-nav-item')).toHaveCount(3);
+  await expect(nav.locator('.dw-nav-item')).toHaveCount(8);
   await page.reload();
   await expect(nav.getByRole('link', {name: 'Einstellungen', exact: true})).toHaveAttribute(
     'aria-current',

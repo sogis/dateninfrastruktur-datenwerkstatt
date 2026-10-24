@@ -1,0 +1,48 @@
+[WebServer] (node:77123) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:77124) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › tests/e2e/project-settings.spec.ts:57:1 › Project settings: engine-free navigation, saved sidebar, global options, keyboard and responsive layout (1.5s)
+(node:77171) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [chromium] › tests/e2e/project-settings.spec.ts:121:1 › Project settings: real SQL/R results, model identity, undo, editor options and live scope survive (14.6s)
+  ✓  3 [chromium] › tests/e2e/project-settings.spec.ts:199:3 › Project settings: active SQL continues through settings and cancels after return (6.4s)
+  ✓  4 [chromium] › tests/e2e/project-settings.spec.ts:199:3 › Project settings: active R continues through settings and cancels after return (19.2s)
+
+
+  1) [chromium] › tests/e2e/project-settings.spec.ts:57:1 › Project settings: engine-free navigation, saved sidebar, global options, keyboard and responsive layout
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+       95 |   for (const width of [1440, 1280, 390]) {
+       96 |     await page.setViewportSize({width, height: 900});
+    >  97 |     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+          |                                                                                           ^
+       98 |       true,
+       99 |     );
+      100 |     await page.screenshot({
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/project-settings.spec.ts:97:91
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-retry/e2e-project-settings-Proje-dbc62-board-and-responsive-layout-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../tmp/datenwerkstatt-project-settings-retry/e2e-project-settings-Proje-dbc62-board-and-responsive-layout-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-retry/e2e-project-settings-Proje-dbc62-board-and-responsive-layout-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../tmp/datenwerkstatt-project-settings-retry/e2e-project-settings-Proje-dbc62-board-and-responsive-layout-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/project-settings.spec.ts:57:1 › Project settings: engine-free navigation, saved sidebar, global options, keyboard and responsive layout
+  3 passed (42.3s)

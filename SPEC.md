@@ -344,6 +344,8 @@ Reset-Button bestätigt bei vorhandenen ungesicherten Objekten und beendet nur R
 
 **REQ-059 — Session-Lebensdauer.** Ein WorkspaceProvider oberhalb der Unterrouten besitzt die Sitzung. Aktiver Workspace pro Tab maximal einer; Liste/Startseite startet keine Engines für alle Projekte. Bei Workspacewechsel: laufenden Job sichtbar abbrechen/bestätigen → Flush → Dispose → neue Session-ID → neue Verbindung nach Bedarf. Antworten tragen Session-ID/Epoch/Run-ID; späte Ergebnisse alter Sitzungen werden ignoriert und freigegeben. Bei erfolglosem Flush nicht trotzdem navigieren. Vorangekündigtes Verwerfen bleibt explizite Nutzeraktion.
 
+Projekt-Einstellungen unter `/projects/:workspaceId/settings` gehören zur bestehenden Sitzung. Der Seitenwechsel erhält Connector, lazy webR, Editormodelle, Resultate und Writer-Lease; laufende SQL-/R-Ausführungen laufen weiter. Die Rückkehr zum R-Panel startet während einer aktiven Operation keine konkurrierende Initialisierung.
+
 React-Effekt-Cleanup, Routerwechsel, Retry und Reset müssen idempotent sein. Fehler bei Dispose nicht als erfolgreicher Speicherabschluss darstellen; Ressourcenreinigung läuft bestmöglich und wird protokolliert. Unterstützte Portverträge unter `contracts/ports.ts` dürfen projektspezifisch aufgeteilt werden, nicht ohne Tests semantisch aufgeweicht.
 
 ## 13. Seiten, Navigation und Interaktionen
@@ -355,6 +357,7 @@ React-Effekt-Cleanup, Routerwechsel, Retry und Reset müssen idempotent sein. Fe
 /projects
 /projects/:workspaceId
 /projects/:workspaceId/data
+/projects/:workspaceId/settings
 /projects/:workspaceId/sql/:analysisId
 /projects/:workspaceId/r/:analysisId
 /settings
@@ -378,6 +381,8 @@ Die Datenseite zeigt pro Datensatz eingeklappt „Datenstände und Herkunft“: 
 SQL und R behalten ihre Laufauswahl und verwenden gemeinsame lesbare Laufdetails: Zeit/Status/Analyserevision, eingefrorener Code, Parameter, konkrete Eingaben und Ergebnisse mit Art/Umfang/Aufbewahrung. SQL-Snapshots nennen verfügbare Quellen ohne Behauptung tatsächlicher Verwendung. R-Sitzungsobjekte bleiben von gespeicherten Ergebnissen unterscheidbar; technische Details stehen untergeordnet. Das Öffnen der Details führt keinen Code aus.
 
 **REQ-064 — Einstellungen.** Nur Editor-Schriftgrösse (12–22 px), Zeilennummern, Zeilenumbruch, Standard-Seitenleistenstatus; Speicherverbrauch/Status anzeigen sowie bewusste Projekt-/Cachebereinigung. Helles Theme ist V1-Standard. Kein allgemeiner Security-Schalter, keine Benachrichtigungsplattform, keine ClickHouse-Loginmaske. Nicht implementierte Theme-/Profileoptionen nicht anbieten. Layoutzustand separat von Workspace-Domain speichern. Automatisches Speichern wird unter allen vier Optionen durch eine kleine, zunächst leere Statuszeile angezeigt. Erfolg bleibt drei Sekunden sichtbar, ein Fehler bis zum nächsten Versuch. Veraltete Antworten und Timer dürfen neuere Speicherversuche nicht übersteuern.
+
+Bei geöffnetem Projekt führt Einstellungen zur Projekt-Unterroute und erhält alle Projektaktionen in der Navigation. Die Seite nennt das Projekt mit Rücklink und erklärt: „Diese Einstellungen gelten für alle Projekte in diesem Browser.“ Beide Einstiege verwenden dieselben persönlichen Optionen und denselben Speicher. Der persönliche Seitenleistenstandard überschreibt keinen gespeicherten Projektansichtszustand. Ohne Projekt bleibt `/settings` der globale Einstieg; dessen bisheriger Lebenszyklus bleibt erhalten. Interne Projektwechsel sind auch bei Autosavefehlern möglich und behalten Entwurf/Fehlermeldung; das tatsächliche Verlassen bleibt bei erfolglosem Flush blockiert. Speicherbereinigung schützt weiterhin aktive Writer und gespeicherte Projekte.
 
 ## 14. Visueller und Bedienvertrag
 

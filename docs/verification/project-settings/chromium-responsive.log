@@ -1,0 +1,11 @@
+[WebServer] (node:77390) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:77391) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/project-settings.spec.ts:57:1 › Project settings: engine-free navigation, saved sidebar, global options, keyboard and responsive layout (1.5s)
+  ✓  2 [chromium] › tests/e2e/project-settings.spec.ts:252:1 › Project settings: writer lease and stored files survive cleanup while reader edits personal settings (1.2s)
+
+  2 passed (3.1s)

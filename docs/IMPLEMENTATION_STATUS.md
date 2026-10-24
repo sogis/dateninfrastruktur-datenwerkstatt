@@ -2254,3 +2254,59 @@ Der nachfolgende Commit enthält nur die Schreibschutzänderung mit zugehörigen
 Tests/Unterlagen. Der exportierte Indexstand bestand separat Typecheck und
 94/94 Unit-Tests, jeweils Exit 0. XLSX-Änderungen und die lokale Build-Konfiguration
 bleiben uncommittet im Arbeitsbaum erhalten.
+
+## Einstellungen im Projektkontext (24. Oktober 2026)
+
+**Geliefert und geprüft: REQ-059/060/064; AT-012/055/057/058.** Die
+Unterroute `/projects/:workspaceId/settings` erhält Provider, Projektnavigation,
+Writer-Lease, Editormodelle und Enginezustand. Eine gemeinsame Einstellungsseite
+nennt den Projektkontext und die browserweite Gültigkeit. R-Aktivierung wartet
+bei Rückkehr auf den freien Scheduler. Der globale Einstieg `/settings`,
+persönliche Optionen und Speicher-/Archivverträge bleiben erhalten. Keine
+zusätzlichen Dependencies.
+
+Interne Navigation erhält einen ungesicherten Entwurf auch bei Speicherfehlern;
+das tatsächliche Verlassen über Projekte bleibt bei erfolglosem Flush blockiert.
+Der bestehende Schutztest wurde entsprechend erweitert. Ein neuer echter
+OPFS-/Multitabfall prüft aktive und gespeicherte Dateien gegen eine tatsächlich
+entfernte verwaiste Datei. Ein lokaler Seitenumbruch behebt den nachgewiesenen
+Überlauf bei 390 px und ausgeklappter Navigation. Statische Routenfreigabe und
+Direktaufruf/Reload sind ergänzt.
+
+**Relevante Dateien:** `src/app/router.tsx`, `src/features/r/RWorkbench.tsx`,
+`src/styles/app.css`, statische Deploymentfreigabe und deren Unitprüfung; neue
+`tests/e2e/project-settings.spec.ts` und `tests/deployment/project-settings.spec.ts`,
+bestehende Navigations-/Speicherfehler-/Assetregressionen. SPEC, Abnahmetests,
+Designsystem und Implementierungsplan sind nachgeführt.
+
+**Prüfstand:** Ausgangsrevision `d52281463aaf10281c31fee94c922f2339acc40a` plus
+uncommittierter Arbeitsbaum, durch [222 Quell-/Konfigurations-/Testhashes](verification/project-settings/source-fingerprint.json)
+identifiziert. Alle Hashes nach den Prüfungen erneut unverändert verifiziert.
+Node 22.23.1, npm 11.18.0; Chromium 153.0.8010.12, Firefox 155.0, WebKit 26.6.
+
+| Tatsächlich ausgeführte Prüfung | Ergebnis |
+| --- | --- |
+| `DW_REUSE_DEV_SERVER=1 npm run verify` | **Exit 0**: Typecheck, Lint/Modulgrenzen, **110/110 Unit**, Build/Assets/Lizenzen, **67/67 Integration**, **90/90 UI** einschliesslich Golden Path |
+| Neue Projekt-Einstellungsfälle in Chromium/Firefox/WebKit | **Exit 0, 15/15**: Sitzung/Worker, Resultate/R-Objekte/Plot, Modellidentität/Undo/Cursor, Editoroptionen, echte Langläufe/Abbruch/Folgeausführung, Multitab/Bereinigung, Tastatur und Layout |
+| Statische Caddy-Container Root/PostMessage, `/lab/`/PostMessage und `/lab/`/auto in allen drei Browsern | **Exit 0, 18/18**: Direktaufruf/Reload, persönliche Optionen, Kontext/Navigation, ungültige IDs, 404-Grenzen, originale lokale Assets und Fallback |
+| Abschliessender Typecheck und Lint | Je **Exit 0** |
+| Gezielte Deployment-/View-Unitfälle | **Exit 0, 4/4** |
+| Formatcheck der benannten Quellen/Tests und SPEC/Abnahmetests/Plan, `git diff --check`, finaler Quellhashvergleich | Je **Exit 0** |
+
+[Prüfbericht mit vollständigen Befehlen, Logs, Zwischenfehlern und Bildern](verification/project-settings/README.md).
+Erster Chromiumlauf **3/7, Exit 1**: Tastaturmodalität, Tabellenvergleich und
+Warten auf veröffentlichten Lauf verbessert. Wiederholung **3/4, Exit 1** fand
+den tatsächlichen schmalen Überlauf; nach CSS-Fix **2/2, Exit 0**. Erster
+Dreierlauf **17/21, Exit 1**: Firefox-Testfokus und WebKits Runtime-Neustartbudget
+nach echtem R-Abbruch korrigiert. Abschliessender Dreierlauf **15/15, Exit 0**;
+die beiden bestehenden Navigations-/Speicherfehlerregressionen bestanden schon
+im ersten Lauf in allen drei Browsern. Keine Tests deaktiviert, keine Goldenwerte
+geändert. Die zwölf neuen Einstellungen-Screens visuell im Dreiervergleich
+geprüft. Historische Belege nach Sicherung der neuen Ausgaben wiederhergestellt.
+
+**Grenzen / nicht ausgeführt:** Kein neuer nativer Safari-/VoiceOver-Pilot, keine
+vollständige Firefox-/WebKit-Abnahme aller Altfunktionen und keine neue
+V1-Releaseabnahme. Bekannte Editorchunk-Warnung unverändert. Kein offener Blocker
+im beauftragten Umfang; lokale Umsetzung abgeschlossen. Nächster konkreter
+Nutzungsschritt: im geöffneten Projekt Einstellungen öffnen, eine Editoroption
+ändern und über SQL/R weiterarbeiten. Kein Commit, Push oder Release.

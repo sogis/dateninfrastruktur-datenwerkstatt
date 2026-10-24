@@ -1,0 +1,26 @@
+
+Running 15 tests using 1 worker
+
+(node:85548) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/project-settings.spec.ts:75:1 › Project settings: engine-free navigation, saved sidebar, global options, keyboard and responsive layout (2.5s)
+  ✓   2 [chromium] › tests/e2e/project-settings.spec.ts:139:1 › Project settings: real SQL/R results, model identity, undo, editor options and live scope survive (30.4s)
+  ✓   3 [chromium] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active SQL continues through settings and cancels after return (10.2s)
+  ✓   4 [chromium] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active R continues through settings and cancels after return (45.6s)
+  ✓   5 [chromium] › tests/e2e/project-settings.spec.ts:279:1 › Project settings: writer lease and stored files survive cleanup while reader edits personal settings (2.3s)
+(node:91170) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [firefox] › tests/e2e/project-settings.spec.ts:75:1 › Project settings: engine-free navigation, saved sidebar, global options, keyboard and responsive layout (8.8s)
+  ✓   7 [firefox] › tests/e2e/project-settings.spec.ts:139:1 › Project settings: real SQL/R results, model identity, undo, editor options and live scope survive (40.5s)
+  ✓   8 [firefox] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active SQL continues through settings and cancels after return (12.4s)
+  ✓   9 [firefox] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active R continues through settings and cancels after return (50.1s)
+  ✓  10 [firefox] › tests/e2e/project-settings.spec.ts:279:1 › Project settings: writer lease and stored files survive cleanup while reader edits personal settings (3.3s)
+(node:91797) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [webkit] › tests/e2e/project-settings.spec.ts:75:1 › Project settings: engine-free navigation, saved sidebar, global options, keyboard and responsive layout (3.2s)
+  ✓  12 [webkit] › tests/e2e/project-settings.spec.ts:139:1 › Project settings: real SQL/R results, model identity, undo, editor options and live scope survive (22.2s)
+  ✓  13 [webkit] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active SQL continues through settings and cancels after return (10.9s)
+  ✓  14 [webkit] › tests/e2e/project-settings.spec.ts:225:3 › Project settings: active R continues through settings and cancels after return (36.5s)
+  ✓  15 [webkit] › tests/e2e/project-settings.spec.ts:279:1 › Project settings: writer lease and stored files survive cleanup while reader edits personal settings (2.4s)
+
+  15 passed (4.7m)

@@ -1,0 +1,363 @@
+[WebServer] (node:76784) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 7 tests using 1 worker
+
+(node:76785) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/navigation.spec.ts:57:1 › Navigation: project settings follow R and preserve edits and the sidebar view (14.1s)
+  ✘  2 [chromium] › tests/e2e/project-settings.spec.ts:57:1 › Project settings: engine-free navigation, saved sidebar, global options, keyboard and responsive layout (10.7s)
+(node:76852) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [chromium] › tests/e2e/project-settings.spec.ts:120:1 › Project settings: real SQL/R results, model identity, undo, editor options and live scope survive (24.7s)
+(node:76926) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [chromium] › tests/e2e/project-settings.spec.ts:198:3 › Project settings: active SQL continues through settings and cancels after return (12.2s)
+(node:76971) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  5 [chromium] › tests/e2e/project-settings.spec.ts:198:3 › Project settings: active R continues through settings and cancels after return (13.1s)
+(node:77025) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  6 [chromium] › tests/e2e/project-settings.spec.ts:248:1 › Project settings: writer lease and stored files survive cleanup while reader edits personal settings (1.3s)
+  ✓  7 [chromium] › tests/e2e/projects.spec.ts:262:1 › Projects: a failed metadata save blocks external navigation and preserves the editing session until retry (974ms)
+
+
+  1) [chromium] › tests/e2e/project-settings.spec.ts:57:1 › Project settings: engine-free navigation, saved sidebar, global options, keyboard and responsive layout
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('tooltip', { name: 'Einstellungen', exact: true })
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('tooltip', { name: 'Einstellungen', exact: true }) with timeout 10000ms
+      - waiting for getByRole('tooltip', { name: 'Einstellungen', exact: true })
+
+
+      67 |     const source = page.url();
+      68 |     await settingsOf(page).focus();
+    > 69 |     await expect(page.getByRole('tooltip', {name: 'Einstellungen', exact: true})).toBeVisible();
+         |                                                                                   ^
+      70 |     await settingsOf(page).press('Enter');
+      71 |     await expect(page).toHaveURL(url + '/settings');
+      72 |     await expect(settingsOf(page)).toHaveAttribute('aria-current', 'page');
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/project-settings.spec.ts:69:83
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-first/e2e-project-settings-Proje-dbc62-board-and-responsive-layout-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../tmp/datenwerkstatt-project-settings-first/e2e-project-settings-Proje-dbc62-board-and-responsive-layout-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-first/e2e-project-settings-Proje-dbc62-board-and-responsive-layout-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../tmp/datenwerkstatt-project-settings-first/e2e-project-settings-Proje-dbc62-board-and-responsive-layout-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/e2e/project-settings.spec.ts:120:1 › Project settings: real SQL/R results, model identity, undo, editor options and live scope survive
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: locator('.result-grid tbody')
+    Timeout: 10000ms
+    - Expected  - 100
+    + Received  +   1
+
+    - 0	0.5228479915408183
+    - 1	0.32633090881606835
+    - 2	0.5839252776219118
+    - 3	0.47499658804931666
+    - 4	0.1583522872804219
+    - 5	0.7497655433308247
+    - 6	0.10123771787655016
+    - 7	0.8101324713654974
+    - 8	0.5962929507710919
+    - 9	0.26102948952087796
+    - 10	0.7618695358154863
+    - 11	0.19722478967634605
+    - 12	0.013736983732436822
+    - 13	0.6741748364935088
+    - 14	0.7638779309256526
+    - 15	0.8094232829292184
+    - 16	0.24237563181004204
+    - 17	0.1245092217826611
+    - 18	0.8132888537114717
+    - 19	0.15008273309965886
+    - 20	0.47308800296732173
+    - 21	0.6581131447318955
+    - 22	0.7170142137296419
+    - 23	0.6882034183458603
+    - 24	0.14839645575724011
+    - 25	0.1489895323681053
+    - 26	0.7329332739196202
+    - 27	0.08716544287415508
+    - 28	0.014698884433466402
+    - 29	0.33223514360628187
+    - 30	0.8217685296933271
+    - 31	0.09935135866754718
+    - 32	0.534824415750694
+    - 33	0.7018998896590782
+    - 34	0.005213993564613382
+    - 35	0.6908791012773795
+    - 36	0.13148648277160147
+    - 37	0.6494407902313079
+    - 38	0.563657655967281
+    - 39	0.7295922557848865
+    - 40	0.14149424768866184
+    - 41	0.09840033914476219
+    - 42	0.4329926264279699
+    - 43	0.553033065093311
+    - 44	0.42384359976745745
+    - 45	0.4469597870949422
+    - 46	0.9189147059677062
+    - 47	0.05006737405370911
+    - 48	0.5968931834711098
+    - 49	0.281280303383194
+    - 50	0.663400655269139
+    - 51	0.6616514493483865
+    - 52	0.3986258106017436
+    - 53	0.0353961321113492
+    - 54	0.2143938474320991
+    - 55	0.13718805037121568
+    - 56	0.5193743774442336
+    - 57	0.40582868193204497
+    - 58	0.6567630797609012
+    - 59	0.14526391732356772
+    - 60	0.17760507475418852
+    - 61	0.190622056919623
+    - 62	0.5760859741993145
+    - 63	0.504129287838748
+    - 64	0.37311585315343787
+    - 65	0.8736758596880309
+    - 66	0.9048901215560213
+    - 67	0.2179049759350539
+    - 68	0.9574544750380555
+    - 69	0.23553747170092268
+    - 70	0.7215681203530542
+    - 71	0.1388157760831205
+    - 72	0.32688091435242045
+    - 73	0.5487091286188945
+    - 74	0.6039401561436044
+    - 75	0.9076424389403284
+    - 76	0.017277045445930613
+    - 77	0.13138294224680735
+    - 78	0.4510345929035804
+    - 79	0.8194170099754015
+    - 80	0.2921001865441559
+    - 81	0.7872102739057295
+    - 82	0.8173023471638284
+    - 83	0.4106515049863553
+    - 84	0.26200276258432537
+    - 85	0.36065530330038365
+    - 86	0.06220425079284317
+    - 87	0.45557589938902854
+    - 88	0.9501001772866834
+    - 89	0.0811754137550699
+    - 90	0.6561469271368153
+    - 91	0.7002786866958951
+    - 92	0.41471871280232586
+    - 93	0.5936079438412599
+    - 94	0.08080115255267963
+    - 95	0.920956600851914
+    - 96	0.7750276175399504
+    - 97	0.0021638966847419734
+    - 98	0.13931006120135728
+    - 99	0.8116293539571953
+    + 00.522847991540818310.3263309088160683520.583925277621911830.4749965880493166640.158352287280421950.749765543330824760.1012377178765501670.810132471365497480.596292950771091990.26102948952087796100.7618695358154863110.19722478967634605120.013736983732436822130.6741748364935088140.7638779309256526150.8094232829292184160.24237563181004204170.1245092217826611180.8132888537114717190.15008273309965886200.47308800296732173210.6581131447318955220.7170142137296419230.6882034183458603240.14839645575724011250.1489895323681053260.7329332739196202270.08716544287415508280.014698884433466402290.33223514360628187300.8217685296933271310.09935135866754718320.534824415750694330.7018998896590782340.005213993564613382350.6908791012773795360.13148648277160147370.6494407902313079380.563657655967281390.7295922557848865400.14149424768866184410.09840033914476219420.4329926264279699430.553033065093311440.42384359976745745450.4469597870949422460.9189147059677062470.05006737405370911480.5968931834711098490.281280303383194500.663400655269139510.6616514493483865520.3986258106017436530.0353961321113492540.2143938474320991550.13718805037121568560.5193743774442336570.40582868193204497580.6567630797609012590.14526391732356772600.17760507475418852610.190622056919623620.5760859741993145630.504129287838748640.37311585315343787650.8736758596880309660.9048901215560213670.2179049759350539680.9574544750380555690.23553747170092268700.7215681203530542710.1388157760831205720.32688091435242045730.5487091286188945740.6039401561436044750.9076424389403284760.017277045445930613770.13138294224680735780.4510345929035804790.8194170099754015800.2921001865441559810.7872102739057295820.8173023471638284830.4106515049863553840.26200276258432537850.36065530330038365860.06220425079284317870.45557589938902854880.9501001772866834890.0811754137550699900.6561469271368153910.7002786866958951920.41471871280232586930.5936079438412599940.08080115255267963950.920956600851914960.7750276175399504970.0021638966847419734980.13931006120135728990.8116293539571953
+
+    Call log:
+      - Expect "toHaveText" locator('.result-grid tbody') with timeout 10000ms
+      - waiting for locator('.result-grid tbody')
+        24 × locator resolved to <tbody>…</tbody>
+           - unexpected value "00.522847991540818310.3263309088160683520.583925277621911830.4749965880493166640.158352287280421950.749765543330824760.1012377178765501670.810132471365497480.596292950771091990.26102948952087796100.7618695358154863110.19722478967634605120.013736983732436822130.6741748364935088140.7638779309256526150.8094232829292184160.24237563181004204170.1245092217826611180.8132888537114717190.15008273309965886200.47308800296732173210.6581131447318955220.7170142137296419230.6882034183458603240.14839645575724011250.1489895323681053260.7329332739196202270.08716544287415508280.014698884433466402290.33223514360628187300.8217685296933271310.09935135866754718320.534824415750694330.7018998896590782340.005213993564613382350.6908791012773795360.13148648277160147370.6494407902313079380.563657655967281390.7295922557848865400.14149424768866184410.09840033914476219420.4329926264279699430.553033065093311440.42384359976745745450.4469597870949422460.9189147059677062470.05006737405370911480.5968931834711098490.281280303383194500.663400655269139510.6616514493483865520.3986258106017436530.0353961321113492540.2143938474320991550.13718805037121568560.5193743774442336570.40582868193204497580.6567630797609012590.14526391732356772600.17760507475418852610.190622056919623620.5760859741993145630.504129287838748640.37311585315343787650.8736758596880309660.9048901215560213670.2179049759350539680.9574544750380555690.23553747170092268700.7215681203530542710.1388157760831205720.32688091435242045730.5487091286188945740.6039401561436044750.9076424389403284760.017277045445930613770.13138294224680735780.4510345929035804790.8194170099754015800.2921001865441559810.7872102739057295820.8173023471638284830.4106515049863553840.26200276258432537850.36065530330038365860.06220425079284317870.45557589938902854880.9501001772866834890.0811754137550699900.6561469271368153910.7002786866958951920.41471871280232586930.5936079438412599940.08080115255267963950.920956600851914960.7750276175399504970.0021638966847419734980.13931006120135728990.8116293539571953"
+
+
+      166 |   await expect(page.locator('.view-lines')).toHaveCSS('font-size', '18px');
+      167 |   await expect(page.locator('.line-numbers')).toHaveCount(0);
+    > 168 |   await expect(page.locator('.result-grid tbody')).toHaveText(rows);
+          |                                                    ^
+      169 |   await expect(page.locator('.view-lines')).toContainText('-- erhalten');
+      170 |   await editor.press('ControlOrMeta+z');
+      171 |   await expect(page.locator('.view-lines')).not.toContainText('-- erhalten');
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/project-settings.spec.ts:168:52
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-first/e2e-project-settings-Proje-a9d37-ions-and-live-scope-survive-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../tmp/datenwerkstatt-project-settings-first/e2e-project-settings-Proje-a9d37-ions-and-live-scope-survive-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-first/e2e-project-settings-Proje-a9d37-ions-and-live-scope-survive-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../tmp/datenwerkstatt-project-settings-first/e2e-project-settings-Proje-a9d37-ions-and-live-scope-survive-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › tests/e2e/project-settings.spec.ts:198:3 › Project settings: active SQL continues through settings and cancels after return
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: locator('.run-summary-message')
+    Expected: "Ausführung abgebrochen"
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveText" locator('.run-summary-message') with timeout 10000ms
+      - waiting for locator('.run-summary-message')
+
+
+      232 |       await page.getByRole('button', {name: 'Abbrechen', exact: true}).click();
+      233 |       await expect.poll(async () => (await sessionOf(page)).busy).toBeNull();
+    > 234 |       await expect(page.locator('.run-summary-message')).toHaveText('Ausführung abgebrochen');
+          |                                                          ^
+      235 |       await expect(page.getByRole('button', {name: 'Ausführen', exact: true})).toBeEnabled({
+      236 |         timeout: 60000,
+      237 |       });
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/project-settings.spec.ts:234:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-first/e2e-project-settings-Proje-90beb-gs-and-cancels-after-return-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../tmp/datenwerkstatt-project-settings-first/e2e-project-settings-Proje-90beb-gs-and-cancels-after-return-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-first/e2e-project-settings-Proje-90beb-gs-and-cancels-after-return-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../tmp/datenwerkstatt-project-settings-first/e2e-project-settings-Proje-90beb-gs-and-cancels-after-return-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › tests/e2e/project-settings.spec.ts:198:3 › Project settings: active R continues through settings and cancels after return
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 86
+
+    - Object {}
+    + Object {
+    +   "091495f4-eba5-47ce-8ed1-3a1b2ab31708": Object {
+    +     "id": "091495f4-eba5-47ce-8ed1-3a1b2ab31708",
+    +     "queuedAt": "2026-10-24T18:25:51.065Z",
+    +     "resultIds": Array [],
+    +     "snapshot": Object {
+    +       "analysisId": "7da2772e-83a0-4c34-9b1d-43cb065b5839",
+    +       "analysisRevision": 22,
+    +       "code": "while (TRUE) { sqrt(42) }",
+    +       "environmentMode": "workspace-session",
+    +       "inputScope": "explicit-bindings",
+    +       "language": "r",
+    +       "notes": Array [
+    +         "Fresh-Environment ist keine Prozessisolation.",
+    +       ],
+    +       "parameters": Object {},
+    +       "provenance": "session-dependent",
+    +       "resolvedInputs": Array [],
+    +       "runtime": Object {
+    +         "appBuildId": "local-development",
+    +         "engineId": "webr-local",
+    +         "engineVersion": "webR 0.6.0",
+    +         "locale": "en_US.UTF-8;C;en_US.UTF-8;en_US.UTF-8;en_US.UTF-8;C",
+    +         "rPackageVersions": Object {
+    +           "R6": "2.6.1",
+    +           "RColorBrewer": "1.1-3",
+    +           "S7": "0.2.2",
+    +           "base": "4.6.0",
+    +           "bit": "4.6.0",
+    +           "bit64": "4.8.2",
+    +           "cli": "3.6.6",
+    +           "clipr": "0.8.1",
+    +           "cpp11": "0.5.5",
+    +           "crayon": "1.5.3",
+    +           "datasets": "4.6.0",
+    +           "dplyr": "1.2.1",
+    +           "farver": "2.1.2",
+    +           "generics": "0.1.4",
+    +           "ggplot2": "4.0.3",
+    +           "glue": "1.8.1",
+    +           "grDevices": "4.6.0",
+    +           "graphics": "4.6.0",
+    +           "gtable": "0.3.6",
+    +           "hms": "1.1.4",
+    +           "isoband": "0.3.0",
+    +           "jsonlite": "2.0.0",
+    +           "labeling": "0.4.3",
+    +           "lifecycle": "1.0.5",
+    +           "magrittr": "2.0.5",
+    +           "methods": "4.6.0",
+    +           "pillar": "1.11.1",
+    +           "pkgconfig": "2.0.3",
+    +           "prettyunits": "1.2.0",
+    +           "progress": "1.2.3",
+    +           "purrr": "1.2.2",
+    +           "readr": "2.2.0",
+    +           "rlang": "1.2.0",
+    +           "scales": "1.4.0",
+    +           "stats": "4.6.0",
+    +           "stringi": "1.8.7",
+    +           "stringr": "1.6.0",
+    +           "tibble": "3.3.1",
+    +           "tidyr": "1.3.2",
+    +           "tidyselect": "1.2.1",
+    +           "tools": "4.6.0",
+    +           "tzdb": "0.5.0",
+    +           "utf8": "1.2.6",
+    +           "utils": "4.6.0",
+    +           "vctrs": "0.7.3",
+    +           "viridisLite": "0.4.3",
+    +           "vroom": "1.7.1.9000",
+    +           "webr": "0.6.0",
+    +           "withr": "3.0.2",
+    +         },
+    +         "rVersion": "R version 4.6.0 (2026-04-24)",
+    +         "timeZone": "UTC",
+    +         "transferCodecVersion": "columnar-1",
+    +       },
+    +     },
+    +     "startedAt": "2026-10-24T18:25:51.065Z",
+    +     "status": "running",
+    +     "trigger": "analysis",
+    +     "warnings": Array [],
+    +     "workspaceId": "322c8ab4-603f-4bab-a3b1-148979c6fcb1",
+    +   },
+    + }
+
+      223 |       await expect(page).toHaveURL(url + '/settings');
+      224 |       const during = await sessionOf(page);
+    > 225 |       expect(during.id).toBe(before.id);
+          |                                    ^
+      226 |       expect(during.document.runs).toEqual(before.document.runs);
+      227 |       expect(during.busy).toBe(before.busy);
+      228 |       await page.goBack();
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/project-settings.spec.ts:225:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-first/e2e-project-settings-Proje-061ab-gs-and-cancels-after-return-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../tmp/datenwerkstatt-project-settings-first/e2e-project-settings-Proje-061ab-gs-and-cancels-after-return-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../tmp/datenwerkstatt-project-settings-first/e2e-project-settings-Proje-061ab-gs-and-cancels-after-return-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../tmp/datenwerkstatt-project-settings-first/e2e-project-settings-Proje-061ab-gs-and-cancels-after-return-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [chromium] › tests/e2e/project-settings.spec.ts:57:1 › Project settings: engine-free navigation, saved sidebar, global options, keyboard and responsive layout
+    [chromium] › tests/e2e/project-settings.spec.ts:120:1 › Project settings: real SQL/R results, model identity, undo, editor options and live scope survive
+    [chromium] › tests/e2e/project-settings.spec.ts:198:3 › Project settings: active SQL continues through settings and cancels after return
+    [chromium] › tests/e2e/project-settings.spec.ts:198:3 › Project settings: active R continues through settings and cancels after return
+  3 passed (1.3m)

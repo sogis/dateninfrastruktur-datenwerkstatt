@@ -103,6 +103,9 @@ main {
   display: grid;
   gap: var(--dw-gap-groups);
 }
+.settings-page {
+  overflow-wrap: anywhere;
+}
 .form-fields {
   display: grid;
   gap: 16px;

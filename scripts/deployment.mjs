@@ -34,7 +34,7 @@ export function caddyConfig(config) {
   ${base === '/' ? '' : `redir ${base.slice(0, -1)} ${base} 308`}
   ${base === '/' ? 'handle' : `handle_path ${base}*`} {
     route {
-      @navigation path_regexp navigation ^/(|projects(/[^/.]+(/(data|diagnostics|sql/[^/.]+|r/[^/.]+))?)?/?|settings/?|open/?)$
+      @navigation path_regexp navigation ^/(|projects(/[^/.]+(/(data|diagnostics|settings|sql/[^/.]+|r/[^/.]+))?)?/?|settings/?|open/?)$
       rewrite @navigation /index.html
       file_server
     }
