@@ -12,6 +12,8 @@ import type {ResultSqlEngine} from '../../application/sqlPorts';
 import {AppFailure} from '../../application/errors';
 import {DuckDbRuntime} from './runtime';
 import {prepareSelect} from './queryGuard';
+import type {TableExportFormat} from '../../application/tableExport';
+import {exportXlsx} from '../xlsx/exportXlsx';
 export const sqlIdentifier = (s: string) => `"${s.replaceAll('"', '""')}"`;
 const literal = (s: string) => `'${s.replaceAll("'", "''")}'`;
 const ordinal = '__dw_ordinal';
@@ -287,7 +289,36 @@ export class SqlRoomsSqlEngine implements ResultSqlEngine {
       }
     });
   }
-  exportFile(table: TableHandle, format: 'csv' | 'parquet', signal: AbortSignal) {
+  exportFile(table: TableHandle, format: TableExportFormat, signal: AbortSignal) {
+    if (format === 'xlsx')
+      return this.runtime.operation(signal, async (_room, c, operationSignal) => {
+        const relation = this.require(table);
+        if (BigInt(table.rowCount) > 100000n)
+          throw new AppFailure('LIMIT_EXCEEDED', 'XLSX-Export erlaubt höchstens 100000 Zeilen.');
+        // Exact SQL text plus logical schema avoids Arrow/JS numeric conversion losses.
+        const projection = table.schema.columns
+          .map((col) => `CAST(${sqlIdentifier(col.name)} AS VARCHAR) AS ${sqlIdentifier(col.name)}`)
+          .join(',');
+        const data = await c.query(
+          `SELECT ${projection} FROM ${relation} ORDER BY ${sqlIdentifier(ordinal)}`,
+        );
+        operationSignal.throwIfAborted();
+        // Read by position: Arrow 17's toJSON() uses ordinary objects and loses
+        // legitimate quoted column names such as "__proto__".
+        const vectors = table.schema.columns.map((column, index) => {
+          const vector = data.getChildAt(index);
+          if (!vector)
+            throw new AppFailure('VALIDATION_FAILED', `XLSX-Spalte ${column.name} fehlt.`);
+          return vector;
+        });
+        const textCell = z.string().nullable();
+        const rows = Array.from({length: data.numRows}, (_, index) =>
+          vectors.map((vector) => textCell.parse(vector.get(index))),
+        );
+        if (String(rows.length) !== table.rowCount)
+          throw new AppFailure('SOURCE_CHANGED', 'Zeilenzahl des XLSX-Ergebnisses stimmt nicht.');
+        return exportXlsx(table.schema, rows, operationSignal);
+      });
     return this.file(table, format, false, signal);
   }
   writeParquet(table: TableHandle, signal: AbortSignal) {

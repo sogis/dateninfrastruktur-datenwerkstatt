@@ -1,0 +1,50 @@
+[WebServer] (node:10057) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:10060) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/integration/xlsx.spec.ts:63:1 › XLSX SQL: exact values, text safety, NULL and empty string remain distinct (1.3s)
+  ✘  2 [chromium] › tests/integration/xlsx.spec.ts:409:1 › XLSX SQL: closing the session terminates its worker and rejects the stale export (11.6s)
+(node:10115) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [chromium] › tests/integration/xlsx.spec.ts:480:1 › XLSX SQL: a hard reset during source reading invalidates temporary results and restores kept data (4.5s)
+
+
+  1) [chromium] › tests/integration/xlsx.spec.ts:409:1 › XLSX SQL: closing the session terminates its worker and rejects the stale export
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: undefined
+
+    Call Log:
+    - Timeout 10000ms exceeded while waiting on the predicate
+
+      475 |   expect(proof.staleMaterialization).toEqual({kind: 'unavailable', reason: 'session-ended'});
+      476 |   expect(proof.recovered).toBe('succeeded');
+    > 477 |   await expect.poll(() => workers[0]?.closed).toBe(true);
+          |                                               ^
+      478 | });
+      479 |
+      480 | test('XLSX SQL: a hard reset during source reading invalidates temporary results and restores kept data', async ({
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/integration/xlsx.spec.ts:477:47
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/integration-xlsx-XLSX-SQL--94462-nd-rejects-the-stale-export-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/integration-xlsx-XLSX-SQL--94462-nd-rejects-the-stale-export-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/integration-xlsx-XLSX-SQL--94462-nd-rejects-the-stale-export-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/integration-xlsx-XLSX-SQL--94462-nd-rejects-the-stale-export-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/integration/xlsx.spec.ts:409:1 › XLSX SQL: closing the session terminates its worker and rejects the stale export
+  2 passed (18.0s)

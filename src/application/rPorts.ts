@@ -1,5 +1,6 @@
 import type {REngine, RObjectRef, TransferPlan} from './ports';
-export type TableExportFormat = 'csv' | 'parquet';
+import type {TableExportFormat} from './tableExport';
+export type {TableExportFormat} from './tableExport';
 /** Ephemeral export only: no project mutation or persistent capture. */
 export interface RTableExportService {
   planExport(

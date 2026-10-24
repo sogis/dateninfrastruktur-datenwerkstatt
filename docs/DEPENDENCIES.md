@@ -1,5 +1,26 @@
 # Dependencies und Lizenzen
 
+## XLSX-Erweiterung (24. Oktober 2026)
+
+Neu exakt gepinnt: `exceljs` **4.4.0** (MIT, produktiver Browserwriter im nur bei
+XLSX-Nutzung gestarteten Worker) und `fflate` **0.8.3** (MIT, nur Tests zur
+unabhängigen ZIP-/XML-Prüfung). Keine Engine-/Frameworkupdates.
+ExcelJS bringt weitere transitive Node-/ZIP-Abhängigkeiten mit; die
+Produktionsoberfläche lädt den Browserbuild ausschliesslich im Exportworker.
+Lockfile und automatisch erzeugtes npm-/Bundle-Lizenzinventar erfassen die
+Pakete; der originale ExcelJS-Lizenztext liegt zusätzlich unter
+`licenses/exceljs-4.4.0.txt`. Bundlegrösse und tatsächliche Checks stehen im
+XLSX-Implementierungsstatus. Auswahlbegründung: [ADR-010](adr/010-xlsx-export-worker.md).
+
+Der aktuelle Auditbericht unter `verification/xlsx/npm-audit.json` hat Exit 1
+und 11 Befunde: vorhandene Toolchain-/Monaco-/Zod-Befunde sowie ein neuer
+moderater transitiver `uuid`-Befund aus ExcelJS (v3/v5/v6 mit übergebenem Buffer).
+Die Anwendung nutzt diese UUID-Funktionen nicht; der XLSX-Writer erzeugt keine
+benutzergesteuerten UUID-Buffer. Der vorgefertigte Browserbuild wird durch
+ein Override im Node-Abhängigkeitsgraph nicht repariert. Kein automatisches
+Majorupgrade oder `audit fix --force`; frühere Audit-0-Berichte unten sind
+historische Nachweise und keine Aussage über den heutigen Graph.
+
 Aktueller Stand P8: Lizenzinventar und statische CSP-/Unterpfadtests sind geliefert und P7-geprüft. `npm audit` erneut Exit 0 / 0 bekannte Befunde ([P8-Bericht](verification/npm-audit-p8.json)). Die folgenden phasenweisen Abschnitte bewahren auch frühere offene Zwischenstände; die P7-Nachweise am Ende ersetzen sie. P8 ergänzt keine Dependency.
 
 Alle direkten npm-Versionen sind exakt gepinnt, transitiver Graph im `package-lock.json`. Baselinepakete und Herauslösung siehe [BASELINE.md](BASELINE.md). Kein Majorupdate gegenüber dem übernommenen Laufzeitstack.

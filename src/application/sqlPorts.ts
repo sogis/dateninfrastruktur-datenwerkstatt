@@ -1,5 +1,6 @@
 import type {SqlEngine, TableHandle} from './ports';
 import type {TableSchema} from '../domain/model';
+import type {TableExportFormat} from './tableExport';
 export interface ResultSqlEngine extends SqlEngine {
   readonly epoch: number;
   importColumnar(
@@ -14,7 +15,7 @@ export interface ResultSqlEngine extends SqlEngine {
   ): Promise<TableHandle>;
   exportFile(
     table: TableHandle,
-    format: 'csv' | 'parquet',
+    format: TableExportFormat,
     signal: AbortSignal,
   ): Promise<ReadableStream<Uint8Array>>;
   restore(

@@ -1,0 +1,11 @@
+
+> datenwerkstatt@0.1.0 typecheck
+> tsc --noEmit
+
+src/infrastructure/xlsx/codec.ts(87,11): error TS2322: Type '{ columns: { name: string; logicalType: string; nullable: boolean; roles: ("label" | "date" | "identifier" | "category" | "measure" | "year" | "geometry" | "municipality" | "unknown")[]; metadata: Record<...>; description?: string | undefined; }[]; metadata: Record<...>; }' is not assignable to type 'TableSchema'.
+  Types of property 'columns' are incompatible.
+    Type '{ name: string; logicalType: string; nullable: boolean; roles: ("label" | "date" | "identifier" | "category" | "measure" | "year" | "geometry" | "municipality" | "unknown")[]; metadata: Record<...>; description?: string | undefined; }[]' is not assignable to type 'ColumnSchema[]'.
+      Type '{ name: string; logicalType: string; nullable: boolean; roles: ("label" | "date" | "identifier" | "category" | "measure" | "year" | "geometry" | "municipality" | "unknown")[]; metadata: Record<...>; description?: string | undefined; }' is not assignable to type 'ColumnSchema' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+        Types of property 'description' are incompatible.
+          Type 'string | undefined' is not assignable to type 'string'.
+            Type 'undefined' is not assignable to type 'string'.

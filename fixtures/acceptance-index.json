@@ -432,8 +432,8 @@
     "phase": "P3",
     "level": "E2E",
     "given": "350-Zeilen-Resultat, aktuell nur erste Gridseite sichtbar.",
-    "when": "Aufbewahren, CSV/Parquet exportieren, Reload.",
-    "then": "350 Zeilen in Datei und nach Reopen; interne Ordinalspalte nicht exportiert; temporäres anderes Resultat nach Reload nicht fälschlich vorhanden."
+    "when": "Aufbewahren, CSV/Parquet/XLSX exportieren, Reload; ausgewählten R-Dataframe direkt exportieren.",
+    "then": "350 Zeilen in Datei und nach Reopen; interne Ordinalspalte nicht exportiert; temporäres anderes Resultat nach Reload nicht fälschlich vorhanden. XLSX erhält Präzision, NULL/Leerstring, leere Zeilen und Formeltexte; Grenzen liefern Fehler statt Kürzung. Direkter R-Export verändert das Projektdokument nicht. Echter Abbruch, Timeout, Sitzungsende und Hardreset werden geprüft; CSV bleibt Hauptaktion."
   },
   {
     "id": "AT-033",

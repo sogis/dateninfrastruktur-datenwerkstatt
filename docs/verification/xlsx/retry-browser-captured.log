@@ -1,0 +1,15 @@
+Execution record transcribed from the captured exec tool output; stdout/stderr was not redirected during this run. This is not a complete original console log.
+
+Command:
+DW_REUSE_DEV_SERVER=1 DW_REUSE_TEST_PORTAL=1 node node_modules/@playwright/test/cli.js test tests/integration/xlsx.spec.ts tests/e2e/xlsx.spec.ts --grep 'XLSX SQL UI:|XLSX R: full dataframe' --project=chromium --reporter=list --output=test-results/xlsx-repeat
+
+Exit status: 0
+Exec session: 71280
+
+Captured result lines:
+  ✓  1 [chromium] › tests/e2e/xlsx.spec.ts:39:1 › XLSX SQL UI: downloads all result rows after paging and keeps CSV as primary action (3.5s)
+  ✓  2 [chromium] › tests/integration/xlsx.spec.ts:207:1 › XLSX R: full dataframe, unchanged document, stale plans and failure cleanup (11.4s)
+
+  2 passed (15.2s)
+
+These are the two cases interrupted by Vite navigation in first-browser-captured.log. The later session-close and hard-reset tests were added after both runs and are not covered by either execution record.

@@ -1,0 +1,37 @@
+{
+  "baseRevision": "472385c7866913462a1dbb6f8f194e7e3299cd47",
+  "node": "v22.23.1",
+  "npm": "11.18.0",
+  "playwright": "1.63.0",
+  "browsers": {
+    "chromium": "153.0.8010.12",
+    "firefox": "155.0",
+    "webkit": "26.6"
+  },
+  "files": {
+    "package-lock.json": "efb7e46b33b0b15086037d8be81e0b3ac6daf6d6dbac73971f0f1a911c13ea65",
+    "package.json": "ad4d6bb1ae1a8dc3d2ab67380fa2e34248dac53d2b2f471fcd382125c9b29ad6",
+    "scripts/prove-native-xlsx.mjs": "7fa25d151765eb9a2ceb53772d6af80d0283cf35689df91d9c29933a42e84efe",
+    "src/app/download.ts": "59d0f1bce23d25b12c29c6e2bc970d76883f4a132517e607b4661a70f02a6c2d",
+    "src/application/analysisService.ts": "3d97aaa0fc940392f73acfccc2e40886e32913f513305c5ead60847a27216c24",
+    "src/application/rPorts.ts": "4714021bd8fb7100a8328323b651e207b0e5ef222de3de2a01d14058bbfec4e6",
+    "src/application/rService.ts": "5c339c914ae237737dbd2aa038c768b2bc253903924212fca53e313a7552a058",
+    "src/application/sqlPorts.ts": "9d186c64ecd640abece5f61528e308c2a94d5da5e870801945671932a5f38600",
+    "src/application/tableExport.ts": "a13a39c593000ecd848a38650514f58780d89bfdf92cae8d63a8d04a34ade6b6",
+    "src/features/r/RTableExport.tsx": "0314d30b709e64e8a784b11e8674c7a8a1da0f0019576c6875e46463ff284f92",
+    "src/features/sql/SqlWorkbench.tsx": "92ff82dedb51b47d34761554976e46a8d7ac9e1a8d06138ef3ba0a7e6e26cfaf",
+    "src/infrastructure/sqlrooms/runtime.ts": "05cb21423050671ca53965436efc1513312636363eaeed051a54da11cf5896b2",
+    "src/infrastructure/sqlrooms/sqlEngine.ts": "2d49c2611d72437951b5246bf0caac2198c7632ea9c7f310cd24403636714fb1",
+    "src/infrastructure/xlsx/codec.ts": "43d07116eabe09f25b5c07e6ca229af2126b2199241540a96b77da4a55a9fd4b",
+    "src/infrastructure/xlsx/exportXlsx.ts": "70be60bd18094e456fd0a478181486a7d5f53c2e8c68038561fec8b23b107544",
+    "src/infrastructure/xlsx/xlsx.worker.ts": "0f0d9442262ed2a97f23e8d81a8956061d027d26dc44aadc342a86fd30b65cfa",
+    "tests/deployment/xlsx.spec.ts": "70c4b804ef454cee6ddd5473ae985da76dff8dfbd3bc94b0f0ae4f85981448d1",
+    "tests/e2e/xlsx.spec.ts": "f6ed4c7572fa6ac713362d7250e47b339d7c87ca39572d0436f0e7fd354cad13",
+    "tests/integration/xlsx.spec.ts": "ea6baec21b016f60919815818ec788f91777dafa77b8ae82c4ab48a493bdb797",
+    "tests/unit/download.test.ts": "1f1077d980743fa11fb0af2025edb0d1d08964c9d5950730640bc4fa6b916662",
+    "tests/unit/xlsx.test.ts": "c54a22f8e376cd93416a99abfc8201cfc7eb2c4a24caf9d7b6b5d4e41bede619",
+    "tests/xlsx.ts": "b55a9695035795bab8cc94f1ad1163f086957583e56e4b92a73fef1dc2b2c897"
+  },
+  "verifySourceFingerprint": "verify-source-fingerprint.json",
+  "finalDelta": "Case-preserving OOXML literal escape encoding; independently round-tripped by unit and real-engine browser tests."
+}

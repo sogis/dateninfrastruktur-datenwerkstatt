@@ -16,6 +16,7 @@ import type {ArtifactStore, ExecutionBudget, PageRequest, TableHandle} from './p
 import type {ResultSqlEngine} from './sqlPorts';
 import {WorkspaceScheduler} from './scheduler';
 import {AppFailure} from './errors';
+import type {TableExportFormat} from './tableExport';
 interface Dependencies {
   sessionId: string;
   document(): WorkspaceDocument;
@@ -211,7 +212,8 @@ export class AnalysisService {
     this.stopReason = reason;
     this.deps.scheduler.cancel();
   }
-  private invalidateResetResults() {
+  /** Refresh transient availability after a shared SQL runtime operation reset its epoch. */
+  invalidateResetResults() {
     const stale = Object.values(this.deps.document().results).filter(
       (r) =>
         r.kind === 'table' &&
@@ -288,8 +290,26 @@ export class AnalysisService {
       throw new AppFailure('LIMIT_EXCEEDED', 'R-Transfer überschreitet Bytebudget.');
     return payload;
   }
-  async export(id: ResultId, format: 'csv' | 'parquet', signal: AbortSignal) {
-    return this.sql.exportFile(await this.handle(id, signal), format, signal);
+  async export(id: ResultId, format: TableExportFormat, signal: AbortSignal) {
+    if (format !== 'xlsx')
+      return this.sql.exportFile(await this.handle(id, signal), format, signal);
+    const deadline = AbortSignal.timeout(this.deps.budget.maxExecutionMs);
+    try {
+      return await this.deps.scheduler.run(
+        'XLSX exportieren',
+        AbortSignal.any([signal, deadline]),
+        async (joined) => this.sql.exportFile(await this.handle(id, joined), format, joined),
+      );
+    } catch (error) {
+      if (deadline.aborted && !signal.aborted)
+        throw new AppFailure(
+          'TIMEOUT',
+          'XLSX-Export überschritt das Laufzeitlimit und wurde beendet.',
+        );
+      throw error;
+    } finally {
+      this.invalidateResetResults();
+    }
   }
   async keepWithinJob(id: ResultId, signal: AbortSignal) {
     if (this.table(id).materialization.kind === 'artifact') return;

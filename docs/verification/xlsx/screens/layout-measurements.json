@@ -1,0 +1,92 @@
+[
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "documentWidth": 1440,
+    "windowWidth": 1440,
+    "note": {
+      "left": 64,
+      "right": 1428,
+      "top": 610.203125,
+      "bottom": 652.203125,
+      "width": 1364,
+      "height": 42,
+      "scrollWidth": 1364,
+      "clientWidth": 1364,
+      "whiteSpace": "normal",
+      "overflowWrap": "normal"
+    },
+    "menu": {
+      "left": 623.078125,
+      "right": 863.078125,
+      "top": 608.203125,
+      "bottom": 702.203125,
+      "width": 240,
+      "height": 94,
+      "scrollWidth": 238,
+      "clientWidth": 238,
+      "whiteSpace": "normal",
+      "overflowWrap": "normal"
+    },
+    "resultToolbar": {
+      "left": 52,
+      "right": 1440,
+      "top": 484.203125,
+      "bottom": 556.203125,
+      "width": 1388,
+      "height": 72,
+      "scrollWidth": 1388,
+      "clientWidth": 1388,
+      "whiteSpace": "normal",
+      "overflowWrap": "normal"
+    },
+    "noteText": "CSV enthält keine Typinformationen. Exportiert werden alle Zeilen des bezeichneten Ergebnisses. XLSX: DECIMAL, Datum/Zeit und numerische Spalten ausserhalb der exakten Excel-Darstellung werden als Text exportiert. Zeitwerte mit Zeitzone verwenden UTC; NULL bleibt von leerem Text unterscheidbar."
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 700
+    },
+    "documentWidth": 390,
+    "windowWidth": 390,
+    "note": {
+      "left": 64,
+      "right": 378,
+      "top": 522.34375,
+      "bottom": 648.34375,
+      "width": 314,
+      "height": 126,
+      "scrollWidth": 314,
+      "clientWidth": 314,
+      "whiteSpace": "normal",
+      "overflowWrap": "normal"
+    },
+    "menu": {
+      "left": 8,
+      "right": 248,
+      "top": 520.34375,
+      "bottom": 614.34375,
+      "width": 240,
+      "height": 94,
+      "scrollWidth": 238,
+      "clientWidth": 238,
+      "whiteSpace": "normal",
+      "overflowWrap": "normal"
+    },
+    "resultToolbar": {
+      "left": 52,
+      "right": 390,
+      "top": 275.34375,
+      "bottom": 376.34375,
+      "width": 338,
+      "height": 101,
+      "scrollWidth": 338,
+      "clientWidth": 338,
+      "whiteSpace": "normal",
+      "overflowWrap": "normal"
+    },
+    "noteText": "CSV enthält keine Typinformationen. Exportiert werden alle Zeilen des bezeichneten Ergebnisses. XLSX: DECIMAL, Datum/Zeit und numerische Spalten ausserhalb der exakten Excel-Darstellung werden als Text exportiert. Zeitwerte mit Zeitzone verwenden UTC; NULL bleibt von leerem Text unterscheidbar."
+  }
+]

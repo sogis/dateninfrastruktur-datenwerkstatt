@@ -686,6 +686,7 @@ export class RService implements TableTransferService, RTableExportService {
         } finally {
           this.exportPlans.delete(id);
           if (handle) await this.deps.sql.release(handle);
+          this.deps.analyses.invalidateResetResults();
         }
       })
       .catch((error: unknown) => {

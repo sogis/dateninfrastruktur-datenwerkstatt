@@ -1,0 +1,41 @@
+Execution record transcribed from the captured exec tool output; stdout/stderr was not redirected during this run. This is not a complete original console log.
+
+Command:
+DW_REUSE_DEV_SERVER=1 DW_REUSE_TEST_PORTAL=1 node node_modules/@playwright/test/cli.js test tests/integration/xlsx.spec.ts tests/e2e/xlsx.spec.ts --project=chromium --reporter=list --output=test-results/xlsx-first
+
+Exit status: 1
+Exec session: 83472
+
+Captured result lines:
+  ✘  1 [chromium] › tests/e2e/xlsx.spec.ts:39:1 › XLSX SQL UI: downloads all result rows after paging and keeps CSV as primary action (2.0m)
+  ✓  2 [chromium] › tests/e2e/xlsx.spec.ts:73:1 › XLSX R UI: downloads the complete dataframe without changing its project (13.6s)
+  ✓  3 [chromium] › tests/integration/xlsx.spec.ts:4:1 › XLSX SQL: full frozen random result survives paging, keeping and reopening (1.7s)
+  ✓  4 [chromium] › tests/integration/xlsx.spec.ts:63:1 › XLSX SQL: exact values, text safety, NULL and empty string remain distinct (1.1s)
+  ✓  5 [chromium] › tests/integration/xlsx.spec.ts:142:1 › XLSX SQL: 10000 NULL rows, empty result and rejected exports do not corrupt the session (1.6s)
+  ✘  6 [chromium] › tests/integration/xlsx.spec.ts:207:1 › XLSX R: full dataframe, unchanged document, stale plans and failure cleanup (8.5s)
+  ✓  7 [chromium] › tests/integration/xlsx.spec.ts:323:3 › XLSX SQL: abort terminates its actual worker and permits another export (2.3s)
+  ✓  8 [chromium] › tests/integration/xlsx.spec.ts:323:3 › XLSX SQL: timeout terminates its actual worker and permits another export (2.1s)
+
+Captured failures:
+1) XLSX SQL UI: downloads all result rows after paging and keeps CSV as primary action
+Test timeout of 120000ms exceeded.
+Error: page.waitForEvent: Target page, context or browser has been closed
+waiting for event "download"
+at inspectDownload (tests/e2e/xlsx.spec.ts:25:24)
+at tests/e2e/xlsx.spec.ts:58:22
+
+2) XLSX R: full dataframe, unchanged document, stale plans and failure cleanup
+Error: page.evaluate: Execution context was destroyed, most likely because of a navigation.
+at tests/integration/xlsx.spec.ts:211:28
+
+Captured footer:
+  2 failed
+  6 passed (2.6m)
+
+Diagnosis obtained by reading the generated SQL failure screenshot and original trace before subsequent runs:
+- Screenshot showed RUNTIME_RESET: Nicht mehr in dieser Sitzung verfügbar, an empty grid and disabled export controls.
+- Trace recorded XLSX click at 3689.146 ms, Vite reconnect at 4422.187 ms and dependency-version change 9efa8dc5 -> f0e0045c.
+- Further Vite reconnects occurred at 34744.972 ms and 103148.486 ms; the latter fetched a newer codec.ts timestamp.
+- The R integration failure explicitly reported a navigation-destroyed evaluation context.
+
+Original trace/screenshot paths were under test-results/xlsx-first/. They were present and inspected immediately after this run; later default Playwright output cleanup removed that directory. No original trace files are recreated by this execution record.

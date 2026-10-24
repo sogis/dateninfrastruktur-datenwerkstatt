@@ -1,0 +1,21 @@
+{
+  "engine": "v1.5.4",
+  "hashes": {
+    "wasm_eh": "7cba33e0c37b02640c16e390d1f47bbe46570ea261bdc2ce735ac52f1cff3505",
+    "wasm_mvp": "b8f83c3ad78febf6d220e8628ea21d76e77e046cc9a5bfe02a6deec3ccdb688c"
+  },
+  "proof": [
+    {
+      "name": "native",
+      "expected": "9999",
+      "actual": "9995",
+      "rows": "10000"
+    },
+    {
+      "name": "text",
+      "expected": "9999",
+      "actual": "9999",
+      "rows": "10000"
+    }
+  ]
+}

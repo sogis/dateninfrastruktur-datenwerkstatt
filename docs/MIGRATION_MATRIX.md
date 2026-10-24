@@ -14,7 +14,7 @@ Alle Quellpfade relativ zu `src/main/frontend/explore/` des in [BASELINE.md](BAS
 | src/webr/DuckDbToWebRTypeMapper.ts | Unverändert samt Tests in tests/baseline/webr | Unveränderte Baselineregression; neuer Codec zusätzlich mit NaN/Inf, NULL, Integer-/Decimal-/Zeitgrenzen geprüft |
 | src/webr/RPanel.tsx | Panel-Lifecycle nicht übernehmen | Eigene R-Workbench; Sitzungsobjekte bleiben über Routen, Reset/Close beendet Runtime; P5 geprüft |
 | src/results/arrowResult.ts / sqlResultSnapshot.ts | Arrow-/Resultatverwendung gelesen | Eigenes P3-Ergebnisregister, private Relation/Ordinale, numerisches Paging und Parquet-Wiederherstellung geprüft |
-| ResultPanel / ResultExport / Diagramme | Produkt-UI nach eigenem Flächenvertrag bauen | P3: vollständiger CSV-/Parquetexport, Bar/Line/Scatter, gespeicherte Konfiguration/PNG und Grenzen geprüft |
+| ResultPanel / ResultExport / Diagramme | Produkt-UI nach eigenem Flächenvertrag bauen | P3: vollständiger CSV-/Parquetexport, Bar/Line/Scatter, gespeicherte Konfiguration/PNG und Grenzen geprüft; XLSX-Erweiterung gemäss ADR-010 verwendet bestehende Tabellenhandles statt SQL erneut auszuführen |
 | scripts/mirrorWebRPackages.mjs, Test, Lock | Übernommen, Zielpfade auf einzelnes npm-Projekt angepasst | 40 Pakete mit SHA-256-Pins lokal gespiegelt; echte Installation/Versionsprüfung in drei Browsern bestanden |
 | WASM-/Monaco-Pfade | Versionierte lokale Assets, Monaco-Vite-Worker | Build geprüft; Unterpfad-/Container-Abnahme P7 offen |
 | so-header.js LOGO_SVG | Original-SVG bytegleich extrahiert | src/assets/kanton-solothurn.svg; Lizenz in licenses/ |

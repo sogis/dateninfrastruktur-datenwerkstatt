@@ -29,7 +29,7 @@ Die Datenwerkstatt ist ein lokal arbeitendes Analysewerkzeug. Ein Projekt enthä
 | SQL         | Gespeicherte benannte Abfragen, Parameter, Ausführung, Abbruch, stabile Resultate           |
 | R           | Gespeicherte Skripte, explizite Eingaben, Konsole als Ausgabe, Grafiken, Objektliste, Reset |
 | Austausch   | SQL-Ergebnis → R-Dataframe; ausgewählter R-Dataframe → Datensatz im Workspace               |
-| Ergebnisse  | Tabelle, PNG-Plot, einfache Diagrammkonfiguration, Aufbewahren, CSV/Parquet/PNG-Export      |
+| Ergebnisse  | Tabelle, PNG-Plot, einfache Diagrammkonfiguration, Aufbewahren, CSV/Parquet/XLSX/PNG-Export |
 | Speicherung | Projektmetadaten in IndexedDB; Dateien/Artefakte in OPFS; Recovery und Export               |
 | Oberfläche  | Projekte, Daten, SQL, R, kleine persönliche Einstellungen                                   |
 | Betrieb     | Statischer Build, Container, Runtime-Konfiguration, automatische Tests, Release-Nachweise   |
@@ -288,7 +288,11 @@ Eine Abfrage mit bewusstem `LIMIT 10` und zehn Zeilen ist vollständig bezüglic
 
 CSV „Für Tabellenkalkulation entschärfen“ optional und standardmässig aus: gefährliche textuelle Formelpräfixe kennzeichnen/entschärfen und sichtbar sagen, dass diese Exportoption Datenrepräsentation verändert. Maschineller Standardexport verändert Strings nicht still. Exportfehler/Downloadabbruch ist kein erfolgreicher Datei-Download.
 
-Direkter Export eines ausgewählten R-Dataframes verwendet ebenfalls den vollständigen geprüften Tabellenstand und den Typvertrag. Er erzeugt nur die CSV-/Parquet-Datei, ohne neuen Datensatz oder dauerhaften Capture-Lauf. Typ-/Formatwarnungen werden vor dem Download angezeigt; zustimmungspflichtige Umwandlungen bleiben ausdrücklich zu bestätigen.
+XLSX für SQL-Ergebnisse und direkte R-Tabellenexporte enthält ein Blatt „Daten“ mit Kopfzeile, alle Zeilen in ursprünglicher Ergebnisreihenfolge und keine interne Ordinalspalte. CSV bleibt Hauptaktion. Boolean bleibt Boolean. Numerische Spalten werden nur bei vollständiger exakter Darstellbarkeit aller Werte mit höchstens 15 signifikanten Excel-Ziffern als Zahlen geschrieben, sonst vollständig als exakter Text; DECIMAL immer als Text. Datum/Zeit bleibt exakter ISO-Text mit ursprünglicher Auflösung; Zeitzonenwerte werden als UTC dargestellt. NaN/±Inf bleiben unterscheidbar. Strings, führende Nullen, Formelpräfixe, Whitespace, NULL gegenüber Leerstring und vollständig leere Ergebniszeilen bleiben erhalten. Text wird nie als Formel oder Link interpretiert. OOXML-Zeichen werden verlustfrei kodiert; nicht unterstützte Werte führen zu einem erklärten Fehler.
+
+XLSX erlaubt höchstens 100000 Datenzeilen und ein gemeinsames Budget von 64 MiB für den UTF-8-Exportpayload plus fertige Datei. Die XLSX-Grenzen (16384 Spalten, 1048575 Datenzeilen plus Kopfzeile, 32767 UTF-16-Einheiten pro Zelle) führen bei Überschreitung zum Fehler statt zur Kürzung. XLSX läuft in einem nur bei Bedarf geladenen, bei Abbruch/Timeout/Sitzungswechsel tatsächlich beendeten Worker; verspätete Antworten starten keinen Download. Die Typdarstellung wird vor dem Download erklärt. Keine neue SQL-Ausführung für den Export. Die gepinnte DuckDB-Excel-Erweiterung wird wegen nachgewiesenen Zellverlusts nicht produktiv verwendet (ADR-010).
+
+Direkter Export eines ausgewählten R-Dataframes verwendet ebenfalls den vollständigen geprüften Tabellenstand und den Typvertrag. Er erzeugt nur die CSV-/Parquet-/XLSX-Datei, ohne neuen Datensatz oder dauerhaften Capture-Lauf. Typ-/Formatwarnungen werden vor dem Download angezeigt; zustimmungspflichtige Umwandlungen bleiben ausdrücklich zu bestätigen.
 
 ## 11. R-Laufzeit, Skripte und SQL–R-Transfer
 

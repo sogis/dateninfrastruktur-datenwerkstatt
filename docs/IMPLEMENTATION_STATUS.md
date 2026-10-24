@@ -2104,6 +2104,91 @@ werden erhalten und nicht in den CSV-Commit aufgenommen. Für den Commit wurden
 ausschliesslich nachgestellte Terminal-Leerzeichen in den neuen Logs entfernt;
 Prüfergebnisse und Code bleiben unverändert.
 
+
+### XLSX-Export für SQL und R (24. Oktober 2026)
+
+**Status: implementiert und geprüft.** REQ-048 / AT-032, Erweiterung innerhalb
+P3/P5/P7. Verifizierte Basisrevision
+`472385c7866913462a1dbb6f8f194e7e3299cd47`; anfänglich vorhandene CSV-Änderungen
+wurden unabhängig eingecheckt und erhalten. Finale Quellhashes, Toolchain und
+Browserstände: [source-fingerprint.json](verification/xlsx/source-fingerprint.json).
+Nachweis des vollständigen Verify-Kandidaten vor dem letzten Stringdetail separat
+unter `verify-source-fingerprint.json`; keine uncommittete Änderung als Gitrevision
+behauptet. Keine eigenen Commits, kein Push, Release oder Quellportal-Eingriff.
+
+**Geliefert:** Beide bisherigen Exportmenüs enthalten XLSX bei unveränderter
+CSV-Hauptaktion. SQL exportiert den vollständigen unveränderlichen Tabellenhandle
+in Originalreihenfolge, auch nach Paging/Sortierung/Keep/Reopen; keine erneute
+Codeausführung und keine interne Ordinalspalte. R nutzt seinen bestehenden
+Scope-/Mutations-/Typ-/Bestätigungspfad und erzeugt keinen Datensatz oder
+Capture-Lauf. ExcelJS 4.4.0 (MIT) läuft ausschliesslich im lazy Exportworker;
+fflate 0.8.3 ist nur Testdependency. Keine Version vorhandener Engines geändert.
+
+Numerische Spalten werden nur bei vollständig exakter Excel-Darstellbarkeit
+mit höchstens 15 signifikanten Ziffern Zahlen; unsichere Spalten, DECIMAL und
+Zeitwerte bleiben exakter Text. Tatsächliche Zeitzonenwerte werden UTC, naive
+Zeitwerte erhalten keine erfundene Zone. Boolean bleibt Boolean. Führende Nullen,
+Formelpräfixe, XML/Unicode/CR/C0, literale `_xHHHH_`-/`_XHHHH_`-Zeichenfolgen,
+NULL/Leerstring und vollständig leere Zeilen sind separat nachgewiesen.
+100000 Datenzeilen, 16384 Spalten, 32767 UTF-16-Einheiten je Zelle sowie gemeinsam
+64 MiB für UTF-8-Exportpayload und Datei werden ohne Kürzung begrenzt;
+verschachtelte Typen/BLOB sind explizit abzulehnen. Kein Peak-RAM-Versprechen.
+
+Worker werden bei Erfolg, Fehler, Abbruch, Timeout und Sitzungsende tatsächlich
+beendet. Das kombinierte Runtime-Lebenszeitsignal erreicht den Worker; der
+Downloadpfad bricht auch wartendes Streamlesen ab und verwirft späte Antworten.
+Bei hartem DuckDB-Reset werden temporäre Ergebnisse sichtbar invalidiert;
+aufbewahrte Ergebnisse bleiben wiederherstellbar. Der Typhinweis steht vor dem
+Download, bestehende Begrenzungs- und R-Umwandlungswarnungen bleiben erhalten.
+
+**Relevante Dateien:** `src/application/tableExport.ts`, die SQL-/R-Exportports
+und -Services, `src/infrastructure/xlsx/`, SQLRooms-Adapter/Runtime,
+`src/app/download.ts` sowie SQL-/R-Exportmenüs. Neue Unit-, echte Integrations-,
+UI- und statische Deploymenttests unter `tests/`; unabhängiger ZIP-/XML-Inspector
+`tests/xlsx.ts`. SPEC/REQ-048, AT-032, Acceptanceindex/-matrix und Dependencies
+sind nachgeführt. Reproduzierbarer Fehlernachweis und Alternativen:
+[ADR-010](adr/010-xlsx-export-worker.md).
+
+**Tatsächliche Checks** mit Node 22.23.1, npm 11.18.0, Playwright 1.63.0,
+Chromium 153.0.8010.12, Firefox 155.0 und WebKit 26.6:
+
+| Prüfung | Tatsächliches Ergebnis |
+| --- | --- |
+| `node scripts/prove-native-xlsx.mjs` | Exit **0**, native v1.5.4-Fehlerreproduktion: 9995 statt 9999 Werte; keine produktive Freigabe der Extension |
+| `DW_REUSE_DEV_SERVER=1 npm run verify` | Abschliessender Gesamtlauf Exit **0**: Typecheck, Lint/Modulgrenzen, **92/92 Unit**, Build/Assets/Lizenzen, **67/67 Integration**, **77/77 UI** |
+| Typecheck/Lint/Unit/Build nach letzter Stringdetailkorrektur | `npm run typecheck && npm run lint && npm run test:unit && npm run build`, Exit **0**, **92/92** Unit; Gesamtsuite nach diesem einen Detail nicht erneut behauptet |
+| Gezielte XLSX-Dreiermatrix | Exit **0**, **30/30**: acht Integrations- und zwei UI-Szenarien pro Browser, einschliesslich echter Workerbeendigung/Engine-Hardreset/Recovery |
+| Statisches `/lab/` | Final Exit **0**, **2/2** in echtem Caddy-Container, vollständige SQL-/R-Dateien, Reopen, unverändertes R-Projekt, lokale Worker/CSP |
+| `git diff --check` und finale Quellhashprüfung | Exit **0**, 22 Programm-/Test-/Paket-/Skriptdateien unverändert zum final geprüften Detailstand |
+| `npm audit --json` | Exit **1**, **11** vorhandene/transitive Befunde, keine Audit-0-Behauptung; Einordnung in DEPENDENCIES.md |
+
+Exakte Befehle, Original- und als solche markierte transkribierte Logs,
+Anfangsfehlschläge und erfolgreiche Wiederholungen:
+[Prüfbericht](verification/xlsx/README.md). Erste UI-Läufe waren durch belegte
+Vite-Navigationen unterbrochen. Der erste Verifylauf hatte 64/65 erfolgreiche
+Integrationen und noch einen vorher geladenen alten TIMESTAMP-Sollwert; die
+korrekte zonenlose Erwartung ist fachlich dokumentiert. Der erste Sessionclose-
+Beobachter registrierte den bereits beendeten Worker zu spät; jetzt erfolgt
+beobachteter Workerstart vor Schliessanforderung. Diese Fehlschläge werden nicht
+als grüne Gesamtläufe ausgegeben und ihre Logs bleiben erhalten.
+
+Visuell geprüft bei 1440×900 und 390×700, kein horizontaler Overflow;
+Screenshots/Messwerte in `verification/xlsx/screens/`. Finaler separater
+Workerchunk **1023288 Bytes**, gzip **280668 Bytes**, erst beim Export geladen.
+Bekannte Chunkgrössenwarnung erhalten, Lizenzinventar einschliesslich ExcelJS
+gebaut. Historische, von Tests neu erzeugte Screenshot-/Geometriedateien wurden
+nach Sicherung der eigenen Ausgaben wiederhergestellt; keine Sollwerte geändert.
+
+**Grenzen / nicht ausgeführt:** kein XLSX-Import, kein vollständiger SQL-Typ-
+Rundlauf über Excel; exakte Textrepräsentationen sind Teil des sichtbaren Vertrags.
+Keine vollständige Firefox-/WebKit-Abnahme aller Altfunktionen, kein neuer nativer
+Safari-XLSX-Test oder Browserzoomtest und keine V1-Releaseabnahme. Der moderate
+transitive UUID-Auditbefund aus ExcelJS betrifft nicht die genutzten Writer-
+UUID-Funktionen; bestehende Toolchain-/Monaco-/Zod-Befunde sind separat sichtbar.
+Kein bekannter Funktionsblocker im beauftragten XLSX-Umfang. Nächster konkreter
+Schritt: lokale Nutzung über „Weitere Exportformate → XLSX exportieren“ in SQL
+oder beim ausgewählten R-Dataframe; die beauftragte Implementierung ist geliefert.
+
 ## Ergänzung 24. Oktober 2026 — verständlicher Schreibschutz
 
 **Geliefert / geprüft: REQ-020, REQ-076; AT-012, AT-065.** Ausgangsrevision

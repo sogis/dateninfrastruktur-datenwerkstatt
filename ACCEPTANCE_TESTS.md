@@ -261,10 +261,12 @@ Ergänzend für CSV: gewählte Textbegrenzung, Escape und fehlende Werte bleiben
 **Requirements:** REQ-044, REQ-045, REQ-048 · **Phase:** P3 · **Ebene:** E2E
 
 **Gegeben:** 350-Zeilen-Resultat, aktuell nur erste Gridseite sichtbar.
-**Wenn:** Aufbewahren, CSV/Parquet exportieren, Reload.
+**Wenn:** Aufbewahren, CSV/Parquet/XLSX exportieren, Reload.
 **Dann:** 350 Zeilen in Datei und nach Reopen; interne Ordinalspalte nicht exportiert; temporäres anderes Resultat nach Reload nicht fälschlich vorhanden.
 
-**Zusatzfall direkter R-Dateiexport (v1.3):** Ausgewählten vollständigen Dataframe als CSV/Parquet exportieren, ohne Datensatz oder dauerhaften Capture-Lauf anzulegen. 350 Zeilen trotz 200-Zeilen-Vorschau, Typ-/NULL-Erhalt, explizite Umwandlungswarnungen, unverändertes Projektdokument und freigegebene temporäre Relationen prüfen. Harte Zeilen-/Bytegrenzen, veraltete Session-/Scope-/Mutationsstände, Fehler, echter Abbruch und Timeout werden separat nachgewiesen.
+**Zusatzfall direkter R-Dateiexport (v1.3, XLSX ergänzt):** Ausgewählten vollständigen Dataframe als CSV/Parquet/XLSX exportieren, ohne Datensatz oder dauerhaften Capture-Lauf anzulegen. 350 Zeilen trotz 200-Zeilen-Vorschau, Typ-/NULL-Erhalt, explizite Umwandlungswarnungen, unverändertes Projektdokument und freigegebene temporäre Relationen prüfen. Harte Zeilen-/Bytegrenzen, veraltete Session-/Scope-/Mutationsstände, Fehler, echter Abbruch und Timeout werden separat nachgewiesen.
+
+**XLSX:** Ein Blatt „Daten“, vollständiger eingefrorener Stand auch nach Paging/Sortierung, Editoränderung und Wiederöffnen; keine Ordinalspalte. 10000 Zeilen mit genau einem frühen NULL verlieren keine weiteren Werte. Numerische Spalten gemäss 15-Ziffern-Regel, DECIMAL/ISO-Zeittexte, Bool, NaN/±Inf, NULL/Leerstring und komplett leere Zeilen prüfen. Formelpräfixe bleiben Text; Unicode/XML-Zeichen, CR/LF/TAB, literale `_xHHHH_` und prototypgleiche Strings bleiben erhalten. Spalten-/Zell-/Zeilen-/Bytegrenzen sowie komplexe Typen liefern Fehler statt Kürzung. Download unabhängig entpacken und Zelltypen/Inhalte/Formelfreiheit prüfen. CSV bleibt Hauptaktion; echter Workerabbruch/Timeout/Sitzungsende unterdrückt Downloads. Gezielte Fälle in Chromium/Firefox/WebKit und statischem `/lab/` belegen.
 
 ### AT-033 — Portal-Dataset-Kontext v4
 

@@ -5,6 +5,11 @@ import {displayNameError, sqlNameError} from '../../domain/fieldValidation';
 import {SplitButton} from '../../ui/ActionMenu';
 import {Modal} from '../../ui/Modal';
 import {failureMessage} from '../../application/errors';
+import {
+  tableExportMediaType,
+  XLSX_EXPORT_NOTE,
+  type TableExportFormat,
+} from '../../application/tableExport';
 import {TransferToR} from '../r/Transfer';
 import {useEffect, useRef, useState, useSyncExternalStore} from 'react';
 import {Panel, PanelGroup, PanelResizeHandle} from 'react-resizable-panels';
@@ -464,17 +469,38 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
   });
   const busy = useSyncExternalStore(session.scheduler.subscribe, session.scheduler.getSnapshot);
   const pending = useRef(false);
+  const live = useRef(true);
+  const actionGeneration = useRef(0);
+  const exportController = useRef<AbortController | null>(null);
   const [busyAction, setBusyAction] = useState('');
+  useEffect(() => {
+    live.current = true;
+    setBusyAction('');
+    return () => {
+      live.current = false;
+      actionGeneration.current += 1;
+      pending.current = false;
+      exportController.current?.abort();
+      exportController.current = null;
+    };
+  }, [service, result.id]);
   const act = (action: string, work: () => Promise<unknown>) => {
     if (pending.current || session.scheduler.getSnapshot()) return;
+    const generation = actionGeneration.current;
     pending.current = true;
     setBusyAction(action);
     void Promise.resolve()
-      .then(work)
-      .catch(report)
+      .then(() => {
+        if (live.current && generation === actionGeneration.current) return work();
+      })
+      .catch((cause: unknown) => {
+        if (live.current && generation === actionGeneration.current) report(cause);
+      })
       .finally(() => {
-        pending.current = false;
-        setBusyAction('');
+        if (live.current && generation === actionGeneration.current) {
+          pending.current = false;
+          setBusyAction('');
+        }
       });
   };
   // Paging cancellation discards the UI reply only; it must never cancel another engine job.
@@ -503,19 +529,28 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
     };
   }, [service, result.id, offset, sort]);
   const unavailable = result.materialization.kind === 'unavailable';
-  const exportResult = (format: 'csv' | 'parquet') => {
+  const exportResult = (format: TableExportFormat) => {
     if (unavailable) return;
-    act(`export-${format}`, () =>
-      service
-        .export(result.id, format, new AbortController().signal)
-        .then((stream) =>
-          downloadStream(
-            stream,
-            `${result.name}.${format}`,
-            format === 'csv' ? 'text/csv' : 'application/vnd.apache.parquet',
-          ),
-        ),
-    );
+    act(`export-${format}`, async () => {
+      const control = new AbortController();
+      exportController.current = control;
+      try {
+        const stream = await service.export(result.id, format, control.signal);
+        if (control.signal.aborted || exportController.current !== control || !live.current) {
+          await stream.cancel();
+          control.signal.throwIfAborted();
+          return;
+        }
+        await downloadStream(
+          stream,
+          `${result.name}.${format}`,
+          tableExportMediaType(format),
+          control.signal,
+        );
+      } finally {
+        if (exportController.current === control) exportController.current = null;
+      }
+    });
   };
   return (
     <>
@@ -578,8 +613,20 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
               busyLabel: 'Parquet wird exportiert …',
               onSelect: () => exportResult('parquet'),
             },
+            {
+              label: 'XLSX exportieren',
+              disabled: !!busy || !!busyAction || unavailable,
+              busy: busyAction === 'export-xlsx',
+              busyLabel: 'XLSX wird exportiert …',
+              onSelect: () => exportResult('xlsx'),
+            },
           ]}
         />
+        {busyAction === 'export-xlsx' && (
+          <Button icon="stop-fill" onClick={() => exportController.current?.abort()}>
+            Export abbrechen
+          </Button>
+        )}
         <Button
           disabled={unavailable}
           onClick={() => setView(view === 'table' ? 'chart' : 'table')}
@@ -589,8 +636,9 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
       </Toolbar>
       <p className="export-note">
         CSV enthält keine Typinformationen. Exportiert werden alle Zeilen des bezeichneten
-        Ergebnisses.
+        Ergebnisses. {XLSX_EXPORT_NOTE}
       </p>
+      {busyAction === 'export-xlsx' && <p role="status">XLSX wird exportiert …</p>}
       {transfer && (
         <TransferToR session={session} resultId={result.id} onClose={() => setTransfer(false)} />
       )}

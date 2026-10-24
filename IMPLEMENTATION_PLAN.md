@@ -10,6 +10,16 @@ Gate: Unit-/Fehler-/Navigationstests, echte Multitab-/Reload-/Capabilitytests,
 Tastatur und schmale/vergrösserte Darstellung, gezielte Dreiermatrix und
 `npm run verify`. Keine Lockübernahme erzwingen und keine Browserdaten löschen.
 
+## Ergänzung — XLSX-Export für SQL und R (24. Oktober 2026)
+
+REQ-048 / AT-032: gemeinsamer Exportformatvertrag, exakte Projektion bestehender
+Tabellenhandles, ExcelJS 4.4.0 in eigenem terminierbaren Worker, beide Exportmenüs
+mit unveränderter CSV-Hauptaktion. Daten-/R-Transferprüfung und Projektformat
+bleiben erhalten. XLSX-Typdarstellung und harte Grenzen gemäss SPEC dokumentieren.
+Gate: unabhängige ZIP-/XML-Prüfung, echte DuckDB-/webR-Snapshots, NULL-Regression,
+Workerabbruch/Timeout/Sitzungsende, gezielte Dreiermatrix und statisches `/lab/`,
+`npm run verify`. Begründung und reproduzierbarer Enginefehler: ADR-010.
+
 Phasen sind Lieferabschnitte, keine Kalender- oder Aufwandsschätzung. Nach jeder Phase relevante Unit-/Browserchecks ausführen und `docs/IMPLEMENTATION_STATUS.md` mit tatsächlichem Ergebnis aktualisieren. Eine Phase wird nicht allein durch vorhandene Dateien abgeschlossen.
 
 ## Gemeinsames Statusformat

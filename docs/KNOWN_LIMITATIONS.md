@@ -16,3 +16,22 @@
 - Monaco wird lazy geladen. Initialer App-Chunk etwa 914 kB, Editor etwa 3,63 MB unkomprimiert; die Buildwarnung bleibt sichtbar. Das sind keine Gesamtladezeit- oder Speicherzusagen. 40 kuratierte R-Pakete und Runtimeassets werden lokal mit festen Versionen/Hashes ausgeliefert; kein Service Worker, kein Offline-Neustart-Versprechen.
 - Unbekannte Metadatenformate werden abgewiesen. V1 hat kein älteres produktives Format zu migrieren; eine separate echte Dexie-Testvorgängerversion beweist Daten-/Schema-Rollback und erfolgreichen Migrationsretry (AT-007). Daraus wird keine Unterstützung beliebiger Altformate behauptet.
 - `npm audit` meldet im P8-Lauf 0 bekannte Befunde. Das Buildinventar enthält 400 npm-Lockeinträge/40 R-Pakete mit Lizenzhinweisen. Originalbranding ist übernommen, kantonale Fonts werden nicht verteilt. Vor externer Distribution sind Lizenz-/Quellbereitstellungspflichten anhand der exakten Artefakte zu erfüllen; es wurde nichts veröffentlicht.
+
+
+## XLSX-Export
+
+XLSX wird ausschliesslich exportiert, nicht importiert. Numerische Spalten,
+die Excel nicht vollständig exakt mit höchstens 15 signifikanten Ziffern
+speichern kann, sowie DECIMAL werden als Text geschrieben. Datum/Zeit bleibt
+ISO-Text, tatsächliche Zeitzonenwerte werden UTC; naive Zeitwerte erhalten
+keine erfundene Zeitzone. Verschachtelte Typen und BLOB sind explizit als
+VARCHAR umzuwandeln, falls eine Textrepräsentation gewünscht ist.
+
+Höchstens 100000 Datenzeilen, 16384 Spalten und 32767 UTF-16-Einheiten pro
+Zelle; Exportpayload (UTF-8-JSON) und XLSX-Datei teilen ein Budget von 64 MiB.
+Es gibt mehrere begrenzte Speicher-Kopien, keine Peak-RAM-Garantie und keine
+stille Kürzung. Der separate ExcelJS-Worker wird nur beim XLSX-Export geladen
+und danach beziehungsweise bei Abbruch beendet. Browser können den Abschluss
+eines vom Nutzer später abgebrochenen Betriebssystem-Downloads nicht sicher
+zurückmelden; die App behauptet hierfür keinen bestätigten Dateierhalt.
+Details und Enginebegründung: [ADR-010](adr/010-xlsx-export-worker.md).

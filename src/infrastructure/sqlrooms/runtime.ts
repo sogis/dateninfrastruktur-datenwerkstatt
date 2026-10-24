@@ -27,7 +27,7 @@ export class DuckDbRuntime {
   }
   operation<T>(
     signal: AbortSignal,
-    work: (room: Room, connection: AsyncDuckDBConnection) => Promise<T>,
+    work: (room: Room, connection: AsyncDuckDBConnection, signal: AbortSignal) => Promise<T>,
   ): Promise<T> {
     const initDeadline = new AbortController();
     const combined = AbortSignal.any([signal, this.lifetime.signal, initDeadline.signal]);
@@ -120,7 +120,7 @@ export class DuckDbRuntime {
           const connection = room.connector.getConnection();
           await connection.query("SET TimeZone='UTC'");
           combined.throwIfAborted();
-          return work(room, connection);
+          return work(room, connection, combined);
         })().then(
           (value) => finish({ok: true, value}),
           (error) => finish({ok: false, error}),
