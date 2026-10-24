@@ -42,6 +42,12 @@ const defaults = (): CsvImportOptions => ({
   emptyStringIsNull: true,
   columns: [],
 });
+function importFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes.toLocaleString('de-CH')} Bytes`;
+  const unit = bytes < 1048576 ? 'KiB' : 'MiB';
+  const value = bytes / (unit === 'KiB' ? 1024 : 1048576);
+  return `${value.toLocaleString('de-CH', {maximumFractionDigits: 1})} ${unit}`;
+}
 const types = [
   'VARCHAR',
   'BOOLEAN',
@@ -442,11 +448,20 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
     .filter((d) => d.id !== replace)
     .map((d) => d.sqlName);
   const columnKeys = options.columns.map((_, i) => `column-${i}`);
+  const exampleDelimiter = options.delimiter === '\t' ? ' ⇥ ' : options.delimiter;
+  const textExample = `${options.quote}Basel${exampleDelimiter} Nord${options.quote}`;
+  const advancedSettings = [
+    ...(!options.emptyStringIsNull ? ['Leere Felder bleiben leerer Text'] : []),
+    ...(options.nullStrings.length
+      ? [`Fehlende Werte: ${options.nullStrings.map((value) => JSON.stringify(value)).join(', ')}`]
+      : []),
+  ];
   const form = useFormValidation({
     file: () => (file ? undefined : 'Bitte wähle eine CSV- oder Parquet-Datei aus.'),
     name: () => displayNameError(name, 'Datensatznamen'),
     sqlName: () => (replace ? undefined : sqlNameError(sqlName, occupied)),
     delimiter: () => requiredValueError(options.delimiter),
+    quote: () => requiredValueError(options.quote || 'none'),
     decimalSeparator: () => requiredValueError(options.decimalSeparator),
     ...Object.fromEntries(
       options.columns.flatMap((column, i) => [
@@ -511,6 +526,7 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
         ...(format === 'csv'
           ? [
               'delimiter',
+              'quote',
               'decimalSeparator',
               ...columnKeys,
               ...options.columns.map((_, i) => `type-${i}`),
@@ -665,14 +681,19 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
         </FormField>
       </div>
       {format === 'csv' && (
-        <fieldset disabled={busy}>
+        <fieldset className="csv-import-settings" disabled={busy}>
           <legend>CSV-Importoptionen</legend>
-          <p>
-            Die Datei wird als UTF-8 gelesen. Als Anführungs- und Escapezeichen dienen doppelte
-            Anführungszeichen.
-          </p>
-          <div className="import-fields">
-            <FormField label={<>Trennzeichen</>}>
+          <div className="csv-import-grid">
+            <FormField
+              label="Spaltentrennzeichen"
+              hint={
+                <>
+                  Trennt die Spalten, z. B. <code>{`Ort${exampleDelimiter}Einwohner`}</code>.
+                  {options.delimiter === '\t' && ' ⇥ steht für einen Tabulator.'}
+                </>
+              }
+              error={form.errors.delimiter}
+            >
               <Select
                 {...form.control('delimiter')}
                 required
@@ -684,13 +705,51 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
                   })
                 }
               >
-                <option value=";">Semikolon</option>
-                <option value=",">Komma</option>
-                <option value={'\t'}>Tab</option>
-                <option value="|">Pipe</option>
+                <option value=";">Semikolon (;)</option>
+                <option value=",">Komma (,)</option>
+                <option value={'\t'}>Tabulator</option>
+                <option value="|">Senkrechter Strich (|)</option>
               </Select>
             </FormField>
-            <FormField label={<>Dezimalzeichen</>}>
+            <FormField
+              label="Textbegrenzungszeichen"
+              hint={
+                <>
+                  Auch Value Delimiter genannt.{' '}
+                  {options.quote ? (
+                    <>
+                      Schützt Text mit Trennzeichen oder Zeilenumbrüchen, z. B.{' '}
+                      <code>{textExample}</code>. Das Zeichen selbst wird im Text verdoppelt.
+                    </>
+                  ) : (
+                    <>
+                      Ohne Textbegrenzung werden Anführungszeichen als normaler Text gelesen. Ein
+                      Wert darf dann kein Spaltentrennzeichen und keinen Zeilenumbruch enthalten.
+                    </>
+                  )}
+                </>
+              }
+              error={form.errors.quote}
+            >
+              <Select
+                {...form.control('quote')}
+                required
+                value={options.quote || 'none'}
+                onChange={(e) => {
+                  const quote = e.target.value === 'none' ? '' : e.target.value === "'" ? "'" : '"';
+                  change({quote, escape: quote, columns: []});
+                }}
+              >
+                <option value={'"'}>Doppelte Anführungszeichen (&quot;)</option>
+                <option value="'">Einfache Anführungszeichen (')</option>
+                <option value="none">Keine</option>
+              </Select>
+            </FormField>
+            <FormField
+              label="Dezimalzeichen"
+              hint="So werden Dezimalzahlen in der Datei geschrieben. Tausendertrennzeichen werden nicht automatisch entfernt."
+              error={form.errors.decimalSeparator}
+            >
               <Select
                 {...form.control('decimalSeparator')}
                 required
@@ -699,42 +758,91 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
                   change({decimalSeparator: e.target.value as '.' | ',', columns: []})
                 }
               >
-                <option value=".">Punkt</option>
-                <option value=",">Komma</option>
+                <option value=".">Punkt (1234.56)</option>
+                <option value=",">Komma (1234,56)</option>
               </Select>
             </FormField>
-            <FormField label={<>Kopfzeile</>}>
+            <FormField
+              label="Erste Zeile enthält Spaltennamen"
+              hint="Ausgeschaltet: Die erste Zeile wird als Datenzeile importiert; die Spalten erhalten automatisch Namen."
+            >
               <Input
                 type="checkbox"
                 checked={options.header}
                 onChange={(e) => change({header: e.target.checked, columns: []})}
               />
             </FormField>
-            <FormField label={<>Ungequotetes leeres Feld ist NULL</>}>
-              <Input
-                type="checkbox"
-                checked={options.emptyStringIsNull}
-                onChange={(e) => change({emptyStringIsNull: e.target.checked})}
-              />
-            </FormField>
-            <FormField label={<>Zusätzlicher NULL-Marker</>} optional>
-              <Input
-                value={options.nullStrings[0] ?? ''}
-                onChange={(e) => change({nullStrings: e.target.value ? [e.target.value] : []})}
-              />
-            </FormField>
-            <FormField
-              label={
-                <>Original behalten {file ? `(+${file.size.toLocaleString('de-CH')} Bytes)` : ''}</>
-              }
-            >
-              <Input
-                type="checkbox"
-                checked={original}
-                onChange={(e) => setOriginal(e.target.checked)}
-              />
-            </FormField>
           </div>
+          <details className="csv-import-advanced">
+            <summary tabIndex={0}>
+              Erweiterte Optionen
+              {advancedSettings.map((setting) => (
+                <span className="csv-import-advanced-state" key={setting}>
+                  {setting}
+                </span>
+              ))}
+            </summary>
+            <div className="csv-import-advanced-fields">
+              <FormField
+                label="Leere Felder als fehlende Werte (NULL) importieren"
+                hint={
+                  <>
+                    Betrifft leere Felder zwischen zwei Trennzeichen: eingeschaltet = fehlender Wert
+                    (NULL), ausgeschaltet = leerer Text.
+                    {options.quote && (
+                      <>
+                        {' '}
+                        <code>{`${options.quote}${options.quote}`}</code> bleibt immer leerer Text.
+                      </>
+                    )}
+                  </>
+                }
+              >
+                <Input
+                  type="checkbox"
+                  checked={options.emptyStringIsNull}
+                  onChange={(e) => change({emptyStringIsNull: e.target.checked, columns: []})}
+                />
+              </FormField>
+              <FormField
+                label="Text für fehlende Werte"
+                optional
+                hint={
+                  <>
+                    Nur ausfüllen, wenn die Datei z. B. NA oder NULL für fehlende Angaben verwendet.
+                    Ohne Eintrag bleiben diese Wörter normaler Text.
+                    {options.quote && ' Text innerhalb von Textbegrenzungszeichen bleibt erhalten.'}
+                  </>
+                }
+              >
+                <Input
+                  value={options.nullStrings[0] ?? ''}
+                  onChange={(e) =>
+                    change({nullStrings: e.target.value ? [e.target.value] : [], columns: []})
+                  }
+                />
+              </FormField>
+              <p className="csv-import-encoding">Die Datei wird als UTF-8 gelesen.</p>
+            </div>
+          </details>
+          <FormField
+            className="csv-import-original"
+            label="Originaldatei zusätzlich behalten"
+            hint={
+              <>
+                Sichert die CSV zusätzlich zur importierten Tabelle.
+                {file
+                  ? ` Benötigt zusätzlich ${importFileSize(file.size)} Speicherplatz.`
+                  : ' Benötigt zusätzlich Speicherplatz in diesem Browser.'}
+              </>
+            }
+          >
+            <Input
+              type="checkbox"
+              checked={original}
+              onChange={(e) => setOriginal(e.target.checked)}
+            />
+          </FormField>
           {options.columns.length > 0 && (
             <div className="column-options">
               {options.columns.map((column, i) => (
@@ -797,6 +905,9 @@ function ImportDialog({replace, onClose}: {replace?: DatasetId; onClose(): void}
       >
         Vorschau laden
       </Button>
+      {preview && dirty && (
+        <ActionStatus>Einstellungen geändert. Bitte die Vorschau erneut laden.</ActionStatus>
+      )}
       {preview && (
         <>
           <p>

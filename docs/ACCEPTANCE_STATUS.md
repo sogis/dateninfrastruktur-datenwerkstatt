@@ -105,3 +105,15 @@ Die korrigierten Zwischenläufe und Prüfgrenzen sind im
 Keine erneute Vollabnahme der gesamten AT-Matrix; vollständige Suiten,
 Firefox/WebKit, Docker-Deploymentmatrix und Safari wurden auf ausdrücklichen
 Nutzerwunsch nicht ausgeführt.
+
+## CSV-Importoptionen — 24. Oktober 2026
+
+REQ-024–026/062/067, AT-008/010/051/055 ergänzt und geprüft: wählbare
+Textbegrenzungszeichen, verständliche Basis-/erweiterte Optionen, unveränderte
+NULL-/Leertextwerte, tatsächlicher Browserneustart und Archiv-Rundlauf.
+`npm run verify` Exit 0 (76 Unit, 59 Chromium-Integration, 75 Chromium-E2E),
+gezielte Dreiermatrix Exit 0 (78/78, je 26 in Chromium/Firefox/WebKit).
+Darstellung/Tastaturbedienung bei 390/1280/1440 px und 200 % Text geprüft.
+Zwischenfehler und begründete Korrekturen zweier veralteter Testannahmen sind im
+[Prüfbericht](verification/csv-import-options/README.md) dokumentiert.
+Keine erneute vollständige Safari-/Deployment-/Releaseabnahme.

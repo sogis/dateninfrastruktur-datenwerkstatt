@@ -453,6 +453,80 @@ main {
 .import-fields > .dw-field {
   flex: 1 1 180px;
 }
+.csv-import-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 24px;
+  align-items: start;
+}
+.csv-import-settings,
+.csv-import-settings .dw-field {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.csv-import-settings .dw-field {
+  grid-template-columns: minmax(0, 1fr);
+}
+.csv-import-settings .dw-select {
+  /* WebKit otherwise includes long native option text in the dialog's scroll width. */
+  overflow: hidden;
+}
+.csv-import-settings legend {
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+}
+.csv-import-settings code,
+.csv-import-settings .dw-field-hint {
+  overflow-wrap: anywhere;
+}
+.csv-import-advanced {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--dw-border-subtle);
+}
+.csv-import-advanced summary {
+  font-weight: var(--dw-weight-medium);
+  overflow-wrap: anywhere;
+}
+.csv-import-advanced-state {
+  display: block;
+  margin-top: 4px;
+  margin-inline-start: 20px;
+  font-size: 0.875rem;
+  font-weight: var(--dw-weight-regular);
+  color: var(--dw-text-secondary);
+}
+.csv-import-advanced-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+.csv-import-encoding {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--dw-text-secondary);
+}
+.csv-import-original {
+  margin-top: 20px;
+}
+.csv-import-settings > .column-options {
+  margin-top: 20px;
+}
+.csv-import-settings .column-options > div {
+  flex: 1 1 180px;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  grid-template-columns: minmax(0, 1fr);
+}
+.csv-import-settings .column-options .dw-input {
+  width: 100%;
+}
+@media (max-width: 640px) {
+  .csv-import-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 .file-drop {
   border: 1px dashed var(--dw-border-control);
   border-radius: 4px;

@@ -64,11 +64,11 @@ Für Wiederholbarkeit: isoliertes Browserprofil pro Testgruppe, feste Fixtures, 
 
 ### AT-008 — CSV mit Quotes, BOM, Zeilenumbrüchen und NULL
 
-**Requirements:** REQ-024, REQ-025 · **Phase:** P2 · **Ebene:** Integration
+**Requirements:** REQ-024, REQ-025 · **Phase:** P2 · **Ebene:** Integration/E2E
 
-**Gegeben:** fixtures/csv-edge-cases.csv, explizites bestätigtes Schema.
+**Gegeben:** fixtures/csv-edge-cases.csv, explizites bestätigtes Schema sowie synthetische Varianten mit einfachen oder ohne Textbegrenzungszeichen und mit explizitem Nullmarker.
 **Wenn:** Vorschau bestätigen, komplett importieren, Daten nach Reload abfragen.
-**Dann:** Führende Nullen, Umlaute, Semikolon im Feld, eingebetteter Newline, Leerstring und NULL bleiben unterscheidbar; UTF-8-BOM wird nicht Spalteninhalt.
+**Dann:** Führende Nullen, Umlaute, Semikolon im Feld, eingebetteter Newline, verdoppelte Begrenzungszeichen, Leerstring und NULL bleiben unterscheidbar; UTF-8-BOM wird nicht Spalteninhalt. Ohne Textbegrenzung bleiben Anführungszeichen Text. Ein expliziter ungequoteter Nullmarker wird NULL, derselbe eingeschlossene Wert bleibt Text; ohne Konfiguration bleiben `NA` und `NULL` Text. Basisoptionen und Beispiele sind verständlich beschriftet; erweiterte Optionen sind per Tastatur aufklappbar und behalten ihre Werte. Parseränderungen sperren die Bestätigung bis zur erneuten Vorschau. Dialogaktionen sind auch bei 390 px Breite und 200 % Textgrösse erreichbar.
 
 ### AT-009 — Später CSV-Typfehler statt stiller NULL
 
@@ -80,11 +80,13 @@ Für Wiederholbarkeit: isoliertes Browserprofil pro Testgruppe, feste Fixtures, 
 
 ### AT-010 — Parquet und persistente lokale Originaldaten
 
-**Requirements:** REQ-017, REQ-024, REQ-026 · **Phase:** P2 · **Ebene:** Integration/E2E
+**Requirements:** REQ-017, REQ-024, REQ-025, REQ-026 · **Phase:** P2 · **Ebene:** Integration/E2E
 
 **Gegeben:** Aus Fixtures mit Ziel-DuckDB erzeugte Parquetdatei.
 **Wenn:** Importieren, ursprüngliche Nutzerdatei verschieben/entfernen, Browserkontext neu starten.
 **Dann:** Schema und Werte aus appverwalteten Bytes verfügbar; keine erneute Pfadfreigabe erforderlich; Nutzerdatei wurde nicht geändert.
+
+Ergänzend für CSV: gewählte Textbegrenzung, Escape und fehlende Werte bleiben als Herkunft nach Neustart und Archivexport/-import erhalten. Bestehende Projekte/Archive mit doppelten Anführungszeichen bleiben lesbar; Formatversion bleibt 1.
 
 ### AT-011 — Autosave-Race: ältere Speicherung
 

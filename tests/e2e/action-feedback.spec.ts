@@ -265,7 +265,7 @@ test('Action feedback: a changed CSV option returns dismissal focus to preview w
   const notice = dialog.getByRole('alert').filter({hasText: 'Gezielter Fehler beim Bestätigen'});
   await expect(notice).toBeVisible();
   await expect(confirm).toBeEnabled();
-  const delimiter = dialog.getByLabel('Trennzeichen', {exact: true});
+  const delimiter = dialog.getByLabel('Spaltentrennzeichen', {exact: true});
   await delimiter.selectOption(',');
   await expect(confirm).toBeDisabled();
   await notice.getByRole('button', {name: 'Hinweis schliessen', exact: true}).click();

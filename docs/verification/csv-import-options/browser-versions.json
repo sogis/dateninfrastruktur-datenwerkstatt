@@ -1,0 +1,9 @@
+{
+  "macOS": "27.0.1",
+  "architecture": "arm64",
+  "browsers": {
+    "chromium": "153.0.8010.12",
+    "firefox": "155.0",
+    "webkit": "26.6"
+  }
+}

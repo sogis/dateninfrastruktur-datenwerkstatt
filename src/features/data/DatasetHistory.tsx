@@ -43,6 +43,12 @@ function Timestamp({value}: {value: string}) {
   return <time dateTime={value}>{new Date(value).toLocaleString('de-CH')}</time>;
 }
 
+function csvQuoteName(character: CsvImportOptions['quote']) {
+  if (character === '"') return 'Doppelte Anführungszeichen (")';
+  if (character === "'") return "Einfache Anführungszeichen (')";
+  return 'Keine';
+}
+
 function CsvOptions({options}: {options: CsvImportOptions}) {
   const delimiter =
     options.delimiter === ';'
@@ -58,22 +64,28 @@ function CsvOptions({options}: {options: CsvImportOptions}) {
       <dl className="dataset-version-metadata">
         <dt>Zeichenkodierung</dt>
         <dd>UTF-8</dd>
-        <dt>Trennzeichen</dt>
+        <dt>Spaltentrennzeichen</dt>
         <dd>{delimiter}</dd>
         <dt>Spaltennamen in erster Zeile</dt>
         <dd>{options.header ? 'Ja' : 'Nein'}</dd>
         <dt>Dezimalzeichen</dt>
         <dd>{options.decimalSeparator}</dd>
-        <dt>NULL-Marker</dt>
+        <dt>Zusätzlicher Wert für fehlende Angaben (NULL)</dt>
         <dd>
           {options.nullStrings.length
             ? options.nullStrings.map((value) => JSON.stringify(value)).join(', ')
-            : 'Keine zusätzlichen Marker'}
+            : 'Keiner'}
         </dd>
-        <dt>Leerer Wert</dt>
-        <dd>{options.emptyStringIsNull ? 'Als NULL importiert' : 'Als Leerstring importiert'}</dd>
-        <dt>Anführungs- und Escapezeichen</dt>
-        <dd>Doppeltes Anführungszeichen (")</dd>
+        <dt>Leere Felder ohne Textbegrenzung</dt>
+        <dd>
+          {options.emptyStringIsNull
+            ? 'Als fehlender Wert (NULL) importiert'
+            : 'Als leerer Text importiert'}
+        </dd>
+        <dt>Textbegrenzungszeichen</dt>
+        <dd>{csvQuoteName(options.quote)}</dd>
+        <dt>Escapezeichen</dt>
+        <dd>{csvQuoteName(options.escape)}</dd>
       </dl>
     </details>
   );

@@ -45,8 +45,8 @@ export interface CsvImportOptions {
   encoding: 'utf-8';
   delimiter: ',' | ';' | '\t' | '|';
   header: boolean;
-  quote: '"';
-  escape: '"';
+  quote: '"' | "'" | '';
+  escape: '"' | "'" | '';
   decimalSeparator: '.' | ',';
   nullStrings: string[];
   emptyStringIsNull: boolean;

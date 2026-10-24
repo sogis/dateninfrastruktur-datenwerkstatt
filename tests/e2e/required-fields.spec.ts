@@ -209,7 +209,7 @@ test('Required fields: CSV column errors prevent preview work and keep the last 
     mimeType: 'text/csv',
     buffer: Buffer.from('id\twert\n1\t10\n'),
   });
-  await dialog.getByLabel('Trennzeichen', {exact: true}).selectOption('\t');
+  await dialog.getByLabel('Spaltentrennzeichen', {exact: true}).selectOption('\t');
   await dialog.getByRole('button', {name: 'Vorschau laden', exact: true}).click();
   await expect(dialog.getByRole('columnheader', {name: /^id /})).toBeVisible();
   await expect(dialog.getByRole('columnheader', {name: /^wert /})).toBeVisible();

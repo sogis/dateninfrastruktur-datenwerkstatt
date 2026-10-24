@@ -23,12 +23,14 @@ test('P6 AT-065: absent Web Locks permits existing project only as reader, archi
   await expect(page.getByLabel('Beschreibung', {exact: true})).toBeDisabled();
   await expect(page.getByLabel('Beschreibung', {exact: true})).toHaveValue('Dauerhafter Stand');
   await expect(page.getByRole('button', {name: 'Neue Analyse', exact: true})).toBeDisabled();
-  await page.getByRole('button', {name: 'Projektaktionen', exact: true}).click();
-  await expect(page.getByRole('menuitem', {name: 'Projekt löschen', exact: true})).toHaveAttribute(
-    'aria-disabled',
-    'true',
-  );
-  await page.keyboard.press('Escape');
+  // ActionMenu disables the whole group when no action is available: without
+  // Web Locks duplication is unavailable, and the reader cannot delete.
+  const actions = page.getByRole('button', {name: 'Projektaktionen', exact: true});
+  await expect(actions).toBeDisabled();
+  await expect(actions).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.getByRole('menuitem', {name: 'Projekt löschen', exact: true})).toHaveCount(0);
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await expect(page.getByRole('button', {name: 'Projekt exportieren', exact: true})).toBeEnabled();
   await page.getByRole('button', {name: 'Projekt exportieren', exact: true}).click();
   await page.getByLabel('Archivmodus').selectOption('recipe');
   const download = page.waitForEvent('download');

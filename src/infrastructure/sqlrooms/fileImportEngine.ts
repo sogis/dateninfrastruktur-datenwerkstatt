@@ -22,7 +22,9 @@ export const defaultCsvOptions = (): CsvImportOptions => ({
 function csvSource(fileName: string, options: CsvImportOptions, textOnly: boolean) {
   const o = importOptions.parse(options);
   const nulls = [...new Set([...o.nullStrings, ...(o.emptyStringIsNull ? [''] : [])])];
-  const common = `delim=${lit(o.delimiter)}, header=${o.header}, quote='"', escape='"', decimal_separator=${lit(o.decimalSeparator)}, nullstr=[${nulls.map(lit).join(',')}], allow_quoted_nulls=false, strict_mode=true, ignore_errors=false, parallel=false`;
+  // DuckDB rejects nullstr=[]. NUL cannot collide: CSV input rejects every NUL byte.
+  const nullStrings = nulls.length ? `[${nulls.map(lit).join(',')}]` : 'chr(0)';
+  const common = `delim=${lit(o.delimiter)}, header=${o.header}, quote=${lit(o.quote)}, escape=${lit(o.escape)}, decimal_separator=${lit(o.decimalSeparator)}, nullstr=${nullStrings}, allow_quoted_nulls=false, strict_mode=true, ignore_errors=false, parallel=false`;
   const columns =
     o.columns.length && !textOnly
       ? `auto_detect=false, columns={${o.columns.map((c) => `${lit(c.name)}:${lit(c.logicalType)}`).join(',')}}`
@@ -30,7 +32,7 @@ function csvSource(fileName: string, options: CsvImportOptions, textOnly: boolea
   return `read_csv(${lit(fileName)}, ${common}, ${columns})`;
 }
 function inferType(name: string, values: unknown[], decimal: string) {
-  const present = values.filter((v): v is string => typeof v === 'string' && v !== '');
+  const present = values.filter((v): v is string => typeof v === 'string');
   if (
     !present.length ||
     /(^id$|_id$|code|bfs)/i.test(name) ||

@@ -105,10 +105,10 @@
       "REQ-025"
     ],
     "phase": "P2",
-    "level": "Integration",
-    "given": "fixtures/csv-edge-cases.csv, explizites bestätigtes Schema.",
+    "level": "Integration/E2E",
+    "given": "fixtures/csv-edge-cases.csv, explizites bestätigtes Schema sowie synthetische Varianten mit einfachen oder ohne Textbegrenzungszeichen und mit explizitem Nullmarker.",
     "when": "Vorschau bestätigen, komplett importieren, Daten nach Reload abfragen.",
-    "then": "Führende Nullen, Umlaute, Semikolon im Feld, eingebetteter Newline, Leerstring und NULL bleiben unterscheidbar; UTF-8-BOM wird nicht Spalteninhalt."
+    "then": "Führende Nullen, Umlaute, Semikolon im Feld, eingebetteter Newline, verdoppelte Begrenzungszeichen, Leerstring und NULL bleiben unterscheidbar; UTF-8-BOM wird nicht Spalteninhalt. Ohne Textbegrenzung bleiben Anführungszeichen Text. Ein expliziter ungequoteter Nullmarker wird NULL, derselbe eingeschlossene Wert bleibt Text; ohne Konfiguration bleiben NA und NULL Text. Zugängliche Basis-/erweiterte Optionen, Vorschauinvalidierung und erreichbare Dialogaktionen bei 390 px und 200 % Textgrösse."
   },
   {
     "id": "AT-009",
@@ -129,13 +129,14 @@
     "requirements": [
       "REQ-017",
       "REQ-024",
+      "REQ-025",
       "REQ-026"
     ],
     "phase": "P2",
     "level": "Integration/E2E",
     "given": "Aus Fixtures mit Ziel-DuckDB erzeugte Parquetdatei.",
     "when": "Importieren, ursprüngliche Nutzerdatei verschieben/entfernen, Browserkontext neu starten.",
-    "then": "Schema und Werte aus appverwalteten Bytes verfügbar; keine erneute Pfadfreigabe erforderlich; Nutzerdatei wurde nicht geändert."
+    "then": "Schema und Werte aus appverwalteten Bytes verfügbar; keine erneute Pfadfreigabe erforderlich; Nutzerdatei wurde nicht geändert. CSV-Textbegrenzung, Escape und fehlende Werte bleiben als Herkunft nach Neustart und Archivexport/-import erhalten. Bestehende Projekte/Archive mit doppelten Anführungszeichen bleiben lesbar; Formatversion bleibt 1."
   },
   {
     "id": "AT-011",

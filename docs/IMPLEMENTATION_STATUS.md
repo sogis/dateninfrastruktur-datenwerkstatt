@@ -2027,3 +2027,79 @@ vollständige Browser-/Deploymentmatrix, nativer Safari und native Zoomprüfung.
 Kein V1-Releaseabschluss. Kein bekannter Blocker im beauftragten Umfang.
 Nächster konkreter Schritt: lokale Durchsicht der vereinheitlichten Rückmeldungen
 und der abgelegten Nachweise; die beauftragte Umsetzung ist abgeschlossen.
+
+### CSV-Import — verständliche Optionen und Textbegrenzungszeichen (24. Oktober 2026)
+
+**Implementiert und geprüft.** Beauftragter Umfang:
+REQ-024–026/062/067, AT-008/010/055.
+Ausgangsrevision `49fd41de41a4574832cf5e11f49bf189541bcaf5`, anfangs sauberer
+Arbeitsbaum; Node 22.23.1 und npm 11.18.0. Der bisherige Vite-Prozess bleibt erhalten.
+
+Die in `docs/BASELINE.md` genannte alte lokale Quelladresse existiert nicht mehr
+(Prüfkommando Exit 128). Die Baseline wurde am tatsächlichen Pfad
+`/Users/stefan/sources/datenportal/datenportal-sodata` mit `git show` am dokumentierten
+Commit `6b45fc4e22116fba8fc00bd48175e347aa740562` gelesen (Paketvertrag und
+Connector-Zusammensetzung, Exit 0). Der saubere Quellbaum steht inzwischen bei
+`b14550c817fc741006b9afef78b4bfeb50e70ce8`; keine Übernahme neuerer Quelldateien,
+kein Eingriff ins Portal. Installierte DuckDB-Typen enthalten `quote`/`escape` als
+Stringoptionen. Keine Paket-/Lockfileänderung geplant.
+
+Implementiert: `contracts/domain.ts`, beide Zod-Grenzen unter `src/domain`,
+`fileImportEngine.ts`, `DataSection.tsx`, `DatasetHistory.tsx` und scoped `app.css`.
+Basis-/erweiterte Optionen mit zugänglichen Beispielen, drei Textbegrenzungen,
+sichtbaren Nichtdefaults, verständlicher Originaldateiablage und Herkunftsanzeige.
+Alle Parseränderungen invalidieren die Vorschau; Textbegrenzung und andere
+Parseränderungen verwerfen abgeleitete Spaltendefinitionen. Standardwerte und
+Formatversion 1 bleiben erhalten. Neue Tests: `tests/unit/csv-import-options.test.ts`,
+`tests/integration/csv-options.spec.ts`, `tests/e2e/csv-options.spec.ts`; bestehende
+Feldselektoren in `required-fields.spec.ts` und `action-feedback.spec.ts` angepasst.
+
+Gefundene und behobene echte Fehler: leere Strings dürfen bei der Typerkennung
+nicht aus den Werten verschwinden (sonst unbrauchbarer numerischer Typvorschlag).
+DuckDB weist `nullstr=[]` zurück; die kollisionsfreie Anpassung für ausgeschaltete
+NULL-Umwandlung steht in [ADR-009](adr/009-csv-ohne-nullmarker.md). Bei 390 px und
+200 % Text zwangen lange Hilfetexte/innere Raster zuvor einen horizontalen Überlauf;
+scoped Umbruch und begrenzte Raster-/Spaltenkartenbreiten korrigieren dies.
+
+Zwischenprüfungen: erster Chromium-Enginelauf Exit 0, 8/8 bestanden; erster
+Chromium-UI-Lauf Exit 1, 3/5 bestanden (leere NULL-Liste und echter Überlauf).
+Erster Gesamtcheck Exit 1: 76 Unit-/59 Integrationstests und 73/75 E2E bestanden.
+Die zwei Fehler waren bereits in HEAD veraltete Erwartungen: das im Lesemodus
+vollständig deaktivierte Aktionsmenü und «Schemaänderung:» statt des vorhandenen
+Schemaabschnitts. Die korrigierten Tests prüfen weiterhin echten Export,
+Schreibschutz und die konkrete neue Spalte samt Typ; keine Produktionsanpassung
+zur Erfüllung dieser alten Erwartungen. Erste Firefox-/WebKit-Matrix Exit 1,
+51/52 bestanden: nativer WebKit-Auswahltext verursachte bei 200 % Überlauf.
+Eine ausschliesslich auf CSV-Auswahlfelder begrenzte CSS-Regel behebt ihn.
+
+Abschliessende tatsächliche Checks:
+
+| Befehl / Check | Exit | Ergebnis |
+| --- | ---: | --- |
+| `DW_REUSE_DEV_SERVER=1 npm run verify` | **0** | TypeScript, Lint/Grenzen, **76 Unit**, Build, **59 Chromium-Integration**, **75 Chromium-E2E** |
+| Gezielte Importmatrix (vollständiger Befehl im Prüfbericht) | **0** | **78/78** in Chromium/Firefox/WebKit, je 26, keine Skips/Retry-Flakys |
+| `npm run build` nach abschliessender WebKit-CSS-Regel | **0** | Aktueller Produktionsbuild/Assets/Lizenzinventar |
+| `npx tsc -p contracts/tsconfig.json` | **0** | Eigene Verträge |
+| Prettier für geänderte App-/Testdateien und abschliessendes CSS; `git diff --check` | **0** | Format/Whitespace geprüft |
+
+Breite Prettier-Prüfung mit Vertrag Exit 1; `contracts/domain.ts` ist auch in HEAD
+nicht vollständig formatiert (Baselineprüfung ebenfalls Exit 1). Keine globale
+Umformatierung des alten Vertrags. Vite meldet weiterhin bekannte grosse JS-Chunks.
+Historische, durch bestehende Tests neu erzeugte Nachweise bytegleich wiederhergestellt;
+aktuelle CSV-Screenshots/Logs separat abgelegt. Keine Paket-/Lockfileänderung.
+
+[Prüfbericht, genaue Befehle und Einschränkungen](verification/csv-import-options/README.md),
+[verifizierter Code-/Testfingerprint](verification/csv-import-options/candidate.json),
+[Browser-/OS-Versionen](verification/csv-import-options/browser-versions.json).
+Visuelle Endkontrolle der Basisansichten und schmalen 200-%-Ansichten durchgeführt.
+Nicht ausgeführt: frisches `npm ci`, vollständige Firefox-/WebKit-Suiten ausserhalb
+der gezielten Matrix, Deploymentmatrix, nativer Safari und nativer Browserzoom.
+Kein bekannter Blocker im beauftragten CSV-Umfang; kein V1-Releaseabschluss.
+Nächster konkreter Schritt: den fertigen Importdialog mit eigenen CSV-Dateien nutzen.
+
+Commitvorbereitung: Alle 14 Code-/Testdateien stimmen weiterhin mit dem verifizierten
+Fingerprint überein; `git diff --check` Exit 0. Kein erneuter Testlauf für unveränderten
+Code. Zwischenzeitlich hinzugekommene, auftragsfremde Paket- und Exportänderungen
+werden erhalten und nicht in den CSV-Commit aufgenommen. Für den Commit wurden
+ausschliesslich nachgestellte Terminal-Leerzeichen in den neuen Logs entfernt;
+Prüfergebnisse und Code bleiben unverändert.

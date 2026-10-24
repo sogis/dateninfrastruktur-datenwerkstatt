@@ -1,0 +1,17 @@
+[WebServer] (node:81043) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:81044) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: double quotes, default NULL handling survives full DuckDB import and OPFS reopen (1.8s)
+  ✓  2 [chromium] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: double quotes, explicit NA marker survives full DuckDB import and OPFS reopen (1.6s)
+  ✓  3 [chromium] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: single quotes, default NULL handling survives full DuckDB import and OPFS reopen (1.5s)
+  ✓  4 [chromium] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: single quotes, explicit NA marker survives full DuckDB import and OPFS reopen (1.5s)
+  ✓  5 [chromium] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: no text delimiter, default NULL handling survives full DuckDB import and OPFS reopen (1.6s)
+  ✓  6 [chromium] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: no text delimiter, explicit NA marker survives full DuckDB import and OPFS reopen (1.5s)
+  ✓  7 [chromium] › tests/integration/csv-options.spec.ts:122:1 › REQ-025 / AT-008: disabling missing empty fields retains empty text during the full import (948ms)
+  ✓  8 [chromium] › tests/integration/csv-options.spec.ts:158:1 › REQ-025 / AT-010 AT-050: all text delimiter options and original bytes survive browser restart and archive export/import (2.8s)
+
+  8 passed (13.7s)

@@ -662,8 +662,8 @@ NULL deaktiviert die Werteingabe ohne Zusatz. Die fachlichen Regeln bleiben
 unverändert. Feldfehler verschieben benachbarte Aktionsbuttons nicht gegenüber
 der Eingabe; bei schmaler Projekterstellung folgt der Button unter der Feldgruppe.
 
-Als optional gekennzeichnet werden Beschreibung, Zufallsseed, zusätzlicher
-CSV-NULL-Marker, Diagrammkategorie und Stringparameterwerte. Die deaktivierte
+Als optional gekennzeichnet werden Beschreibung, Zufallsseed, «Text für fehlende
+Werte» beim CSV-Import, Diagrammkategorie und Stringparameterwerte. Die deaktivierte
 NULL-Werteingabe erhält keinen Zusatz. Benötigte Zahlen- und andere typisierte
 Parameterwerte bleiben erforderlich. „Projekt öffnen“, Navigationsauswahlen
 und fest vorgegebene SQL-Namen erhalten keinen Optionalzusatz. Für die Portal-ID

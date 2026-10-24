@@ -156,3 +156,14 @@ lokale Assets unter `/lab/`); keine vollständigen Suiten, Browser-/Deploymentma
 Safari-Prüfung. Details und tatsächliche Befehle im Implementierungsstatus;
 historische Nachweise bleiben erhalten. REQ-061–067 / AT-054–058, ohne neue
 Domain-, Engine- oder Speicherverträge.
+
+## UI — Verständlicher CSV-Import und Textbegrenzungszeichen
+
+Nutzerentscheidung vom 24. Oktober 2026: Basisoptionen mit Beispielen, geschlossene
+erweiterte Optionen für fehlende Werte, separat erklärte Originaldateiablage.
+Textbegrenzungszeichen doppelt/einfach/keine durchgehend im bestehenden Importpfad;
+Quote und Escape gemeinsam, bestehende Standardwerte und Formatversion 1 erhalten.
+REQ-024–026/062/067; AT-008/010/055. Reihenfolge: Verträge/Engine → Dialog/Herkunft →
+echte CSV-/Persistenz-/Archivtests und zugängliche responsive UI → verify und gezielte
+Chromium-/Firefox-/WebKit-Importmatrix. Keine neue Dependency oder Veröffentlichung.
+Tatsächliche Befehle, Zwischenfehler, Screenshots und Grenzen im Implementierungsstatus.

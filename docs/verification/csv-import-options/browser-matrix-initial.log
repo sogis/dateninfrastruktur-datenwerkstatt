@@ -1,0 +1,96 @@
+
+Running 52 tests using 1 worker
+
+(node:92104) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [firefox] › tests/e2e/csv-options.spec.ts:31:1 › REQ-025: basic options explain symbols, Value Delimiter and adaptive examples (3.7s)
+  ✓   2 [firefox] › tests/e2e/csv-options.spec.ts:72:1 › REQ-025: keyboard toggles advanced options without changing settings and summary retains active deviations (2.3s)
+  ✓   3 [firefox] › tests/e2e/csv-options.spec.ts:105:1 › REQ-025: changed parser options require a fresh preview and text delimiters reset inferred columns (4.6s)
+  ✓   4 [firefox] › tests/e2e/csv-options.spec.ts:147:1 › REQ-025: imported single quote choices appear in provenance and remain after reload (5.2s)
+  ✓   5 [firefox] › tests/e2e/csv-options.spec.ts:172:1 › REQ-025 / AT-055: import options and dialog actions fit narrow and desktop widths and 200% text (4.1s)
+  ✓   6 [firefox] › tests/e2e/imports.spec.ts:22:1 › P2 / AT-008 AT-010 AT-018: confirmed import, reload, data preview, independent alias and complete Parquet download (6.5s)
+  ✓   7 [firefox] › tests/e2e/imports.spec.ts:61:1 › P2 / AT-016: denied OPFS requires explicit temporary mode and never claims local persistence (3.8s)
+  ✓   8 [firefox] › tests/e2e/imports.spec.ts:90:1 › P2 / AT-013: real import surfaces OPFS quota failure without publishing partial metadata (5.6s)
+  ✓   9 [firefox] › tests/e2e/imports.spec.ts:118:1 › P2 / AT-002 AT-024 partial: one import worker survives routes and closes before another workspace opens (4.0s)
+  ✓  10 [firefox] › tests/e2e/multitab.spec.ts:2:1 › P6 AT-065: absent Web Locks permits existing project only as reader, archive export remains possible (2.3s)
+  ✓  11 [firefox] › tests/e2e/p8-imports.spec.ts:7:1 › P8 AT-019 AT-020: XLSX invalidates old preview, real over-limit file and visible replacement schema (6.5s)
+  ✓  12 [firefox] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: double quotes, default NULL handling survives full DuckDB import and OPFS reopen (4.3s)
+  ✓  13 [firefox] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: double quotes, explicit NA marker survives full DuckDB import and OPFS reopen (3.4s)
+  ✓  14 [firefox] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: single quotes, default NULL handling survives full DuckDB import and OPFS reopen (3.2s)
+  ✓  15 [firefox] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: single quotes, explicit NA marker survives full DuckDB import and OPFS reopen (3.7s)
+  ✓  16 [firefox] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: no text delimiter, default NULL handling survives full DuckDB import and OPFS reopen (3.4s)
+  ✓  17 [firefox] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: no text delimiter, explicit NA marker survives full DuckDB import and OPFS reopen (3.5s)
+  ✓  18 [firefox] › tests/integration/csv-options.spec.ts:122:1 › REQ-025 / AT-008: disabling missing empty fields retains empty text during the full import (2.5s)
+  ✓  19 [firefox] › tests/integration/csv-options.spec.ts:158:1 › REQ-025 / AT-008: numeric text and an explicit empty string infer VARCHAR and survive the full import (2.8s)
+  ✓  20 [firefox] › tests/integration/csv-options.spec.ts:217:1 › REQ-025 / AT-008: disabling empty-field NULL conversion with no marker preserves every literal text value (2.6s)
+  ✓  21 [firefox] › tests/integration/csv-options.spec.ts:277:1 › REQ-025 / AT-010 AT-051: all text delimiter options and original bytes survive browser restart and archive export/import (5.7s)
+  ✓  22 [firefox] › tests/integration/imports.spec.ts:7:1 › P2 / AT-008 AT-010: strict CSV → hashed OPFS → fresh DuckDB retains values, NULL and empty strings (3.4s)
+  ✓  23 [firefox] › tests/integration/imports.spec.ts:63:1 › P2 / AT-009 AT-020: late conversion error, header-only CSV and invalid bytes (2.8s)
+  ✓  24 [firefox] › tests/integration/imports.spec.ts:123:1 › P2 / AT-014 AT-017: reload finds true orphans, writer cleanup preserves referenced and foreign bytes (2.9s)
+  ✓  25 [firefox] › tests/integration/imports.spec.ts:197:1 › P2 / AT-010: imported file survives browser process restart and removal of input file (9.1s)
+  ✓  26 [firefox] › tests/integration/imports.spec.ts:268:1 › P2 / AT-061 partial: changed byte is rejected as ARTIFACT_CORRUPT before use (1.4s)
+(node:92677) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  27 [webkit] › tests/e2e/csv-options.spec.ts:31:1 › REQ-025: basic options explain symbols, Value Delimiter and adaptive examples (2.3s)
+  ✓  28 [webkit] › tests/e2e/csv-options.spec.ts:72:1 › REQ-025: keyboard toggles advanced options without changing settings and summary retains active deviations (1.3s)
+  ✓  29 [webkit] › tests/e2e/csv-options.spec.ts:105:1 › REQ-025: changed parser options require a fresh preview and text delimiters reset inferred columns (3.4s)
+  ✓  30 [webkit] › tests/e2e/csv-options.spec.ts:147:1 › REQ-025: imported single quote choices appear in provenance and remain after reload (4.3s)
+  ✘  31 [webkit] › tests/e2e/csv-options.spec.ts:172:1 › REQ-025 / AT-055: import options and dialog actions fit narrow and desktop widths and 200% text (4.3s)
+(node:92791) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  32 [webkit] › tests/e2e/imports.spec.ts:22:1 › P2 / AT-008 AT-010 AT-018: confirmed import, reload, data preview, independent alias and complete Parquet download (5.4s)
+  ✓  33 [webkit] › tests/e2e/imports.spec.ts:61:1 › P2 / AT-016: denied OPFS requires explicit temporary mode and never claims local persistence (2.5s)
+  ✓  34 [webkit] › tests/e2e/imports.spec.ts:90:1 › P2 / AT-013: real import surfaces OPFS quota failure without publishing partial metadata (5.0s)
+  ✓  35 [webkit] › tests/e2e/imports.spec.ts:118:1 › P2 / AT-002 AT-024 partial: one import worker survives routes and closes before another workspace opens (3.3s)
+  ✓  36 [webkit] › tests/e2e/multitab.spec.ts:2:1 › P6 AT-065: absent Web Locks permits existing project only as reader, archive export remains possible (1.7s)
+  ✓  37 [webkit] › tests/e2e/p8-imports.spec.ts:7:1 › P8 AT-019 AT-020: XLSX invalidates old preview, real over-limit file and visible replacement schema (4.4s)
+  ✓  38 [webkit] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: double quotes, default NULL handling survives full DuckDB import and OPFS reopen (3.3s)
+  ✓  39 [webkit] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: double quotes, explicit NA marker survives full DuckDB import and OPFS reopen (3.2s)
+  ✓  40 [webkit] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: single quotes, default NULL handling survives full DuckDB import and OPFS reopen (3.1s)
+  ✓  41 [webkit] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: single quotes, explicit NA marker survives full DuckDB import and OPFS reopen (3.1s)
+  ✓  42 [webkit] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: no text delimiter, default NULL handling survives full DuckDB import and OPFS reopen (3.4s)
+  ✓  43 [webkit] › tests/integration/csv-options.spec.ts:42:5 › REQ-025 / AT-008: no text delimiter, explicit NA marker survives full DuckDB import and OPFS reopen (3.2s)
+  ✓  44 [webkit] › tests/integration/csv-options.spec.ts:122:1 › REQ-025 / AT-008: disabling missing empty fields retains empty text during the full import (2.0s)
+  ✓  45 [webkit] › tests/integration/csv-options.spec.ts:158:1 › REQ-025 / AT-008: numeric text and an explicit empty string infer VARCHAR and survive the full import (2.1s)
+  ✓  46 [webkit] › tests/integration/csv-options.spec.ts:217:1 › REQ-025 / AT-008: disabling empty-field NULL conversion with no marker preserves every literal text value (2.0s)
+  ✓  47 [webkit] › tests/integration/csv-options.spec.ts:277:1 › REQ-025 / AT-010 AT-051: all text delimiter options and original bytes survive browser restart and archive export/import (6.8s)
+  ✓  48 [webkit] › tests/integration/imports.spec.ts:7:1 › P2 / AT-008 AT-010: strict CSV → hashed OPFS → fresh DuckDB retains values, NULL and empty strings (3.1s)
+  ✓  49 [webkit] › tests/integration/imports.spec.ts:63:1 › P2 / AT-009 AT-020: late conversion error, header-only CSV and invalid bytes (2.0s)
+  ✓  50 [webkit] › tests/integration/imports.spec.ts:123:1 › P2 / AT-014 AT-017: reload finds true orphans, writer cleanup preserves referenced and foreign bytes (2.5s)
+  ✓  51 [webkit] › tests/integration/imports.spec.ts:197:1 › P2 / AT-010: imported file survives browser process restart and removal of input file (8.9s)
+  ✓  52 [webkit] › tests/integration/imports.spec.ts:268:1 › P2 / AT-061 partial: changed byte is rejected as ARTIFACT_CORRUPT before use (900ms)
+
+
+  1) [webkit] › tests/e2e/csv-options.spec.ts:172:1 › REQ-025 / AT-055: import options and dialog actions fit narrow and desktop widths and 200% text
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      210 |   await confirm.scrollIntoViewIfNeeded();
+      211 |   await expect(confirm).toBeInViewport();
+    > 212 |   expect(await dialog.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+          |                                                                                          ^
+      213 |   await page.screenshot({path: `${evidence}/${browserName}-390-text-200.png`, fullPage: true});
+      214 |   const close = dialog.getByRole('button', {name: 'Schliessen', exact: true});
+      215 |   await close.scrollIntoViewIfNeeded();
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/csv-options.spec.ts:212:90
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .vite/csv-matrix-results/e2e-csv-options-REQ-025-AT-8bc34-desktop-widths-and-200-text-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .vite/csv-matrix-results/e2e-csv-options-REQ-025-AT-8bc34-desktop-widths-and-200-text-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .vite/csv-matrix-results/e2e-csv-options-REQ-025-AT-8bc34-desktop-widths-and-200-text-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace .vite/csv-matrix-results/e2e-csv-options-REQ-025-AT-8bc34-desktop-widths-and-200-text-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [webkit] › tests/e2e/csv-options.spec.ts:172:1 › REQ-025 / AT-055: import options and dialog actions fit narrow and desktop widths and 200% text
+  51 passed (3.2m)

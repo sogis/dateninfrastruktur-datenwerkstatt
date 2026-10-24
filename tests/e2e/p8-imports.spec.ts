@@ -69,8 +69,10 @@ test('P8 AT-019 AT-020: XLSX invalidates old preview, real over-limit file and v
       buffer: Buffer.from('wert;neu\n2;Text\n'),
     });
     await page.getByRole('button', {name: 'Vorschau laden', exact: true}).click();
-    await expect(page.getByRole('dialog')).toContainText('Schemaänderung:');
-    await expect(page.getByRole('dialog')).toContainText('neu');
+    const schemaDiff = page.getByRole('dialog').locator('.schema-diff');
+    await expect(schemaDiff).toBeVisible();
+    await expect(schemaDiff).toContainText('Schemaänderungen');
+    await expect(schemaDiff.getByRole('listitem')).toHaveText(['neu: neu → VARCHAR']);
     await expect(page.getByLabel('SQL-Name', {exact: true})).toBeDisabled();
     await page.getByRole('button', {name: 'Import bestätigen', exact: true}).click();
     await expect(page.getByRole('dialog')).toHaveCount(0);
