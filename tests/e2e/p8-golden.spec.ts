@@ -1,3 +1,5 @@
+import {renameAnalysis} from '../ui/sqlActions';
+import {openSqlParameters} from '../ui/sqlActions';
 import {test, expect, type BrowserContext, type Page} from '@playwright/test';
 import {mkdir, mkdtemp, readFile, rm, writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
@@ -9,7 +11,10 @@ import {parseWorkspace, workspaceSchema} from '../../src/domain/workspace';
 import {ZipArchiveCodec} from '../../src/infrastructure/archive/zip';
 
 async function editor(page: Page, code: string, name?: string) {
-  if (name) await page.getByLabel('Analysename', {exact: true}).fill(name);
+  if (name) {
+    if (page.url().includes('/sql/')) await renameAnalysis(page, name);
+    else await page.getByLabel('Analysename', {exact: true}).fill(name);
+  }
   await page.locator('.monaco-editor').click();
   await page.getByRole('textbox', {name: 'Analysecode'}).press('ControlOrMeta+a');
   // Installed Monaco's documented trigger API routes through its real paste
@@ -163,7 +168,7 @@ test('P8 AT-072: portal population + local CSV, unchanged Golden SQL/R, process 
     await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
     await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
     await editor(page, files['01-fahrzeuge-pro-1000.sql']!, 'Golden SQL');
-    await page.getByText('Parameter (0)', {exact: true}).click();
+    await openSqlParameters(page);
     await page.getByRole('button', {name: 'Parameter hinzufügen', exact: true}).click();
     await page.getByLabel('Parameter 1 Name').fill('jahr');
     await page.getByLabel('Parameter 1 Typ').selectOption('number');

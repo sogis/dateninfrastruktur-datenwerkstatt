@@ -17,6 +17,10 @@ export class CodeModels {
         monaco.Uri.parse(`inmemory://datenwerkstatt/${this.sessionId}/${id}`),
       );
       this.models.set(id, model);
+    } else if (model.getValue() !== code) {
+      model.pushStackElement();
+      model.pushEditOperations([], [{range: model.getFullModelRange(), text: code}], () => null);
+      model.pushStackElement();
     }
     return model;
   }

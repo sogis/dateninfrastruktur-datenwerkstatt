@@ -52,7 +52,7 @@ Für Wiederholbarkeit: isoliertes Browserprofil pro Testgruppe, feste Fixtures, 
 
 **Gegeben:** Workspace mit DatasetVersion und abgeschlossener SQL-Ausführung.
 **Wenn:** Anzeigenamen/Editor ändern und neue Datenversion erstellen.
-**Dann:** Formatversion bleibt 1; Repositoryrevision, Analyserevision und Versions-ID bleiben unterschiedliche Werte; alter Snapshot/Resultatinhalt unverändert.
+**Dann:** Formatversion bleibt 2; Repositoryrevision, Analyserevision und Versions-ID bleiben unterschiedliche Werte; alter Snapshot/Resultatinhalt unverändert.
 
 ### AT-007 — Beschädigtes oder unbekanntes Projektformat
 
@@ -706,3 +706,31 @@ Abschlussblocker: Verlust gespeicherter Daten, falsche Werte/Typen, Phantom-Erfo
 **Gegeben:** Eine gespeicherte Analyse mit zwei echten Ausführungen und unterschiedlichen Code-/Datenständen.
 **Wenn:** Die vorhandene Laufauswahl und gemeinsamen Laufdetails bedienen.
 **Dann:** Eine Analyse, zwei getrennte Läufe mit eigenen Ergebnissen. Eingaben zeigen die konkreten Datenstände, Code ist eingefroren, Ergebnisart/-umfang/-aufbewahrung sind verständlich. SQL-Verfügbarkeit ist keine behauptete Verwendung. Das Öffnen der Details startet nichts; R-Sitzungsobjekte werden nicht als gespeicherte Ergebnisse ausgegeben.
+
+## SQL-Aufräumen — neuer Vertrag (24. Oktober 2026)
+
+Diese Nutzerentscheidung ersetzt für SQL die bisherige automatische Laufauswahl und die Inline-Umbenennung (REQ-011/013–016/019/034–036/041/044/062/066–068; AT-005/006/007/025/026/027/032/054/055/058/059).
+
+- Nur Projektformat 2; alte Projekte/Archive kontrolliert ablehnen, keine Migration. Alte Rows dürfen Projektliste, Neuerstellung und Restebereinigung nicht blockieren; ihre Bytes bleiben unangetastet.
+- Übersicht: Umbenennen mit lokalem Dialogentwurf, Trim/Validierung, Abbrechen/Escape und atomarem Speichern. SQL zeigt den Namen als Text.
+- Autosave/Ausführen/Cmd+S erzeugen keine Version; „Version speichern“ hält Code und Parameter unveränderlich fest. Laden aktualisiert sichtbaren Editor und Parameter nach Bestätigung, ohne Ausführung. Code-Undo, Reload und Archiv-/Duplikationsreferenzen prüfen.
+- Wiederholungsläufe entfernen nur ersetzte ungeschützte SQL-Arbeitsläufe. Aufbewahren, Datasetherkunft, Analyseinputs, Diagramme und R-Herkunft schützen transitiv. Commitfehler erhalten alte Daten/Handles. Mehrseitige Leser und materialisierte Exporte bleiben vollständig. R-Historie bleibt erhalten.
+- Tabellen/Spalten nichtmodal und per Tastatur erreichbar; Editor bleibt bedienbar. Parameterdialog mit Beispiel/Übernehmen/Abbrechen, keine leere Zeile im Editor. Aufbewahrte Ergebnisse bleiben gezielt erreichbar.
+- Tertiary-Hover auf Weiss und grauer Toolbar unterscheidbar; Pressed, Disabled, Auswahl und Fokus prüfen. Standardgeometrie sowie schmale Ansicht gezielt messen.
+
+Prüfumfang ausdrücklich auf betroffene Unit-, echte Chromium-Engine-/IndexedDB- und UI-Fälle sowie Typecheck, Lint/Modulgrenzen und Build begrenzt. Keine komplette Verify-/Browser-/Deploymentmatrix.
+
+
+## SQL-Ergebnisbereich und Speicherpunkt — 24. Oktober 2026
+
+REQ-019/034/041/044/046/048/062/066/067; Ergänzung zu AT-005/007/027/032/049/055/058.
+
+- Eine Ergebnisaktionszeile; Zeilenzahl, Laufzeit und Paging unten, keine wiederholten Namen oder dauerhaften Vollständigkeits-/Aufbewahrungsmetadaten. Fehler, Kürzung, älterer Arbeitsstand und aufbewahrte Ergebnisse bleiben unterscheidbar.
+- CSV/XLSX zeigen den passenden Formathinweis erst im Exportdialog vor dem Download; Abbrechen erzeugt keine Datei. Begrenzte Ergebnisse warnen bei jedem Format. Vollständige ursprüngliche Daten werden ohne neue Ausführung exportiert.
+- SQL-Tabelle mit JetBrains Mono, logischem Typ, fixiertem Kopf und Zeilennummern über Seitengrenzen. Bestehende numerische Sortierung, NULL, exakte Werte und Paging bleiben erhalten.
+- Panelbreite und Resultathöhe per Maus/Tastatur ändern, nach Reload erhalten und per Reset zurücksetzen; keine Änderung an Projektdefinition oder Laufanzahl. Schmale Ansicht bleibt bedienbar.
+- Automatische und manuelle Completion für Schlüsselwörter, Tabellen und Spalten mit `data`-Namespace, Quoting und aktuellem Schema; Vorschläge auf das SQL-Modell begrenzt, keine Query-Ausführung. SQL-Name normal, keine aktive-Zeile-Hervorhebung.
+- Speicherpunkt bleibt unten links konstant: grün nach dauerhaftem Commit, orange bei ungespeichert/laufend/Fehler/Sitzungsmodus. Zugängliche Erklärung und Fehlerwiederholung im Dialog; Speicherwechsel verschieben Editor/Resultat nicht.
+- Split-Hauptbutton, Pfeil und benachbarte Controls gleich hoch, kompakt 32 px und auf Touch mindestens 44 px.
+
+Gezielte Unit-/Chromium-Fälle sowie Typecheck, Lint/Modulgrenzen und Build genügen für diese Änderung; keine erneute vollständige V1-Abnahme.

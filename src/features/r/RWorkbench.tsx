@@ -51,7 +51,7 @@ export function RWorkbench({
     setIsSaving(true);
     void session
       .flush()
-      .catch(report)
+      .catch((error: unknown) => report(error, session))
       .finally(() => {
         saving.current = false;
         setIsSaving(false);
@@ -94,7 +94,7 @@ export function RWorkbench({
     setBusyAction(action);
     void Promise.resolve()
       .then(work)
-      .catch(report)
+      .catch((error: unknown) => report(error, session))
       .finally(() => {
         pending.current = false;
         setBusyAction('');
@@ -104,7 +104,7 @@ export function RWorkbench({
     // Returning from another project page must not compete with an ongoing run.
     if (!started.current && !session.readOnly && !busy) {
       started.current = true;
-      void service.activate(analysis.id).catch(report);
+      void service.activate(analysis.id).catch((error: unknown) => report(error, session));
     }
   }, [service, session, analysis.id, busy]);
   const runs = Object.values(session.document.runs)
@@ -121,7 +121,7 @@ export function RWorkbench({
       return;
     setSelected('latest');
     setPreview(undefined);
-    void service.run(analysis.id, selection).catch(report);
+    void service.run(analysis.id, selection).catch((error: unknown) => report(error, session));
   };
   return (
     <div className="analysis-area r-workbench">
@@ -252,7 +252,7 @@ export function RWorkbench({
               setSelected(e.target.value);
               setPreview(undefined);
               const id = e.target.value === 'latest' ? runs[0]?.id : (e.target.value as RunId);
-              if (id) void service.selectRun(id).catch(report);
+              if (id) void service.selectRun(id).catch((error: unknown) => report(error, session));
             }}
           >
             <option value="latest">Letzter Lauf</option>
@@ -608,7 +608,7 @@ function Plot({session, result}: {session: EditingSession; result: PlotResult}) 
     setBusyAction(action);
     void Promise.resolve()
       .then(work)
-      .catch(report)
+      .catch((error: unknown) => report(error, session))
       .finally(() => {
         pending.current = false;
         setBusyAction('');
@@ -626,7 +626,7 @@ function Plot({session, result}: {session: EditingSession; result: PlotResult}) 
           setUrl(objectUrl);
         }
       })
-      .catch(report);
+      .catch((error: unknown) => report(error, session));
     return () => {
       live = false;
       if (objectUrl) URL.revokeObjectURL(objectUrl);
@@ -638,7 +638,11 @@ function Plot({session, result}: {session: EditingSession; result: PlotResult}) 
       <ActionGroup className="dw-compact">
         <Button
           icon="arrows-fullscreen"
-          onClick={() => void container.current?.requestFullscreen().catch(report)}
+          onClick={() =>
+            void container.current
+              ?.requestFullscreen()
+              .catch((error: unknown) => report(error, session))
+          }
         >
           Grafik Vollbild
         </Button>

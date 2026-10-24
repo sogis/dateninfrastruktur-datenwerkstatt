@@ -21,10 +21,16 @@ async function createAnalysis(page: Page, language: 'sql' | 'r', code: string) {
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
 }
 
-async function inspectDownload(page: Page) {
+async function inspectDownload(page: Page, language: 'sql' | 'r') {
   const pending = page.waitForEvent('download');
   await page.getByRole('button', {name: 'Weitere Exportformate', exact: true}).click();
   await page.getByRole('menuitem', {name: 'XLSX exportieren', exact: true}).click();
+  const dialog = page.getByRole('dialog', {name: 'XLSX exportieren', exact: true});
+  if (language === 'sql') {
+    await expect(dialog).toBeVisible();
+    await expect(dialog).toContainText('DECIMAL');
+    await dialog.getByRole('button', {name: 'Herunterladen', exact: true}).click();
+  }
   const download = await pending;
   expect(await download.failure()).toBeNull();
   expect(download.suggestedFilename()).toMatch(/\.xlsx$/);
@@ -55,7 +61,7 @@ test('XLSX SQL UI: downloads all result rows after paging and keeps CSV as prima
   await expect(page.locator('.result-grid tbody tr').first().locator('td').first()).toHaveText(
     '249',
   );
-  const book = await inspectDownload(page);
+  const book = await inspectDownload(page, 'sql');
   expect(book.rows).toHaveLength(351);
   expect(book.rows[0]).toEqual(['id', 'random_value']);
   expect(book.rows[1]![0]).toBe(349);
@@ -65,6 +71,10 @@ test('XLSX SQL UI: downloads all result rows after paging and keeps CSV as prima
   await expect(page.getByRole('button', {name: 'CSV exportieren', exact: true})).toBeEnabled();
   const pending = page.waitForEvent('download');
   await page.getByRole('button', {name: 'CSV exportieren', exact: true}).click();
+  await page
+    .getByRole('dialog', {name: 'CSV exportieren', exact: true})
+    .getByRole('button', {name: 'Herunterladen', exact: true})
+    .click();
   const csv = await pending;
   expect(csv.suggestedFilename()).toMatch(/\.csv$/);
   expect((await readFile((await csv.path())!, 'utf8')).trimEnd().split('\n')).toHaveLength(351);
@@ -83,7 +93,7 @@ test('XLSX R UI: downloads the complete dataframe without changing its project',
       return JSON.stringify(session.document);
     });
   const before = await documentText();
-  const book = await inspectDownload(page);
+  const book = await inspectDownload(page, 'r');
   expect(book.rows).toHaveLength(351);
   expect(book.rows[0]).toEqual(['id', 'text']);
   expect(book.rows[1]).toEqual([1, '001']);

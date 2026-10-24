@@ -91,3 +91,10 @@ Für die Spezifikation ist nur die Auswahl verschachtelter Workspace-Routen norm
 ## Vorheriges Architekturpaket
 
 Die im Gespräch erzeugten Dateien `ARCHITEKTUR.md`, `domain.ts` und `ports.ts` des Pakets `datenwerkstatt-architektur-v1` wurden als Ausgangsmaterial gelesen. Dieses Paket präzisiert sie. Alte Pfade/Interfaces unverändert zu kopieren, wenn sie hier korrigiert wurden, wäre nicht vertragsgemäss.
+
+
+## Sodata-Referenz für SQL-UI — 24. Oktober 2026
+
+Auf Nutzerauftrag lokal geprüft: `http://localhost:8081/series/ch.so.bevoelkerung.altersstruktur/issues/current/explore` und `/Users/stefan/sources/datenportal/datenportal-sodata`, Revision `9466adefdc8da197c910aa5ea8ab38058df3cea6`. Die Referenz wurde ausschliesslich gelesen; eine Vorschauabfrage zeigte Tabellenrendering und Fusszeile.
+
+Massgebliche Stellen: `src/main/frontend/explore/src/results/ResultPanel.tsx`, `src/main/frontend/explore/src/styles/explore.css`, `src/main/frontend/explore/src/sql/SqlEditorField.tsx` und installierter privater Completion-Provider von `@sqlrooms/sql-editor@0.28.0`. Tabellenrendering und Editoroptionen werden an die eigenen Paging-/Monaco-Verträge angepasst. Der SQLRooms-UI-Wrapper wird nicht zusätzlich eingebaut; Schlüsselwortquelle und Lizenz werden bei übernommenem Code erhalten. Keine zusätzliche SQLRooms-/DuckDB-Instanz.

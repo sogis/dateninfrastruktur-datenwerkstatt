@@ -119,7 +119,7 @@ describe('Project provenance presentation', () => {
       run.durationMs = 0.125;
       const html = renderToStaticMarkup(createElement(RunStatus, {run}));
       expect(html).toContain(text);
-      expect(html).toContain('<dt>Revision</dt>');
+      expect(html).not.toContain('<dt>Revision</dt>');
       expect(html).toContain('<dt>Laufzeit</dt><dd>0.125 ms</dd>');
       expect(html).not.toContain('·');
       expect(run.status).toBe(status);
@@ -135,7 +135,11 @@ describe('Project provenance presentation', () => {
       createElement(RunStatus, {run, busy: 'R wird initialisiert …'}),
     );
     expect(html).toContain('R wird initialisiert …');
-    expect(html).toContain('<dt>Revision</dt><dd>nicht angegeben</dd>');
+    expect(html).not.toContain('<dt>Revision</dt>');
+    run.snapshot.language = 'r';
+    expect(renderToStaticMarkup(createElement(RunStatus, {run}))).toContain(
+      '<dt>Revision</dt><dd>nicht angegeben</dd>',
+    );
     expect(html).toContain('<dt>Laufzeit</dt><dd>noch nicht erfasst</dd>');
     expect(renderToStaticMarkup(createElement(RunStatus))).toContain('Bereit');
   });

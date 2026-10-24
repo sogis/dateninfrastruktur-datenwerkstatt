@@ -1,3 +1,4 @@
+import {openAnalysisRename, openSqlParameters} from '../ui/sqlActions';
 import {test, expect} from '../persistentBrowser';
 import type {Page} from '@playwright/test';
 import {setupPortal, portalConfig} from '../portal/setup';
@@ -46,7 +47,7 @@ async function saved(page: Page) {
 }
 async function capture(page: Page, name: string) {
   await page.screenshot({
-    path: `docs/verification/buttons-v1.3/required-fields/${test.info().project.name}-${name}.png`,
+    path: `docs/verification/sql-workbench/required-fields/${test.info().project.name}-${name}.png`,
     fullPage: true,
   });
 }
@@ -72,9 +73,7 @@ test('Required fields: creating a project shows a field error and preserves Unic
 });
 
 for (const kind of ['sql', 'r']) {
-  test(`Required fields: ${kind} name guards save and run buttons and keyboard shortcuts`, async ({
-    page,
-  }) => {
+  test(`Required fields: ${kind} name validation and explicit persistence`, async ({page}) => {
     await createProject(page);
     await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
     await page
@@ -86,6 +85,31 @@ for (const kind of ['sql', 'r']) {
     await expect(page.locator('.monaco-editor')).toBeVisible();
     if (kind === 'r')
       await expect(page.locator('.run-status')).toContainText('Bereit', {timeout: 60000});
+    if (kind === 'sql') {
+      const link = await openAnalysisRename(page);
+      const name = page.getByLabel('Analysename', {exact: true});
+      await expect(name).toHaveAttribute('required');
+      const before = await snapshot(page, true);
+      await name.fill('');
+      await page.getByRole('button', {name: 'Umbenennen', exact: true}).click();
+      await expect(name).toBeFocused();
+      await expect(name).toHaveAccessibleDescription('Bitte gib einen Analysenamen ein.');
+      expect(await snapshot(page)).toEqual(before);
+      await name.press('Enter');
+      expect(await snapshot(page)).toEqual(before);
+      await capture(page, 'sql-name-error');
+      await name.fill('Öffentliche Analyse');
+      await name.press('Tab');
+      expect(await snapshot(page)).toEqual(before);
+      await page.getByRole('button', {name: 'Umbenennen', exact: true}).click();
+      await expect(page.getByRole('dialog')).toHaveCount(0);
+      await link.click();
+      await page.reload();
+      await expect(page.locator('.analysis-name-text')).toHaveText(
+        'Analysename: Öffentliche Analyse',
+      );
+      return;
+    }
     const name = page.getByLabel('Analysename', {exact: true});
     await expect(name).toHaveAttribute('required');
     await expect(page.locator('.analysis-toolbar label')).toBeVisible();
@@ -221,8 +245,8 @@ test('Required fields: parameter values are required by type and empty strings a
   page,
 }) => {
   await openSql(page);
-  const parameters = page.locator('.parameters');
-  await parameters.locator('summary').click();
+  await openSqlParameters(page);
+  const parameters = page.getByRole('dialog', {name: 'Parameter', exact: true});
   await parameters.getByRole('button', {name: 'Parameter hinzufügen', exact: true}).click();
   const name = parameters.getByLabel('Parameter 1 Name', {exact: true});
   const value = parameters.getByLabel('Parameter 1 Wert', {exact: true});
@@ -235,6 +259,7 @@ test('Required fields: parameter values are required by type and empty strings a
   expect(Object.values((await snapshot(page)).document.analyses)[0]!.parameters).toEqual({
     text: '',
   });
+  await openSqlParameters(page);
   await parameters.getByLabel('Parameter 1 Typ', {exact: true}).selectOption('number');
   await expect(value).toHaveAttribute('required');
   await parameters.getByRole('button', {name: 'Parameter übernehmen', exact: true}).click();
@@ -248,6 +273,7 @@ test('Required fields: parameter values are required by type and empty strings a
   await expect(value).not.toHaveAttribute('aria-invalid', 'true');
   await parameters.getByRole('button', {name: 'Parameter übernehmen', exact: true}).click();
   expect(Object.values((await snapshot(page)).document.analyses)[0]!.parameters).toEqual({text: 0});
+  await openSqlParameters(page);
   await parameters.getByLabel('Parameter 1 Typ', {exact: true}).selectOption('null');
   await expect(value).toBeDisabled();
   await expect(value).not.toHaveAttribute('required');
@@ -255,6 +281,7 @@ test('Required fields: parameter values are required by type and empty strings a
   expect(Object.values((await snapshot(page)).document.analyses)[0]!.parameters).toEqual({
     text: null,
   });
+  await openSqlParameters(page);
   await parameters.getByRole('button', {name: 'Parameter hinzufügen', exact: true}).click();
   const otherName = parameters.getByLabel('Parameter 2 Name', {exact: true});
   await otherName.fill('text');

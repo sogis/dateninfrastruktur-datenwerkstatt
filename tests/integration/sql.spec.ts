@@ -297,6 +297,7 @@ test('P3 / AT-030 AT-031: actual worker termination, epoch invalidation, no late
       await app.sql.initialize(new AbortController().signal);
       const smallId = await app.run(id);
       const resultId = session.document.runs[smallId]!.resultIds[0]!;
+      const oldHandle = await app.handle(resultId, new AbortController().signal);
       session.updateAnalysis(id, {
         code: 'SELECT sum(a.i * b.i) FROM range(100000000) a(i), range(100000000) b(i)',
       });
@@ -311,7 +312,17 @@ test('P3 / AT-030 AT-031: actual worker termination, epoch invalidation, no late
       const timed = await pending;
       const epochAfter = app.sql.epoch;
       const run = session.document.runs[timed]!;
-      const old = session.document.results[resultId]!.materialization;
+      const old = session.document.results[resultId]?.materialization;
+      let staleError = '';
+      try {
+        await app.sql.readPage(
+          oldHandle,
+          {offset: 0, size: 100, sort: []},
+          new AbortController().signal,
+        );
+      } catch (error) {
+        staleError = String(error);
+      }
       session.updateAnalysis(id, {code: 'SELECT 7 AS answer'});
       const next = await app.run(id);
       const page = await app.page(
@@ -319,7 +330,7 @@ test('P3 / AT-030 AT-031: actual worker termination, epoch invalidation, no late
         {offset: 0, size: 100, sort: []},
         new AbortController().signal,
       );
-      return {epoch, epochAfter, run, old, page, terminated, duplicate};
+      return {epoch, epochAfter, run, old, page, terminated, duplicate, staleError};
     } finally {
       await service.close();
       Worker.prototype.terminate = original;
@@ -330,7 +341,8 @@ test('P3 / AT-030 AT-031: actual worker termination, epoch invalidation, no late
   expect(result.run.status).toBe('cancelled');
   expect(result.run.stopReason).toBe('timeout');
   expect(result.run.resultIds).toEqual([]);
-  expect(result.old).toEqual({kind: 'unavailable', reason: 'runtime-reset'});
+  expect(result.old).toBeUndefined();
+  expect(result.staleError).toContain('nicht mehr');
   expect(result.page.rows).toEqual([['7']]);
   expect(result.duplicate).toContain('Operation läuft');
 });

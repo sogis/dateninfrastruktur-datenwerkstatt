@@ -1,5 +1,5 @@
 {
-  "formatVersion": 1,
+  "formatVersion": 2,
   "revision": 0,
   "workspace": {
     "id": "e46cf222-eff5-5b24-887b-c4e7b797daf5",
@@ -14,5 +14,6 @@
   "runs": {},
   "results": {},
   "visualizations": {},
-  "artifacts": {}
+  "artifacts": {},
+  "sqlVersions": {}
 }

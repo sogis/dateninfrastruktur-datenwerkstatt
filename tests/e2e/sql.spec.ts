@@ -1,3 +1,4 @@
+import {openSqlParameters} from '../ui/sqlActions';
 import {expect, test} from '../persistentBrowser';
 import type {Page} from '@playwright/test';
 import {readFile} from 'node:fs/promises';
@@ -26,11 +27,7 @@ test('P3 / AT-022 AT-027 AT-032 AT-049 AT-055 AT-058: SQL, paging, keep, exports
   await workspace(page);
   await editor(page, 'SELECT i, random() AS r FROM range(350) t(i)');
   await page.getByRole('textbox', {name: 'Analysecode'}).press('ControlOrMeta+Enter');
-  await expect(
-    page
-      .locator('.result-toolbar .dw-meta-list')
-      .filter({hasText: /Zeilen\s*350\s*Umfang\s*Vollständig\s*Aufbewahrung\s*Temporär/}),
-  ).toBeVisible();
+  await expect(page.locator('.result-footer')).toContainText('350 Zeilen');
   await expect(page.locator('.result-grid tbody tr')).toHaveCount(100);
   const first = await page.locator('.result-grid tbody tr').first().innerText();
   await page.getByRole('button', {name: 'Nächste Seite'}).click();
@@ -42,13 +39,12 @@ test('P3 / AT-022 AT-027 AT-032 AT-049 AT-055 AT-058: SQL, paging, keep, exports
     useInnerText: true,
   });
   await page.getByRole('button', {name: 'Aufbewahren', exact: true}).click();
-  await expect(
-    page
-      .locator('.result-toolbar .dw-meta-list')
-      .filter({hasText: /Zeilen\s*350\s*Umfang\s*Vollständig\s*Aufbewahrung\s*Aufbewahrt/}),
-  ).toBeVisible();
+  await expect(page.getByRole('button', {name: 'Aufbewahren', exact: true})).toBeDisabled();
   const pending = page.waitForEvent('download');
   await page.getByRole('button', {name: 'CSV exportieren'}).click();
+  const exportDialog = page.getByRole('dialog', {name: 'CSV exportieren', exact: true});
+  await expect(exportDialog).toContainText('CSV enthält keine Typinformationen.');
+  await exportDialog.getByRole('button', {name: 'Herunterladen', exact: true}).click();
   const downloaded = await pending;
   const csv = await readFile((await downloaded.path())!, 'utf8');
   expect(csv.trim().split('\n')).toHaveLength(351);
@@ -71,11 +67,8 @@ test('P3 / AT-022 AT-027 AT-032 AT-049 AT-055 AT-058: SQL, paging, keep, exports
   expect((await readFile((await png.path())!)).subarray(1, 4).toString()).toBe('PNG');
   await info.attach('sql-workspace', {body: await page.screenshot(), contentType: 'image/png'});
   await page.reload();
-  await expect(
-    page
-      .locator('.result-toolbar .dw-meta-list')
-      .filter({hasText: /Zeilen\s*350\s*Umfang\s*Vollständig\s*Aufbewahrung\s*Aufbewahrt/}),
-  ).toBeVisible();
+  await expect(page.locator('.result-footer')).toContainText('350 Zeilen');
+  await expect(page.getByRole('button', {name: 'Aufbewahren', exact: true})).toBeDisabled();
   await expect(page.locator('.result-grid tbody tr').first()).toHaveText(first, {
     useInnerText: true,
   });
@@ -88,7 +81,7 @@ test('P3 / AT-025 AT-030: parameters, explicit cancel and failed runs never show
   page,
 }) => {
   await workspace(page);
-  await page.getByText('Parameter (0)', {exact: true}).click();
+  await openSqlParameters(page);
   await page.getByRole('button', {name: 'Parameter hinzufügen'}).click();
   await page.getByLabel('Parameter 1 Name').fill('wert');
   await page.getByLabel('Parameter 1 Typ').selectOption('int64');
@@ -129,11 +122,7 @@ test('P3 / AT-049: rendered bars and line gaps preserve NULL, PNG contains actua
     'SELECT i AS x, CASE WHEN i = 1 THEN NULL ELSE i+1 END AS y FROM range(3) t(i) ORDER BY i DESC',
   );
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
-  await expect(
-    page
-      .locator('.result-toolbar .dw-meta-list')
-      .filter({hasText: /Zeilen\s*3\s*Umfang\s*Vollständig\s*Aufbewahrung\s*Temporär/}),
-  ).toBeVisible();
+  await expect(page.locator('.result-footer')).toContainText('3 Zeilen');
   await page.evaluate(() => {
     const original = CanvasRenderingContext2D.prototype.fillRect;
     const line = CanvasRenderingContext2D.prototype.lineTo;

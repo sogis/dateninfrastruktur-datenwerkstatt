@@ -1,3 +1,4 @@
+import {renameAnalysis} from '../ui/sqlActions';
 import {test, expect} from '../persistentBrowser';
 import type {Page} from '@playwright/test';
 
@@ -101,23 +102,19 @@ test('UI texts: real SQL status hierarchy, empty results and original text survi
     await page.keyboard.insertText(code);
     await editor.press('ControlOrMeta+s');
     await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
-    await expect(page.locator('.run-summary-message')).toHaveText('Ausführung erfolgreich');
+    await expect(page.locator('.result-footer')).toContainText(/\d+ Zeile/);
   };
   await run("SELECT '001 · Original' AS wert WHERE false");
   await expect(page.locator('.result-grid tbody tr')).toHaveCount(0);
-  await expect(
-    page.locator('.result-toolbar .dw-meta-list').filter({hasText: 'Zeilen'}),
-  ).toContainText('Zeilen0');
-  await page
-    .getByLabel('Analysename', {exact: true})
-    .fill(
-      'Langer Analysename für die gemeinsame Auswertung mit unveränderten Originaldaten und lesbaren Metadaten',
-    );
+  await expect(page.locator('.result-footer')).toContainText('0 Zeilen');
+  await renameAnalysis(
+    page,
+    'Langer Analysename für die gemeinsame Auswertung mit unveränderten Originaldaten und lesbaren Metadaten',
+  );
   await run("SELECT '001 · Original' AS wert");
   await expect(page.locator('.result-grid tbody td')).toHaveText('001 · Original');
-  await expect(page.locator('.analysis-toolbar [role="status"]')).toHaveText(/^Revision \d+$/);
-  await expect(page.locator('.run-summary dt')).toHaveText(['Revision', 'Laufzeit']);
-  await expect(page.locator('.run-summary dd').last()).toHaveText(/^[\d.]+ ms$/);
+  await expect(page.locator('.analysis-toolbar')).not.toContainText(/Revision \d+/);
+  await expect(page.locator('.result-footer')).toContainText(/1 Zeile · [\d.]+ ms/);
   const before = await documentText(page);
   await page.getByText('Laufdetails und eingefrorener Code', {exact: true}).click();
   await expect(page.locator('.run-details')).toContainText("SELECT '001 · Original' AS wert");
@@ -137,7 +134,7 @@ test('UI texts: real SQL status hierarchy, empty results and original text survi
   await page.addStyleTag({content: 'html {font-size: 200%}'});
   await page.locator('.result-section').evaluate((element) => element.scrollTo(0, 0));
   await noOverflow(page);
-  await expect(page.locator('.run-summary-message')).toBeVisible();
+  await expect(page.locator('.result-footer')).toBeVisible();
   await page.screenshot({path: info.outputPath('sql-status-text-200.png'), fullPage: true});
 });
 

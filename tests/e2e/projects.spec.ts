@@ -1,9 +1,10 @@
+import {showKeptSqlResult} from '../ui/sqlActions';
 import {test, expect} from '../persistentBrowser';
 import type {Page, Route} from '@playwright/test';
 import type {WorkspaceDocument} from '../../src/domain/model';
 import {mkdir, readFile} from 'node:fs/promises';
 
-const evidence = 'docs/verification/ui-texts-v1.4/projects';
+const evidence = 'docs/verification/sql-workbench/projects';
 
 async function createProject(page: Page, name: string) {
   await page.goto('/projects');
@@ -109,7 +110,9 @@ test('Projects: a late real editor module preserves direct reset focus and its a
     await splitter.press('ArrowDown');
     await expect(splitter).not.toHaveAttribute('aria-valuenow', '45');
 
-    const reset = page.getByRole('button', {name: 'Arbeitsfläche zurücksetzen', exact: true});
+    const menu = page.getByRole('button', {name: 'Weitere Aktionen', exact: true});
+    await menu.click();
+    const reset = page.getByRole('menuitem', {name: 'Arbeitsfläche zurücksetzen', exact: true});
     await reset.focus();
     await expect(reset).toBeFocused();
     releaseEditor();
@@ -121,7 +124,7 @@ test('Projects: a late real editor module preserves direct reset focus and its a
     await expect(reset).toBeFocused();
     await reset.press('Enter');
     await expect(splitter).toHaveAttribute('aria-valuenow', '45');
-    await expect(reset).toBeFocused();
+    await expect(menu).toBeFocused();
   } finally {
     releaseEditor();
     try {
@@ -259,6 +262,150 @@ test('Projects: CSV replacement keeps both immutable versions with current/newes
   expect((await documentOf(page)).document).toEqual(before.document);
 });
 
+test('Projects: save indicator stays bottom left without moving the SQL editor while saving', async ({
+  page,
+}) => {
+  await page.setViewportSize({width: 1440, height: 900});
+  await createProject(page, 'Ruhiger Speicherstatus');
+  await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
+  await expect(page.locator('.monaco-editor')).toBeVisible();
+  await documentOf(page);
+  const indicator = page.locator('.workspace-save-indicator');
+  await expect(indicator).toHaveAttribute('data-tone', 'success');
+  const geometry = () =>
+    page.locator('.workspace-content').evaluate((content) =>
+      ['.analysis-toolbar', '.monaco-editor', '.result-section'].map((selector) => {
+        const rect = content.querySelector(selector)!.getBoundingClientRect();
+        return {top: rect.top, height: rect.height};
+      }),
+    );
+  const before = await geometry();
+  const servicesModule = await servicesModuleOf(page);
+  await page.evaluate(async (path) => {
+    const {services} = (await import(path)) as typeof import('../../src/app/services');
+    const session = await services.workspaces.open(location.pathname.split('/')[2]!);
+    const repository: unknown = Reflect.get(session.persistence, 'repository');
+    if (!repository || typeof repository !== 'object') throw Error('Project repository missing');
+    const original: unknown = Reflect.get(repository, 'commit');
+    if (typeof original !== 'function') throw Error('Project commit missing');
+    let resume!: () => void;
+    const gate = new Promise<void>((resolve) => {
+      resume = resolve;
+    });
+    Reflect.set(globalThis, '__saveIndicatorCommit', {
+      repository,
+      original,
+      own: Object.hasOwn(repository, 'commit'),
+      resume,
+    });
+    Reflect.set(repository, 'commit', async (...args: unknown[]) => {
+      await gate;
+      return Reflect.apply(original, repository, args);
+    });
+  }, servicesModule);
+  try {
+    const input = page.getByRole('textbox', {name: 'Analysecode'});
+    await page.locator('.monaco-editor').click();
+    await input.press('ControlOrMeta+a');
+    await page.keyboard.insertText('SELECT 2 AS wert;');
+    await expect(indicator).toHaveAttribute('data-save-state', 'dirty');
+    await expect(indicator).toHaveAttribute('data-tone', 'warning');
+    expect(await geometry()).toEqual(before);
+    await input.press('ControlOrMeta+s');
+    await expect(indicator).toHaveAttribute('data-save-state', 'saving');
+    expect(await geometry()).toEqual(before);
+    await expect(page.locator('.save-status, .app-error, .workspace-content > .error')).toHaveCount(
+      0,
+    );
+    const bounds = await indicator.boundingBox();
+    expect(bounds).not.toBeNull();
+    expect(bounds!.width).toBe(40);
+    expect(bounds!.height).toBe(40);
+    expect(bounds!.x).toBe(6);
+    expect(bounds!.y).toBe(852);
+    await page.getByRole('button', {name: 'Navigation ausklappen'}).click();
+    expect(await indicator.boundingBox()).toEqual(bounds);
+    await indicator.focus();
+    await indicator.press('Tab');
+    await page.keyboard.press('Shift+Tab');
+    await expect(indicator).toBeFocused();
+    await expect(
+      page.getByRole('tooltip', {name: 'Änderungen werden gespeichert …'}),
+    ).toBeVisible();
+    await indicator.press('Enter');
+    const status = page.getByRole('dialog', {name: 'Speicherstatus', exact: true});
+    await expect(status.getByText('Änderungen werden gespeichert …', {exact: true})).toBeVisible();
+    await status.press('Escape');
+    await expect(indicator).toBeFocused();
+  } finally {
+    await page.evaluate(() => {
+      const saved: unknown = Reflect.get(globalThis, '__saveIndicatorCommit');
+      if (!saved || typeof saved !== 'object') throw Error('Original project commit missing');
+      const repository: unknown = Reflect.get(saved, 'repository');
+      const original: unknown = Reflect.get(saved, 'original');
+      const resume: unknown = Reflect.get(saved, 'resume');
+      if (
+        !repository ||
+        typeof repository !== 'object' ||
+        typeof original !== 'function' ||
+        typeof resume !== 'function'
+      )
+        throw Error('Original project repository missing');
+      if (Reflect.get(saved, 'own')) Reflect.set(repository, 'commit', original);
+      else Reflect.deleteProperty(repository, 'commit');
+      resume();
+      Reflect.deleteProperty(globalThis, '__saveIndicatorCommit');
+    });
+  }
+  await expect(indicator).toHaveAttribute('data-save-state', 'saved');
+  await expect(indicator).toHaveAttribute('data-tone', 'success');
+});
+
+test('Projects: a failed unpublished change can keep the previous project from save details', async ({
+  page,
+}) => {
+  await createProject(page, 'Nicht veröffentlichter Stand');
+  const before = await documentOf(page);
+  await page.evaluate(
+    async (path) => {
+      const {services} = (await import(path)) as typeof import('../../src/app/services');
+      const session = await services.workspaces.open(location.pathname.split('/')[2]!);
+      const repository: unknown = Reflect.get(session.persistence, 'repository');
+      if (!repository || typeof repository !== 'object') throw Error('Project repository missing');
+      const original: unknown = Reflect.get(repository, 'commit');
+      if (typeof original !== 'function') throw Error('Project commit missing');
+      const own = Object.hasOwn(repository, 'commit');
+      Reflect.set(repository, 'commit', async () => {
+        throw Error('Test: Veröffentlichung fehlgeschlagen');
+      });
+      try {
+        await session.persistence.publish((document) => {
+          document.workspace.description = 'Darf nicht erscheinen';
+        });
+      } catch {
+        // The actual coordinator retains the already committed project after this fault.
+      } finally {
+        if (own) Reflect.set(repository, 'commit', original);
+        else Reflect.deleteProperty(repository, 'commit');
+      }
+    },
+    await servicesModuleOf(page),
+  );
+  const indicator = page.locator('.workspace-save-indicator');
+  await expect(indicator).toHaveAccessibleName('Speicherstatus: Speichern fehlgeschlagen');
+  await expect(indicator).toHaveAttribute('data-tone', 'warning');
+  await indicator.click();
+  const status = page.getByRole('dialog', {name: 'Speicherstatus', exact: true});
+  await expect(status.getByRole('alert')).toContainText('Test: Veröffentlichung fehlgeschlagen');
+  await status
+    .getByRole('button', {name: 'Vorherigen Projektstand beibehalten', exact: true})
+    .click();
+  await status.getByRole('button', {name: 'Schliessen', exact: true}).click();
+  await expect(indicator).toHaveAttribute('data-tone', 'success');
+  expect((await documentOf(page)).document).toEqual(before.document);
+});
+
 test('Projects: a failed metadata save blocks external navigation and preserves the editing session until retry', async ({
   page,
 }) => {
@@ -302,11 +449,16 @@ test('Projects: a failed metadata save blocks external navigation and preserves 
     expect(
       await page.evaluate(() => Reflect.get(globalThis, '__projectCommitFailureReached')),
     ).toBe(true);
-    await expect(
-      page.getByRole('alert').filter({hasText: 'Test: Projektmetadaten'}).first(),
-    ).toBeVisible();
     await expect(page).toHaveURL(url);
-    await expect(page.getByText('Speichern fehlgeschlagen', {exact: true})).toBeVisible();
+    const indicator = page.getByRole('button', {name: 'Speicherstatus: Speichern fehlgeschlagen'});
+    await expect(indicator).toHaveAttribute('data-tone', 'warning');
+    await expect(page.locator('.save-status, .app-error, .workspace-content > .error')).toHaveCount(
+      0,
+    );
+    await indicator.click();
+    const status = page.getByRole('dialog', {name: 'Speicherstatus', exact: true});
+    await expect(status.getByRole('alert')).toContainText('Test: Projektmetadaten');
+    await status.getByRole('button', {name: 'Schliessen', exact: true}).click();
     await expect(page.getByLabel('Beschreibung', {exact: true})).toHaveValue(
       'Dieser Entwurf muss erhalten bleiben',
     );
@@ -322,7 +474,7 @@ test('Projects: a failed metadata save blocks external navigation and preserves 
     // Settings is now internal: a failed save must not discard the draft or block it.
     await page.getByRole('link', {name: 'Einstellungen', exact: true}).click();
     await expect(page).toHaveURL(`${url}/settings`);
-    await expect(page.getByText('Speichern fehlgeschlagen', {exact: true})).toBeVisible();
+    await expect(indicator).toHaveAttribute('data-tone', 'warning');
     await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
     await expect(page.getByLabel('Beschreibung', {exact: true})).toHaveValue(
       'Dieser Entwurf muss erhalten bleiben',
@@ -350,11 +502,16 @@ test('Projects: a failed metadata save blocks external navigation and preserves 
       Reflect.deleteProperty(globalThis, '__projectCommitFailureReached');
     });
   }
+  await page.getByRole('button', {name: 'Speicherstatus: Speichern fehlgeschlagen'}).click();
   await page.getByRole('button', {name: 'Speichern erneut versuchen', exact: true}).click();
   await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
     'data-save-state',
     'saved',
   );
+  await page
+    .getByRole('dialog', {name: 'Speicherstatus', exact: true})
+    .getByRole('button', {name: 'Schliessen', exact: true})
+    .click();
   await page.getByRole('link', {name: 'Einstellungen', exact: true}).click();
   await expect(page).toHaveURL(/\/settings$/);
   await page.goBack();
@@ -383,19 +540,15 @@ test('Projects: two SQL run snapshots stay readable and kept results survive edi
     await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
     await expect(page.locator('.result-grid tbody tr')).toHaveCount(100);
     await page.getByRole('button', {name: 'Aufbewahren', exact: true}).click();
-    await expect(
-      page
-        .locator('.result-toolbar .dw-meta-list')
-        .filter({hasText: /Zeilen\s*150\s*Umfang\s*Vollständig\s*Aufbewahrung\s*Aufbewahrt/}),
-    ).toBeVisible();
+    await expect(page.locator('.result-footer')).toContainText('150 Zeilen');
+    await expect(page.getByRole('button', {name: 'Aufbewahren', exact: true})).toBeDisabled();
   }
   await code(page, 'SELECT 999 AS noch_nicht_ausgefuehrt');
   const before = await documentOf(page);
   const runs = Object.values(before.document.runs);
   expect(runs).toHaveLength(2);
   expect(runs.map((run) => run.snapshot.code)).toEqual([firstCode, secondCode]);
-  const runSelect = page.getByLabel('Lauf', {exact: true});
-  await runSelect.selectOption(runs[0]!.id);
+  await showKeptSqlResult(page, 1);
   await expect(page.locator('.result-grid tbody tr').first().locator('td')).toHaveText(['0', '21']);
   await page.getByText('Laufdetails und eingefrorener Code', {exact: true}).click();
   const details = page.locator('.run-details');
@@ -415,13 +568,13 @@ test('Projects: two SQL run snapshots stay readable and kept results survive edi
     '21',
   ]);
   await page.getByRole('button', {name: 'Vorherige Seite', exact: true}).click();
-  await runSelect.selectOption(runs[1]!.id);
+  await showKeptSqlResult(page, 0);
   await expect(page.locator('.result-grid tbody tr').first().locator('td')).toHaveText(['0', '32']);
   await expect(details).toContainText(secondCode);
   expect((await documentOf(page)).document).toEqual(before.document);
   await page.reload();
   await expect(page.locator('.view-lines')).toContainText(/SELECT\s+999/);
-  await page.getByLabel('Lauf', {exact: true}).selectOption(runs[0]!.id);
+  await showKeptSqlResult(page, 1);
   await expect(page.locator('.result-grid tbody tr').first().locator('td')).toHaveText(['0', '21']);
   expect((await documentOf(page)).document).toEqual(before.document);
 
@@ -444,7 +597,8 @@ test('Projects: two SQL run snapshots stay readable and kept results survive edi
   const firstImportedRun = Object.values(importedBefore.document.runs).find(
     (run) => run.snapshot.code === firstCode,
   )!;
-  await page.getByLabel('Lauf', {exact: true}).selectOption(firstImportedRun.id);
+  expect(firstImportedRun.snapshot.code).toBe(firstCode);
+  await showKeptSqlResult(page, 1);
   await page.getByText('Laufdetails und eingefrorener Code', {exact: true}).click();
   await expect(page.locator('.run-inputs')).toContainText('messung');
   await expect(page.locator('.run-inputs')).toContainText(

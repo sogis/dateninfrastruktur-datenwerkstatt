@@ -61,11 +61,8 @@ test('P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/C
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.result-grid tbody td')).toHaveText(['42']);
   await page.getByRole('button', {name: 'Aufbewahren', exact: true}).click();
-  await expect(
-    page
-      .locator('.result-toolbar .dw-meta-list')
-      .filter({hasText: /Zeilen\s*1\s*Umfang\s*Vollständig\s*Aufbewahrung\s*Aufbewahrt/}),
-  ).toBeVisible();
+  await expect(page.locator('.result-footer')).toContainText('1 Zeile');
+  await expect(page.getByRole('button', {name: 'Aufbewahren', exact: true})).toBeDisabled();
   await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
     'data-save-state',
     'saved',
@@ -172,7 +169,8 @@ test('UI assets: local SVGs, Source Sans 3, JetBrains Mono, fallback and notices
   ])
     expect((await request.get(`${baseURL}${path}`)).status()).toBe(200);
   // Persist the newly created analysis before intentionally reloading it.
-  await page.getByRole('button', {name: 'Speichern', exact: true}).click();
+  await page.locator('.monaco-editor').click();
+  await page.getByRole('textbox', {name: 'Analysecode'}).press('ControlOrMeta+s');
   await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
     'data-save-state',
     'saved',

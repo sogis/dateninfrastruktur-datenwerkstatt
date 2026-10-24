@@ -198,3 +198,17 @@ REQ-024–026/062/067; AT-008/010/055. Reihenfolge: Verträge/Engine → Dialog/
 echte CSV-/Persistenz-/Archivtests und zugängliche responsive UI → verify und gezielte
 Chromium-/Firefox-/WebKit-Importmatrix. Keine neue Dependency oder Veröffentlichung.
 Tatsächliche Befehle, Zwischenfehler, Screenshots und Grenzen im Implementierungsstatus.
+
+## SQL-Aufräumen und explizite Versionen — 24. Oktober 2026
+
+1. Projektformat 2, unveränderliche SQL-Versionen, Remapping/Archiv und strikte Ablehnung anderer Formate. Keine Migration oder Altbereinigung.
+2. SQL-Arbeitsläufe beim nächsten Run ersetzen; Referenzgraph, Commitgrenze und vollständige Leseleases schützen benötigte Ergebnisse.
+3. Umbenennen auf Übersicht, SQL-Name als Text, nichtmodales Tabellen-/Spaltenpanel, Parameter und bewusste Versionen über klare Aktionen; zentrale Tertiary-Hoverkorrektur.
+4. Nur technisch notwendige Typecheck-/Lint-/Build- und gezielte Unit-/Chromium-Engine-/UI-Prüfungen; tatsächliche Resultate und Grenzen im Implementierungsstatus.
+
+
+## SQL-Ergebnisbereich und Speicherpunkt — 24. Oktober 2026
+
+Vertikaler Anschluss an SQL-Aufräumen: kompakte Ergebnisaktionen mit Fusszeile, kontextuelle Exportdialoge, Sodata-Tabellenrendering und modellgebundene Monaco-Completion; Schema-/Resultatsplitter mit separatem Ansichtsstatus. Konstanter Speicherpunkt für alle geöffneten Projektseiten ersetzt wechselnde Autosavebänder. Projektformat und Dependencies bleiben unverändert.
+
+Abnahme gezielt auf Completion, SQL-Tabelle/Paging/Export, Panelgeometrie, Splitbutton-Höhe und Speicherfehlerwiederholung begrenzt; Typecheck, Lint und Build abschliessend. Aktueller Prüfstand unter `docs/IMPLEMENTATION_STATUS.md`.

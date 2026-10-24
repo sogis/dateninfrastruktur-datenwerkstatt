@@ -1,8 +1,9 @@
+import {openAnalysisRename, openSqlParameters} from '../ui/sqlActions';
 import {test, expect} from '../persistentBrowser';
 import type {Locator, Page} from '@playwright/test';
 import {mkdir} from 'node:fs/promises';
 
-const evidence = 'docs/verification/buttons-v1.3/neutral';
+const evidence = 'docs/verification/sql-workbench/neutral-ui';
 async function capture(page: Page, name: string) {
   await mkdir(evidence, {recursive: true});
   await page.screenshot({path: `${evidence}/${name}.png`, fullPage: true});
@@ -130,26 +131,23 @@ test('Neutral UI: real project navigation, aligned tables, optional fields and e
   await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await expect(page.locator('.monaco-editor')).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
-  const analysisName = page.getByRole('textbox', {name: 'Analysename', exact: true});
-  const save = page.getByRole('button', {name: 'Speichern', exact: true});
+  const save = page.getByRole('button', {name: 'Version speichern', exact: true});
   const run = page.getByRole('button', {name: 'Ausführen', exact: true});
-  await aligned(analysisName, save);
-  await aligned(analysisName, run);
+  await expect(page.locator('.analysis-name-text')).toBeVisible();
+  await aligned(save, run);
+  const analysisLink = await openAnalysisRename(page);
+  const analysisName = page.getByRole('textbox', {name: 'Analysename', exact: true});
   await analysisName.fill('');
-  await save.click();
+  await page.getByRole('button', {name: 'Umbenennen', exact: true}).click();
   await expect(analysisName).toBeFocused();
   await expect(analysisName).toHaveAccessibleDescription('Bitte gib einen Analysenamen ein.');
-  await aligned(analysisName, save);
-  await aligned(analysisName, run);
   await capture(page, 'sql-name-error');
   await analysisName.fill('SQL-Auswertung');
-  await analysisName.press('Tab');
-  await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
-    'data-save-state',
-    'saved',
-  );
-  const parameters = page.locator('.parameters');
-  await parameters.locator('summary').click();
+  await page.getByRole('button', {name: 'Umbenennen', exact: true}).click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await analysisLink.click();
+  await openSqlParameters(page);
+  const parameters = page.getByRole('dialog', {name: 'Parameter', exact: true});
   await parameters.getByRole('button', {name: 'Parameter hinzufügen', exact: true}).click();
   const value = parameters.getByRole('textbox', {name: 'Parameter 1 Wert', exact: true});
   const type = parameters.getByRole('combobox', {name: 'Parameter 1 Typ', exact: true});

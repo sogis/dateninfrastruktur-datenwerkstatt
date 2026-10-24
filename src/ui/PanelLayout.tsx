@@ -1,4 +1,15 @@
 import {useEffect, useRef, useState} from 'react';
+export function useMediaQuery(value: string) {
+  const [matches, setMatches] = useState(() => window.matchMedia(value).matches);
+  useEffect(() => {
+    const query = window.matchMedia(value);
+    const update = () => setMatches(query.matches);
+    query.addEventListener('change', update);
+    update();
+    return () => query.removeEventListener('change', update);
+  }, [value]);
+  return matches;
+}
 /** Pixel minima remain meaningful when the viewport or the toolbar changes size. */
 export function usePanelHeight() {
   const ref = useRef<HTMLDivElement>(null);

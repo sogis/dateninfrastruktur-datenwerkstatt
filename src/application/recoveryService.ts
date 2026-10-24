@@ -1,4 +1,5 @@
 import {AppFailure} from './errors';
+import {WorkspaceValidationError} from '../domain/workspace';
 import type {WorkspaceDocument, WorkspaceId} from '../domain/model';
 import type {ArtifactReferenceCheck, WorkspaceLock, WorkspaceRepository} from './ports';
 import type {ManagedArtifactStore} from './storagePorts';
@@ -45,7 +46,14 @@ export class RecoveryService {
       signal.throwIfAborted();
       const lease = await lock.acquire(id, signal);
       try {
-        if (lease.mode !== 'writer' || (await repository.load(id))) continue;
+        if (lease.mode !== 'writer') continue;
+        try {
+          if (await repository.load(id)) continue;
+        } catch (error) {
+          if (error instanceof WorkspaceValidationError && error.code === 'FORMAT_UNSUPPORTED')
+            continue;
+          throw error;
+        }
         for await (const file of this.artifacts.list(id)) {
           signal.throwIfAborted();
           try {

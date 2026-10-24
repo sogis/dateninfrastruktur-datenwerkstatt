@@ -1,0 +1,12 @@
+
+> datenwerkstatt@0.1.0 test:unit
+> vitest run tests/unit/sql-completion.test.ts tests/unit/workspace-view.test.ts
+
+
+ RUN  v4.1.11 /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt
+
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  21:48:17
+   Duration  126ms (transform 53ms, setup 0ms, import 94ms, tests 5ms, environment 0ms)

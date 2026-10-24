@@ -160,7 +160,7 @@ export function ArchiveActions({session}: {session: EditingSession}) {
     void Promise.resolve()
       .then(() => work(attempt))
       .catch((error) => {
-        if (feedback.isCurrent(attempt)) report(error);
+        if (feedback.isCurrent(attempt)) report(error, session);
       })
       .finally(() => {
         pending.current = false;

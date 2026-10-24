@@ -1,5 +1,5 @@
 /**
- * Datenwerkstatt V1 — projektinterne Verträge, Spezifikation 1.0.0, 2026-10-03.
+ * Datenwerkstatt V1 — projektinterne Verträge, Projektformat 2, 2026-10-24.
  * KEINE Drittanbieter-API und KEINE Anwendungsimplementierung.
  * JSON-Grenzen benötigen zusätzlich strikte Zod-Schemas + Referenzvalidierung.
  */
@@ -8,6 +8,7 @@ export type WorkspaceId = Id<'workspace'>;
 export type DatasetId = Id<'dataset'>;
 export type DatasetVersionId = Id<'dataset-version'>;
 export type AnalysisId = Id<'analysis'>;
+export type SqlAnalysisVersionId = Id<'sql-analysis-version'>;
 export type RunId = Id<'run'>;
 export type ResultId = Id<'result'>;
 export type ArtifactId = Id<'artifact'>;
@@ -15,8 +16,16 @@ export type VisualizationId = Id<'visualization'>;
 export type IsoDateTime = string; // UTC RFC3339 mit Z
 export type RowCount = string; // ^(0|[1-9][0-9]*)$
 export type EngineId = 'duckdb-local' | 'webr-local';
-export type ColumnRole = 'identifier' | 'label' | 'category' | 'measure' | 'date'
-  | 'year' | 'geometry' | 'municipality' | 'unknown';
+export type ColumnRole =
+  | 'identifier'
+  | 'label'
+  | 'category'
+  | 'measure'
+  | 'date'
+  | 'year'
+  | 'geometry'
+  | 'municipality'
+  | 'unknown';
 
 export interface ColumnSchema {
   name: string;
@@ -53,10 +62,22 @@ export interface CsvImportOptions {
   columns: {sourceIndex: number; name: string; logicalType: string}[];
 }
 export type DataOrigin =
-  | {kind: 'portal'; providerId: string; target: PortalTarget;
-     tableId: string; observedAt: IsoDateTime; canonicalUrl: string; license?: string}
-  | {kind: 'file'; fileName: string; format: 'csv' | 'parquet';
-     originalArtifactId?: ArtifactId; csvOptions?: CsvImportOptions}
+  | {
+      kind: 'portal';
+      providerId: string;
+      target: PortalTarget;
+      tableId: string;
+      observedAt: IsoDateTime;
+      canonicalUrl: string;
+      license?: string;
+    }
+  | {
+      kind: 'file';
+      fileName: string;
+      format: 'csv' | 'parquet';
+      originalArtifactId?: ArtifactId;
+      csvOptions?: CsvImportOptions;
+    }
   | {kind: 'result'; resultId: ResultId};
 
 /** publisher-version/ETag sind KEINE durch die App geprüften Inhalts-Hashes. */
@@ -67,8 +88,7 @@ export type VersionEvidence =
 export type TableBacking =
   | {kind: 'artifact'; artifactId: ArtifactId}
   | {kind: 'public-parquet'; url: string; etag?: string; lastModified?: string}
-  | {kind: 'missing'; reason: 'recipe-import' | 'source-unavailable';
-     expectedSha256?: string};
+  | {kind: 'missing'; reason: 'recipe-import' | 'source-unavailable'; expectedSha256?: string};
 export interface Dataset {
   id: DatasetId;
   workspaceId: WorkspaceId;
@@ -93,9 +113,16 @@ export interface DatasetVersion {
 export type TableInputRef =
   | {kind: 'dataset'; datasetId: DatasetId; versionId?: DatasetVersionId}
   | {kind: 'result'; resultId: ResultId};
-export interface InputBinding {name: string; source: TableInputRef}
-export type ParameterValue = string | number | boolean | null |
-  {type: 'int64' | 'decimal' | 'date' | 'timestamp'; value: string};
+export interface InputBinding {
+  name: string;
+  source: TableInputRef;
+}
+export type ParameterValue =
+  | string
+  | number
+  | boolean
+  | null
+  | {type: 'int64' | 'decimal' | 'date' | 'timestamp'; value: string};
 export interface AnalysisBase {
   id: AnalysisId;
   workspaceId: WorkspaceId;
@@ -119,9 +146,24 @@ export interface RAnalysis extends AnalysisBase {
   randomSeed?: number;
 }
 export type Analysis = SqlAnalysis | RAnalysis;
+/** Bewusst gespeicherter SQL-Stand; Ergebnisdaten werden separat aufbewahrt. */
+export interface SqlAnalysisVersion {
+  id: SqlAnalysisVersionId;
+  workspaceId: WorkspaceId;
+  analysisId: AnalysisId;
+  name: string;
+  createdAt: IsoDateTime;
+  code: string;
+  parameters: Record<string, ParameterValue>;
+}
 export type ResolvedTableInput =
-  | {kind: 'dataset-version'; bindingName: string; datasetId: DatasetId;
-     versionId: DatasetVersionId; usage: 'bound' | 'possibly-used'}
+  | {
+      kind: 'dataset-version';
+      bindingName: string;
+      datasetId: DatasetId;
+      versionId: DatasetVersionId;
+      usage: 'bound' | 'possibly-used';
+    }
   | {kind: 'result'; bindingName: string; resultId: ResultId; usage: 'bound'};
 export interface RuntimeFingerprint {
   appBuildId: string;
@@ -148,8 +190,14 @@ export interface ExecutionSnapshot {
   /** Keine Behauptung, alle im SQL verfügbaren Quellen seien tatsächlich gelesen. */
   notes: string[];
 }
-export type RunStatus = 'queued' | 'running' | 'cancelling' |
-  'succeeded' | 'failed' | 'cancelled' | 'interrupted';
+export type RunStatus =
+  | 'queued'
+  | 'running'
+  | 'cancelling'
+  | 'succeeded'
+  | 'failed'
+  | 'cancelled'
+  | 'interrupted';
 export interface ExecutionRun {
   id: RunId;
   workspaceId: WorkspaceId;
@@ -169,8 +217,15 @@ export interface ExecutionRun {
 export type ResultMaterialization =
   | {kind: 'session'; sessionId: string; engineEpoch: number}
   | {kind: 'artifact'; artifactId: ArtifactId}
-  | {kind: 'unavailable'; reason: 'session-ended' | 'runtime-reset' |
-     'missing-artifact' | 'recipe-import' | 'discarded'};
+  | {
+      kind: 'unavailable';
+      reason:
+        | 'session-ended'
+        | 'runtime-reset'
+        | 'missing-artifact'
+        | 'recipe-import'
+        | 'discarded';
+    };
 export interface ResultBase {
   id: ResultId;
   workspaceId: WorkspaceId;
@@ -210,12 +265,13 @@ export interface Artifact {
   createdAt: IsoDateTime;
 }
 export interface WorkspaceDocument {
-  formatVersion: 1;
+  formatVersion: 2;
   revision: number;
   workspace: Workspace;
   datasets: Record<DatasetId, Dataset>;
   datasetVersions: Record<DatasetVersionId, DatasetVersion>;
   analyses: Record<AnalysisId, Analysis>;
+  sqlVersions: Record<SqlAnalysisVersionId, SqlAnalysisVersion>;
   runs: Record<RunId, ExecutionRun>;
   results: Record<ResultId, Result>;
   visualizations: Record<VisualizationId, Visualization>;
@@ -235,6 +291,7 @@ export interface WorkspaceViewState {
   sidebarCollapsed: boolean;
   dataPanelVisible: boolean;
   sqlEditorFraction: number;
+  sqlSchemaFraction: number;
   rEditorFraction: number;
   rConsoleFraction: number;
   rConsoleVisible: boolean;

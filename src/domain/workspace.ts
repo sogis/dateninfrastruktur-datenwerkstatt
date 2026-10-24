@@ -328,7 +328,7 @@ const artifact = z.strictObject({
   createdAt: date,
 });
 export const workspaceSchema = z.strictObject({
-  formatVersion: z.literal(1),
+  formatVersion: z.literal(2),
   revision: natural,
   workspace: z.strictObject({
     id: uuidSchema,
@@ -340,6 +340,17 @@ export const workspaceSchema = z.strictObject({
   datasets: z.record(uuidSchema, dataset),
   datasetVersions: z.record(uuidSchema, version),
   analyses: z.record(uuidSchema, analysis),
+  sqlVersions: z.record(
+    uuidSchema,
+    z.strictObject({
+      ...owned,
+      analysisId: uuidSchema,
+      name: nameSchema,
+      createdAt: date,
+      code: z.string(),
+      parameters: analysisBase.parameters,
+    }),
+  ),
   runs: z.record(uuidSchema, run),
   results: z.record(uuidSchema, result),
   visualizations: z.record(uuidSchema, visualization),
@@ -356,10 +367,10 @@ export class WorkspaceValidationError extends Error {
   }
 }
 export function parseWorkspace(raw: unknown): WorkspaceDocument {
-  if (typeof raw === 'object' && raw !== null && 'formatVersion' in raw && raw.formatVersion !== 1)
+  if (typeof raw === 'object' && raw !== null && 'formatVersion' in raw && raw.formatVersion !== 2)
     throw new WorkspaceValidationError(
       'FORMAT_UNSUPPORTED',
-      'Unbekannte Projektversion.',
+      'Projektformat nicht unterstützt. Bitte ein neues Projekt anlegen.',
       'formatVersion',
     );
   const parsed = workspaceSchema.safeParse(raw);
@@ -376,6 +387,7 @@ export function parseWorkspace(raw: unknown): WorkspaceDocument {
     'datasets',
     'datasetVersions',
     'analyses',
+    'sqlVersions',
     'runs',
     'results',
     'visualizations',
@@ -431,6 +443,9 @@ export function parseWorkspace(raw: unknown): WorkspaceDocument {
       }
     }
   }
+  for (const version of Object.values(d.sqlVersions))
+    if (d.analyses[version.analysisId]?.kind !== 'sql')
+      fail(`sqlVersions.${version.id}.analysisId`, 'SQL-Analyse fehlt.');
   for (const r of Object.values(d.runs)) {
     const p = `runs.${r.id}`;
     if (r.trigger === 'analysis' && (!r.snapshot.analysisId || !d.analyses[r.snapshot.analysisId]))
@@ -476,12 +491,13 @@ export function parseWorkspace(raw: unknown): WorkspaceDocument {
 }
 export function emptyWorkspace(id: WorkspaceId, name: string, now: string): WorkspaceDocument {
   return parseWorkspace({
-    formatVersion: 1,
+    formatVersion: 2,
     revision: 0,
     workspace: {id, name, createdAt: now, updatedAt: now},
     datasets: {},
     datasetVersions: {},
     analyses: {},
+    sqlVersions: {},
     runs: {},
     results: {},
     visualizations: {},

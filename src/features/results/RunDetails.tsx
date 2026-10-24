@@ -38,10 +38,12 @@ export function RunStatus({
       <span className="run-summary-message">{busy ?? (run ? runStatusText(run) : 'Bereit')}</span>
       {run && (
         <dl className="dw-meta-list">
-          <div>
-            <dt>Revision</dt>
-            <dd>{run.snapshot.analysisRevision ?? 'nicht angegeben'}</dd>
-          </div>
+          {run.snapshot.language !== 'sql' && (
+            <div>
+              <dt>Revision</dt>
+              <dd>{run.snapshot.analysisRevision ?? 'nicht angegeben'}</dd>
+            </div>
+          )}
           <div>
             <dt>Laufzeit</dt>
             <dd>{run.durationMs === undefined ? 'noch nicht erfasst' : `${run.durationMs} ms`}</dd>
@@ -273,14 +275,18 @@ export function RunDetails({
               'Analyse nicht mehr verfügbar'
             )}
           </dd>
-          <dt>Analyserevision beim Start</dt>
-          <dd>
-            {run.snapshot.analysisRevision ?? 'Nicht angegeben'}
-            {analysis &&
-              run.snapshot.analysisRevision !== undefined &&
-              analysis.revision !== run.snapshot.analysisRevision &&
-              ` (aktuelle Analyse: Revision ${analysis.revision})`}
-          </dd>
+          {run.snapshot.language !== 'sql' && (
+            <>
+              <dt>Analyserevision beim Start</dt>
+              <dd>
+                {run.snapshot.analysisRevision ?? 'Nicht angegeben'}
+                {analysis &&
+                  run.snapshot.analysisRevision !== undefined &&
+                  analysis.revision !== run.snapshot.analysisRevision &&
+                  ` (aktuelle Analyse: Revision ${analysis.revision})`}
+              </dd>
+            </>
+          )}
           <dt>Status</dt>
           <dd>{runStatusText(run)}</dd>
           <dt>Eingereiht</dt>
@@ -447,6 +453,12 @@ export function RunDetails({
         )}
         <details className="run-technical">
           <summary>Technische IDs, Laufzeit und Rohdaten</summary>
+          {run.snapshot.language === 'sql' && (
+            <p>
+              Interne Analyserevision beim Start:{' '}
+              {run.snapshot.analysisRevision ?? 'Nicht angegeben'}
+            </p>
+          )}
           <pre>
             {JSON.stringify(
               {

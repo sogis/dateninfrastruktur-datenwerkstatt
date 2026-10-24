@@ -11,6 +11,7 @@ import type {
   DatasetId,
 } from '../domain/model';
 import {transitionRun} from '../domain/run';
+import {pruneSqlRuns} from '../domain/sqlRetention';
 import {nameSchema, sqlNameSchema} from '../domain/workspace';
 import type {ArtifactStore, ExecutionBudget, PageRequest, TableHandle} from './ports';
 import type {ResultSqlEngine} from './sqlPorts';
@@ -34,6 +35,11 @@ interface Dependencies {
 export class AnalysisService {
   private results = new Map<ResultId, TableHandle>();
   private restoring = new Map<ResultId, Promise<TableHandle>>();
+  private readers = new Map<ResultId, number>();
+  private reading = new Set<Promise<unknown>>();
+  private retired = new Set<ResultId>();
+  private releasing = new Map<ResultId, Promise<void>>();
+  private readLifetime = new AbortController();
   private active: ExecutionRun['id'] | undefined;
   private stopReason: ExecutionRun['stopReason'];
   constructor(private readonly deps: Dependencies) {}
@@ -89,6 +95,7 @@ export class AnalysisService {
         };
         await this.deps.publish((d) => {
           d.runs[id] = run;
+          pruneSqlRuns(d, analysisId);
         });
         this.active = id;
         this.stopReason = undefined;
@@ -111,6 +118,7 @@ export class AnalysisService {
             transitionRun(d.runs[id]!, 'running');
             d.runs[id]!.startedAt = this.deps.now();
           });
+          await this.retireMissingResults();
           timer = setTimeout(() => {
             this.stopReason = 'timeout';
             controller.abort();
@@ -232,6 +240,54 @@ export class AnalysisService {
       throw new AppFailure('REFERENCE_INVALID', 'Tabellenresultat fehlt.');
     return result;
   }
+  private async releaseRetired(id: ResultId) {
+    if (!this.retired.has(id) || this.readers.has(id)) return;
+    const existing = this.releasing.get(id);
+    if (existing) return existing;
+    const job = (async () => {
+      const handle = this.results.get(id);
+      if (handle) await this.sql.release(handle);
+      this.results.delete(id);
+      this.retired.delete(id);
+    })();
+    this.releasing.set(id, job);
+    try {
+      await job;
+    } finally {
+      this.releasing.delete(id);
+    }
+  }
+  private async retireMissingResults() {
+    for (const id of new Set([...this.results.keys(), ...this.restoring.keys()])) {
+      if (this.deps.document().results[id]) continue;
+      this.retired.add(id);
+      await this.releaseRetired(id);
+    }
+  }
+  /** A whole multi-page read owns one lease, even when its metadata is retired meanwhile. */
+  private withTable<T>(
+    id: ResultId,
+    signal: AbortSignal,
+    read: (handle: TableHandle, result: TableResult, signal: AbortSignal) => Promise<T>,
+  ): Promise<T> {
+    const joined = AbortSignal.any([signal, this.readLifetime.signal]);
+    joined.throwIfAborted();
+    const result = this.table(id);
+    this.readers.set(id, (this.readers.get(id) ?? 0) + 1);
+    const job = (async () => {
+      try {
+        return await read(await this.handle(id, joined), result, joined);
+      } finally {
+        const count = this.readers.get(id)! - 1;
+        if (count) this.readers.set(id, count);
+        else this.readers.delete(id);
+        await this.releaseRetired(id);
+      }
+    })();
+    this.reading.add(job);
+    void job.finally(() => this.reading.delete(job)).catch(() => {});
+    return job;
+  }
   async handle(id: ResultId, signal: AbortSignal): Promise<TableHandle> {
     const result = this.table(id);
     const cached = this.results.get(id);
@@ -264,41 +320,49 @@ export class AnalysisService {
     }
   }
   async page(id: ResultId, request: PageRequest, signal: AbortSignal) {
-    return this.sql.readPage(await this.handle(id, signal), request, signal);
+    return this.withTable(id, signal, (handle, _result, joined) =>
+      this.sql.readPage(handle, request, joined),
+    );
   }
   async payload(id: ResultId, signal: AbortSignal) {
-    const result = this.table(id);
-    if (BigInt(result.rowCount) > 100000n)
-      throw new AppFailure('LIMIT_EXCEEDED', 'R-Transfer erlaubt höchstens 100000 Zeilen.');
-    fromTextRows(result.schema, []);
-    const rows: unknown[][] = [];
-    let bytes = 0;
-    for (let offset = 0; offset < Number(result.rowCount); offset += 500) {
-      const page = await this.page(id, {offset, size: 500, sort: []}, signal);
-      for (const row of page.rows) {
-        bytes += row.reduce<number>(
-          (sum, v) => sum + new TextEncoder().encode(String(v ?? '')).byteLength + 8,
-          0,
-        );
-        if (bytes > this.deps.budget.maxTransferBytes)
-          throw new AppFailure('LIMIT_EXCEEDED', 'R-Transfer überschreitet Bytebudget.');
-        rows.push([...row]);
+    return this.withTable(id, signal, async (handle, result, joined) => {
+      if (BigInt(result.rowCount) > 100000n)
+        throw new AppFailure('LIMIT_EXCEEDED', 'R-Transfer erlaubt höchstens 100000 Zeilen.');
+      fromTextRows(result.schema, []);
+      const rows: unknown[][] = [];
+      let bytes = 0;
+      for (let offset = 0; offset < Number(result.rowCount); offset += 500) {
+        const page = await this.sql.readPage(handle, {offset, size: 500, sort: []}, joined);
+        for (const row of page.rows) {
+          bytes += row.reduce<number>(
+            (sum, v) => sum + new TextEncoder().encode(String(v ?? '')).byteLength + 8,
+            0,
+          );
+          if (bytes > this.deps.budget.maxTransferBytes)
+            throw new AppFailure('LIMIT_EXCEEDED', 'R-Transfer überschreitet Bytebudget.');
+          rows.push([...row]);
+        }
       }
-    }
-    const payload = fromTextRows(result.schema, rows);
-    if (payloadBytes(payload) > this.deps.budget.maxTransferBytes)
-      throw new AppFailure('LIMIT_EXCEEDED', 'R-Transfer überschreitet Bytebudget.');
-    return payload;
+      const payload = fromTextRows(result.schema, rows);
+      if (payloadBytes(payload) > this.deps.budget.maxTransferBytes)
+        throw new AppFailure('LIMIT_EXCEEDED', 'R-Transfer überschreitet Bytebudget.');
+      return payload;
+    });
   }
   async export(id: ResultId, format: TableExportFormat, signal: AbortSignal) {
     if (format !== 'xlsx')
-      return this.sql.exportFile(await this.handle(id, signal), format, signal);
+      return this.withTable(id, signal, (handle, _result, joined) =>
+        this.sql.exportFile(handle, format, joined),
+      );
     const deadline = AbortSignal.timeout(this.deps.budget.maxExecutionMs);
     try {
       return await this.deps.scheduler.run(
         'XLSX exportieren',
         AbortSignal.any([signal, deadline]),
-        async (joined) => this.sql.exportFile(await this.handle(id, joined), format, joined),
+        (joined) =>
+          this.withTable(id, joined, (handle, _result, readSignal) =>
+            this.sql.exportFile(handle, format, readSignal),
+          ),
       );
     } catch (error) {
       if (deadline.aborted && !signal.aborted)
@@ -313,7 +377,9 @@ export class AnalysisService {
   }
   async keepWithinJob(id: ResultId, signal: AbortSignal) {
     if (this.table(id).materialization.kind === 'artifact') return;
-    const stream = await this.sql.snapshotParquet(await this.handle(id, signal), signal);
+    const stream = await this.withTable(id, signal, (handle, _result, joined) =>
+      this.sql.snapshotParquet(handle, joined),
+    );
     const artifact = await this.deps.artifacts.write(
       this.deps.document().workspace.id,
       stream,
@@ -357,36 +423,41 @@ export class AnalysisService {
     );
   }
   async chartData(id: ResultId, spec: Visualization['spec'], signal: AbortSignal) {
-    const table = this.table(id);
-    if (BigInt(table.rowCount) > 5000n)
-      throw new AppFailure(
-        'LIMIT_EXCEEDED',
-        'Diagramme erlauben höchstens 5000 Punkte. Bitte in SQL filtern oder aggregieren.',
-      );
-    if (
-      ![spec.x, spec.y, ...(spec.color ? [spec.color] : [])].every((name) =>
-        table.schema.columns.some((col) => col.name === name),
+    return this.withTable(id, signal, async (handle, table, joined) => {
+      if (BigInt(table.rowCount) > 5000n)
+        throw new AppFailure(
+          'LIMIT_EXCEEDED',
+          'Diagramme erlauben höchstens 5000 Punkte. Bitte in SQL filtern oder aggregieren.',
+        );
+      if (
+        ![spec.x, spec.y, ...(spec.color ? [spec.color] : [])].every((name) =>
+          table.schema.columns.some((col) => col.name === name),
+        )
       )
-    )
-      throw new AppFailure('VALIDATION_FAILED', 'Diagrammspalte fehlt.');
-    const rows: unknown[][] = [];
-    for (let offset = 0; offset < Number(table.rowCount); offset += 500) {
-      const page = await this.page(
-        id,
-        {offset, size: 500, sort: spec.type === 'line' ? [{column: spec.x, direction: 'asc'}] : []},
-        signal,
+        throw new AppFailure('VALIDATION_FAILED', 'Diagrammspalte fehlt.');
+      const rows: unknown[][] = [];
+      for (let offset = 0; offset < Number(table.rowCount); offset += 500) {
+        const page = await this.sql.readPage(
+          handle,
+          {
+            offset,
+            size: 500,
+            sort: spec.type === 'line' ? [{column: spec.x, direction: 'asc'}] : [],
+          },
+          joined,
+        );
+        rows.push(...page.rows.map((row) => [...row]));
+      }
+      const category = table.schema.columns.findIndex(
+        (col) => col.name === (spec.color ?? (spec.type === 'bar' ? spec.x : '')),
       );
-      rows.push(...page.rows.map((row) => [...row]));
-    }
-    const category = table.schema.columns.findIndex(
-      (col) => col.name === (spec.color ?? (spec.type === 'bar' ? spec.x : '')),
-    );
-    if (category >= 0 && new Set(rows.map((row) => row[category])).size > 100)
-      throw new AppFailure(
-        'LIMIT_EXCEEDED',
-        'Diagramme erlauben höchstens 100 Kategorien. Bitte in SQL aggregieren.',
-      );
-    return {schema: table.schema, rows};
+      if (category >= 0 && new Set(rows.map((row) => row[category])).size > 100)
+        throw new AppFailure(
+          'LIMIT_EXCEEDED',
+          'Diagramme erlauben höchstens 100 Kategorien. Bitte in SQL aggregieren.',
+        );
+      return {schema: table.schema, rows};
+    });
   }
   asDataset(id: ResultId, name: string, sqlName: string): Promise<DatasetId> {
     this.deps.assertWriter();
@@ -440,7 +511,13 @@ export class AnalysisService {
   }
   async close() {
     this.cancel('workspace-close');
+    this.readLifetime.abort();
     await this.deps.scheduler.close();
+    await Promise.allSettled([...this.reading]);
+    for (const id of this.results.keys()) {
+      this.retired.add(id);
+      await this.releaseRetired(id);
+    }
     this.results.clear();
   }
 }

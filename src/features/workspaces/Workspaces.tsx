@@ -17,6 +17,8 @@ import {useStore} from 'zustand';
 import {listRoute, useWorkspace, report} from '../../app/router';
 import {services} from '../../app/services';
 import {useNameField} from '../../ui/useFormValidation';
+import {NameDialog} from '../../ui/NameDialog';
+import type {AnalysisId} from '../../domain/model';
 export function ProjectList() {
   const workspaces = listRoute.useLoaderData();
   const name = useNameField('', 'Projektnamen', () => {});
@@ -124,6 +126,7 @@ export function ProjectList() {
 export function ProjectOverview() {
   const {session, state} = useWorkspace();
   const doc = useStore(state.store, (s) => s.document);
+  const [renameId, setRenameId] = useState<AnalysisId>();
   const name = useNameField(
     doc.workspace.name,
     'Projektnamen',
@@ -146,7 +149,7 @@ export function ProjectOverview() {
             ? '/projects/$workspaceId/sql/$analysisId'
             : '/projects/$workspaceId/r/$analysisId',
         params: {workspaceId: doc.workspace.id, analysisId: id},
-      }).catch(report);
+      }).catch((error: unknown) => report(error, session));
     } catch (error) {
       report(error);
     }
@@ -187,7 +190,7 @@ export function ProjectOverview() {
             setIsSaving(true);
             void session
               .flush()
-              .catch(report)
+              .catch((error: unknown) => report(error, session))
               .finally(() => {
                 saving.current = false;
                 setIsSaving(false);
@@ -261,6 +264,7 @@ export function ProjectOverview() {
                 iconOnly
                 disabled={session.readOnly}
                 actions={[
+                  {label: 'Umbenennen', onSelect: () => setRenameId(a.id)},
                   {
                     label: 'Duplizieren',
                     onSelect: () => {
@@ -297,6 +301,16 @@ export function ProjectOverview() {
         </ul>
       </section>
       <ArchiveActions session={session} />
+      {renameId && doc.analyses[renameId] && (
+        <NameDialog
+          title="Analyse umbenennen"
+          label="Analysename"
+          initialName={doc.analyses[renameId]!.name}
+          submitLabel="Umbenennen"
+          onSubmit={(value) => session.renameAnalysis(renameId, value)}
+          onClose={() => setRenameId(undefined)}
+        />
+      )}
     </div>
   );
 }

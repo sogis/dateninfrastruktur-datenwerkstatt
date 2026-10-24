@@ -1,3 +1,4 @@
+import {openSqlParameters} from '../ui/sqlActions';
 import type {Page} from '@playwright/test';
 import {test, expect} from '../persistentBrowser';
 import {portalConfig} from '../portal/setup';
@@ -202,7 +203,7 @@ test('Action feedback: dismissing a parameter-apply error preserves edited value
   await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
   await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await expect(page.locator('.monaco-editor')).toBeVisible();
-  await page.getByText('Parameter (0)', {exact: true}).click();
+  await openSqlParameters(page);
   await page.getByRole('button', {name: 'Parameter hinzufügen', exact: true}).click();
   const name = page.getByLabel('Parameter 1 Name', {exact: true});
   const value = page.getByLabel('Parameter 1 Wert', {exact: true});
@@ -220,23 +221,23 @@ test('Action feedback: dismissing a parameter-apply error preserves edited value
   });
   const apply = page.getByRole('button', {name: 'Parameter übernehmen', exact: true});
   await apply.click();
-  const notice = page.locator('.parameters').getByRole('alert');
+  const notice = page.locator('.parameters-editor').getByRole('alert');
   await expect(notice).toContainText('Gezielter Fehler bei der Parameterübernahme');
   await notice.getByRole('button', {name: 'Hinweis schliessen', exact: true}).click();
   await expect(notice).toHaveCount(0);
   await expect(apply).toBeFocused();
   await expect(name).toHaveValue('jahr');
   await expect(value).toHaveValue('2026');
-  await expect(page.locator('.parameters summary')).toContainText('Parameter (0)');
+  await expect(page.getByRole('dialog', {name: 'Parameter', exact: true})).toBeVisible();
   await apply.click();
   await expect(notice).toContainText('Gezielter Fehler bei der Parameterübernahme');
   await name.fill('');
   await apply.click();
   await expect(name).toBeFocused();
   await expect(name).toHaveAttribute('aria-invalid', 'true');
-  await expect(page.locator('.parameters .dw-notice')).toHaveCount(0);
-  await expect(page.locator('.parameters .dw-field-error')).toBeVisible();
-  await expect(page.locator('.parameters .dw-field-error button')).toHaveCount(0);
+  await expect(page.locator('.parameters-editor .dw-notice')).toHaveCount(0);
+  await expect(page.locator('.parameters-editor .dw-field-error')).toBeVisible();
+  await expect(page.locator('.parameters-editor .dw-field-error button')).toHaveCount(0);
 });
 
 test('Action feedback: a changed CSV option returns dismissal focus to preview when the failed confirm action is disabled', async ({

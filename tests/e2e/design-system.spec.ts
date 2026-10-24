@@ -142,7 +142,7 @@ test('UI components: labels, native submit, checkbox, errors, busy state, menu a
   const roles = {
     primary: ['--dw-action-bg', '--dw-action-bg-hover', '--dw-action-bg-pressed'],
     secondary: ['--dw-surface', '--dw-surface-hover', '--dw-surface-pressed'],
-    tertiary: [null, '--dw-surface-hover', '--dw-surface-pressed'],
+    tertiary: [null, '--dw-surface-neutral', '--dw-surface-pressed'],
   } as const;
   const token = (name: string) =>
     page.evaluate((property) => {
@@ -712,4 +712,39 @@ test('UI screens: project actions, forms, navigation and settings at target view
     await page.setViewportSize(size);
     await capture(page, `settings-${info.project.name}-${size.width}`);
   }
+});
+
+test('UI tertiary hover: white and toolbar backgrounds, pressed, disabled, selection and focus', async ({
+  page,
+}, info) => {
+  await page.goto('/tests/design-system/');
+  const plain = page.getByRole('button', {name: 'tertiary default', exact: true});
+  const toolbar = page.getByRole('button', {name: 'Weitere Aktionen Referenz', exact: true});
+  for (const button of [plain, toolbar]) {
+    await page.mouse.move(0, 0);
+    await expect(button).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+    const before = await button.boundingBox();
+    await button.hover();
+    await expect(button).toHaveCSS('background-color', 'rgb(238, 241, 244)');
+    expect(await button.boundingBox()).toEqual(before);
+    await page.mouse.down();
+    await expect(button).toHaveCSS('background-color', 'rgb(231, 235, 239)');
+    await page.mouse.up();
+  }
+  await expect(toolbar.locator('..')).toHaveCSS('background-color', 'rgb(243, 245, 247)');
+  const disabled = page.getByRole('button', {name: 'Deaktiviert Referenz', exact: true});
+  await disabled.hover({force: true});
+  await expect(disabled).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  const selected = page.getByRole('button', {name: 'Ausgewählt Referenz', exact: true});
+  await selected.hover();
+  await expect(selected).toHaveCSS('background-color', 'rgb(234, 241, 248)');
+  const danger = page.getByRole('button', {name: 'tertiary danger', exact: true});
+  await danger.hover();
+  await expect(danger).toHaveCSS('background-color', 'rgb(254, 243, 242)');
+  await page.keyboard.press('Tab');
+  await toolbar.focus();
+  await expect(toolbar).toHaveCSS('outline-width', '3px');
+  await expect(toolbar).toHaveCSS('outline-offset', '2px');
+  await toolbar.hover();
+  await page.screenshot({path: info.outputPath('tertiary-hover.png'), fullPage: true});
 });

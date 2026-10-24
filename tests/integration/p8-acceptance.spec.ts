@@ -13,7 +13,7 @@ test('P8 AT-007: separate predecessor upgrade rolls back schema and data, then m
   expect(proof.afterFailure).toEqual(proof.predecessor);
   expect(proof.versionAfterFailure).toBe(1);
   expect(proof.tablesAfterFailure).toEqual(['projects']);
-  expect(proof.migrated.formatVersion).toBe(1);
+  expect(proof.migrated.formatVersion).toBe(2);
   expect(proof.migrated.workspace.name).toBe(proof.predecessor.oldName);
   expect(proof.legacyCount).toBe(0);
 });
@@ -83,6 +83,8 @@ test('P8 AT-019: replacement is rejected during real SQL; old snapshot stays v1,
       release();
       const firstRun = await pending;
       analyses.sql.execute = execute;
+      // Comparing earlier data requires explicitly retaining its concrete result.
+      await analyses.keep(session.document.runs[firstRun]!.resultIds[0]!);
       await datasets.confirm(
         second.key,
         {name: 'Daten', sqlName: 'daten', keepOriginal: false, replace: dataset},

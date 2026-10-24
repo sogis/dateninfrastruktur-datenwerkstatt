@@ -480,6 +480,20 @@ main {
 .panel-handle[data-resize-handle-active] {
   background: var(--dw-focus-ring);
 }
+.sql-result-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 10px;
+  border-block: 1px solid var(--dw-border-subtle);
+  background: var(--dw-surface-neutral);
+}
+.sql-result-handle > span {
+  width: 36px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--dw-border-control);
+}
 .horizontal-handle {
   width: 7px;
   height: auto;
@@ -676,23 +690,82 @@ main {
 .result-toolbar > span {
   font-size: 0.75rem;
 }
+.result-actions {
+  border-bottom: 1px solid var(--dw-border-subtle);
+}
+.result-footer {
+  gap: 6px 16px;
+  border-block: 1px solid var(--dw-border-subtle);
+  font-size: 0.75rem;
+}
+.result-paging {
+  margin-inline-start: auto;
+  font-size: 0.75rem;
+}
 .result-grid {
   overflow: auto;
   min-height: 100px;
   flex: 1;
 }
+.result-grid table {
+  font-family: var(--dw-font-code);
+  font-size: 0.75rem;
+}
+.result-grid th,
 .result-grid td {
-  border-bottom: 1px solid var(--dw-border-subtle);
-  padding: 6px 12px;
+  font-size: inherit;
+  border: 1px solid var(--dw-border-subtle);
+  padding: 0.34rem 0.6rem;
+}
+.result-grid thead th {
+  z-index: 2;
+  vertical-align: bottom;
+}
+.result-grid td {
   white-space: pre-wrap;
   max-width: 500px;
   overflow-wrap: anywhere;
 }
 .result-grid th .dw-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  width: 100%;
+  padding: 0;
   border: 0;
   background: none;
   color: inherit;
+  font: inherit;
+}
+.result-column-name {
   font-weight: var(--dw-weight-semibold);
+}
+.result-column-type {
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: var(--dw-surface-neutral);
+  color: var(--dw-text-secondary);
+  font-weight: var(--dw-weight-regular);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+}
+.result-grid .result-row-number {
+  position: sticky;
+  left: 0;
+  width: 3rem;
+  min-width: 3rem;
+  text-align: right;
+  color: var(--dw-text-secondary);
+  font-weight: var(--dw-weight-regular);
+  background: var(--dw-surface-subtle);
+}
+.result-grid thead .result-row-number {
+  z-index: 3;
+}
+.result-grid tbody .result-row-number {
+  top: auto;
+  z-index: 1;
 }
 .table-scroll .numeric,
 .result-grid .numeric {
@@ -734,10 +807,91 @@ main {
   max-height: 480px;
   object-fit: contain;
 }
-.schema-drawer {
-  width: min(360px, calc(100vw - 32px));
-  margin-inline: auto 16px;
+.analysis-name-text {
+  flex: 1 1 160px;
+  min-width: 0;
+  max-width: 300px;
+  overflow-wrap: anywhere;
+  align-self: center;
 }
+.sql-editor-row {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+}
+.sql-editor-main {
+  min-width: 0;
+  min-height: 0;
+}
+.sql-schema {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  overflow: auto;
+  overflow-wrap: anywhere;
+  padding: 12px;
+  border-left: 1px solid var(--dw-border-subtle);
+}
+.sql-schema-heading {
+  position: sticky;
+  top: -12px;
+  z-index: 1;
+  background: var(--dw-surface);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.sql-schema-heading h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+.sql-schema-handle {
+  border-inline: 1px solid var(--dw-border-subtle);
+}
+.sql-schema details {
+  margin-block: 12px;
+}
+.sql-version-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sql-version-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-block: 12px;
+  border-bottom: 1px solid var(--dw-border-subtle);
+  overflow-wrap: anywhere;
+}
+.parameter-table-scroll {
+  max-width: 100%;
+  overflow: auto;
+}
+.parameters-editor > .dw-actions {
+  margin-block: 16px;
+}
+@media (max-width: 900px) {
+  .sql-schema {
+    width: auto;
+    height: auto;
+    flex: 0 0 auto;
+    max-width: none;
+    max-height: 180px;
+    border-left: 0;
+    border-bottom: 1px solid var(--dw-border-subtle);
+  }
+}
+@media (pointer: coarse) {
+  .result-grid th .dw-button {
+    min-height: var(--dw-touch-target-min-size);
+  }
+}
+
 .r-upper {
   display: flex;
   height: 100%;
@@ -1083,4 +1237,45 @@ main > [aria-label='Browser-Speicher'] {
 .r-table-export .export-note {
   flex-basis: 100%;
   margin: 0;
+}
+
+.sidebar:has(.sidebar-footer) {
+  padding-bottom: 56px;
+}
+.sidebar-footer {
+  position: fixed;
+  left: 6px;
+  bottom: 8px;
+  width: 40px;
+  height: 40px;
+}
+.workspace-save-indicator.dw-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  background: var(--dw-surface);
+}
+.workspace-save-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--dw-warning-fg);
+}
+.workspace-save-indicator[data-tone='success'] .workspace-save-dot {
+  background: var(--dw-success-fg);
+}
+@media (pointer: coarse) {
+  .sidebar-footer {
+    left: 4px;
+    width: 44px;
+    height: 44px;
+  }
+  .workspace-save-indicator.dw-button {
+    width: 44px;
+    height: 44px;
+  }
 }

@@ -1,9 +1,12 @@
 import {numericColumn} from '../../ui/table';
 import {Button, Input, Select, FormField, ActionGroup, Toolbar, Notice} from '../../ui/Controls';
-import {useNameField, useFormValidation} from '../../ui/useFormValidation';
+import {useFormValidation} from '../../ui/useFormValidation';
 import {displayNameError, sqlNameError} from '../../domain/fieldValidation';
-import {SplitButton} from '../../ui/ActionMenu';
+import {ActionMenu, SplitButton} from '../../ui/ActionMenu';
 import {Modal} from '../../ui/Modal';
+import {NameDialog} from '../../ui/NameDialog';
+import {latestSqlRun} from '../../domain/sqlRetention';
+import {SqlVersions} from './SqlVersions';
 import {failureMessage} from '../../application/errors';
 import {
   tableExportMediaType,
@@ -11,9 +14,15 @@ import {
   type TableExportFormat,
 } from '../../application/tableExport';
 import {TransferToR} from '../r/Transfer';
-import {useEffect, useRef, useState, useSyncExternalStore} from 'react';
+import {useEffect, useId, useRef, useState, useSyncExternalStore} from 'react';
 import {Panel, PanelGroup, PanelResizeHandle} from 'react-resizable-panels';
-import type {Analysis, SqlAnalysis, TableResult, Visualization} from '../../domain/model';
+import type {
+  Analysis,
+  ExecutionRun,
+  SqlAnalysis,
+  TableResult,
+  Visualization,
+} from '../../domain/model';
 import type {EditingSession} from '../../application/workspaceService';
 import type {CodeModels} from '../../infrastructure/monaco/models';
 import type {Settings} from '../../infrastructure/storage/settings';
@@ -27,10 +36,10 @@ import {
 } from '../../domain/parameterValues';
 import {report, useWorkspace} from '../../app/router';
 import {useStore} from 'zustand';
-import {usePanelHeight} from '../../ui/PanelLayout';
+import {useMediaQuery, usePanelHeight} from '../../ui/PanelLayout';
 import type {ImperativePanelGroupHandle} from 'react-resizable-panels';
 import {Chart} from './chart';
-import {RunDetails, RunStatus, runOptionText, runTimeText} from '../results/RunDetails';
+import {RunDetails, RunStatus, runTimeText} from '../results/RunDetails';
 
 export function SqlWorkbench({
   session,
@@ -47,58 +56,106 @@ export function SqlWorkbench({
   const {view} = useWorkspace();
   const layout = useStore(view.store, (s) => s.value);
   const panels = useRef<ImperativePanelGroupHandle>(null);
+  const editorPanels = useRef<ImperativePanelGroupHandle>(null);
   const {ref: panelHost, height: panelHeight} = usePanelHeight();
+  const [panelWidth, setPanelWidth] = useState(1200);
+  useEffect(() => {
+    const host = panelHost.current;
+    if (!host) return;
+    let frame: number | undefined;
+    const measure = () => {
+      if (frame !== undefined) return;
+      frame = requestAnimationFrame(() => {
+        frame = undefined;
+        if (host.clientWidth > 0) setPanelWidth(host.clientWidth);
+      });
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(host);
+    measure();
+    return () => {
+      observer.disconnect();
+      if (frame !== undefined) cancelAnimationFrame(frame);
+    };
+  }, [panelHost]);
   useSyncExternalStore(session.persistence.subscribe, () => session.persistence.document);
   const busy = useSyncExternalStore(session.scheduler.subscribe, session.scheduler.getSnapshot);
-  const name = useNameField(
-    analysis.name,
-    'Analysenamen',
-    (value) => session.updateAnalysis(analysis.id, {name: value}),
-    report,
-  );
-  const saving = useRef(false);
-  const [isSaving, setIsSaving] = useState(false);
+  const narrow = useMediaQuery('(max-width: 900px)');
+  const schemaId = useId();
+  const schemaTrigger = useRef<HTMLButtonElement>(null);
+  const [dialog, setDialog] = useState<'save-version' | 'versions' | 'parameters' | 'results'>();
   const save = () => {
-    if (saving.current || session.readOnly || !name.commit()) return;
-    saving.current = true;
-    setIsSaving(true);
-    void session
-      .flush()
-      .catch(report)
-      .finally(() => {
-        saving.current = false;
-        setIsSaving(false);
-      });
+    if (!session.readOnly) void session.flush().catch((error: unknown) => report(error, session));
   };
-  const [selected, setSelected] = useState<string>('latest');
-  const runs = Object.values(session.document.runs)
-    .filter((r) => r.snapshot.analysisId === analysis.id)
-    .reverse()
-    .slice(0, 100);
-  const run = selected === 'latest' ? runs[0] : runs.find((r) => r.id === selected);
-  const result = run?.resultIds[0] ? session.document.results[run.resultIds[0]] : undefined;
+  const [selectedResult, setSelectedResult] = useState<TableResult['id']>();
+  const latest = latestSqlRun(session.document, analysis.id);
+  const savedResult = selectedResult ? session.document.results[selectedResult] : undefined;
+  const run = savedResult ? session.document.runs[savedResult.runId] : latest;
+  const result =
+    savedResult ?? (run?.resultIds[0] ? session.document.results[run.resultIds[0]] : undefined);
+  const keptResults = Object.values(session.document.results)
+    .filter(
+      (item) =>
+        item.retention === 'kept' &&
+        session.document.runs[item.runId]?.snapshot.analysisId === analysis.id,
+    )
+    .reverse();
+  const parameterCount = Object.keys(analysis.parameters).length;
+  const closeSchema = () => {
+    view.patch({dataPanelVisible: false});
+    schemaTrigger.current?.focus();
+  };
   const execute = (selection?: string) => {
-    if (!session.scheduler.getSnapshot() && !session.readOnly && name.commit()) {
-      setSelected('latest');
-      void service.run(analysis.id, selection).catch(report);
+    if (!session.scheduler.getSnapshot() && !session.readOnly) {
+      setSelectedResult(undefined);
+      void service.run(analysis.id, selection).catch((error: unknown) => report(error, session));
     }
   };
+
+  const schemaPanel = layout.dataPanelVisible ? (
+    <aside
+      id={schemaId}
+      className="sql-schema"
+      aria-label="Tabellen & Spalten"
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          closeSchema();
+        }
+      }}
+    >
+      <div className="sql-schema-heading">
+        <h2>Tabellen &amp; Spalten</h2>
+        <Button variant="tertiary" onClick={closeSchema}>
+          Schliessen
+        </Button>
+      </div>
+      {Object.values(session.document.datasets).filter((d) => !d.removedAt).length === 0 && (
+        <p>Noch keine Tabellen eingebunden. Füge unter „Daten“ einen Datensatz hinzu.</p>
+      )}
+      {Object.values(session.document.datasets)
+        .filter((d) => !d.removedAt)
+        .map((d) => (
+          <details key={d.id}>
+            <summary>{d.sqlName}</summary>
+            <dl className="dw-meta-list schema-columns">
+              {session.document.datasetVersions[d.currentVersionId]!.schema.columns.map(
+                (column) => (
+                  <div key={column.name}>
+                    <dt>{column.name}</dt>
+                    <dd>{column.logicalType}</dd>
+                  </div>
+                ),
+              )}
+            </dl>
+          </details>
+        ))}
+    </aside>
+  ) : null;
   return (
     <div className="analysis-area">
       <Toolbar className="analysis-toolbar">
-        <FormField label="Analysename" error={name.error} className="analysis-name-field">
-          <Input
-            {...name.input}
-            disabled={session.readOnly}
-            onKeyDown={(event) => {
-              if ((event.ctrlKey || event.metaKey) && ['s', 'Enter'].includes(event.key)) {
-                event.preventDefault();
-                if (event.key === 's') save();
-                else execute();
-              }
-            }}
-          />
-        </FormField>
+        <span className="analysis-name-text">Analysename: {analysis.name}</span>
         <ActionGroup>
           <Button
             variant="primary"
@@ -117,62 +174,87 @@ export function SqlWorkbench({
           )}
           <Button
             icon="floppy"
-            disabled={session.readOnly || isSaving}
-            busy={isSaving}
-            busyLabel="Änderungen werden gespeichert …"
-            onClick={save}
+            disabled={session.readOnly}
+            onClick={() => setDialog('save-version')}
           >
-            Speichern
+            Version speichern
           </Button>
         </ActionGroup>
         <Button
-          variant="tertiary"
+          ref={schemaTrigger}
           aria-pressed={layout.dataPanelVisible}
+          aria-expanded={layout.dataPanelVisible}
+          aria-controls={schemaId}
           onClick={() => view.patch({dataPanelVisible: !layout.dataPanelVisible})}
         >
-          Schema
+          Tabellen &amp; Spalten
         </Button>
-        <span role="status" aria-live={busy ? 'polite' : 'off'}>
-          {busy ?? `Revision ${analysis.revision}`}
-        </span>
-        <Button
-          variant="tertiary"
-          className="layout-reset"
-          icon="arrow-repeat"
-          onClick={() => {
-            view.reset();
-            panels.current?.setLayout([45, 55]);
-          }}
-        >
-          Arbeitsfläche zurücksetzen
-        </Button>
+        {parameterCount > 0 && (
+          <Button variant="tertiary" onClick={() => setDialog('parameters')}>
+            Parameter ({parameterCount})
+          </Button>
+        )}
+        <ActionMenu
+          label="Weitere Aktionen"
+          actions={[
+            {label: 'Versionen', onSelect: () => setDialog('versions')},
+            {label: `Parameter (${parameterCount})`, onSelect: () => setDialog('parameters')},
+            {
+              label: 'Aufbewahrte Ergebnisse',
+              disabled: !keptResults.length,
+              onSelect: () => setDialog('results'),
+            },
+            {
+              label: 'Arbeitsfläche zurücksetzen',
+              onSelect: () => {
+                view.reset();
+                panels.current?.setLayout([45, 55]);
+                if (!narrow && layout.dataPanelVisible) editorPanels.current?.setLayout([75, 25]);
+              },
+            },
+          ]}
+        />
       </Toolbar>
-      <Parameters key={analysis.id} analysis={analysis} session={session} />
-      {layout.dataPanelVisible && (
-        <Modal
-          title="Datenschema"
-          className="schema-drawer"
-          onClose={() => view.patch({dataPanelVisible: false})}
-          showClose={false}
-        >
-          <Button onClick={() => view.patch({dataPanelVisible: false})}>Schema schliessen</Button>
-          {Object.values(session.document.datasets)
-            .filter((d) => !d.removedAt)
-            .map((d) => (
-              <details key={d.id}>
-                <summary>{d.sqlName}</summary>
-                <dl className="dw-meta-list schema-columns">
-                  {session.document.datasetVersions[d.currentVersionId]!.schema.columns.map((c) => (
-                    <div key={c.name}>
-                      <dt>{c.name}</dt>
-                      <dd>{c.logicalType}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </details>
+      {dialog === 'save-version' && (
+        <NameDialog
+          title="SQL-Version speichern"
+          label="Versionsname"
+          initialName={`Version ${Object.values(session.document.sqlVersions).filter((v) => v.analysisId === analysis.id).length + 1}`}
+          submitLabel="Version speichern"
+          onSubmit={(value) => session.saveSqlVersion(analysis.id, value)}
+          onClose={() => setDialog(undefined)}
+        />
+      )}
+      {dialog === 'versions' && (
+        <SqlVersions analysis={analysis} session={session} onClose={() => setDialog(undefined)} />
+      )}
+      {dialog === 'parameters' && (
+        <Parameters analysis={analysis} session={session} onClose={() => setDialog(undefined)} />
+      )}
+      {dialog === 'results' && (
+        <Modal title="Aufbewahrte Ergebnisse" onClose={() => setDialog(undefined)}>
+          <ul className="sql-version-list">
+            {keptResults.map((item) => (
+              <li key={item.id}>
+                <div>
+                  <strong>{item.name}</strong>
+                  <br />
+                  <time dateTime={item.createdAt}>{runTimeText(item.createdAt)}</time>
+                </div>
+                <Button
+                  onClick={() => {
+                    setSelectedResult(item.id);
+                    setDialog(undefined);
+                  }}
+                >
+                  Ergebnis anzeigen
+                </Button>
+              </li>
             ))}
+          </ul>
         </Modal>
       )}
+      {narrow && schemaPanel}
       <div className="sql-panel-host" ref={panelHost}>
         <PanelGroup
           ref={panels}
@@ -187,45 +269,93 @@ export function SqlWorkbench({
             defaultSize={layout.sqlEditorFraction * 100}
             minSize={Math.min(45, (180 / panelHeight) * 100)}
           >
-            <CodeEditor
-              models={models}
-              id={analysis.id}
-              kind="sql"
-              code={analysis.code}
-              readOnly={session.readOnly}
-              onChange={(code) => {
-                try {
-                  session.updateAnalysis(analysis.id, {code});
-                } catch (e) {
-                  report(e);
-                }
+            <PanelGroup
+              ref={editorPanels}
+              direction="horizontal"
+              className="sql-editor-row"
+              onLayout={(sizes) => {
+                if (!narrow && layout.dataPanelVisible && sizes[1] !== undefined)
+                  view.patch({sqlSchemaFraction: Math.min(0.45, Math.max(0.1, sizes[1] / 100))});
               }}
-              onSave={save}
-              onRun={execute}
-              fontSize={settings.editorFontSize}
-              wordWrap={settings.wordWrap}
-              lineNumbers={settings.showLineNumbers}
-            />
+            >
+              <Panel
+                id="sql-editor"
+                order={1}
+                className="sql-editor-main"
+                defaultSize={
+                  !narrow && layout.dataPanelVisible ? (1 - layout.sqlSchemaFraction) * 100 : 100
+                }
+                minSize={!narrow && layout.dataPanelVisible ? (320 / panelWidth) * 100 : 0}
+              >
+                <CodeEditor
+                  models={models}
+                  id={analysis.id}
+                  kind="sql"
+                  code={analysis.code}
+                  readOnly={session.readOnly}
+                  onChange={(code) => {
+                    try {
+                      session.updateAnalysis(analysis.id, {code});
+                    } catch (e) {
+                      report(e, session);
+                    }
+                  }}
+                  onSave={save}
+                  onRun={execute}
+                  fontSize={settings.editorFontSize}
+                  wordWrap={settings.wordWrap}
+                  lineNumbers={settings.showLineNumbers}
+                  sqlTables={Object.values(session.document.datasets)
+                    .filter((dataset) => !dataset.removedAt)
+                    .map((dataset) => ({
+                      name: dataset.sqlName,
+                      columns: session.document.datasetVersions[
+                        dataset.currentVersionId
+                      ]!.schema.columns.map((column) => ({
+                        name: column.name,
+                        type: column.logicalType,
+                      })),
+                    }))}
+                />
+              </Panel>
+              {!narrow && schemaPanel && (
+                <>
+                  <PanelResizeHandle
+                    className="panel-handle horizontal-handle sql-schema-handle"
+                    aria-label="Breite von Tabellen & Spalten ändern"
+                  />
+                  <Panel
+                    id="sql-schema"
+                    order={2}
+                    defaultSize={layout.sqlSchemaFraction * 100}
+                    minSize={(220 / panelWidth) * 100}
+                    maxSize={45}
+                  >
+                    {schemaPanel}
+                  </Panel>
+                </>
+              )}
+            </PanelGroup>
           </Panel>
           <PanelResizeHandle
-            className="panel-handle"
+            className="panel-handle sql-result-handle"
             aria-label="Grösse von Editor und Resultat ändern"
-          />
+          >
+            <span aria-hidden="true" />
+          </PanelResizeHandle>
           <Panel minSize={Math.min(50, (220 / panelHeight) * 100)}>
             <section className="result-section" aria-label="SQL-Resultat">
-              <Toolbar className="result-toolbar">
-                <FormField label={<>Lauf</>}>
-                  <Select value={selected} onChange={(e) => setSelected(e.target.value)}>
-                    <option value="latest">Letzter Lauf</option>
-                    {runs.map((r) => (
-                      <option key={r.id} value={r.id}>
-                        {runOptionText(r)}
-                      </option>
-                    ))}
-                  </Select>
-                </FormField>
-                {run && <RunStatus run={run} />}
-              </Toolbar>
+              {result?.kind !== 'table' && (
+                <Toolbar className="result-toolbar">
+                  <RunStatus run={run} />
+                </Toolbar>
+              )}
+              {run && run.snapshot.analysisRevision !== analysis.revision && (
+                <p className="result-empty">
+                  Das Ergebnis gehört zur letzten Ausführung dieses Codes. Der aktuelle Arbeitsstand
+                  wurde geändert.
+                </p>
+              )}
               {run?.error && (
                 <Notice tone="danger" className="result-error">
                   {run.error.code}: {run.error.message}
@@ -240,7 +370,13 @@ export function SqlWorkbench({
                 <p key={w}>{w}</p>
               ))}
               {result?.kind === 'table' && (
-                <TableView key={result.id} result={result} session={session} />
+                <TableView
+                  key={result.id}
+                  result={result}
+                  session={session}
+                  run={run}
+                  {...(savedResult ? {onCurrent: () => setSelectedResult(undefined)} : {})}
+                />
               )}
               {run && (
                 <RunDetails
@@ -272,7 +408,15 @@ function parameterRows(parameters: Analysis['parameters']) {
     value: value === null ? '' : typeof value === 'object' ? value.value : String(value),
   }));
 }
-export function Parameters({analysis, session}: {analysis: Analysis; session: EditingSession}) {
+export function Parameters({
+  analysis,
+  session,
+  onClose,
+}: {
+  analysis: Analysis;
+  session: EditingSession;
+  onClose?: () => void;
+}) {
   const [rows, setRows] = useState(() => parameterRows(analysis.parameters));
   const [error, setError] = useState('');
   const errorFocusRef = useRef<HTMLButtonElement>(null);
@@ -292,125 +436,123 @@ export function Parameters({analysis, session}: {analysis: Analysis; session: Ed
     ),
   );
   const [dirty, setDirty] = useState(false);
-  return (
-    <details className="parameters dw-compact">
-      <summary>
-        Parameter ({Object.keys(analysis.parameters).length})
-        {dirty && <span className="secondary-text"> (Änderungen noch nicht übernommen)</span>}
-      </summary>
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Typ</th>
-            <th scope="col">Wert</th>
-            <th scope="col" className="actions">
-              <span className="visually-hidden">Aktionen</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, i) => (
-            <tr key={i}>
-              <td>
-                <FormField
-                  label={`Parameter ${i + 1} Name`}
-                  labelHidden
-                  error={form.errors[`name-${i}`]}
-                >
-                  <Input
-                    {...form.control(`name-${i}`)}
+  const content = (
+    <div className="parameters-editor">
+      <div className="parameter-table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Typ</th>
+              <th scope="col">Wert</th>
+              <th scope="col" className="actions">
+                <span className="visually-hidden">Aktionen</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, i) => (
+              <tr key={i}>
+                <td>
+                  <FormField
+                    label={`Parameter ${i + 1} Name`}
+                    labelHidden
+                    error={form.errors[`name-${i}`]}
+                  >
+                    <Input
+                      {...form.control(`name-${i}`)}
+                      required
+                      aria-label={`Parameter ${i + 1} Name`}
+                      disabled={session.readOnly}
+                      value={row.name}
+                      onChange={(e) => {
+                        setDirty(true);
+                        form.change(
+                          `name-${i}`,
+                          parameterNameError(
+                            e.target.value,
+                            rows.filter((_, j) => i !== j).map((r) => r.name),
+                          ),
+                        );
+                        setRows(rows.map((r, j) => (j === i ? {...r, name: e.target.value} : r)));
+                      }}
+                    />
+                  </FormField>
+                </td>
+                <td>
+                  <Select
                     required
-                    aria-label={`Parameter ${i + 1} Name`}
+                    aria-label={`Parameter ${i + 1} Typ`}
                     disabled={session.readOnly}
-                    value={row.name}
+                    value={row.type}
                     onChange={(e) => {
                       setDirty(true);
                       form.change(
-                        `name-${i}`,
-                        parameterNameError(
-                          e.target.value,
-                          rows.filter((_, j) => i !== j).map((r) => r.name),
+                        `value-${i}`,
+                        parameterValueError(e.target.value as ParameterType, row.value),
+                      );
+                      setRows(
+                        rows.map((r, j) =>
+                          j === i ? {...r, type: e.target.value as ParameterType} : r,
                         ),
                       );
-                      setRows(rows.map((r, j) => (j === i ? {...r, name: e.target.value} : r)));
                     }}
-                  />
-                </FormField>
-              </td>
-              <td>
-                <Select
-                  required
-                  aria-label={`Parameter ${i + 1} Typ`}
-                  disabled={session.readOnly}
-                  value={row.type}
-                  onChange={(e) => {
-                    setDirty(true);
-                    form.change(
-                      `value-${i}`,
-                      parameterValueError(e.target.value as ParameterType, row.value),
-                    );
-                    setRows(
-                      rows.map((r, j) =>
-                        j === i ? {...r, type: e.target.value as ParameterType} : r,
-                      ),
-                    );
-                  }}
-                >
-                  {[
-                    'string',
-                    'number',
-                    'boolean',
-                    'null',
-                    'int64',
-                    'decimal',
-                    'date',
-                    'timestamp',
-                  ].map((t) => (
-                    <option key={t}>{t}</option>
-                  ))}
-                </Select>
-              </td>
-              <td>
-                <FormField
-                  label={`Parameter ${i + 1} Wert`}
-                  optional={row.type === 'string'}
-                  labelHidden
-                  error={form.errors[`value-${i}`]}
-                >
-                  <Input
-                    {...form.control(`value-${i}`)}
-                    required={!['string', 'null'].includes(row.type)}
-                    aria-label={`Parameter ${i + 1} Wert`}
-                    disabled={session.readOnly || row.type === 'null'}
-                    value={row.value}
-                    onChange={(e) => {
+                  >
+                    {[
+                      'string',
+                      'number',
+                      'boolean',
+                      'null',
+                      'int64',
+                      'decimal',
+                      'date',
+                      'timestamp',
+                    ].map((t) => (
+                      <option key={t}>{t}</option>
+                    ))}
+                  </Select>
+                </td>
+                <td>
+                  <FormField
+                    label={`Parameter ${i + 1} Wert`}
+                    optional={row.type === 'string'}
+                    labelHidden
+                    error={form.errors[`value-${i}`]}
+                  >
+                    <Input
+                      {...form.control(`value-${i}`)}
+                      required={!['string', 'null'].includes(row.type)}
+                      aria-label={`Parameter ${i + 1} Wert`}
+                      disabled={session.readOnly || row.type === 'null'}
+                      value={row.value}
+                      onChange={(e) => {
+                        setDirty(true);
+                        form.change(`value-${i}`, parameterValueError(row.type, e.target.value));
+                        setRows(rows.map((r, j) => (j === i ? {...r, value: e.target.value} : r)));
+                      }}
+                    />
+                  </FormField>
+                </td>
+                <td className="actions">
+                  <Button
+                    variant="tertiary"
+                    tone="danger"
+                    disabled={session.readOnly}
+                    aria-label={`Parameter ${i + 1} entfernen`}
+                    onClick={() => {
                       setDirty(true);
-                      form.change(`value-${i}`, parameterValueError(row.type, e.target.value));
-                      setRows(rows.map((r, j) => (j === i ? {...r, value: e.target.value} : r)));
+                      setRows(rows.filter((_, j) => i !== j));
+                      form.reset();
                     }}
-                  />
-                </FormField>
-              </td>
-              <td className="actions">
-                <Button
-                  variant="tertiary"
-                  tone="danger"
-                  disabled={session.readOnly}
-                  aria-label={`Parameter ${i + 1} entfernen`}
-                  onClick={() => {
-                    setDirty(true);
-                    setRows(rows.filter((_, j) => i !== j));
-                    form.reset();
-                  }}
-                >
-                  Entfernen
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  >
+                    Entfernen
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <ActionGroup>
         <Button
           disabled={session.readOnly}
@@ -434,6 +576,7 @@ export function Parameters({analysis, session}: {analysis: Analysis; session: Ed
               session.updateAnalysis(analysis.id, {parameters});
               setDirty(false);
               setError('');
+              onClose?.();
             } catch (e) {
               setError(failureMessage(e));
             }
@@ -448,10 +591,38 @@ export function Parameters({analysis, session}: {analysis: Analysis; session: Ed
           {error}
         </Notice>
       )}
+      {onClose && <Button onClick={onClose}>Abbrechen</Button>}
+    </div>
+  );
+  return onClose ? (
+    <Modal title="Parameter" onClose={onClose} showClose={false}>
+      <p>
+        Parameter sind wechselnde Einzelwerte für dieselbe Abfrage, zum Beispiel{' '}
+        <code>WHERE jahr = $jahr</code>. Tabellen- und Spaltennamen bleiben Teil des SQL-Codes.
+      </p>
+      {content}
+    </Modal>
+  ) : (
+    <details className="parameters dw-compact">
+      <summary>
+        Parameter ({Object.keys(analysis.parameters).length})
+        {dirty && <span className="secondary-text"> (Änderungen noch nicht übernommen)</span>}
+      </summary>
+      {content}
     </details>
   );
 }
-function TableView({result, session}: {result: TableResult; session: EditingSession}) {
+function TableView({
+  result,
+  session,
+  run,
+  onCurrent,
+}: {
+  result: TableResult;
+  session: EditingSession;
+  run: ExecutionRun | undefined;
+  onCurrent?: () => void;
+}) {
   const service = session.getAnalyses();
   const [transfer, setTransfer] = useState(false);
   const [offset, setOffset] = useState(0);
@@ -460,6 +631,7 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [view, setView] = useState<'table' | 'chart'>('table');
+  const [exportFormat, setExportFormat] = useState<TableExportFormat>();
   const [datasetName, setDatasetName] = useState(result.name);
   const [sqlName, setSqlName] = useState('ergebnis');
   const occupied = Object.values(session.document.datasets).map((d) => d.sqlName);
@@ -494,7 +666,7 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
         if (live.current && generation === actionGeneration.current) return work();
       })
       .catch((cause: unknown) => {
-        if (live.current && generation === actionGeneration.current) report(cause);
+        if (live.current && generation === actionGeneration.current) report(cause, session);
       })
       .finally(() => {
         if (live.current && generation === actionGeneration.current) {
@@ -552,26 +724,19 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
       }
     });
   };
+  const requestExport = (format: TableExportFormat) => {
+    if (unavailable || busy || busyAction) return;
+    if (format !== 'parquet' || result.coverage.kind === 'limited') setExportFormat(format);
+    else exportResult(format);
+  };
   return (
     <>
-      <Toolbar className="result-toolbar">
-        <span className="result-name">
-          Ergebnis: <strong>{result.name}</strong>
-        </span>
-        <dl className="dw-meta-list">
-          <div>
-            <dt>Zeilen</dt>
-            <dd>{result.rowCount}</dd>
-          </div>
-          <div>
-            <dt>Umfang</dt>
-            <dd>{result.coverage.kind === 'limited' ? 'Begrenzt' : 'Vollständig'}</dd>
-          </div>
-          <div>
-            <dt>Aufbewahrung</dt>
-            <dd>{result.retention === 'kept' ? 'Aufbewahrt' : 'Temporär'}</dd>
-          </div>
-        </dl>
+      <Toolbar className="result-toolbar result-actions">
+        {onCurrent && (
+          <Button variant="tertiary" onClick={onCurrent}>
+            Zum aktuellen Ergebnis
+          </Button>
+        )}
         <ActionGroup>
           <Button
             disabled={
@@ -604,21 +769,21 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
           disabled={!!busy || !!busyAction || unavailable}
           busy={busyAction === 'export-csv'}
           busyLabel="CSV wird exportiert …"
-          onClick={() => exportResult('csv')}
+          onClick={() => requestExport('csv')}
           actions={[
             {
               label: 'Parquet exportieren',
               disabled: !!busy || !!busyAction || unavailable,
               busy: busyAction === 'export-parquet',
               busyLabel: 'Parquet wird exportiert …',
-              onSelect: () => exportResult('parquet'),
+              onSelect: () => requestExport('parquet'),
             },
             {
               label: 'XLSX exportieren',
               disabled: !!busy || !!busyAction || unavailable,
               busy: busyAction === 'export-xlsx',
               busyLabel: 'XLSX wird exportiert …',
-              onSelect: () => exportResult('xlsx'),
+              onSelect: () => requestExport('xlsx'),
             },
           ]}
         />
@@ -634,10 +799,42 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
           {view === 'table' ? 'Diagramm' : 'Tabelle'}
         </Button>
       </Toolbar>
-      <p className="export-note">
-        CSV enthält keine Typinformationen. Exportiert werden alle Zeilen des bezeichneten
-        Ergebnisses. {XLSX_EXPORT_NOTE}
-      </p>
+      {exportFormat && (
+        <Modal
+          title={`${exportFormat === 'parquet' ? 'Parquet' : exportFormat.toUpperCase()} exportieren`}
+          onClose={() => setExportFormat(undefined)}
+          showClose={false}
+          footer={
+            <>
+              <Button onClick={() => setExportFormat(undefined)}>Abbrechen</Button>
+              <Button
+                variant="primary"
+                disabled={!!busy || !!busyAction || unavailable}
+                onClick={() => {
+                  const format = exportFormat;
+                  setExportFormat(undefined);
+                  exportResult(format);
+                }}
+              >
+                Herunterladen
+              </Button>
+            </>
+          }
+        >
+          <p>
+            Exportiert werden alle {result.rowCount} Zeilen des Ergebnisses „{result.name}“,
+            unabhängig von der angezeigten Seite.
+          </p>
+          {result.coverage.kind === 'limited' && (
+            <Notice tone="warning">
+              Dieses Ergebnis wurde am App-Limit gekürzt. Die ursprüngliche Gesamtzahl der Zeilen
+              ist unbekannt. Der Export enthält nur das begrenzte Ergebnis.
+            </Notice>
+          )}
+          {exportFormat === 'csv' && <p>CSV enthält keine Typinformationen.</p>}
+          {exportFormat === 'xlsx' && <p>{XLSX_EXPORT_NOTE}</p>}
+        </Modal>
+      )}
       {busyAction === 'export-xlsx' && <p role="status">XLSX wird exportiert …</p>}
       {transfer && (
         <TransferToR session={session} resultId={result.id} onClose={() => setTransfer(false)} />
@@ -654,6 +851,9 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
             <table>
               <thead>
                 <tr>
+                  <th scope="col" className="result-row-number">
+                    <span className="visually-hidden">Zeile</span>
+                  </th>
                   {result.schema.columns.map((col) => (
                     <th
                       scope="col"
@@ -669,6 +869,7 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
                     >
                       <Button
                         variant="tertiary"
+                        aria-label={`Nach ${col.name} sortieren`}
                         onClick={() => {
                           setOffset(0);
                           setSort([
@@ -682,12 +883,15 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
                           ]);
                         }}
                       >
-                        {col.name}
-                        {sort[0]?.column === col.name
-                          ? sort[0].direction === 'asc'
-                            ? ' ↑'
-                            : ' ↓'
-                          : ''}
+                        <span className="result-column-name">
+                          {col.name}
+                          {sort[0]?.column === col.name
+                            ? sort[0].direction === 'asc'
+                              ? ' ↑'
+                              : ' ↓'
+                            : ''}
+                        </span>
+                        <span className="result-column-type">{col.logicalType}</span>
                       </Button>
                     </th>
                   ))}
@@ -696,6 +900,9 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
               <tbody>
                 {rows.map((row, i) => (
                   <tr key={offset + i}>
+                    <th scope="row" className="result-row-number">
+                      {offset + i + 1}
+                    </th>
                     {row.map((value, j) => (
                       <td
                         key={j}
@@ -717,7 +924,17 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
               </tbody>
             </table>
           </div>
-          <Toolbar className="result-toolbar">
+        </>
+      ) : (
+        <ChartControls result={result} session={session} />
+      )}
+      <Toolbar className="result-toolbar result-footer">
+        <span role="status" aria-live="polite">
+          {result.rowCount} {result.rowCount === '1' ? 'Zeile' : 'Zeilen'}
+          {run?.durationMs === undefined ? '' : ` · ${run.durationMs} ms`}
+        </span>
+        {view === 'table' && (
+          <ActionGroup className="result-paging">
             <Button disabled={offset === 0 || loading} onClick={() => setOffset(offset - 100)}>
               Vorherige Seite
             </Button>
@@ -728,11 +945,9 @@ function TableView({result, session}: {result: TableResult; session: EditingSess
             >
               Nächste Seite
             </Button>
-          </Toolbar>
-        </>
-      ) : (
-        <ChartControls result={result} session={session} />
-      )}
+          </ActionGroup>
+        )}
+      </Toolbar>
       <details className="result-data">
         <summary>Als Datensatz übernehmen und Schema ansehen</summary>
         <p>
@@ -893,7 +1108,7 @@ function ChartControls({result, session}: {result: TableResult; session: Editing
               setIsSaving(true);
               void service
                 .saveVisualization(result.id, result.name, spec)
-                .catch(report)
+                .catch((error: unknown) => report(error, session))
                 .finally(() => {
                   saving.current = false;
                   setIsSaving(false);

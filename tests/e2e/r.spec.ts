@@ -63,11 +63,8 @@ test('P5 AT-040 AT-042 AT-046 AT-048: complete UI transfer, lazy worker survives
   // Internal navigation preserves the WorkspaceSession and its live R objects.
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.locator(`a[href="${new URL(sqlUrl).pathname}"]`).click();
-  await expect(
-    page
-      .locator('.result-toolbar .dw-meta-list')
-      .filter({hasText: /Zeilen\s*350\s*Umfang\s*Vollständig\s*Aufbewahrung\s*Aufbewahrt/}),
-  ).toBeVisible();
+  await expect(page.locator('.result-footer')).toContainText('350 Zeilen');
+  await expect(page.getByRole('button', {name: 'Aufbewahren', exact: true})).toBeDisabled();
   await code(page, 'SELECT n FROM vergleich');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.result-grid tbody td')).toHaveText(['350']);

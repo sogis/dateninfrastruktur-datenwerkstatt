@@ -89,6 +89,10 @@ for (const kind of ['sql', 'r'] as const) {
     }, kind);
     const url = `${projectUrl}/${kind}/${analysisId}`;
     const reader = await context.newPage();
+    const editControl =
+      kind === 'sql'
+        ? reader.getByRole('button', {name: 'Version speichern', exact: true})
+        : reader.getByLabel('Analysename', {exact: true});
     await readerFor(page, reader, url);
     await expect(reader.locator('.monaco-editor')).toBeVisible();
     await reader
@@ -114,7 +118,7 @@ for (const kind of ['sql', 'r'] as const) {
     expect(reader.url()).toBe(url);
     expect(await sessionSnapshot(reader)).toEqual(before);
     await expect(reader.locator('.sidebar')).toHaveCSS('width', '212px');
-    await expect(reader.getByLabel('Analysename', {exact: true})).toBeDisabled();
+    await expect(editControl).toBeDisabled();
     await expect(reader.getByRole('button', {name: 'Ausführen', exact: true})).toBeDisabled();
     await page.getByLabel('Beschreibung', {exact: true}).fill('Neuester gespeicherter Stand');
     await page.getByRole('button', {name: 'Speichern', exact: true}).click();
@@ -129,7 +133,7 @@ for (const kind of ['sql', 'r'] as const) {
     await expect(success).toBeFocused();
     await expect(reader.getByRole('button', {name: retryName, exact: true})).toHaveCount(0);
     expect(reader.url()).toBe(url);
-    await expect(reader.getByLabel('Analysename', {exact: true})).toBeEnabled();
+    await expect(editControl).toBeEnabled();
     await expect(reader.locator('.sidebar')).toHaveCSS('width', '212px');
     const after = await sessionSnapshot(reader);
     expect(after.readOnly).toBe(false);
@@ -213,7 +217,7 @@ test('AT-012: delayed successful promotion preserves focus intentionally moved t
     allow();
   });
   await expect(reader.getByText(successText, {exact: true})).toBeVisible();
-  await expect(reader.getByLabel('Analysename', {exact: true})).toBeEnabled();
+  await expect(reader.getByRole('button', {name: 'Version speichern', exact: true})).toBeEnabled();
   await expect(reader.locator('.monaco-editor')).toBeVisible();
   expect((await sessionSnapshot(reader)).readOnly).toBe(false);
   await expect(settings).toBeFocused();

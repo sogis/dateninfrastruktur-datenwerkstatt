@@ -79,6 +79,7 @@ test('Action buttons v1.3: connected geometry, viewport edges, enlarged text and
     const a = (await main.boundingBox())!,
       b = (await arrow.boundingBox())!;
     expect(a.x + a.width).toBeCloseTo(b.x, 5);
+    expect(a.height).toBeCloseTo(b.height, 5);
     expect(a.height).toBeGreaterThanOrEqual(40);
     expect(b.width).toBeGreaterThanOrEqual(40);
     await arrow.click();
@@ -92,6 +93,13 @@ test('Action buttons v1.3: connected geometry, viewport edges, enlarged text and
       size.width,
     );
   }
+  const compact = page.getByRole('button', {name: 'Kompakt exportieren', exact: true});
+  const compactArrow = page.getByRole('button', {name: 'Kompakte Exportformate', exact: true});
+  const neighbour = page.getByRole('button', {name: 'Speichern', exact: true});
+  const compactHeight = (await compact.boundingBox())!.height;
+  expect(compactHeight).toBe(32);
+  expect((await compactArrow.boundingBox())!.height).toBe(compactHeight);
+  expect((await neighbour.boundingBox())!.height).toBe(compactHeight);
   await page.addStyleTag({content: 'html { font-size: 200%; }'});
   await page.getByRole('button', {name: 'Weitere Exportformate', exact: true}).click();
   await expect(page.getByRole('menuitem', {name: 'Parquet exportieren'})).toBeVisible();
@@ -119,6 +127,15 @@ test('Action buttons v1.3: connected geometry, viewport edges, enlarged text and
       .getByRole('button', {name: 'Weitere Exportformate', exact: true})
       .boundingBox())!;
     expect(mainBox.x + mainBox.width).toBeLessThanOrEqual(arrowBox.x);
+    expect(mainBox.height).toBe(arrowBox.height);
+    const compactTouch = await touch
+      .getByRole('button', {name: 'Kompakt exportieren', exact: true})
+      .boundingBox();
+    const compactArrowTouch = await touch
+      .getByRole('button', {name: 'Kompakte Exportformate', exact: true})
+      .boundingBox();
+    expect(compactTouch!.height).toBeGreaterThanOrEqual(44);
+    expect(compactArrowTouch!.height).toBe(compactTouch!.height);
   } finally {
     await context.close();
   }

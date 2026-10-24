@@ -1,6 +1,7 @@
 import {ActionStatus, Button, IconButton, Input, Select, FormField, Notice} from '../ui/Controls';
 import {useActionFeedback} from '../ui/useActionFeedback';
 import {NavigationItem} from '../ui/NavigationItem';
+import {SaveStatus} from '../ui/SaveStatus';
 import {StorageSettings} from '../features/workspaces/StorageSettings';
 import {Diagnostics} from '../features/workspaces/Diagnostics';
 import {WorkspaceWriteAccess} from '../features/workspaces/WorkspaceWriteAccess';
@@ -36,7 +37,13 @@ import {ProjectDataPage} from '../features/data/DataSection';
 function message(error: unknown) {
   return failureMessage(error);
 }
-export function report(error: unknown) {
+export function report(error: unknown, session?: EditingSession) {
+  if (
+    session &&
+    error === session.persistence.error &&
+    (error !== undefined || session.persistence.state === 'error')
+  )
+    return;
   appStore.setState({error: message(error)});
 }
 const rootRoute = createRootRoute({
@@ -198,11 +205,13 @@ function AppNavigation({
   onToggle,
   children,
   workspaceId,
+  footer,
 }: {
   expanded: boolean;
   onToggle: () => void;
   children?: ReactNode;
   workspaceId?: WorkspaceId;
+  footer?: ReactNode;
 }) {
   const routeId = useRouterState({select: (s) => s.matches.at(-1)?.routeId});
   return (
@@ -253,6 +262,7 @@ function AppNavigation({
           />
         </NavigationItem>
       )}
+      {footer && <div className="sidebar-footer">{footer}</div>}
     </nav>
   );
 }
@@ -352,7 +362,7 @@ function WorkspaceProvider() {
         await session.flush();
         return false;
       } catch (error) {
-        report(error);
+        report(error, session);
         return true;
       }
     },
@@ -364,6 +374,7 @@ function WorkspaceProvider() {
           expanded={expanded}
           onToggle={() => ctx.view.patch({sidebarCollapsed: expanded})}
           workspaceId={session.document.workspace.id}
+          footer={<SaveStatus session={session} state={state} error={error} onError={report} />}
         >
           <NavigationItem
             icon="folder2-open"
@@ -410,33 +421,6 @@ function WorkspaceProvider() {
         </AppNavigation>
         <section className="workspace-content" data-analysis={inAnalysis} data-save-state={state}>
           <WorkspaceWriteAccess key={session.document.workspace.id} session={session} />
-          {(session.mode === 'temporary' || state !== 'saved') && (
-            <div className="save-status" aria-live="polite">
-              {state === 'saved'
-                ? 'Änderungen sind nur in dieser Sitzung verfügbar und werden nicht automatisch gesichert.'
-                : state === 'saving'
-                  ? 'Speichert …'
-                  : state === 'error'
-                    ? 'Speichern fehlgeschlagen'
-                    : 'Nicht gespeichert'}
-            </div>
-          )}
-          {error !== undefined && (
-            <div className="error" role="alert">
-              {message(error)}{' '}
-              <Button
-                onClick={() => {
-                  if (session.persistence.generation === session.persistence.savedGeneration)
-                    session.persistence.acknowledgeUnpublishedFailure();
-                  else void session.flush().catch(report);
-                }}
-              >
-                {session.persistence.generation === session.persistence.savedGeneration
-                  ? 'Vorherigen Projektstand beibehalten'
-                  : 'Speichern erneut versuchen'}
-              </Button>
-            </div>
-          )}
           <Outlet />
         </section>
       </div>

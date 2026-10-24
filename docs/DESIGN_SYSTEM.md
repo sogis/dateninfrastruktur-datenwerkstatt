@@ -58,7 +58,7 @@ Für die erste neutrale Version gelten folgende Entscheidungen:
 | Bereich | Verbindliche Regel |
 | --- | --- |
 | Pflicht und Optionalität | Erforderliche Felder ohne Zusatz; optionale Felder mit gedämpftem „(optional)“. Keine Sternchen oder Pflichtfeldhinweise. Native `required`-Semantik bleibt erhalten. |
-| Analysenamen | In SQL/R bleibt das kompakte Label sichtbar; die Ausnahme für ausgeblendete Parameterlabels gilt nur in Parametertabellen. |
+| Analysenamen | SQL zeigt „Analysename: …“ als Text und wird auf der Übersicht umbenannt. In R bleibt das kompakte Label sichtbar; die Ausnahme für ausgeblendete Parameterlabels gilt nur in Parametertabellen. |
 | Feldfehler und Aktionslayout | Eingabe und zugehörige Buttons bleiben auch bei mehrzeiligen Fehlern ausgerichtet. Bei schmaler Projekterstellung folgt der Button unter der Feldgruppe. |
 | Vergrösserter Text | Zeilenhöhen wachsen mit der Schrift. Die Labelzeilenhöhe beträgt dimensionslos `1.42857143`, entsprechend 20 px bei 14 px Schrift. |
 | Prüfungen | Gezielte Prüfung des betroffenen UI-Umfangs gemäss Abschnitt 15.2; kein automatischer Start vollständiger Suiten oder Browser-/Deploymentmatrizen. |
@@ -432,7 +432,7 @@ bestehende Aufrufer vorübergehend kompatibel halten.
 | --------- | ------------------------------------------------------- | --------------------------------------- | ------------------- |
 | Primary   | `action-bg`, Text/Icon `action-fg`, transparente Kontur | `action-bg-hover`                       | `action-bg-pressed` |
 | Secondary | `surface`, Text/Icon `text`, Kontur `border-control`    | `surface-hover`, Kontur bleibt sichtbar | `surface-pressed`   |
-| Tertiary  | Transparent, Text/Icon `text`, transparente Kontur      | `surface-hover`                         | `surface-pressed`   |
+| Tertiary  | Transparent, Text/Icon `text`, transparente Kontur      | `surface-neutral`                         | `surface-pressed`   |
 
 Die Rollen in den Tabellen bezeichnen jeweils das gleichnamige `--dw-`-Token.
 Text und Icons einer Schaltfläche verwenden dieselbe Vordergrundrolle.
@@ -704,8 +704,7 @@ rechts mit 8 px Abstand und Gewicht 400. Mehrzeilige Texte dürfen umbrechen.
 Die gesamte Label-Fläche ist anklickbar. Haken, Auswahlpunkte und Konturen
 bleiben ausreichend kontrastreich.
 
-Der Analysename in SQL-/R-Werkzeugleisten besitzt ein sichtbares kompaktes
-Inline-Label. Nur Parametertabellen dürfen ihre eindeutigen Feldlabels visuell
+Der Analysename wird in SQL als „Analysename: …“ angezeigt; Umbenennen erfolgt über das Menü der Übersicht. In R besitzt das Feld weiterhin ein sichtbares kompaktes Inline-Label. Nur Parametertabellen dürfen ihre eindeutigen Feldlabels visuell
 ausblenden, weil sichtbare Spaltenköpfe den Kontext vermitteln. Der Optionalzusatz
 bei Stringwerten bleibt dann sichtbar neben der betreffenden Werteingabe.
 Normale Formulare behalten sichtbare Labels oberhalb des Controls.
@@ -1008,10 +1007,11 @@ Anwendung über den Viewport hinaus aufweiten.
 
 Die Reihenfolge bleibt:
 
-**Analysename → Ausführen/Abbrechen → Speichern → Ansichtsaktionen → Weitere Aktionen.**
+**SQL: Analysename als Text → Ausführen/Abbrechen → Version speichern → Tabellen & Spalten → Weitere Aktionen.**
 
-Layoutreset und R-Reset stehen im Menü. Parameter und Optionen sind
-einblendbar. Ergebnis-, Paging- und Grafikaktionen stehen am zugehörigen
+R behält Analysename → Ausführen/Abbrechen → Speichern → Ansichtsaktionen → Weitere Aktionen.
+
+Layoutreset und R-Reset stehen im Menü. SQL-Parameter werden über „Weitere Aktionen“ im Dialog bearbeitet; bei vorhandenen Parametern gibt es einen kompakten Einstieg. Die Versionsliste und aufbewahrte SQL-Ergebnisse sind ebenfalls Menüaktionen. R-Parameter und Optionen bleiben einblendbar. Das Tabellen-/Spaltenpanel ist nichtmodal und lässt Editor und Resultat bedienbar. Ergebnis-, Paging- und Grafikaktionen stehen am zugehörigen
 Ergebnis und verwenden eine gemeinsame ActionGroup.
 
 Status- und Metadatentexte in Werkzeugleisten folgen Abschnitt 4.4: Ein Status
@@ -1526,3 +1526,16 @@ der Schrift; sie schreiben diese konkrete Palette nicht vor.
 
 Die W3C-Understanding-Dokumente erläutern die normativen Kriterien. Die
 normative WCAG-2.2-Spezifikation steht unter <https://www.w3.org/TR/WCAG22/>.
+
+### Ergänzung SQL / Tertiary-Hover, 24. Oktober 2026
+
+Normale tertiäre Buttons verwenden zentral `surface-neutral` (#EEF1F4) für Hover statt des mit der Toolbar identischen `surface-hover`. Pressed bleibt #E7EBEF; Danger-, Auswahl-, Disabled- und Fokusregeln bleiben erhalten. Keine neue Farbrolle oder Abhängigkeit.
+
+
+### SQL-Arbeitsfläche und Speicherpunkt (24. Oktober 2026)
+
+Der SQL-Analysename verwendet normales Schriftgewicht. Im SQL-Editor keine Hervorhebung oder Umrahmung der aktuellen Zeile. Die kompakte SQL-Ergebnistabelle verwendet lokal JetBrains Mono mit 12 px wie Sodata, dezente Zelllinien, fixierten Kopf und fixierte Zeilennummern. Name und logischer Typ stehen im Tabellenkopf. Ergebnisaktionen stehen in einer Zeile, Zeilenzahl/Laufzeit/Paging in der Fusszeile; technische Metadaten bleiben in Details. Der Split-Pfeil übernimmt das vertikale Control-Padding seiner Grösse.
+
+Panelgriffe sind sichtbar, fokussierbar und mit Pfeiltasten bedienbar. Breiter Schema-/Spaltenbereich und Resultathöhe bleiben verstellbar; schmale Ansichten ordnen das Schema über dem Editor an.
+
+Ein kleiner Speicherpunkt mit konstanter Bedienfläche steht unten links im geöffneten Projekt. Grün bedeutet lokal gespeichert; orange ungespeichert, Speichern läuft, Fehler oder nur Sitzungsmodus. Keine Animation und keine wechselnde Textzeile im Inhaltsfluss. Tooltip, zugänglicher Zustandsname und Dialog vermitteln dieselbe Information ohne Farberkennung. Speicherfehleraktionen stehen im Statusdialog.

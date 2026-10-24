@@ -77,12 +77,10 @@ test('P2 / AT-016: denied OPFS requires explicit temporary mode and never claims
   await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await importCsv(page);
   await expect(page.getByText('Lokal gespeichert · kein Backup', {exact: true})).toHaveCount(0);
-  await expect(
-    page.getByText(
-      'Änderungen sind nur in dieser Sitzung verfügbar und werden nicht automatisch gesichert.',
-      {exact: true},
-    ),
-  ).toBeVisible();
+  await expect(page.locator('.workspace-save-indicator')).toHaveAttribute('data-tone', 'warning');
+  await expect(page.locator('.workspace-save-indicator')).toHaveAccessibleName(
+    'Speicherstatus: Nur diese Sitzung: Änderungen gehen beim Neuladen verloren',
+  );
   await page.getByRole('button', {name: 'Daten ansehen', exact: true}).click();
   await expect(page.getByRole('cell', {name: '001', exact: true})).toBeVisible();
 });

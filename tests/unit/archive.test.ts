@@ -45,7 +45,7 @@ it('AT-059: supplied deflated recipe imports with new references and untouched c
   );
   for (const versions of [
     {archiveVersion: 2, project: original},
-    {archiveVersion: 1, project: {...original, formatVersion: 2}},
+    {archiveVersion: 1, project: {...original, formatVersion: 1}},
   ]) {
     const manifest = {archiveFormat: 'datenwerkstatt', ...versions};
     await expect(

@@ -1,3 +1,4 @@
+import {resetAnalysisLayout} from '../ui/sqlActions';
 import {test, expect} from '../persistentBrowser';
 import {writeFile} from 'node:fs/promises';
 import type {Page} from '@playwright/test';
@@ -125,8 +126,7 @@ test('P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layou
       .toBe(Number(changed));
     await page.reload();
     await expect(splitter).toHaveAttribute('aria-valuenow', changed!);
-    if (kind === 'sql')
-      await page.getByRole('button', {name: 'Arbeitsfläche zurücksetzen'}).click();
+    if (kind === 'sql') await resetAnalysisLayout(page);
     else {
       await page.getByRole('button', {name: 'Weitere Aktionen', exact: true}).click();
       await page.getByRole('menuitem', {name: 'Arbeitsfläche zurücksetzen'}).click();
@@ -324,7 +324,7 @@ test('P7 AT-058: browser history restores the analysis cursor and layout does no
   const splitter = page.getByRole('separator', {name: 'Grösse von Editor und Resultat ändern'});
   await splitter.focus();
   await splitter.press('ArrowDown');
-  await page.getByRole('button', {name: 'Arbeitsfläche zurücksetzen'}).click();
+  await resetAnalysisLayout(page);
   expect(await state()).toEqual(before);
   expect(before.runs).toEqual([]);
 });

@@ -1,0 +1,2 @@
+DW_REUSE_DEV_SERVER=1 npx playwright test tests/e2e/action-buttons.spec.ts --grep 'connected geometry' --project=chromium --reporter=list --output=test-results/sql-results-buttons
+Exit 0: 1 passed (1.8s). Desktop 32/40px, Touch >=44px, Split main/arrow/neighbour equal heights.

@@ -1,0 +1,11 @@
+[WebServer] (node:19762) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:19766) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/imports.spec.ts:61:1 › P2 / AT-016: denied OPFS requires explicit temporary mode and never claims local persistence (2.7s)
+  ✓  2 [chromium] › tests/e2e/multitab.spec.ts:2:1 › P6 AT-065: absent Web Locks permits existing project only as reader, archive export remains possible (1.6s)
+
+  2 passed (5.5s)

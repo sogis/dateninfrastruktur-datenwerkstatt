@@ -2,6 +2,8 @@
 
 **Alle Gemeinden und Zahlen in diesem Verzeichnis sind synthetische Testdaten.** Sie sind keine amtlichen Werte und keine Kopie von Produktionsdaten. Die Gemeindenamen dienen ausschliesslich als Testbezeichnungen.
 
+Workspace-JSON und Beispielarchiv verwenden ausschliesslich Projektformat 2 mit `sqlVersions`. Die ZIP-Hülle bleibt Archivversion 1; fachliche Goldenwerte bleiben unverändert.
+
 ## 1. Dateiinventar
 
 | Dateien | Verwendung |

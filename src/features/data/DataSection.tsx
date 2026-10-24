@@ -158,7 +158,7 @@ export function DataSection() {
     void Promise.resolve()
       .then(() => work(attempt))
       .catch((error: unknown) => {
-        if (cleanupFeedback.isCurrent(attempt)) report(error);
+        if (cleanupFeedback.isCurrent(attempt)) report(error, session);
       })
       .finally(() => {
         if (!cleanupFeedback.isCurrent(attempt)) return;
@@ -176,7 +176,7 @@ export function DataSection() {
         if (!control.signal.aborted) setInventory(value);
       })
       .catch((error: unknown) => {
-        if (!control.signal.aborted) report(error);
+        if (!control.signal.aborted) report(error, session);
       });
     return () => control.abort();
   }, [session, doc.revision]);

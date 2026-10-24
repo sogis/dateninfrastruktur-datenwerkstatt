@@ -2310,3 +2310,28 @@ V1-Releaseabnahme. Bekannte Editorchunk-Warnung unverändert. Kein offener Block
 im beauftragten Umfang; lokale Umsetzung abgeschlossen. Nächster konkreter
 Nutzungsschritt: im geöffneten Projekt Einstellungen öffnen, eine Editoroption
 ändern und über SQL/R weiterarbeiten. Kein Commit, Push oder Release.
+
+## SQL-Aufräumen und explizite Versionen — geliefert (24. Oktober 2026)
+
+REQ-011/013–016/019/034–036/038/041/043–045/062/066–068; AT-005/006/007/025–027/030–032/054/055/058/059 im geänderten SQL-Vertrag. Basisrevision `6c3b44d151079242b33f75db7534cd2f813ab4c0`, Änderungen uncommittiert; [Quell-/Test-/Fixturehashes](verification/sql-workbench/source-sha256.txt). Keine neue pauschale V1-Abnahme.
+
+Geliefert: Übersicht-Umbenennen mit atomarem Dialogcommit; SQL-Name als Text; nichtmodales Tabellen-/Spaltenpanel und Parameterdialog; bewusst gespeicherte unveränderliche Code-/Parameterversionen mit Wiederherstellung und Monaco-Undo. Autosave/Cmd+S/Ausführen erzeugen keine Version. Aktuelles Ergebnis ersetzt ungeschützte SQL-Testläufe, geschützt bleiben sämtliche benötigten Herkunftsketten. Handlefreigabe nach Metadatencommit und vollständigem Leserabschluss, auch bei unmittelbar folgenden Ersetzungen. R-Historie unverändert; gesicherte Ergebnisse gezielt erreichbar. Zentrale Tertiary-Hoverkorrektur.
+
+**Formatbruch:** ausschliesslich Projektformat 2, keine Migration und keine Altbestandsbereinigung. Nicht unterstützte Projekte blockieren weder Liste noch Restebereinigung; direkte Aufrufe/Archive werden abgelehnt. Datensatz-/Katalog-/Runtimeversionsverträge bleiben eigenständig. Neue Versionen werden bei Projektklon/Archiv korrekt remappt, bei Analyseduplikation nicht kopiert.
+
+Relevante Dateien: Domainvertrag/Validator/Remapping/`sqlRetention.ts`/Unveränderlichkeit; `workspaceService.ts`, `analysisService.ts`, Archiv/Repository/Recovery; `SqlWorkbench.tsx`, `SqlVersions.tsx`, `NameDialog.tsx`, Übersicht, Monaco/UI-Hooks und CSS. SPEC, Abnahmen, Implementierungsplan, Designsystem und synthetische Format-2-Fixtures aktualisiert. Fachliche Goldenwerte und Dependencies unverändert.
+
+**Tatsächliche Prüfungen:** Typecheck, Lint/Modulgrenzen und Produktionsbuild jeweils **Exit 0**. Sechs gezielte Unitdateien **51/51, Exit 0**; ergänzte SQL-Datei **10/10, Exit 0** (52 unterschiedliche Fälle). Neue echte DuckDB-/IndexedDB-Integration **3/3, Exit 0**, verstärkte Freigabeprüfung **1/1, Exit 0**. Neue SQL-/Hover-UI **3/3, Exit 0**, abschliessende SQL-Geometrie und mobile Sichtbarkeit **2/2, Exit 0**, Parameter-Typregeln **1/1, Exit 0**, gezielte bestehende Regressionen **10/10, Exit 0**. Insgesamt fünf unterschiedliche Integrations- und zwölf UI-Fälle, mit echtem Cancel/Workerende und SQL→R. Exakte Befehle, Zwischenfehler, Screenshots und Grenzen im [Prüfbericht](verification/sql-workbench/README.md).
+
+Prüfauswahl auf geänderte Funktionen und ihre konkreten Speicher-/Runtimeabhängigkeiten begrenzt. **Nicht ausgeführt:** volle Verify-/Unit-/Integrations-/UI-Suiten, Browser-/Deploymentmatrix, nativer Safari-Pilot und Ressourcenbenchmark. Bestehende Chunkgrössenwarnung erhalten. Kein bekannter Blocker im beauftragten Umfang. Nutzeränderung an AGENTS.md erhalten; historische Prüfbilder unverändert. Nächster Schritt: neue SQL-Bedienung nutzen und weitere UX-Punkte aufnehmen.
+
+
+## SQL-Ergebnisbereich, Completion und Speicherpunkt — geliefert (24. Oktober 2026)
+
+REQ-019/034/041/044/046/048/062/066/067; AT-005/007/027/032/049/055/058. Basisrevision `6c3b44d151079242b33f75db7534cd2f813ab4c0`, uncommittierter Arbeitsbaum. Geliefert: kompakte Ergebnisaktionen/Fusszeile, kontextuelle Exportdialoge, Sodata-Tabellenrendering mit Sortierung, normale Analysenamen und fehlender aktive-Zeile-Rahmen; verstellbares Schema und sichtbarer Resultatsplitter, separat gespeicherte Breite. Modellgebundene Completion ohne neue Dependency/Engineabfrage. Konstanter Speicherpunkt ersetzt wechselnde Speicherbänder, mit zugänglichen Details und Fehlerwiederholung. Format 2 bleibt unverändert.
+
+Relevante Dateien: `SqlWorkbench.tsx`, Monaco-Completion/Editor, `SaveStatus.tsx`/Router und gespeicherte Fehlerkanäle; Viewvertrag/Repository, Styles und gezielte Tests. SPEC, Abnahmen, Plan, Designsystem und Quellen-/MIT-Nachweis nachgeführt.
+
+**Tatsächliche Checks:** Typecheck, Lint/Modulgrenzen und Build jeweils **Exit 0**; **6/6 Unitfälle**, **14 unterschiedliche Chromiumfälle**, jeweils **Exit 0**. Zwei Fälle nach relevanter Schriftkorrektur erneut bestanden; der Schemafall prüft zusätzlich Reset auf 25 % Breite/45 % Editorhöhe (Exit 0). Echte DuckDB-/Dateiexporte nach Paging, Schema-/Resultatresize inklusive Reload, Completion/Quoting/Undo ohne Run, Speicherfehler/Retry und unveränderte Geometrie sowie temporärer/lesender Modus geprüft. Zwischenfehler und genaue Befehle/Logs/Bilder im [Prüfbericht](verification/sql-results/README.md).
+
+**Nicht ausgeführt:** vollständige Suiten/Verify, Browser-/Deploymentmatrix, nativer Safari-Pilot und Benchmarks. Auswahl auf geänderte UI-/Persistenzgrenzen begrenzt; keine neue pauschale V1-Abnahme. Bekannte Chunkgrössenwarnung bleibt; kein bekannter Blocker im beauftragten Umfang. AGENTS.md-Nutzeränderung und vorherige lokale Arbeit erhalten. Nächster Schritt: die aufgeräumte SQL-Ansicht verwenden und weitere UX-Punkte aufnehmen. Kein Commit oder Push.

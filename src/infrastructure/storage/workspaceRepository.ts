@@ -1,5 +1,5 @@
 import Dexie, {type EntityTable} from 'dexie';
-import {parseWorkspace} from '../../domain/workspace';
+import {parseWorkspace, WorkspaceValidationError} from '../../domain/workspace';
 import {assertImmutableHistory} from '../../domain/immutability';
 import type {WorkspaceDocument, WorkspaceId, WorkspaceSummary} from '../../domain/model';
 import type {WorkspaceRepository} from '../../application/ports';
@@ -26,15 +26,24 @@ export class WorkspaceDatabase extends Dexie {
 export class DexieWorkspaceRepository implements WorkspaceRepository {
   constructor(readonly db = new WorkspaceDatabase()) {}
   async list(): Promise<WorkspaceSummary[]> {
-    return (await this.db.workspaces.orderBy('updatedAt').reverse().toArray()).map((row) => {
-      const d = parseWorkspace(row.document);
-      return {
-        id: d.workspace.id,
-        name: d.workspace.name,
-        updatedAt: d.workspace.updatedAt,
-        datasetCount: Object.values(d.datasets).filter((ds) => !ds.removedAt).length,
-        analysisCount: Object.values(d.analyses).filter((a) => !a.archivedAt).length,
-      };
+    return (await this.db.workspaces.orderBy('updatedAt').reverse().toArray()).flatMap((row) => {
+      let d: WorkspaceDocument;
+      try {
+        d = parseWorkspace(row.document);
+      } catch (error) {
+        if (error instanceof WorkspaceValidationError && error.code === 'FORMAT_UNSUPPORTED')
+          return [];
+        throw error;
+      }
+      return [
+        {
+          id: d.workspace.id,
+          name: d.workspace.name,
+          updatedAt: d.workspace.updatedAt,
+          datasetCount: Object.values(d.datasets).filter((ds) => !ds.removedAt).length,
+          analysisCount: Object.values(d.analyses).filter((a) => !a.archivedAt).length,
+        },
+      ];
     });
   }
   async load(id: WorkspaceId) {

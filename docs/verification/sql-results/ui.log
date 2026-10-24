@@ -1,0 +1,20 @@
+[WebServer] (node:14171) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 11 tests using 1 worker
+
+(node:14173) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/projects.spec.ts:265:1 › Projects: save indicator stays bottom left without moving the SQL editor while saving (2.3s)
+  ✓   2 [chromium] › tests/e2e/projects.spec.ts:365:1 › Projects: a failed unpublished change can keep the previous project from save details (709ms)
+  ✓   3 [chromium] › tests/e2e/projects.spec.ts:409:1 › Projects: a failed metadata save blocks external navigation and preserves the editing session until retry (1.2s)
+  ✓   4 [chromium] › tests/e2e/sql-completion.spec.ts:11:1 › SQL completion uses imported project tables and accepts columns without executing a query (3.7s)
+  ✓   5 [chromium] › tests/e2e/sql-workbench.spec.ts:27:1 › SQL cleanup: explicit versions restore editor and parameters without running; current result and reload (4.6s)
+  ✓   6 [chromium] › tests/e2e/sql-workbench.spec.ts:115:1 › SQL cleanup: overview rename commits only on submit and schema stays nonmodal at wide/narrow widths (4.6s)
+  ✓   7 [chromium] › tests/e2e/sql-workbench.spec.ts:213:1 › SQL results: compact actions, typed table headers, row numbers and sort without a new run (2.6s)
+  ✓   8 [chromium] › tests/e2e/sql-workbench.spec.ts:252:1 › SQL exports: CSV/XLSX notes are deferred and limited Parquet requires review before download (2.6s)
+  ✓   9 [chromium] › tests/e2e/sql.spec.ts:21:1 › P3 / AT-022 AT-027 AT-032 AT-049 AT-055 AT-058: SQL, paging, keep, exports, chart, resize and reload (5.1s)
+  ✓  10 [chromium] › tests/e2e/ui-texts.spec.ts:92:1 › UI texts: real SQL status hierarchy, empty results and original text survive enlarged text and narrow work areas (3.5s)
+  ✓  11 [chromium] › tests/e2e/xlsx.spec.ts:45:1 › XLSX SQL UI: downloads all result rows after paging and keeps CSV as primary action (3.4s)
+
+  11 passed (34.8s)

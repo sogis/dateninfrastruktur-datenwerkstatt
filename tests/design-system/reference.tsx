@@ -90,6 +90,19 @@ function Reference() {
               Kompakt ausführen
             </Button>
             <Button>Speichern</Button>
+            <SplitButton
+              label="Kompakt exportieren"
+              menuLabel="Kompakte Exportformate"
+              onClick={() => setAction('CSV')}
+              actions={[{label: 'Kompaktes Parquet', onSelect: () => setAction('Parquet')}]}
+            />
+            <Button variant="tertiary">Weitere Aktionen Referenz</Button>
+            <Button variant="tertiary" disabled>
+              Deaktiviert Referenz
+            </Button>
+            <Button variant="tertiary" aria-pressed="true">
+              Ausgewählt Referenz
+            </Button>
           </Toolbar>
           <ActionGroup data-testid="wrapped-actions" className="reference-wrap">
             <Button>Grafik Vollbild</Button>

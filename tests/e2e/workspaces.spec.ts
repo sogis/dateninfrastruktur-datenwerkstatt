@@ -1,3 +1,4 @@
+import {renameAnalysis} from '../ui/sqlActions';
 import {expect, test} from '../persistentBrowser';
 import type {Page} from '@playwright/test';
 async function create(page: Page, name = 'Beispielanalyse') {
@@ -37,8 +38,7 @@ test('AT-005 AT-058: saved SQL and R, separate models, duplicate, archive, no co
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
   await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
-  await page.getByLabel('Analysename', {exact: true}).fill('Kennzahlen');
-  await page.getByRole('button', {name: 'Speichern', exact: true}).click();
+  await renameAnalysis(page, 'Kennzahlen');
   const sqlUrl = page.url();
   const code = page.getByRole('textbox', {name: 'Analysecode'});
   await page.locator('.monaco-editor').click();

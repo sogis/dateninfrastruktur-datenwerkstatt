@@ -392,7 +392,7 @@ test('REQ-025 / AT-010 AT-051: all text delimiter options and original bytes sur
       before.origins.map((origin) => (origin.kind === 'file' ? origin.csvOptions : undefined)),
     );
     expect(after.originalTexts).toEqual(variants.map((variant) => variant.csv));
-    expect(after.formatVersion).toBe(1);
+    expect(after.formatVersion).toBe(2);
   } finally {
     try {
       await cleanup();
