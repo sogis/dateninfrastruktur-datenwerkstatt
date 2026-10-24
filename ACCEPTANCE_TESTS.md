@@ -98,11 +98,11 @@ Ergänzend für CSV: gewählte Textbegrenzung, Escape und fehlende Werte bleiben
 
 ### AT-012 — Zwei Tabs, exklusiver Writer und CAS
 
-**Requirements:** REQ-020 · **Phase:** P6 · **Ebene:** Browser
+**Requirements:** REQ-020, REQ-076 · **Phase:** P6 · **Ebene:** Browser
 
 **Gegeben:** Zwei Tabs derselben Origin öffnen dieselbe Workspace-ID.
-**Wenn:** Tab A schreibt; B versucht Mutation. Anschliessend A schliessen und in B erneut Schreibrecht anfordern.
-**Dann:** B zuerst sichtbar read-only ohne Laufstart; nach Lockfreigabe Dokument neu geladen. Simulierter Revisionkonflikt überschreibt nichts.
+**Wenn:** Tab A schreibt; B versucht Mutation und fordert das weiterhin belegte Schreibrecht erneut an. Anschliessend A schliessen und in B erneut Schreibrecht anfordern; einen Projektwechsel während einer verzögerten Prüfung auslösen.
+**Dann:** B zuerst sichtbar read-only ohne Laufstart mit konkretem Sperrgrund. Die Prüfung hat Busy- und Ergebnisrückmeldung, Mehrfachklicks erzeugen keine zweite Übernahme. Solange belegt, bleiben Lesesitzung und Ansicht erhalten; nach Lockfreigabe wird die aktuelle Revision geladen und dieselbe Unterseite bearbeitbar. Tastaturfokus und Statusansagen bleiben sinnvoll, Erfolg wird drei Sekunden bestätigt. Fehler bieten Details/Retry; überholte Antworten öffnen kein altes Projekt und hinterlassen keinen Lock. Ein alleiniger Tab bleibt nach Reload Writer. Simulierter Revisionkonflikt überschreibt nichts.
 
 ### AT-013 — OPFS voll während Import oder Keep
 
@@ -530,11 +530,11 @@ Einstellungen zeigen beim Öffnen keine Speicherbestätigung. Nach einer Änderu
 
 ### AT-065 — Web Locks nicht verfügbar
 
-**Requirements:** REQ-020, REQ-022 · **Phase:** P6 · **Ebene:** Browser
+**Requirements:** REQ-020, REQ-022, REQ-076 · **Phase:** P6 · **Ebene:** Browser
 
 **Gegeben:** Web Locks im Capabilitytest deaktiviert, bestehender persistenter Workspace.
 **Wenn:** Öffnen und bearbeiten/ausführen versuchen.
-**Dann:** Bestehendes Projekt lesend; kein unsicherer Writer-Fallback. Expliziter neuer Sitzungsmodus möglich, aber ohne falsche Dauerhaftigkeit.
+**Dann:** Bestehendes Projekt lesend mit verständlicher Erklärung der fehlenden Web Locks und weiter möglichem Ansehen/Exportieren; kein wirkungsloser Reacquire-Button und kein unsicherer Writer-Fallback. Sperrgrund, Browserunterstützung und letzter Versuch sind in Diagnose/Bericht nachvollziehbar. Expliziter neuer Sitzungsmodus möglich, aber ohne falsche Dauerhaftigkeit.
 
 ### AT-066 — Container mit OpenShift-artiger UID
 
@@ -671,7 +671,7 @@ Einstellungen zeigen beim Öffnen keine Speicherbestätigung. Nach einer Änderu
 | REQ-073     | AT-016, AT-020, AT-067, AT-069, AT-071                 |
 | REQ-074     | AT-066, AT-067, AT-069                                 |
 | REQ-075     | AT-068, AT-069                                         |
-| REQ-076     | AT-009, AT-013, AT-036, AT-069, AT-071                 |
+| REQ-076     | AT-009, AT-012, AT-013, AT-036, AT-065, AT-069, AT-071 |
 | REQ-077     | AT-070, AT-072                                         |
 | REQ-078     | AT-070, AT-071, AT-072                                 |
 | REQ-079     | AT-070, AT-072                                         |

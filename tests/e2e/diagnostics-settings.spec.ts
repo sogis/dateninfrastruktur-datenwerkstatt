@@ -213,6 +213,7 @@ test('Project diagnostics: real SQL/R session, report compatibility, live operat
       workspaceId: before.document.workspace.id,
       sessionId: before.id,
       revision: before.document.revision,
+      writeAccess: {reason: null, webLocksAvailable: true, lastAttempt: null},
       runs: Object.values(before.document.runs).map((run) => ({
         id: run.id,
         status: run.status,
@@ -234,6 +235,7 @@ test('Project diagnostics: real SQL/R session, report compatibility, live operat
       'revision',
       'mode',
       'readOnly',
+      'writeAccess',
       'counts',
       'runs',
       'timings',

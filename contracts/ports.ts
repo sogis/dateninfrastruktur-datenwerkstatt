@@ -21,12 +21,13 @@ export interface ArtifactStore {
   delete(artifact: Artifact): Promise<void>;
   list(workspaceId: WorkspaceId): AsyncIterable<{path: string; bytes: number}>;
 }
-export interface WorkspaceLease {
+export type WorkspaceReadOnlyReason = 'lock-held' | 'locks-unavailable';
+export type WorkspaceLease = {
   workspaceId: WorkspaceId;
-  mode: 'writer' | 'reader';
   release(): Promise<void>;
-}
+} & ({mode: 'writer'} | {mode: 'reader'; reason: WorkspaceReadOnlyReason});
 export interface WorkspaceLock {
+  readonly webLocksAvailable?: boolean;
   acquire(workspaceId: WorkspaceId, signal: AbortSignal): Promise<WorkspaceLease>;
 }
 export interface ExecutionBudget {

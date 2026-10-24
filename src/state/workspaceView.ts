@@ -5,6 +5,7 @@ import {defaultView, type ViewRepository} from '../infrastructure/storage/viewSt
 export class WorkspaceViewController {
   readonly store;
   private writes: Promise<void> = Promise.resolve();
+  private loadPromise: Promise<void> | undefined;
   constructor(
     private readonly repository: ViewRepository,
     id: WorkspaceId,
@@ -13,7 +14,10 @@ export class WorkspaceViewController {
   ) {
     this.store = createStore(() => ({value: defaultView(id), ready: false}));
   }
-  async load() {
+  load(): Promise<void> {
+    return (this.loadPromise ??= this.loadInitialView());
+  }
+  private async loadInitialView() {
     try {
       this.store.setState({
         value: await this.repository.load(

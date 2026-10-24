@@ -206,6 +206,47 @@ main {
   flex-direction: column;
   min-height: 0;
 }
+.workspace-write-access {
+  flex: 0 0 auto;
+  min-width: 0;
+  margin: 12px 12px 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.workspace-write-access:not([hidden]) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+.workspace-write-access p {
+  margin: 0;
+}
+.workspace-write-access .dw-notice > p + p,
+.workspace-write-access .dw-notice > p + details,
+.workspace-write-access .dw-actions {
+  margin-top: 12px;
+}
+.workspace-write-access .dw-actions {
+  min-width: 0;
+}
+.workspace-write-access .dw-button {
+  max-width: 100%;
+}
+.workspace-write-access-diagnostics {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--dw-control-height);
+  overflow-wrap: anywhere;
+}
+.workspace-write-access-status {
+  overflow-wrap: anywhere;
+}
+.workspace-write-access-status:empty:not(:focus) {
+  min-height: 0;
+}
+.workspace-write-access details pre {
+  margin-block: 12px 0;
+}
 .save-status {
   min-height: 28px;
   padding: 4px 12px;
@@ -227,6 +268,8 @@ main {
 }
 .project-details > h1 {
   margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .project-details > .form-fields + .dw-actions {
   margin-top: -16px;

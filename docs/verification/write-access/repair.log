@@ -1,0 +1,105 @@
+[WebServer] (node:50504) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 10 tests using 1 worker
+
+(node:50506) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/navigation.spec.ts:5:1 › Navigation: settings remain reachable on global pages, with session toggle and saved default (1.5s)
+  ✓   2 [chromium] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view (14.3s)
+  ✓   3 [chromium] › tests/e2e/navigation.spec.ts:214:1 › Notices: regular error text, neutral SVG and red interaction states with keyboard dismissal (5.0s)
+  ✘   4 [chromium] › tests/e2e/write-access.spec.ts:73:3 › AT-012: held retry keeps the SQL reader view and keyboard promotion loads the latest project (12.4s)
+(node:50817) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   5 [chromium] › tests/e2e/write-access.spec.ts:73:3 › AT-012: held retry keeps the R reader view and keyboard promotion loads the latest project (12.9s)
+(node:50863) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [chromium] › tests/e2e/write-access.spec.ts:142:1 › AT-012: a single tab retains write access across page reloads (1.1s)
+  ✓   7 [chromium] › tests/e2e/write-access.spec.ts:160:1 › AT-012: pending retry prevents duplicate activation and a technical failure keeps the reader usable (1.1s)
+  ✓   8 [chromium] › tests/e2e/write-access.spec.ts:199:1 › AT-012: diagnostics update after a held retry and download only structured write-access facts (1.2s)
+  ✓   9 [chromium] › tests/e2e/write-access.spec.ts:247:1 › AT-012: a delayed retry failure after navigation does not appear in another project (1.0s)
+  ✓  10 [chromium] › tests/e2e/write-access.spec.ts:274:1 › AT-055: write-access reason, retry and result fit narrow widths and 200% text (1.7s)
+
+
+  1) [chromium] › tests/e2e/write-access.spec.ts:73:3 › AT-012: held retry keeps the SQL reader view and keyboard promotion loads the latest project
+
+    Error: expect(locator).toBeFocused() failed
+
+    Locator:  getByText('Schreibrecht erhalten. Der aktuelle Projektstand wurde geladen.', { exact: true })
+    Expected: focused
+    Received: inactive
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toBeFocused" getByText('Schreibrecht erhalten. Der aktuelle Projektstand wurde geladen.', { exact: true }) with timeout 10000ms
+      - waiting for getByText('Schreibrecht erhalten. Der aktuelle Projektstand wurde geladen.', { exact: true })
+        24 × locator resolved to <p id="_r_9_" role="status" tabindex="-1" aria-atomic="true" class="dw-action-status workspace-write-access-status">Schreibrecht erhalten. Der aktuelle Projektstand …</p>
+           - unexpected value "inactive"
+
+
+      121 |     await expect(page.locator('.workspace-content')).toHaveAttribute('data-save-state', 'saved');
+      122 |     await page.close();
+    > 123 |     await reader.clock.install();
+          |                           ^
+      124 |     await reader.clock.pauseAt(await reader.evaluate(() => Date.now() + 1000));
+      125 |     await retry.focus();
+      126 |     await retry.press('Space');
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/write-access.spec.ts:123:27
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/write-access-repair/e2e-write-access-AT-012-he-c9978-on-loads-the-latest-project-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/write-access-repair/e2e-write-access-AT-012-he-c9978-on-loads-the-latest-project-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/write-access-repair/e2e-write-access-AT-012-he-c9978-on-loads-the-latest-project-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/write-access-repair/e2e-write-access-AT-012-he-c9978-on-loads-the-latest-project-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/e2e/write-access.spec.ts:73:3 › AT-012: held retry keeps the R reader view and keyboard promotion loads the latest project
+
+    Error: expect(locator).toBeFocused() failed
+
+    Locator:  getByText('Schreibrecht erhalten. Der aktuelle Projektstand wurde geladen.', { exact: true })
+    Expected: focused
+    Received: inactive
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toBeFocused" getByText('Schreibrecht erhalten. Der aktuelle Projektstand wurde geladen.', { exact: true }) with timeout 10000ms
+      - waiting for getByText('Schreibrecht erhalten. Der aktuelle Projektstand wurde geladen.', { exact: true })
+        24 × locator resolved to <p id="_r_9_" role="status" tabindex="-1" aria-atomic="true" class="dw-action-status workspace-write-access-status">Schreibrecht erhalten. Der aktuelle Projektstand …</p>
+           - unexpected value "inactive"
+
+
+      121 |     await expect(page.locator('.workspace-content')).toHaveAttribute('data-save-state', 'saved');
+      122 |     await page.close();
+    > 123 |     await reader.clock.install();
+          |                           ^
+      124 |     await reader.clock.pauseAt(await reader.evaluate(() => Date.now() + 1000));
+      125 |     await retry.focus();
+      126 |     await retry.press('Space');
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/write-access.spec.ts:123:27
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/write-access-repair/e2e-write-access-AT-012-he-160d8-on-loads-the-latest-project-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/write-access-repair/e2e-write-access-AT-012-he-160d8-on-loads-the-latest-project-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/write-access-repair/e2e-write-access-AT-012-he-160d8-on-loads-the-latest-project-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/write-access-repair/e2e-write-access-AT-012-he-160d8-on-loads-the-latest-project-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [chromium] › tests/e2e/write-access.spec.ts:73:3 › AT-012: held retry keeps the SQL reader view and keyboard promotion loads the latest project
+    [chromium] › tests/e2e/write-access.spec.ts:73:3 › AT-012: held retry keeps the R reader view and keyboard promotion loads the latest project
+  8 passed (53.7s)

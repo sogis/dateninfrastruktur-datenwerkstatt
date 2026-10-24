@@ -2103,3 +2103,69 @@ Code. Zwischenzeitlich hinzugekommene, auftragsfremde Paket- und Exportänderung
 werden erhalten und nicht in den CSV-Commit aufgenommen. Für den Commit wurden
 ausschliesslich nachgestellte Terminal-Leerzeichen in den neuen Logs entfernt;
 Prüfergebnisse und Code bleiben unverändert.
+
+## Ergänzung 24. Oktober 2026 — verständlicher Schreibschutz
+
+**Geliefert / geprüft: REQ-020, REQ-076; AT-012, AT-065.** Ausgangsrevision
+`472385c` mit den bereits vorhandenen separaten XLSX-Änderungen. Die
+Funktionsprüfung erfolgte vor dem nachfolgenden Commit-/Push-Auftrag. Der tatsächlich geprüfte Arbeitsbaum ist durch 219 Quell-,
+Konfigurations- und Testdatei-Hashes im [Prüfbericht](verification/write-access/README.md)
+bezeichnet; keine uncommittete Änderung wird als Gitrevision ausgegeben.
+
+Der eigene Schreibzugriffshinweis nennt belegtes Recht oder fehlende Web Locks.
+Eine erneute Anforderung zeigt Busy, weiterhin belegt, dreisekündigen Erfolg
+oder einen dauerhaften Fehler mit aufklappbaren Details. Ohne Web Locks fehlt
+der wirkungslose Wiederholungsbutton. Statusansagen und Tastaturfokus sind
+abgesichert; bewusst bewegter Fokus wird bei einer späten Übernahme erhalten.
+
+Der Leasevertrag hat einen verpflichtenden Lesergrund. Die Übernahme ist ein
+serialisierter, an Sitzungsidentität und Navigation gebundener Vorgang: ein
+belegtes Recht erhält dieselbe Lesesitzung, ein neuer Writer lädt die aktuelle
+Revision vor Veröffentlichung. Nicht veröffentlichte Leases werden bei Fehler
+oder Abbruch freigegeben. Diagnose und lokaler Bericht enthalten Sperrgrund,
+Browserunterstützung sowie Ergebnis/Zeitpunkt der letzten Prüfung. Projekt- und
+Archivformat sowie Dependencies bleiben für diese Änderung unverändert.
+
+Die Arbeitsansicht bleibt bei der Übernahme bestehen. Ein nachgewiesener
+StrictMode-Doppellesevorgang konnte geöffnete Analysen und Seitenleistenänderungen
+überschreiben; die Initialisierung pro Ansichtscontroller ist jetzt einmalig.
+Neue Controller laden weiterhin den gespeicherten Stand. Lange Projektnamen
+bleiben auch bei 390 Pixeln und 200 % Text innerhalb des Inhalts.
+
+**Relevante Dateien:** Lockvertrag in `contracts/ports.ts`, Browserlock und
+`WorkspaceService`; `WorkspaceWriteAccess.tsx`, Router, Diagnose, Styles und
+`state/workspaceView.ts`. 18 neue Unitfälle und acht neue UI-Fälle sowie
+erweiterte bestehende Multitab-/Recovery-/Diagnosetests. SPEC, Abnahmen,
+Acceptanceindex/-matrix und Implementierungsplan sind nachgeführt.
+
+**Tatsächliche abschliessende Checks** mit Node 22.23.1, npm 11.18.0,
+Playwright 1.63.0, Chromium 153.0.8010.12, Firefox 155.0 und WebKit 26.6:
+
+| Prüfung | Ergebnis |
+| --- | --- |
+| `DW_REUSE_DEV_SERVER=1 DW_REUSE_TEST_PORTAL=1 npm run verify` | **Exit 0**: Typecheck, Lint/Modulgrenzen, **110/110 Unit**, Build/Assets/Lizenzen, **67/67 Integration**, **85/85 UI** |
+| Gezielte Dreiermatrix, genauer Befehl im Prüfbericht | **Exit 0, 39/39**, je 13 Fälle pro Browser, keine Skips/Flakes; echtes Multitab, alleiniger Tab nach Reload, fehlende Locks, Fehler/Busy, SQL/R-Übernahme, neue Revision und Recovery |
+| Abschliessender fokussierter Chromium-Reparaturlauf | **Exit 0, 11/11**; Fokus, erweiterte Seitenleiste, bewusste Fokusbewegung, Navigation und schmale/vergrösserte Ansicht |
+| `git diff --check` / Quellhashvergleich | **Exit 0**, alle 219 erfassten Dateien unverändert zum abschliessend geprüften Stand |
+
+Alle zwölf Screenshots bei 390/1280/1440 Pixeln und 200 % Text wurden visuell
+geprüft; kein horizontaler Überlauf. Historische Prüfbilder/Messwerte sind nach
+Sicherung der eigenen Ausgaben wiederhergestellt. Die ersten UI-Läufe fanden
+Geometrie-, Fokus- und Initialisierungsfehler; eine erste parallele Matrix
+verlor wegen verschachtelter Ausgabeordner Trace-Dateien. Diese Läufe werden
+nicht als bestanden ausgegeben. Logs, Fehlerkontexte, Screenshots und erfolgreiche
+Wiederholungen stehen im [Prüfbericht](verification/write-access/README.md).
+
+**Grenzen / nicht ausgeführt:** Die ursprünglich gemeldete dauerhafte
+Safari-Sperre ist nicht eindeutig reproduziert; keine Ursache behauptet.
+Kein neuer vollständiger nativer Safari-/VoiceOver-Pilot, kein Browserzoomtest,
+keine vollständige Firefox-/WebKit-Abnahme aller Altfunktionen und keine neue
+V1-Releaseabnahme. Kein bekannter Blocker im beauftragten UX-Umfang. Nächster
+konkreter Schritt: Schreibrecht im lesenden Tab erneut anfordern; bei weiter
+belegtem Recht liefern die Diagnose und ihr Bericht nun den tatsächlichen Grund
+und den letzten Prüfausgang. Keine erzwungene Übernahme oder Browserdatenlöschung.
+
+Der nachfolgende Commit enthält nur die Schreibschutzänderung mit zugehörigen
+Tests/Unterlagen. Der exportierte Indexstand bestand separat Typecheck und
+94/94 Unit-Tests, jeweils Exit 0. XLSX-Änderungen und die lokale Build-Konfiguration
+bleiben uncommittet im Arbeitsbaum erhalten.

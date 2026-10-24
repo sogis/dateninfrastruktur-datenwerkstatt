@@ -19,7 +19,9 @@ test('P6 AT-065: absent Web Locks permits existing project only as reader, archi
   });
   await page.reload();
   await page.getByRole('button', {name: 'Gesicherte Projekte nur lesen'}).click();
-  await expect(page.getByText(/Das Projekt ist schreibgeschützt/)).toBeVisible();
+  await expect(page.getByText(/Das Projekt ist hier nur lesbar/)).toBeVisible();
+  await expect(page.getByText(/Web Locks/)).toBeVisible();
+  await expect(page.getByRole('button', {name: 'Schreibrecht erneut anfordern'})).toHaveCount(0);
   await expect(page.getByLabel('Beschreibung', {exact: true})).toBeDisabled();
   await expect(page.getByLabel('Beschreibung', {exact: true})).toHaveValue('Dauerhafter Stand');
   await expect(page.getByRole('button', {name: 'Neue Analyse', exact: true})).toBeDisabled();

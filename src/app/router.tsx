@@ -3,6 +3,7 @@ import {useActionFeedback} from '../ui/useActionFeedback';
 import {NavigationItem} from '../ui/NavigationItem';
 import {StorageSettings} from '../features/workspaces/StorageSettings';
 import {Diagnostics} from '../features/workspaces/Diagnostics';
+import {WorkspaceWriteAccess} from '../features/workspaces/WorkspaceWriteAccess';
 import {WorkspaceViewController} from '../state/workspaceView';
 import {failureMessage} from '../application/errors';
 import {RWorkbench} from '../features/r/RWorkbench';
@@ -249,29 +250,39 @@ export function useWorkspace() {
 }
 function WorkspaceProvider() {
   const session = workspaceRoute.useLoaderData();
+  const workspaceId = session.document.workspace.id;
+  const viewController = useMemo(
+    () =>
+      new WorkspaceViewController(
+        services.views,
+        workspaceId,
+        report,
+        appStore.getState().settings.sidebarCollapsed,
+      ),
+    [workspaceId],
+  );
   const ctx = useMemo(
     () => ({
       session,
       state: createWorkspaceStore(session),
       models: new CodeModels(session.sessionId),
-      view: new WorkspaceViewController(
-        services.views,
-        session.document.workspace.id,
-        report,
-        appStore.getState().settings.sidebarCollapsed,
-      ),
+      view: viewController,
     }),
-    [session],
+    [session, viewController],
   );
   useEffect(() => {
     const unsubscribe = ctx.state.connect();
-    void ctx.view.load();
     return () => {
       unsubscribe();
       ctx.models.dispose();
-      void ctx.view.flush();
     };
   }, [ctx]);
+  useEffect(() => {
+    void viewController.load();
+    return () => {
+      void viewController.flush();
+    };
+  }, [viewController]);
   const state = useStore(ctx.state.store, (s) => s.saveState);
   const error = useStore(ctx.state.store, (s) => s.error);
   const routeId = useRouterState({select: (s) => s.matches.at(-1)?.routeId});
@@ -377,29 +388,16 @@ function WorkspaceProvider() {
           </NavigationItem>
         </AppNavigation>
         <section className="workspace-content" data-analysis={inAnalysis} data-save-state={state}>
-          {(session.readOnly || session.mode === 'temporary' || state !== 'saved') && (
+          <WorkspaceWriteAccess key={session.document.workspace.id} session={session} />
+          {(session.mode === 'temporary' || state !== 'saved') && (
             <div className="save-status" aria-live="polite">
-              {session.readOnly
-                ? 'Das Projekt ist schreibgeschützt, weil ein anderer Tab das Schreibrecht hat oder Web Locks fehlen.'
-                : state === 'saved'
-                  ? 'Änderungen sind nur in dieser Sitzung verfügbar und werden nicht automatisch gesichert.'
-                  : state === 'saving'
-                    ? 'Speichert …'
-                    : state === 'error'
-                      ? 'Speichern fehlgeschlagen'
-                      : 'Nicht gespeichert'}
-              {session.readOnly && (
-                <Button
-                  onClick={() => {
-                    void services.workspaces
-                      .reacquire(session.document.workspace.id)
-                      .then(() => routerApi.invalidate())
-                      .catch(report);
-                  }}
-                >
-                  Schreibrecht erneut anfordern
-                </Button>
-              )}
+              {state === 'saved'
+                ? 'Änderungen sind nur in dieser Sitzung verfügbar und werden nicht automatisch gesichert.'
+                : state === 'saving'
+                  ? 'Speichert …'
+                  : state === 'error'
+                    ? 'Speichern fehlgeschlagen'
+                    : 'Nicht gespeichert'}
             </div>
           )}
           {error !== undefined && (

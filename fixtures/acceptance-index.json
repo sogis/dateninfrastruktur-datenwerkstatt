@@ -154,13 +154,14 @@
     "id": "AT-012",
     "title": "Zwei Tabs, exklusiver Writer und CAS",
     "requirements": [
-      "REQ-020"
+      "REQ-020",
+      "REQ-076"
     ],
     "phase": "P6",
     "level": "Browser",
     "given": "Zwei Tabs derselben Origin öffnen dieselbe Workspace-ID.",
-    "when": "Tab A schreibt; B versucht Mutation. Anschliessend A schliessen und in B erneut Schreibrecht anfordern.",
-    "then": "B zuerst sichtbar read-only ohne Laufstart; nach Lockfreigabe Dokument neu geladen. Simulierter Revisionkonflikt überschreibt nichts."
+    "when": "Tab A schreibt; B versucht Mutation und fordert das weiterhin belegte Schreibrecht erneut an. Anschliessend A schliessen und in B erneut Schreibrecht anfordern; einen Projektwechsel während einer verzögerten Prüfung auslösen.",
+    "then": "B zuerst sichtbar read-only ohne Laufstart mit konkretem Sperrgrund. Die Prüfung hat Busy- und Ergebnisrückmeldung, Mehrfachklicks erzeugen keine zweite Übernahme. Solange belegt, bleiben Lesesitzung und Ansicht erhalten; nach Lockfreigabe wird die aktuelle Revision geladen und dieselbe Unterseite bearbeitbar. Tastaturfokus und Statusansagen bleiben sinnvoll, Erfolg wird drei Sekunden bestätigt. Fehler bieten Details/Retry; überholte Antworten öffnen kein altes Projekt und hinterlassen keinen Lock. Ein alleiniger Tab bleibt nach Reload Writer. Simulierter Revisionkonflikt überschreibt nichts."
   },
   {
     "id": "AT-013",
@@ -881,13 +882,14 @@
     "title": "Web Locks nicht verfügbar",
     "requirements": [
       "REQ-020",
-      "REQ-022"
+      "REQ-022",
+      "REQ-076"
     ],
     "phase": "P6",
     "level": "Browser",
     "given": "Web Locks im Capabilitytest deaktiviert, bestehender persistenter Workspace.",
     "when": "Öffnen und bearbeiten/ausführen versuchen.",
-    "then": "Bestehendes Projekt lesend; kein unsicherer Writer-Fallback. Expliziter neuer Sitzungsmodus möglich, aber ohne falsche Dauerhaftigkeit."
+    "then": "Bestehendes Projekt lesend mit verständlicher Erklärung der fehlenden Web Locks und weiter möglichem Ansehen/Exportieren; kein wirkungsloser Reacquire-Button und kein unsicherer Writer-Fallback. Sperrgrund, Browserunterstützung und letzter Versuch sind in Diagnose/Bericht nachvollziehbar. Expliziter neuer Sitzungsmodus möglich, aber ohne falsche Dauerhaftigkeit."
   },
   {
     "id": "AT-066",

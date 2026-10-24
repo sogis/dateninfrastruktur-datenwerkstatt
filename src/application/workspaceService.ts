@@ -7,7 +7,12 @@ import {RService} from './rService';
 import type {ManagedREngine, RLimits} from './rPorts';
 import type {Analysis, AnalysisId, WorkspaceId, WorkspaceDocument, Id} from '../domain/model';
 import {checkedId, emptyWorkspace, nameSchema, parseWorkspace} from '../domain/workspace';
-import type {WorkspaceRepository, WorkspaceLock, WorkspaceLease} from './ports';
+import type {
+  WorkspaceRepository,
+  WorkspaceLock,
+  WorkspaceLease,
+  WorkspaceReadOnlyReason,
+} from './ports';
 import {PersistenceCoordinator} from './persistenceCoordinator';
 import {AppFailure, failureMessage} from './errors';
 import {DatasetService} from './datasetService';
@@ -40,6 +45,23 @@ interface Dependencies {
   newId: <K extends string>() => Id<K>;
   now: () => string;
 }
+export type WriteAccessAttemptOutcome =
+  | 'writer'
+  | 'still-held'
+  | 'unavailable'
+  | 'failed'
+  | 'cancelled';
+export interface WorkspaceWriteAccessSnapshot {
+  readonly reason: WorkspaceReadOnlyReason | null;
+  readonly webLocksAvailable: boolean | null;
+  readonly lastAttempt: {readonly outcome: WriteAccessAttemptOutcome; readonly at: string} | null;
+}
+export type WorkspaceReacquireResult =
+  | {
+      outcome: 'writer' | 'already-writer' | 'still-held' | 'unavailable';
+      session: WorkspaceEditingSession;
+    }
+  | {outcome: 'cancelled'};
 export class WorkspaceEditingSession {
   readonly persistence: PersistenceCoordinator;
   readonly sessionId: string;
@@ -48,6 +70,8 @@ export class WorkspaceEditingSession {
   private analyses: AnalysisService | undefined;
   private r: RService | undefined;
   private engines: {files: FileImportEngine; sql: ResultSqlEngine} | undefined;
+  private writeAccessSnapshot: WorkspaceWriteAccessSnapshot;
+  private writeAccessListeners = new Set<() => void>();
   readonly scheduler = new WorkspaceScheduler();
   integrity: ArtifactReferenceCheck | undefined;
   hashesChecked = false;
@@ -58,6 +82,11 @@ export class WorkspaceEditingSession {
     private readonly deps: Dependencies,
     missingArtifacts: readonly string[] = [],
   ) {
+    this.writeAccessSnapshot = {
+      reason: lease.mode === 'reader' ? lease.reason : null,
+      webLocksAvailable: deps.lock.webLocksAvailable ?? null,
+      lastAttempt: null,
+    };
     this.persistence = new PersistenceCoordinator(document, deps.repository);
     this.sessionId = deps.newId();
     const recover = (d: WorkspaceDocument) => {
@@ -250,12 +279,41 @@ export class WorkspaceEditingSession {
   get readOnly() {
     return this.lease.mode === 'reader';
   }
+  get readOnlyReason() {
+    return this.writeAccessSnapshot.reason;
+  }
+  get writeAccess() {
+    return this.writeAccessSnapshot;
+  }
+  getWriteAccessSnapshot = () => this.writeAccessSnapshot;
+  subscribeWriteAccess = (listener: () => void) => {
+    this.writeAccessListeners.add(listener);
+    return () => {
+      this.writeAccessListeners.delete(listener);
+    };
+  };
+  recordWriteAccessAttempt(outcome: WriteAccessAttemptOutcome) {
+    const reason =
+      outcome === 'still-held'
+        ? 'lock-held'
+        : outcome === 'unavailable'
+          ? 'locks-unavailable'
+          : this.readOnlyReason;
+    this.writeAccessSnapshot = {
+      reason: this.readOnly ? reason : null,
+      webLocksAvailable: this.deps.lock.webLocksAvailable ?? null,
+      lastAttempt: {outcome, at: this.deps.now()},
+    };
+    for (const listener of this.writeAccessListeners) listener();
+  }
   edit(change: (document: WorkspaceDocument) => void) {
     if (this.closed) throw new AppFailure('RUNTIME_RESET', 'Die Sitzung ist geschlossen.');
     if (this.readOnly)
       throw new AppFailure(
         'READ_ONLY_WORKSPACE',
-        'Dieses Projekt ist in einem anderen Tab geöffnet.',
+        this.readOnlyReason === 'locks-unavailable'
+          ? 'Der Browser unterstützt das sichere Schreibrecht nicht. Das Projekt ist nur lesbar.'
+          : 'Eine andere Sitzung hält das Schreibrecht für dieses Projekt.',
       );
     this.persistence.mutate((d) => {
       change(d);
@@ -375,6 +433,8 @@ export class WorkspaceService {
   private active: WorkspaceEditingSession | undefined;
   private navigation: Promise<void> = Promise.resolve();
   private archive: WorkspaceArchive | undefined;
+  private navigationIntent = 0;
+  private writeAccessAttempts = new Set<AbortController>();
   constructor(private readonly deps: Dependencies) {}
   getArchive() {
     if (!this.deps.archiveCodec || !this.deps.artifacts)
@@ -407,6 +467,7 @@ export class WorkspaceService {
     );
   }
   async deleteWorkspace(id: WorkspaceId, expectedRevision: number) {
+    if (this.active?.document.workspace.id === id) this.cancelWriteAccessAttempts();
     return this.enqueue(async () => {
       let reviewedRevision = expectedRevision;
       if (this.active?.document.workspace.id === id) {
@@ -485,6 +546,7 @@ export class WorkspaceService {
   }
   async open(rawId: string): Promise<WorkspaceEditingSession> {
     const id = checkedId<'workspace'>(rawId);
+    if (this.active?.document.workspace.id !== id) this.cancelWriteAccessAttempts();
     return this.enqueue(async () => {
       if (this.active?.document.workspace.id === id) return this.active;
       return measure('Workspace öffnen', () => this.openNext(id));
@@ -497,6 +559,10 @@ export class WorkspaceService {
       () => {},
     );
     return pending;
+  }
+  private cancelWriteAccessAttempts() {
+    this.navigationIntent++;
+    for (const controller of this.writeAccessAttempts) controller.abort();
   }
 
   private async openNext(id: WorkspaceId) {
@@ -533,14 +599,94 @@ export class WorkspaceService {
     }
   }
   async close() {
+    this.cancelWriteAccessAttempts();
     return this.enqueue(async () => {
       await this.active?.close();
       this.active = undefined;
     });
   }
-  async reacquire(id: string) {
-    await this.close();
-    return this.open(id);
+  async reacquire(
+    rawId: string,
+    expectedSessionId: string,
+    signal?: AbortSignal,
+  ): Promise<WorkspaceReacquireResult> {
+    const id = checkedId<'workspace'>(rawId);
+    const intent = this.navigationIntent;
+    const controller = new AbortController();
+    const abort = () => controller.abort(signal?.reason);
+    if (signal?.aborted) abort();
+    else signal?.addEventListener('abort', abort, {once: true});
+    this.writeAccessAttempts.add(controller);
+    const current = () =>
+      !controller.signal.aborted &&
+      intent === this.navigationIntent &&
+      this.active?.sessionId === expectedSessionId &&
+      this.active.document.workspace.id === id;
+    try {
+      return await this.enqueue(async (): Promise<WorkspaceReacquireResult> => {
+        const previous = this.active;
+        const cancelled = (): WorkspaceReacquireResult => {
+          if (previous?.sessionId === expectedSessionId)
+            previous.recordWriteAccessAttempt('cancelled');
+          return {outcome: 'cancelled'};
+        };
+        if (!previous || !current()) return cancelled();
+        if (!previous.readOnly) {
+          previous.recordWriteAccessAttempt('writer');
+          return {outcome: 'already-writer', session: previous};
+        }
+        let tentative: WorkspaceLease | undefined;
+        try {
+          tentative = await this.deps.lock.acquire(id, controller.signal);
+          if (!current()) return cancelled();
+          if (tentative.mode === 'reader') {
+            const outcome = tentative.reason === 'lock-held' ? 'still-held' : 'unavailable';
+            const readerLease = tentative;
+            tentative = undefined;
+            await readerLease.release();
+            if (!current()) return cancelled();
+            previous.recordWriteAccessAttempt(outcome);
+            return {outcome, session: previous};
+          }
+          const latest = await this.deps.repository.load(id);
+          if (!current()) return cancelled();
+          if (!latest) throw new AppFailure('REFERENCE_INVALID', 'Projekt wurde entfernt.');
+          const document = parseWorkspace(latest);
+          const integrity = this.deps.artifacts
+            ? await new RecoveryService(this.deps.artifacts).inspect(document, controller.signal)
+            : undefined;
+          if (!current()) return cancelled();
+          await previous.close();
+          if (!current()) {
+            if (this.active === previous) this.active = undefined;
+            return cancelled();
+          }
+          const session = new WorkspaceEditingSession(
+            document,
+            tentative,
+            this.deps,
+            integrity?.missing,
+          );
+          session.integrity = integrity;
+          session.recordWriteAccessAttempt('writer');
+          // The attempt's cancellation lifetime must not become the promoted lease's lifetime.
+          signal?.removeEventListener('abort', abort);
+          this.writeAccessAttempts.delete(controller);
+          this.active = session;
+          tentative = undefined;
+          return {outcome: 'writer', session};
+        } catch (error) {
+          if (!current()) return cancelled();
+          previous.recordWriteAccessAttempt('failed');
+          throw error;
+        } finally {
+          await tentative?.release();
+        }
+      });
+    } finally {
+      signal?.removeEventListener('abort', abort);
+      this.writeAccessAttempts.delete(controller);
+    }
   }
 }
 

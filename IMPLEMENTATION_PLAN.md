@@ -1,5 +1,15 @@
 # Implementierungsplan P0–P8
 
+## Ergänzung — Schreibschutz und erneute Anforderung (24. Oktober 2026)
+
+REQ-020/REQ-076, AT-012/AT-065: konkreter Lesergrund, sichtbare Prüfzustände,
+erhaltene Lesesitzung bei belegtem Recht und serialisierte Übernahme mit aktueller
+Revision. Überholte Versuche nach Projektwechsel abbrechen; neue, unveröffentlichte
+Locks freigeben. Diagnose/Bericht um Laufzeitangaben zum Schreibzugriff ergänzen.
+Gate: Unit-/Fehler-/Navigationstests, echte Multitab-/Reload-/Capabilitytests,
+Tastatur und schmale/vergrösserte Darstellung, gezielte Dreiermatrix und
+`npm run verify`. Keine Lockübernahme erzwingen und keine Browserdaten löschen.
+
 Phasen sind Lieferabschnitte, keine Kalender- oder Aufwandsschätzung. Nach jeder Phase relevante Unit-/Browserchecks ausführen und `docs/IMPLEMENTATION_STATUS.md` mit tatsächlichem Ergebnis aktualisieren. Eine Phase wird nicht allein durch vorhandene Dateien abgeschlossen.
 
 ## Gemeinsames Statusformat

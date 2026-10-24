@@ -1,0 +1,74 @@
+
+Running 39 tests using 1 worker
+
+(node:55671) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/multitab.spec.ts:2:1 › P6 AT-065: absent Web Locks permits existing project only as reader, archive export remains possible (2.7s)
+  ✘   2 [chromium] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view (27.7s)
+(node:59093) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   3 [chromium] › tests/e2e/required-fields.spec.ts:410:1 › Required fields: read-only project metadata keeps its semantics and cannot be edited (1.7s)
+  ✓   4 [chromium] › tests/e2e/workspaces.spec.ts:104:1 › AT-012: another tab opens read-only and explicitly reacquires after writer closes (1.9s)
+  ✓   5 [chromium] › tests/e2e/write-access.spec.ts:73:3 › AT-012: held retry keeps the SQL reader view and keyboard promotion loads the latest project (3.7s)
+  ✓   6 [chromium] › tests/e2e/write-access.spec.ts:73:3 › AT-012: held retry keeps the R reader view and keyboard promotion loads the latest project (3.8s)
+  ✓   7 [chromium] › tests/e2e/write-access.spec.ts:149:1 › AT-012: a single tab retains write access across page reloads (1.8s)
+  ✓   8 [chromium] › tests/e2e/write-access.spec.ts:167:1 › AT-012: delayed successful promotion preserves focus intentionally moved to the sidebar (3.5s)
+  ✓   9 [chromium] › tests/e2e/write-access.spec.ts:224:1 › AT-012: pending retry prevents duplicate activation and a technical failure keeps the reader usable (1.9s)
+  ✓  10 [chromium] › tests/e2e/write-access.spec.ts:263:1 › AT-012: diagnostics update after a held retry and download only structured write-access facts (2.2s)
+  ✓  11 [chromium] › tests/e2e/write-access.spec.ts:311:1 › AT-012: a delayed retry failure after navigation does not appear in another project (1.7s)
+  ✓  12 [chromium] › tests/e2e/write-access.spec.ts:338:1 › AT-055: write-access reason, retry and result fit narrow widths and 200% text (2.5s)
+  ✓  13 [chromium] › tests/integration/recovery.spec.ts:132:1 › P6 AT-012 AT-015 AT-017 AT-061: tab death interrupts real query, saved results remain, missing/corrupt bytes preserve code (8.6s)
+(node:59284) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  14 [firefox] › tests/e2e/multitab.spec.ts:2:1 › P6 AT-065: absent Web Locks permits existing project only as reader, archive export remains possible (6.0s)
+  ✓  15 [firefox] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view (35.5s)
+  ✓  16 [firefox] › tests/e2e/required-fields.spec.ts:410:1 › Required fields: read-only project metadata keeps its semantics and cannot be edited (4.2s)
+  ✓  17 [firefox] › tests/e2e/workspaces.spec.ts:104:1 › AT-012: another tab opens read-only and explicitly reacquires after writer closes (4.1s)
+  ✓  18 [firefox] › tests/e2e/write-access.spec.ts:73:3 › AT-012: held retry keeps the SQL reader view and keyboard promotion loads the latest project (6.2s)
+  ✓  19 [firefox] › tests/e2e/write-access.spec.ts:73:3 › AT-012: held retry keeps the R reader view and keyboard promotion loads the latest project (6.3s)
+  ✓  20 [firefox] › tests/e2e/write-access.spec.ts:149:1 › AT-012: a single tab retains write access across page reloads (4.8s)
+  ✓  21 [firefox] › tests/e2e/write-access.spec.ts:167:1 › AT-012: delayed successful promotion preserves focus intentionally moved to the sidebar (7.0s)
+  ✓  22 [firefox] › tests/e2e/write-access.spec.ts:224:1 › AT-012: pending retry prevents duplicate activation and a technical failure keeps the reader usable (3.8s)
+  ✓  23 [firefox] › tests/e2e/write-access.spec.ts:263:1 › AT-012: diagnostics update after a held retry and download only structured write-access facts (3.1s)
+  ✓  24 [firefox] › tests/e2e/write-access.spec.ts:311:1 › AT-012: a delayed retry failure after navigation does not appear in another project (3.2s)
+  ✓  25 [firefox] › tests/e2e/write-access.spec.ts:338:1 › AT-055: write-access reason, retry and result fit narrow widths and 200% text (3.3s)
+  ✓  26 [firefox] › tests/integration/recovery.spec.ts:132:1 › P6 AT-012 AT-015 AT-017 AT-061: tab death interrupts real query, saved results remain, missing/corrupt bytes preserve code (9.5s)
+(node:59923) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  27 [webkit] › tests/e2e/multitab.spec.ts:2:1 › P6 AT-065: absent Web Locks permits existing project only as reader, archive export remains possible (6.0s)
+  ✓  28 [webkit] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view (24.4s)
+  ✓  29 [webkit] › tests/e2e/required-fields.spec.ts:410:1 › Required fields: read-only project metadata keeps its semantics and cannot be edited (2.2s)
+  ✓  30 [webkit] › tests/e2e/workspaces.spec.ts:104:1 › AT-012: another tab opens read-only and explicitly reacquires after writer closes (2.1s)
+  ✓  31 [webkit] › tests/e2e/write-access.spec.ts:73:3 › AT-012: held retry keeps the SQL reader view and keyboard promotion loads the latest project (3.4s)
+  ✓  32 [webkit] › tests/e2e/write-access.spec.ts:73:3 › AT-012: held retry keeps the R reader view and keyboard promotion loads the latest project (3.7s)
+  ✓  33 [webkit] › tests/e2e/write-access.spec.ts:149:1 › AT-012: a single tab retains write access across page reloads (1.9s)
+  ✓  34 [webkit] › tests/e2e/write-access.spec.ts:167:1 › AT-012: delayed successful promotion preserves focus intentionally moved to the sidebar (3.0s)
+  ✓  35 [webkit] › tests/e2e/write-access.spec.ts:224:1 › AT-012: pending retry prevents duplicate activation and a technical failure keeps the reader usable (2.1s)
+  ✓  36 [webkit] › tests/e2e/write-access.spec.ts:263:1 › AT-012: diagnostics update after a held retry and download only structured write-access facts (2.3s)
+  ✓  37 [webkit] › tests/e2e/write-access.spec.ts:311:1 › AT-012: a delayed retry failure after navigation does not appear in another project (2.4s)
+  ✓  38 [webkit] › tests/e2e/write-access.spec.ts:338:1 › AT-055: write-access reason, retry and result fit narrow widths and 200% text (2.5s)
+  ✓  39 [webkit] › tests/integration/recovery.spec.ts:132:1 › P6 AT-012 AT-015 AT-017 AT-061: tab death interrupts real query, saved results remain, missing/corrupt bytes preserve code (7.1s)
+
+
+  1) [chromium] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view
+
+    Error: browserContext.close: ENOENT: no such file or directory, open '/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/write-access-matrix/.playwright-artifacts-0/traces/3e99b8f6c3cad4665a83-386733114127d74db667-recording2.trace'
+
+       at persistentBrowser.ts:26
+
+      24 |         await cleanup();
+      25 |       } finally {
+    > 26 |         await context.close();
+         |         ^
+      27 |         await rm(path, {recursive: true, force: true});
+      28 |       }
+      29 |     }
+        at Object.context (/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/persistentBrowser.ts:26:9)
+
+    Error: ENOENT: no such file or directory, open '/Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/test-results/write-access-matrix/.playwright-artifacts-0/803386b7341e99d4e1cde9d2601d3a9e.zip'
+
+    Error Context: test-results/write-access-matrix/e2e-navigation-Navigation--798b4--edits-and-its-sidebar-view-chromium/error-context.md
+
+  1 failed
+    [chromium] › tests/e2e/navigation.spec.ts:57:1 › Navigation: settings follow R and leaving the workspace saves edits and its sidebar view
+  38 passed (3.8m)

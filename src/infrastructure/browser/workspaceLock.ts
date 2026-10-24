@@ -1,9 +1,13 @@
 import type {WorkspaceId} from '../../domain/model';
 import type {WorkspaceLock, WorkspaceLease} from '../../application/ports';
 export class BrowserWorkspaceLock implements WorkspaceLock {
+  get webLocksAvailable() {
+    return !!navigator.locks;
+  }
   async acquire(workspaceId: WorkspaceId, signal: AbortSignal): Promise<WorkspaceLease> {
     signal.throwIfAborted();
-    if (!navigator.locks) return {workspaceId, mode: 'reader', release: async () => {}};
+    if (!this.webLocksAvailable)
+      return {workspaceId, mode: 'reader', reason: 'locks-unavailable', release: async () => {}};
     return new Promise((resolve, reject) => {
       let released = false;
       let release: () => void = () => {};
@@ -23,9 +27,8 @@ export class BrowserWorkspaceLock implements WorkspaceLock {
             release();
           };
           signal.addEventListener('abort', abort, {once: true});
-          resolve({
+          const lease = {
             workspaceId,
-            mode: lock ? 'writer' : 'reader',
             release: async () => {
               if (!released) {
                 released = true;
@@ -33,7 +36,10 @@ export class BrowserWorkspaceLock implements WorkspaceLock {
               }
               await task;
             },
-          });
+          };
+          resolve(
+            lock ? {...lease, mode: 'writer'} : {...lease, mode: 'reader', reason: 'lock-held'},
+          );
           try {
             if (lock) await hold;
           } finally {

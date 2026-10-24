@@ -414,7 +414,7 @@ test('Required fields: read-only project metadata keeps its semantics and cannot
   await createProject(page);
   const other = await context.newPage();
   await other.goto(page.url());
-  await expect(other.getByText(/Das Projekt ist schreibgeschützt/)).toBeVisible();
+  await expect(other.getByText(/Das Projekt ist hier nur lesbar/)).toBeVisible();
   const name = other.getByLabel('Projektname', {exact: true});
   await expect(name).toHaveAttribute('required');
   await expect(name).toBeDisabled();

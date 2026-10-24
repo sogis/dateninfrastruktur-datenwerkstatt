@@ -58,6 +58,10 @@ function IntegrityStatus({
 export function Diagnostics() {
   const {session} = useWorkspace();
   const doc = useSyncExternalStore(session.persistence.subscribe, () => session.document);
+  const writeAccess = useSyncExternalStore(
+    session.subscribeWriteAccess,
+    session.getWriteAccessSnapshot,
+  );
   const operation = useSyncExternalStore(
     session.scheduler.subscribe,
     session.scheduler.getSnapshot,
@@ -132,6 +136,7 @@ export function Diagnostics() {
           Für technische Abklärungen kannst du einen lokalen Bericht herunterladen. Er enthält IDs,
           Laufstatus, protokollierte Runtimeversionen und die letzten 200 Zeitmessungen.
         </p>
+        <p>Der Bericht enthält auch den Schreibzugriff und das Ergebnis der letzten Schreibrechtsprüfung.</p>
         <p>
           Tabellenwerte, Dateien, Quellen-URLs, Parametersätze und Fehlermeldungstexte werden nicht
           aufgenommen. Analysecode wird nur auf ausdrückliche Auswahl ergänzt.
@@ -154,6 +159,7 @@ export function Diagnostics() {
               revision: d.revision,
               mode: session.mode,
               readOnly: session.readOnly,
+              writeAccess,
               counts: {
                 datasets: Object.keys(d.datasets).length,
                 runs: Object.keys(d.runs).length,
@@ -202,6 +208,44 @@ export function Diagnostics() {
           <dd>{session.mode === 'temporary' ? 'Nur diese Sitzung' : 'Lokal im Browser'}</dd>
           <dt>Schreibzugriff</dt>
           <dd>{session.readOnly ? 'Nur lesend' : 'Schreibend'}</dd>
+          <dt>Grund des Schreibschutzes</dt>
+          <dd>
+            {writeAccess.reason === 'lock-held'
+              ? 'Das Schreibrecht ist bereits belegt.'
+              : writeAccess.reason === 'locks-unavailable'
+                ? 'Die Browserfunktion Web Locks fehlt.'
+                : 'Kein Schreibschutz'}
+          </dd>
+          <dt>Browserunterstützung für Web Locks</dt>
+          <dd>
+            {writeAccess.webLocksAvailable === null
+              ? 'Für diesen Sitzungsmodus nicht erforderlich'
+              : writeAccess.webLocksAvailable
+                ? 'Verfügbar'
+                : 'Nicht verfügbar'}
+          </dd>
+          <dt>Letzte Schreibrechtsprüfung</dt>
+          <dd>
+            {writeAccess.lastAttempt
+              ? {
+                  writer: 'Schreibrecht erhalten',
+                  'still-held': 'Schreibrecht weiterhin belegt',
+                  unavailable: 'Web Locks nicht verfügbar',
+                  failed: 'Prüfung fehlgeschlagen',
+                  cancelled: 'Prüfung abgebrochen',
+                }[writeAccess.lastAttempt.outcome]
+              : 'Noch nicht angefordert'}
+          </dd>
+          {writeAccess.lastAttempt && (
+            <>
+              <dt>Zeitpunkt der Prüfung</dt>
+              <dd>
+                <time dateTime={writeAccess.lastAttempt.at}>
+                  {new Date(writeAccess.lastAttempt.at).toLocaleString('de-CH')}
+                </time>
+              </dd>
+            </>
+          )}
           <dt>Projektrevision</dt>
           <dd>{doc.revision}</dd>
           <dt>Protokollierte Läufe</dt>

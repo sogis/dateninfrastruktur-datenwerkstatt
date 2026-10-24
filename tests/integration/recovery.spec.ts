@@ -171,7 +171,7 @@ test('P6 AT-012 AT-015 AT-017 AT-061: tab death interrupts real query, saved res
     .toBe(true);
   const reader = await context.newPage();
   await reader.goto(url);
-  await expect(reader.getByText(/Das Projekt ist schreibgeschützt/)).toBeVisible();
+  await expect(reader.getByText(/Das Projekt ist hier nur lesbar/)).toBeVisible();
   await expect(reader.getByRole('button', {name: 'Neue Analyse', exact: true})).toBeDisabled();
   await page.close();
   await reader.getByRole('button', {name: 'Schreibrecht erneut anfordern'}).click();
