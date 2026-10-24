@@ -1,7 +1,7 @@
 {
   "formatVersion": 1,
   "appBasePath": "/",
-  "buildId": "local-development-not-accepted",
+  "buildId": "local-development",
   "portalProviders": [],
   "allowedDataOrigins": [],
   "runtimes": {
