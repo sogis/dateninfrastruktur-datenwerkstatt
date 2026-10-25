@@ -2749,3 +2749,41 @@ Browsermatrix und Deploymenttests. Die gezielte Auswahl deckt die angeforderte
 Ergebnisnavigation und direkt angrenzende Tabellenfunktionen ab. Kein bekannter
 Blocker; der Abschnitt ist abgeschlossen, keine weitere Phase in diesem Auftrag.
 Kein Commit/Push.
+
+
+## SQL-Tabellenkopf: rechter Abstand am Typ-Badge — 25. Oktober 2026
+
+**REQ-062 / REQ-066, Status: bestanden.** In `src/styles/app.css` erhält
+`.result-grid th .dw-button` zusätzlich `padding-inline-end: 6px`. Damit liegt
+zwischen Typ-Badge und rechtem Hoverrand ein einheitlicher Abstand für alle
+Spaltentypen. Vorhandene lokale Änderungen bleiben erhalten; keine neuen
+Schnittstellen, Dependencies oder Tests.
+
+**Verifizierter Stand:** `931959711567d0fb4e3460054f1434d7bf5149e1` plus
+vorhandene lokale Änderungen und diese CSS-Ergänzung. Node 22.23.1,
+npm 11.18.0, Chromium 153.0.8010.12.
+
+**Tatsächliche Checks:**
+
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/sql-workbench.spec.ts -g 'SQL results: compact actions, typed table headers, row numbers and sort without a new run' --output=test-results/type-badge-padding --reporter=list`:
+  **1/1 bestanden, Exit 0**. Der vorhandene Fall prüft Tabellenköpfe,
+  Sortierung ohne neuen Lauf und angrenzendes Paging mit echtem DuckDB-Ergebnis.
+- `node --experimental-strip-types --input-type=module` über stdin:
+  **Exit 0**, isoliertes persistentes Chromium-Profil und echte Abfrage
+  `SELECT 2026::BIGINT AS jahr`. Bei 1440×900 und 1280×800 sind Hover und
+  jeweils exakt 6 px Abstand zwischen Badge und rechtem Buttonrand bestätigt.
+  Beide Screenshots anschliessend visuell geprüft; Profil wieder entfernt.
+- `npx prettier --check src/styles/app.css`: **Exit 0**.
+- `git diff --check`: **Exit 0**.
+
+Nachweise: [Hover 1440×900](verification/type-badge-padding/hover-1440.png),
+[Hover 1280×800](verification/type-badge-padding/hover-1280.png),
+[Messdaten](verification/type-badge-padding/measurements.json).
+Die protokollierten Hintergrundfarben stammen aus der laufenden Hovertransition;
+der geometrische Abstand ist in beiden Ansichten 6 px.
+
+**Nicht ausgeführt:** Typecheck, Lint, Build, Unit-Tests, vollständige Suiten,
+`npm run verify`, weitere Browser und Deploymenttests. Die gezielte Auswahl
+prüft die reine CSS-Korrektur und unmittelbar betroffenes Tabellenverhalten.
+Keine bekannten Einschränkungen oder Blocker; Abschnitt abgeschlossen, keine
+weitere Phase in diesem Auftrag. Kein Commit/Push.

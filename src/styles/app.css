@@ -756,6 +756,7 @@ main {
   min-height: 32px;
   width: 100%;
   padding: 0;
+  padding-inline-end: 6px;
   border: 0;
   background: none;
   color: inherit;

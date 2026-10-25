@@ -1,0 +1,19 @@
+{
+  "chromium": "153.0.8010.12",
+  "measurements": [
+    {
+      "width": 1440,
+      "text": "BIGINT",
+      "rightGap": 6,
+      "hover": true,
+      "buttonBackground": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "width": 1280,
+      "text": "BIGINT",
+      "rightGap": 6,
+      "hover": true,
+      "buttonBackground": "rgba(217, 223, 229, 0.373)"
+    }
+  ]
+}
