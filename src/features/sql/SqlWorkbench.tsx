@@ -1,5 +1,14 @@
 import {numericColumn} from '../../ui/table';
-import {Button, Input, Select, FormField, ActionGroup, Toolbar, Notice} from '../../ui/Controls';
+import {
+  Button,
+  IconButton,
+  Input,
+  Select,
+  FormField,
+  ActionGroup,
+  Toolbar,
+  Notice,
+} from '../../ui/Controls';
 import {useFormValidation} from '../../ui/useFormValidation';
 import {displayNameError, sqlNameError} from '../../domain/fieldValidation';
 import {ActionMenu, SplitButton} from '../../ui/ActionMenu';
@@ -42,6 +51,8 @@ import {useMediaQuery, usePanelHeight} from '../../ui/PanelLayout';
 import type {ImperativePanelGroupHandle} from 'react-resizable-panels';
 import {Chart} from './chart';
 import {RunDetails, RunStatus, runTimeText} from '../results/RunDetails';
+
+const RESULT_PAGE_SIZE = 100;
 
 function formatDuration(durationMs: number): string {
   if (durationMs < 1000) {
@@ -674,6 +685,10 @@ function TableView({
   const service = session.getAnalyses();
   const [transfer, setTransfer] = useState(false);
   const [offset, setOffset] = useState(0);
+  const totalRows = BigInt(result.rowCount);
+  const firstRow = totalRows === 0n ? 0n : BigInt(offset) + 1n;
+  const pageEnd = BigInt(offset) + BigInt(RESULT_PAGE_SIZE);
+  const lastRow = pageEnd < totalRows ? pageEnd : totalRows;
   const [sort, setSort] = useState<{column: string; direction: 'asc' | 'desc'}[]>([]);
   const [rows, setRows] = useState<readonly (readonly unknown[])[]>([]);
   const [error, setError] = useState('');
@@ -729,7 +744,7 @@ function TableView({
     setLoading(true);
     setError('');
     void service
-      .page(result.id, {offset, size: 100, sort}, new AbortController().signal)
+      .page(result.id, {offset, size: RESULT_PAGE_SIZE, sort}, new AbortController().signal)
       .then(
         (page) => {
           if (current) setRows(page.rows);
@@ -979,23 +994,30 @@ function TableView({
       <Toolbar className="result-toolbar result-footer">
         <div className="result-summary" role="status" aria-live="polite">
           <span>
-            {BigInt(result.rowCount).toLocaleString('de-CH')}{' '}
-            {result.rowCount === '1' ? 'Zeile' : 'Zeilen'}
+            {totalRows.toLocaleString('de-CH')} {result.rowCount === '1' ? 'Zeile' : 'Zeilen'}
           </span>
           {run?.durationMs !== undefined && <span>{formatDuration(run.durationMs)}</span>}
         </div>
         {view === 'table' && (
           <ActionGroup className="result-paging">
-            <Button disabled={offset === 0 || loading} onClick={() => setOffset(offset - 100)}>
-              Vorherige Seite
-            </Button>
-            <span>Seite {Math.floor(offset / 100) + 1} (bis zu 100 Zeilen pro Seite)</span>
-            <Button
-              disabled={offset + 100 >= Number(result.rowCount) || loading}
-              onClick={() => setOffset(offset + 100)}
-            >
-              Nächste Seite
-            </Button>
+            <span className="result-paging-range" aria-live="polite">
+              {firstRow.toLocaleString('de-CH')}–{lastRow.toLocaleString('de-CH')} von{' '}
+              {totalRows.toLocaleString('de-CH')}
+            </span>
+            <IconButton
+              variant="tertiary"
+              icon="chevron-left"
+              label="Vorherige Seite"
+              disabled={offset === 0 || loading}
+              onClick={() => setOffset(offset - RESULT_PAGE_SIZE)}
+            />
+            <IconButton
+              variant="tertiary"
+              icon="chevron-right"
+              label="Nächste Seite"
+              disabled={pageEnd >= totalRows || loading}
+              onClick={() => setOffset(offset + RESULT_PAGE_SIZE)}
+            />
           </ActionGroup>
         )}
       </Toolbar>

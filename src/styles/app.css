@@ -708,6 +708,9 @@ main {
   flex-wrap: wrap;
   gap: 0.6rem;
   min-width: 0;
+}
+.result-summary,
+.result-paging-range {
   color: var(--dw-text-secondary);
   font-family: var(--dw-font-code);
   font-size: 12px;
@@ -715,7 +718,12 @@ main {
 }
 .result-paging {
   margin-inline-start: auto;
-  font-size: 0.75rem;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  gap: var(--dw-gap-actions);
+}
+.result-paging-range {
+  white-space: nowrap;
 }
 .result-grid {
   overflow: auto;

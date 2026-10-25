@@ -2678,3 +2678,74 @@ weitere Playwright-Browser und Deploymenttests. Die gezielte Auswahl deckt
 Darstellung, Bedienung und die unmittelbar betroffene Layoutspeicherung ab.
 Kein bekannter Blocker; dieser Korrekturabschnitt ist abgeschlossen, keine
 weitere Implementierungsphase in diesem Auftrag. Kein Commit/Push.
+
+## UI — Kompakte SQL-Paging-Leiste (25. Oktober 2026)
+
+**Geliefert und gezielt geprüft: REQ-041/046/062/067, Regression zu
+AT-027/054/055.** Verifizierte Basisrevision
+`931959711567d0fb4e3460054f1434d7bf5149e1` mit diesen und bereits vorhandenen
+uncommittierten Änderungen. Der Abschnitt wurde bei `94eb5e0` begonnen;
+parallel entstandene Divideränderungen und offene Tabellenrahmenkorrekturen
+bleiben erhalten.
+
+`src/features/sql/SqlWorkbench.tsx` zeigt rechts in der Ergebnisfusszeile den
+Zeilenbereich, beispielsweise `1–100 von 350`, gefolgt von zwei tertiären
+`IconButton`s mit den zugänglichen Namen und Tooltips „Vorherige Seite“ und
+„Nächste Seite“. Die feste Seitengrösse ist zentral als 100 definiert. Bereich
+und Gesamtzahl werden mit BigInt und `de-CH` ohne Number-Präzisionsverlust
+formatiert; die nächste Seitengrenze verwendet ebenfalls BigInt. Die letzte
+Teilseite endet bei der vorhandenen Ergebniszeilenzahl, ein leeres Ergebnis
+zeigt `0–0 von 0`. Beide Controls bleiben sichtbar; Grenz- und Ladezustände
+deaktivieren die passenden Buttons. Bestehender Snapshot-/Pagingpfad, keine
+neue Benutzerabfrage und keine Speicherformat- oder Dependencyänderung.
+
+`src/styles/app.css` teilt die bestehende 12-px-Monospace-Typografie mit der
+Bereichsangabe und hält die Paging-Gruppe mit 8 px Abstand zusammen; sie kann
+als Ganzes umbrechen. Standardbedienflächen 40 × 40 px, über die vorhandenen
+Touchregeln 44 × 44 px. `src/ui/Icon.tsx` ergänzt die unveränderten Originalpfade
+`chevron-left` und `chevron-right` aus Bootstrap Icons 1.13.1; vorhandene
+MIT-Lizenz unter `licenses/bootstrap-icons-1.13.1.txt` gelesen und erhalten.
+`docs/DESIGN_SYSTEM.md` dokumentiert Darstellung und Verhalten.
+
+Der bestehende Tabellenfall in `tests/e2e/sql-workbench.spec.ts` prüft erste,
+mittlere und letzte Teilseite, Leerresultat, sichtbare/deaktivierte Controls,
+Schrift, Abstände, Iconsemantik, Tooltips und Enter-/Leertastenbedienung sowie
+unveränderte Laufanzahl bei Paging/Sortierung. Zur deterministischen Prüfung
+des Ladezustands wird nur die Zustellung einer tatsächlich von DuckDB gelesenen
+Seite kurz angehalten; keine Ergebnisdaten werden gefälscht.
+
+**Tatsächliche Checks:**
+
+- `npm run typecheck`: **Exit 0**.
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/sql-workbench.spec.ts -g 'SQL results: compact actions' --output=test-results/compact-paging --reporter=list`:
+  **Exit 1**, Tooltipprüfung ohne vorherigen Tastaturmodus. Test auf echten
+  sichtbaren Tastaturfokus umgestellt, Tooltip-Assertions erhalten.
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/sql-workbench.spec.ts -g 'SQL results: compact actions' --output=test-results/compact-paging-final --reporter=list`:
+  **1/1 bestanden, Exit 0**, mit realem DuckDB-Ergebnis und allen oben genannten
+  Tabellen-/Pagingprüfungen.
+- Zusätzliche echte UI-Prüfungen mit
+  `node --experimental-strip-types --input-type=module` über stdin:
+  erster Touchlauf **Exit 1**, weil der Test ausschliesslich einen typografischen
+  Apostroph erwartete, während die gepinnte Chromium-Intl-Version den geraden
+  Schweizer Gruppentrenner liefert. Die Erwartung akzeptiert fachlich beide
+  de-CH-Apostrophvarianten, keine Produktionsformatierung geändert.
+  Korrigierter Lauf **Exit 0**: echte 1350-Zeilen-Abfrage, 44-px-Touchflächen,
+  tatsächlich gemessene 8-px-Abstände und gemeinsamer Umbruch bei 360 px.
+  Zusätzliche Scroll-/Touchprüfung bei 360×800 **Exit 0**: umgebrochene Controls
+  ins Bild scrollbar, Tippen zeigt `101–200 von 1'350`.
+- `npx prettier --check src/features/sql/SqlWorkbench.tsx src/ui/Icon.tsx src/styles/app.css tests/e2e/sql-workbench.spec.ts`:
+  zunächst **Exit 1** (JSX-Zeilenformat), nach Korrektur am finalen Stand
+  **Exit 0**. `git diff --check`: **Exit 0**.
+
+Node 22.23.1, npm 11.18.0, Chromium 153.0.8010.12. Screenshots visuell geprüft:
+[Desktop 1440×900](verification/compact-paging/desktop-1440.png),
+[Desktop 1280×800](verification/compact-paging/desktop-1280.png),
+[Touch-Fusszeile bei 360 px](verification/compact-paging/footer-touch-360.png).
+Messdaten und Touch-Seitenwechsel:
+[touch-measurements.json](verification/compact-paging/touch-measurements.json).
+
+**Nicht ausgeführt:** Build, Lint, Unit-Tests, vollständige Suiten/Verify,
+Browsermatrix und Deploymenttests. Die gezielte Auswahl deckt die angeforderte
+Ergebnisnavigation und direkt angrenzende Tabellenfunktionen ab. Kein bekannter
+Blocker; der Abschnitt ist abgeschlossen, keine weitere Phase in diesem Auftrag.
+Kein Commit/Push.

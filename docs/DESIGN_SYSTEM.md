@@ -1542,6 +1542,21 @@ Der SQL-Analysename verwendet normales Schriftgewicht. Im SQL-Editor keine Hervo
 
 Panelgriffe sind sichtbar, fokussierbar und mit Pfeiltasten bedienbar. Breiter Schema-/Spaltenbereich und Resultathöhe bleiben verstellbar; schmale Ansichten ordnen das Schema über dem Editor an.
 
+Die SQL-Ergebnisfusszeile zeigt rechts den aktuellen Zeilenbereich, beispielsweise
+`1–100 von 350`, gefolgt von zwei tertiären Chevron-Iconbuttons für die vorherige
+und nächste Seite. Bereichsangabe und Ergebnisstatistik verwenden JetBrains Mono,
+12 px, normales Gewicht und die sekundäre Textfarbe. Die Paging-Gruppe hat 8 px
+Abstand zwischen ihren drei Elementen, bleibt zusammen und darf als Ganzes in die
+nächste Zeile umbrechen. Die Bedienflächen sind 40 × 40 px, bei Touch mindestens
+44 × 44 px. Zugängliche Namen und Tooltips lauten „Vorherige Seite“ und „Nächste
+Seite“. Die feste Seitengrösse beträgt 100; auf der letzten Seite endet der Bereich
+bei der tatsächlichen Ergebniszeilenzahl, ein leeres Ergebnis zeigt `0–0 von 0`.
+Zahlen werden deutsch-schweizerisch ohne Präzisionsverlust formatiert. Die Summe
+bezeichnet auch bei gekürzten Resultaten nur die vorhandenen Ergebniszeilen.
+Beide Controls bleiben sichtbar; an der jeweiligen Grenze sowie während des
+Ladens sind sie deaktiviert. Keine Seitennummern, direkte Seiteneingabe oder
+Seitengrössenauswahl.
+
 Ein kleiner Speicherpunkt mit konstanter Bedienfläche steht unten links im geöffneten Projekt. Grün bedeutet lokal gespeichert; orange ungespeichert, Speichern läuft, Fehler oder nur Sitzungsmodus. Keine Animation und keine wechselnde Textzeile im Inhaltsfluss. Tooltip, zugänglicher Zustandsname und Dialog vermitteln dieselbe Information ohne Farberkennung. Speicherfehleraktionen stehen im Statusdialog.
 
 

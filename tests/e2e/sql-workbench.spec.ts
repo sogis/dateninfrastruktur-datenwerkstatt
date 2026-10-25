@@ -298,6 +298,33 @@ test('SQL results: compact actions, typed table headers, row numbers and sort wi
   });
   expect(summaryStyle.color).toBe('rgb(91, 102, 115)');
   expect(summaryStyle.fontFamily.replaceAll('"', "'")).toBe(summaryStyle.expectedFont);
+  const paging = page.locator('.result-paging');
+  const range = paging.locator('.result-paging-range');
+  const previous = paging.getByRole('button', {name: 'Vorherige Seite', exact: true});
+  const next = paging.getByRole('button', {name: 'Nächste Seite', exact: true});
+  await expect(range).toHaveText('1–100 von 350');
+  await expect(range).toHaveCSS('font-family', summaryStyle.fontFamily);
+  await expect(range).toHaveCSS('font-size', '12px');
+  await expect(range).toHaveCSS('font-weight', '400');
+  await expect(range).toHaveCSS('color', summaryStyle.color);
+  await expect(paging).toHaveCSS('flex-wrap', 'nowrap');
+  await expect(paging).toHaveCSS('gap', '8px');
+  await expect(paging.getByRole('button')).toHaveCount(2);
+  await expect(previous).toBeDisabled();
+  await expect(next).toBeEnabled();
+  for (const button of [previous, next]) {
+    await expect(button).toHaveClass(/dw-button--tertiary/);
+    await expect(button).toHaveText('');
+    await expect(button.locator('svg')).toHaveAttribute('aria-hidden', 'true');
+    await expect(button).toHaveCSS('width', '40px');
+    await expect(button).toHaveCSS('height', '40px');
+  }
+  await page.keyboard.press('Tab');
+  await next.focus();
+  await expect(next).toBeFocused();
+  await expect(page.getByRole('tooltip')).toHaveText('Nächste Seite');
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('tooltip')).toHaveCount(0);
   await expect(page.locator('.result-footer')).not.toContainText(
     /Vollständig|Temporär|Aufbewahrung|Umfang/,
   );
@@ -310,17 +337,69 @@ test('SQL results: compact actions, typed table headers, row numbers and sort wi
     '1',
   );
   const before = await state(page);
-  await page.getByRole('button', {name: 'Nächste Seite', exact: true}).click();
+  // Delay delivery of the real DuckDB page to observe the loading controls deterministically.
+  await page.evaluate(async () => {
+    const path = '/tests/spike/appServices.ts';
+    const {services} = (await import(path)) as typeof import('../spike/appServices');
+    const session = await services.workspaces.open(location.pathname.split('/')[2]!);
+    const analyses = session.getAnalyses();
+    const originalPage = analyses.page;
+    const gate = new Promise<void>((resolve) => Reflect.set(window, '__releasePaging', resolve));
+    analyses.page = async (...args) => {
+      analyses.page = originalPage;
+      const result = await originalPage.apply(analyses, args);
+      await gate;
+      return result;
+    };
+  });
+  await next.focus();
+  await page.keyboard.press('Enter');
+  await expect(previous).toBeDisabled();
+  await expect(next).toBeDisabled();
+  await page.evaluate(() => {
+    const release: unknown = Reflect.get(window, '__releasePaging');
+    if (typeof release !== 'function') throw new Error('Paging release is unavailable');
+    release();
+    Reflect.deleteProperty(window, '__releasePaging');
+  });
   await expect(page.locator('.result-grid tbody tr').first().getByRole('rowheader')).toHaveText(
     '101',
   );
+  await expect(range).toHaveText('101–200 von 350');
+  await expect(previous).toBeEnabled();
+  await expect(next).toBeEnabled();
+  await next.focus();
+  await page.keyboard.press('Space');
+  await expect(range).toHaveText('201–300 von 350');
+  await expect(next).toBeEnabled();
+  await next.click();
+  await expect(page.locator('.result-grid tbody tr')).toHaveCount(50);
+  await expect(range).toHaveText('301–350 von 350');
+  await expect(previous).toBeEnabled();
+  await expect(next).toBeDisabled();
+  await page.keyboard.press('Tab');
+  await previous.focus();
+  await expect(page.getByRole('tooltip')).toHaveText('Vorherige Seite');
+  await page.keyboard.press('Escape');
+  await page.keyboard.press('Enter');
+  await expect(range).toHaveText('201–300 von 350');
+  await expect(next).toBeEnabled();
   await page.getByRole('button', {name: 'Nach wert sortieren', exact: true}).click();
   await expect(page.locator('.result-grid tbody tr').first().getByRole('rowheader')).toHaveText(
     '1',
   );
   await expect(page.locator('.result-grid tbody tr').first().locator('td').first()).toHaveText('0');
   expect(Object.keys((await state(page)).runs)).toEqual(Object.keys(before.runs));
+  await expect(range).toHaveText('1–100 von 350');
   await page.screenshot({path: info.outputPath('sql-table.png')});
+  await editor(page, 'SELECT i AS wert FROM range(0) t(i)');
+  await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
+  await expect(range).toHaveText('0–0 von 0');
+  await expect(page.locator('.result-grid tbody tr')).toHaveCount(0);
+  await expect(previous).toBeVisible();
+  await expect(previous).toBeDisabled();
+  await expect(next).toBeVisible();
+  await expect(next).toBeDisabled();
 });
 
 test('SQL exports: CSV/XLSX notes are deferred and limited Parquet requires review before download', async ({

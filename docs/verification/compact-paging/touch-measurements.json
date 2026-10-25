@@ -1,0 +1,113 @@
+{
+  "browser": "153.0.8010.12",
+  "measurements": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "coarse": true,
+      "footer": {
+        "x": 52,
+        "y": 652,
+        "width": 1228,
+        "height": 58,
+        "right": 1280,
+        "bottom": 710
+      },
+      "summary": {
+        "x": 64,
+        "y": 672,
+        "width": 132,
+        "height": 18,
+        "right": 196,
+        "bottom": 690
+      },
+      "range": {
+        "x": 1047.96875,
+        "y": 672,
+        "width": 108.03125,
+        "height": 18,
+        "right": 1156,
+        "bottom": 690
+      },
+      "buttons": [
+        {
+          "x": 1164,
+          "y": 659,
+          "width": 44,
+          "height": 44,
+          "right": 1208,
+          "bottom": 703
+        },
+        {
+          "x": 1216,
+          "y": 659,
+          "width": 44,
+          "height": 44,
+          "right": 1260,
+          "bottom": 703
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 360,
+        "height": 800
+      },
+      "coarse": true,
+      "footer": {
+        "x": 52,
+        "y": 739.5,
+        "width": 308,
+        "height": 82,
+        "right": 360,
+        "bottom": 821.5
+      },
+      "summary": {
+        "x": 64,
+        "y": 746.5,
+        "width": 132,
+        "height": 18,
+        "right": 196,
+        "bottom": 764.5
+      },
+      "range": {
+        "x": 127.96875,
+        "y": 783.5,
+        "width": 108.03125,
+        "height": 18,
+        "right": 236,
+        "bottom": 801.5
+      },
+      "buttons": [
+        {
+          "x": 244,
+          "y": 770.5,
+          "width": 44,
+          "height": 44,
+          "right": 288,
+          "bottom": 814.5
+        },
+        {
+          "x": 296,
+          "y": 770.5,
+          "width": 44,
+          "height": 44,
+          "right": 340,
+          "bottom": 814.5
+        }
+      ]
+    }
+  ],
+  "narrowInteraction": {
+    "buttonBeforeTap": {
+      "x": 296,
+      "y": 755.5,
+      "width": 44,
+      "height": 44
+    },
+    "displayedAfterTap": "101–200 von 1'350",
+    "reachableByScrolling": true
+  }
+}
