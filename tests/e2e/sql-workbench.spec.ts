@@ -24,9 +24,9 @@ async function state(page: Page) {
     return structuredClone(session.document);
   });
 }
-async function loadDocument(page: Page, name: string) {
-  await page.getByRole('button', {name: 'Laden', exact: true}).click();
-  const dialog = page.getByRole('dialog', {name: 'SQL-Analyse laden', exact: true});
+async function openDocument(page: Page, name: string) {
+  await page.getByRole('button', {name: 'Öffnen', exact: true}).click();
+  const dialog = page.getByRole('dialog', {name: 'SQL-Analyse öffnen', exact: true});
   await dialog.getByRole('button', {name: `Analyse ${name} öffnen`, exact: true}).click();
   await expect(dialog).toHaveCount(0);
 }
@@ -83,6 +83,11 @@ test('SQL documents: save and load independent editor texts and undo without run
   await page.keyboard.insertText('9');
   await input.press('ControlOrMeta+s');
   await expect(page.locator('.monaco-editor')).toContainText('SELECT 9 AS wert');
+  await expect(page.locator('.result-grid tbody td')).toHaveText('7');
+  await expect(page.getByText(/Das Ergebnis gehört zur letzten Ausführung/)).toHaveCount(0);
+  await page.getByText('Laufdetails und eingefrorener Code', {exact: true}).click();
+  await expect(page.locator('.run-details')).toContainText('SELECT 7 AS wert');
+  await page.getByText('Laufdetails und eingefrorener Code', {exact: true}).click();
   const cursor = () =>
     page.evaluate(async () => {
       const path = '/src/infrastructure/monaco/runtime.ts';
@@ -93,11 +98,11 @@ test('SQL documents: save and load independent editor texts and undo without run
     });
   const savedCursor = await cursor();
   const beforeLoad = await state(page);
-  await loadDocument(page, 'Neue SQL-Abfrage');
+  await openDocument(page, 'Neue SQL-Abfrage');
   await expect(page.locator('.monaco-editor')).toContainText('CAST($jahr AS INTEGER)');
   await expect(page.getByRole('button', {name: 'Parameter (1)', exact: true})).toBeVisible();
   await expect(page.locator('.result-grid tbody td')).toHaveText('2025');
-  await loadDocument(page, 'Zweite');
+  await openDocument(page, 'Zweite');
   await expect(page.locator('.monaco-editor')).toContainText('SELECT 9 AS wert');
   expect(await cursor()).toEqual(savedCursor);
   await page.locator('.monaco-editor').click();
@@ -114,6 +119,7 @@ test('SQL documents: save and load independent editor texts and undo without run
   await editor(page, 'SELECT 70 AS wert');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.result-grid tbody td')).toHaveText('70');
+  await expect(page.getByText(/Das Ergebnis gehört zur letzten Ausführung/)).toHaveCount(0);
   await page.getByRole('button', {name: 'Weitere Aktionen', exact: true}).click();
   await page.getByRole('menuitem', {name: 'Aufbewahrte Ergebnisse', exact: true}).click();
   await page.getByRole('button', {name: 'Ergebnis anzeigen', exact: true}).click();

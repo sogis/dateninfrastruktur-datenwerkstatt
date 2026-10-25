@@ -23,6 +23,108 @@ async function document(page: Page) {
   });
 }
 
+test('SQL documents: create a named document from Neu or Öffnen without changing the previous analysis', async ({
+  page,
+}, info) => {
+  await create(page);
+  const toolbar = page.locator('.analysis-toolbar');
+  await expect(toolbar.getByRole('button')).toHaveText([
+    'Ausführen',
+    'Neu',
+    'Öffnen',
+    'Speichern',
+    'Tabellen & Spalten',
+    'Weitere Aktionen',
+  ]);
+  await page.locator('.monaco-editor').click();
+  const code = page.getByRole('textbox', {name: 'Analysecode'});
+  await code.press('ControlOrMeta+a');
+  await page.keyboard.insertText('SELECT 41 AS wert;');
+  await code.press('ControlOrMeta+s');
+  await expect(page.locator('.workspace-save-indicator')).toHaveAttribute(
+    'data-save-state',
+    'saved',
+  );
+  await page.evaluate(async () => {
+    const path = '/tests/spike/appServices.ts';
+    const {services} = (await import(path)) as typeof import('../spike/appServices');
+    const session = await services.workspaces.open(location.pathname.split('/')[2]!);
+    const id = Object.values(session.document.analyses)[0]!.id;
+    session.updateAnalysis(id, {parameters: {jahr: 2025}});
+    await session.flush();
+  });
+  const before = await document(page);
+  const previous = Object.values(before.analyses)[0]!;
+  const previousUrl = page.url();
+  const newDialog = page.getByRole('dialog', {name: 'Neue SQL-Analyse', exact: true});
+  await toolbar.getByRole('button', {name: 'Neu', exact: true}).click();
+  const name = newDialog.getByLabel('Analysename', {exact: true});
+  await expect(name).toBeFocused();
+  await name.fill('Verwerfen');
+  await newDialog.getByRole('button', {name: 'Abbrechen', exact: true}).click();
+  await expect(newDialog).toHaveCount(0);
+  await expect(toolbar.getByRole('button', {name: 'Neu', exact: true})).toBeFocused();
+  expect(await document(page)).toEqual(before);
+  await toolbar.getByRole('button', {name: 'Neu', exact: true}).click();
+  await name.fill('Auch verwerfen');
+  await name.press('Escape');
+  await expect(newDialog).toHaveCount(0);
+  expect(await document(page)).toEqual(before);
+  expect(page.url()).toBe(previousUrl);
+
+  await toolbar.getByRole('button', {name: 'Öffnen', exact: true}).click();
+  const documents = page.getByRole('dialog', {name: 'SQL-Analyse öffnen', exact: true});
+  await expect(documents).toContainText('Geöffnet');
+  await expect(documents).toContainText('Keine weiteren SQL-Analysen vorhanden.');
+  await expect(documents.getByRole('button', {name: /^Analyse .* öffnen$/})).toHaveCount(0);
+  await page.screenshot({path: info.outputPath('sql-open-single-document.png')});
+  await documents.getByRole('button', {name: 'Neu', exact: true}).click();
+  await expect(documents).toHaveCount(0);
+  await expect(name).toBeFocused();
+  await name.fill('   ');
+  await newDialog.getByRole('button', {name: 'Erstellen', exact: true}).click();
+  await expect(name).toHaveAttribute('aria-invalid', 'true');
+  await expect(name).toBeFocused();
+  expect(await document(page)).toEqual(before);
+  await name.fill('  Jahreszahlen  ');
+  await page.screenshot({path: info.outputPath('sql-new-named-document.png')});
+  await newDialog.getByRole('button', {name: 'Erstellen', exact: true}).click();
+  await expect(newDialog).toHaveCount(0);
+  await expect(page.locator('.analysis-name-text')).toHaveText('Analysename: Jahreszahlen');
+  await expect(page.locator('.monaco-editor')).toContainText('SELECT 1 AS wert;');
+  await expect(page.locator('.result-grid')).toHaveCount(0);
+  const after = await document(page);
+  expect(Object.keys(after.analyses)).toHaveLength(2);
+  expect(after.analyses[previous.id]).toEqual(previous);
+  const created = Object.values(after.analyses).find((item) => item.id !== previous.id)!;
+  expect(created).toMatchObject({
+    name: 'Jahreszahlen',
+    code: 'SELECT 1 AS wert;',
+    revision: 0,
+    parameters: {},
+    inputs: [],
+  });
+  expect(after.runs).toEqual(before.runs);
+  await toolbar.getByRole('button', {name: 'Öffnen', exact: true}).click();
+  await expect(documents).not.toContainText('Keine weiteren SQL-Analysen vorhanden.');
+  await documents
+    .getByRole('button', {name: 'Analyse Neue SQL-Abfrage öffnen', exact: true})
+    .click();
+  await expect(page.locator('.monaco-editor')).toContainText('SELECT 41 AS wert;');
+  await expect(page.getByRole('button', {name: 'Parameter (1)', exact: true})).toBeVisible();
+  await expect(page.locator('.workspace-save-indicator')).toHaveAttribute(
+    'data-save-state',
+    'saved',
+  );
+  await page.reload();
+  await expect(page.locator('.monaco-editor')).toContainText('SELECT 41 AS wert;');
+  expect(Object.values((await document(page)).analyses).map((item) => item.name)).toEqual([
+    'Neue SQL-Abfrage',
+    'Jahreszahlen',
+  ]);
+  expect((await document(page)).runs).toEqual(before.runs);
+});
+
 test('SQL documents: failed saves retain text for download and retry; invalid files add no analyses', async ({
   page,
 }, info) => {
@@ -115,8 +217,8 @@ test('SQL documents: failed saves retain text for download and retry; invalid fi
     session.createAnalysis('r');
     await session.flush();
   });
-  await page.getByRole('button', {name: 'Laden', exact: true}).click();
-  const documents = page.getByRole('dialog', {name: 'SQL-Analyse laden'});
+  await page.getByRole('button', {name: 'Öffnen', exact: true}).click();
+  const documents = page.getByRole('dialog', {name: 'SQL-Analyse öffnen'});
   await expect(documents).toContainText('Geöffnet');
   await expect(documents.locator('li')).toHaveCount(1);
   await expect(documents).not.toContainText(/Archiviert|Neues R-Skript/);

@@ -203,7 +203,7 @@ Tatsächliche Befehle, Zwischenfehler, Screenshots und Grenzen im Implementierun
 
 1. Projektformat 3 und aktuelle SQL-Dokumente nach der Nutzerentscheidung vom 25. Oktober; Remapping/Archiv und strikte Ablehnung anderer Formate. Keine Migration oder Altbereinigung.
 2. SQL-Arbeitsläufe beim nächsten Run ersetzen; Referenzgraph, Commitgrenze und vollständige Leseleases schützen benötigte Ergebnisse.
-3. Umbenennen auf Übersicht, SQL-Name als Text, nichtmodales Tabellen-/Spaltenpanel, Parameter sowie Speichern/Laden aktueller SQL-Dokumente über klare Aktionen; zentrale Tertiary-Hoverkorrektur.
+3. Umbenennen auf Übersicht, SQL-Name als Text, nichtmodales Tabellen-/Spaltenpanel, Parameter sowie Neu/Öffnen/Speichern aktueller SQL-Dokumente über klare Aktionen; zentrale Tertiary-Hoverkorrektur.
 4. Nur technisch notwendige Typecheck-/Lint-/Build- und gezielte Unit-/Chromium-Engine-/UI-Prüfungen; tatsächliche Resultate und Grenzen im Implementierungsstatus.
 
 
@@ -216,4 +216,9 @@ Abnahme gezielt auf Completion, SQL-Tabelle/Paging/Export, Panelgeometrie, Split
 
 ## SQL-Dokumente statt Versionen — 25. Oktober 2026
 
-Versionensammlung vollständig entfernen, Projektformat 3 und aktualisierte Fixtures/Archivprüfung. Speichern/Cmd+S und Autosave sichern aktuelle Analysen; Laden öffnet vorhandene SQL-Dokumente. Zusätzliche SQL-Dateiein-/ausgabe mit UTF-8-Prüfung/1-MiB-Limit und Schutz vor verspäteten Dateileeseantworten. Lesemodus lässt Auswahl und Download zu. Gezielt Dokument-/Archiv-/Format-/Fehlerfälle, Typecheck, Lint und Build prüfen; Status und tatsächliche Exitcodes in `docs/IMPLEMENTATION_STATUS.md`.
+Versionensammlung vollständig entfernen, Projektformat 3 und aktualisierte Fixtures/Archivprüfung. Speichern/Cmd+S und Autosave sichern aktuelle Analysen; Öffnen öffnet vorhandene SQL-Dokumente. Zusätzliche SQL-Dateiein-/ausgabe mit UTF-8-Prüfung/1-MiB-Limit und Schutz vor verspäteten Dateileeseantworten. Lesemodus lässt Auswahl und Download zu. Gezielt Dokument-/Archiv-/Format-/Fehlerfälle, Typecheck, Lint und Build prüfen; Status und tatsächliche Exitcodes in `docs/IMPLEMENTATION_STATUS.md`.
+
+
+## SQL-Dokumente — Neu und Öffnen (25. Oktober 2026)
+
+Bestehenden Namensdialog und atomare Analyseerstellung für Neu im Editor sowie im Öffnen-Dialog verwenden. Toolbar Neu → Öffnen → Speichern; Öffnen ersetzt Laden und erklärt den Einzeldokumentzustand. Arbeitsstandshinweis beim Ergebnis ohne Ersatz entfernen; ausgeführten Code in Laufdetails erhalten. Keine Format-/Dependency-/Speicherschnittstellenänderung. Gezielt Erstellen/Abbrechen/Validierung, unabhängige Editorzustände, Speichern/Reload, Ergebnisstabilität und Lesemodus in Chromium prüfen; Typecheck, Lint/Modulgrenzen und Build.

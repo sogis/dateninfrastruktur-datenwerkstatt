@@ -713,7 +713,7 @@ Diese Nutzerentscheidung ersetzt für SQL die bisherige automatische Laufauswahl
 
 - Nur Projektformat 3; alte Projekte/Archive kontrolliert ablehnen, keine Migration. Alte Rows dürfen Projektliste, Neuerstellung und Restebereinigung nicht blockieren; ihre Bytes bleiben unangetastet.
 - Übersicht: Umbenennen mit lokalem Dialogentwurf, Trim/Validierung, Abbrechen/Escape und atomarem Speichern. SQL zeigt den Namen als Text.
-- SQL-Analysen sind aktuelle benannte Dokumente. Speichern/Cmd+S und Autosave sichern denselben Text. Laden wechselt zur gewählten aktiven SQL-Analyse mit ihrem eigenen Undo-/Cursorzustand und ohne Ausführung; Archiv und Duplikation erhalten aktuelle Inhalte.
+- SQL-Analysen sind aktuelle benannte Dokumente. Speichern/Cmd+S und Autosave sichern denselben Text. Öffnen wechselt zur gewählten aktiven SQL-Analyse mit ihrem eigenen Undo-/Cursorzustand und ohne Ausführung; Archiv und Duplikation erhalten aktuelle Inhalte.
 - Wiederholungsläufe entfernen nur ersetzte ungeschützte SQL-Arbeitsläufe. Aufbewahren, Datasetherkunft, Analyseinputs, Diagramme und R-Herkunft schützen transitiv. Commitfehler erhalten alte Daten/Handles. Mehrseitige Leser und materialisierte Exporte bleiben vollständig. R-Historie bleibt erhalten.
 - Tabellen/Spalten nichtmodal und per Tastatur erreichbar; Editor bleibt bedienbar. Parameterdialog mit Beispiel/Übernehmen/Abbrechen, keine leere Zeile im Editor. Aufbewahrte Ergebnisse bleiben gezielt erreichbar.
 - Tertiary-Hover auf Weiss und grauer Toolbar unterscheidbar; Pressed, Disabled, Auswahl und Fokus prüfen. Standardgeometrie sowie schmale Ansicht gezielt messen.
@@ -725,7 +725,7 @@ Prüfumfang ausdrücklich auf betroffene Unit-, echte Chromium-Engine-/IndexedDB
 
 REQ-019/034/041/044/046/048/062/066/067; Ergänzung zu AT-005/007/027/032/049/055/058.
 
-- Eine Ergebnisaktionszeile; Zeilenzahl, Laufzeit und Paging unten, keine wiederholten Namen oder dauerhaften Vollständigkeits-/Aufbewahrungsmetadaten. Fehler, Kürzung, älterer Arbeitsstand und aufbewahrte Ergebnisse bleiben unterscheidbar.
+- Eine Ergebnisaktionszeile; Zeilenzahl, Laufzeit und Paging unten, keine wiederholten Namen oder dauerhaften Vollständigkeits-/Aufbewahrungsmetadaten. Fehler, Kürzung und aufbewahrte Ergebnisse bleiben unterscheidbar. Bearbeiten/Speichern verändert die Ergebnistabelle nicht und zeigt keine Meldung zum geänderten Arbeitsstand; Laufdetails behalten den eingefrorenen Code.
 - CSV/XLSX zeigen den passenden Formathinweis erst im Exportdialog vor dem Download; Abbrechen erzeugt keine Datei. Begrenzte Ergebnisse warnen bei jedem Format. Vollständige ursprüngliche Daten werden ohne neue Ausführung exportiert.
 - SQL-Tabelle mit JetBrains Mono, logischem Typ, fixiertem Kopf und Zeilennummern über Seitengrenzen. Bestehende numerische Sortierung, NULL, exakte Werte und Paging bleiben erhalten.
 - Panelbreite und Resultathöhe per Maus/Tastatur ändern, nach Reload erhalten und per Reset zurücksetzen; keine Änderung an Projektdefinition oder Laufanzahl. Schmale Ansicht bleibt bedienbar.
@@ -741,8 +741,9 @@ Gezielte Unit-/Chromium-Fälle sowie Typecheck, Lint/Modulgrenzen und Build gen�
 REQ-016/019/034/062/067/068; AT-005/007/054/055/058/059. Ersetzt den bisherigen SQL-Versionenvertrag.
 
 - Speichern/Cmd+S sichern aktuellen Editortext ohne Namensdialog. Autosave und Reload erhalten denselben Text. Projekt-/Archivformat 3 enthält keine SQL-Versionssammlung. Alte Formate 1 und 2 kontrolliert ablehnen; Liste/Restebereinigung bleiben nutzbar und alte Bytes unverändert.
-- Laden wählt eine aktive SQL-Analyse des geöffneten Projekts; Namen, Texte, Parameter und Undo-Zustände bleiben getrennt. Kein impliziter Run.
+- Neu in der SQL-Werkzeugleiste oder im Öffnen-Dialog fragt nach einem gültigen, getrimmten Namen. Abbrechen/Escape und ungültige Eingaben erzeugen keinen Eintrag; Erstellen genau ein unabhängiges Dokument mit Starttext und leeren Parametern/Inputs. Die bisherige Analyse bleibt erhalten; kein Lauf.
+- Öffnen wählt eine aktive SQL-Analyse des geöffneten Projekts; Namen, Texte, Parameter und Undo-Zustände bleiben getrennt. Kein impliziter Run. Der aktuelle Eintrag ist „Geöffnet“; ohne weitere SQL-Dokumente erscheint „Keine weiteren SQL-Analysen vorhanden.“ und Neu bleibt erreichbar.
 - UTF-8-.sql bis 1 MiB öffnet ein neues Dokument mit Dateiname/Code, leeren Parametern/Inputs und ohne Ausführung. Ungültige/zu grosse Dateien und verspätetes Einlesen nach Navigation erzeugen keinen Eintrag.
-- Herunterladen erhält Unicode und Text auch bei Speicherfehlern. Speichern erneut versuchen erhält diesen Text. Leser dürfen vorhandene SQL-Dokumente öffnen/herunterladen; Schreiben/Dateiimport bleibt deaktiviert.
+- Herunterladen erhält Unicode und Text auch bei Speicherfehlern. Speichern erneut versuchen erhält diesen Text. Leser dürfen vorhandene SQL-Dokumente öffnen/herunterladen; Neu, Speichern und Dateiimport bleiben deaktiviert.
 
 Prüfauswahl: gezielte Dokument-/Archiv-/Format-Unitfälle und echte Chromiumfälle für Editorwechsel, Dateiein-/ausgabe, Speicherfehler und Lesemodus; Typecheck, Lint und Build. Keine neue vollständige Abnahme.

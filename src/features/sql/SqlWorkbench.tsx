@@ -4,6 +4,7 @@ import {useFormValidation} from '../../ui/useFormValidation';
 import {displayNameError, sqlNameError} from '../../domain/fieldValidation';
 import {ActionMenu, SplitButton} from '../../ui/ActionMenu';
 import {Modal} from '../../ui/Modal';
+import {NameDialog} from '../../ui/NameDialog';
 import {latestSqlRun} from '../../domain/sqlRetention';
 import {SqlDocuments, SqlFileInput} from './SqlDocuments';
 import {useNavigate} from '@tanstack/react-router';
@@ -86,7 +87,7 @@ export function SqlWorkbench({
   const schemaTrigger = useRef<HTMLButtonElement>(null);
   const sqlFileInput = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const [dialog, setDialog] = useState<'documents' | 'parameters' | 'results'>();
+  const [dialog, setDialog] = useState<'new' | 'documents' | 'parameters' | 'results'>();
   const save = () => {
     if (!session.readOnly) void session.flush().catch((error: unknown) => report(error, session));
   };
@@ -183,11 +184,14 @@ export function SqlWorkbench({
               Abbrechen
             </Button>
           )}
-          <Button icon="floppy" disabled={session.readOnly} onClick={save}>
-            Speichern
+          <Button icon="plus-lg" disabled={session.readOnly} onClick={() => setDialog('new')}>
+            Neu
           </Button>
           <Button icon="folder2-open" onClick={() => setDialog('documents')}>
-            Laden
+            Öffnen
+          </Button>
+          <Button icon="floppy" disabled={session.readOnly} onClick={save}>
+            Speichern
           </Button>
         </ActionGroup>
         <Button
@@ -245,11 +249,25 @@ export function SqlWorkbench({
         inputRef={sqlFileInput}
         onOpen={openDocument}
       />
+      {dialog === 'new' && (
+        <NameDialog
+          title="Neue SQL-Analyse"
+          label="Analysename"
+          initialName="Neue SQL-Abfrage"
+          submitLabel="Erstellen"
+          onSubmit={async (name) => {
+            const id = session.createAnalysis('sql', {name, code: 'SELECT 1 AS wert;'});
+            openDocument(id);
+          }}
+          onClose={() => setDialog(undefined)}
+        />
+      )}
       {dialog === 'documents' && (
         <SqlDocuments
           session={session}
           currentId={analysis.id}
           onOpen={openDocument}
+          onNew={() => setDialog('new')}
           onClose={() => setDialog(undefined)}
         />
       )}
@@ -374,12 +392,6 @@ export function SqlWorkbench({
                 <Toolbar className="result-toolbar">
                   <RunStatus run={run} />
                 </Toolbar>
-              )}
-              {run && run.snapshot.analysisRevision !== analysis.revision && (
-                <p className="result-empty">
-                  Das Ergebnis gehört zur letzten Ausführung dieses Codes. Der aktuelle Arbeitsstand
-                  wurde geändert.
-                </p>
               )}
               {run?.error && (
                 <Notice tone="danger" className="result-error">

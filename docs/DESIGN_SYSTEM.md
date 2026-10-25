@@ -1007,11 +1007,11 @@ Anwendung über den Viewport hinaus aufweiten.
 
 Die Reihenfolge bleibt:
 
-**SQL: Analysename als Text → Ausführen/Abbrechen → Speichern → Laden → Tabellen & Spalten → Weitere Aktionen.**
+**SQL: Analysename als Text → Ausführen/Abbrechen → Neu → Öffnen → Speichern → Tabellen & Spalten → Weitere Aktionen.**
 
 R behält Analysename → Ausführen/Abbrechen → Speichern → Ansichtsaktionen → Weitere Aktionen.
 
-Layoutreset und R-Reset stehen im Menü. SQL-Parameter werden über „Weitere Aktionen“ im Dialog bearbeitet; bei vorhandenen Parametern gibt es einen kompakten Einstieg. Die Versionsliste und aufbewahrte SQL-Ergebnisse sind ebenfalls Menüaktionen. R-Parameter und Optionen bleiben einblendbar. Das Tabellen-/Spaltenpanel ist nichtmodal und lässt Editor und Resultat bedienbar. Ergebnis-, Paging- und Grafikaktionen stehen am zugehörigen
+Layoutreset und R-Reset stehen im Menü. SQL-Parameter werden über „Weitere Aktionen“ im Dialog bearbeitet; bei vorhandenen Parametern gibt es einen kompakten Einstieg. Aufbewahrte SQL-Ergebnisse sind ebenfalls eine Menüaktion. R-Parameter und Optionen bleiben einblendbar. Das Tabellen-/Spaltenpanel ist nichtmodal und lässt Editor und Resultat bedienbar. Ergebnis-, Paging- und Grafikaktionen stehen am zugehörigen
 Ergebnis und verwenden eine gemeinsame ActionGroup.
 
 Status- und Metadatentexte in Werkzeugleisten folgen Abschnitt 4.4: Ein Status
@@ -1543,4 +1543,4 @@ Ein kleiner Speicherpunkt mit konstanter Bedienfläche steht unten links im geö
 
 ### SQL-Dokumente (25. Oktober 2026)
 
-Speichern ist eine direkte Aktion ohne Dialog und verwendet denselben Pfad wie Cmd/Strg+S. Laden öffnet eine kompakte Liste aktiver SQL-Analysen: Name, Kennzeichnung des geöffneten Dokuments und Öffnen-Aktion. Keine Versionsnamen oder Wiederherstellungsbestätigung. „SQL-Datei öffnen“ und „SQL-Datei herunterladen“ stehen unter Weitere Aktionen. Fehler beim Dateilesen erscheinen im vorhandenen Dialog; der unveränderte Speicherpunkt vermittelt Speicherfehler und Wiederholung.
+Speichern ist eine direkte Aktion ohne Dialog und verwendet denselben Pfad wie Cmd/Strg+S. Neu öffnet „Neue SQL-Analyse“ mit Analysename und Abbrechen/Erstellen; der Name wird nach den bestehenden Regeln validiert und getrimmt. Erstellen öffnet ein weiteres unabhängiges Dokument mit SQL-Starttext, ohne Lauf. Öffnen öffnet eine kompakte Liste aktiver SQL-Analysen: Name, Kennzeichnung des geöffneten Dokuments und Öffnen-Aktion. Ohne weitere SQL-Dokumente steht dort „Keine weiteren SQL-Analysen vorhanden.“; eine Neu-Aktion führt zum Erstellungsdialog. Im Lesemodus ist Neu an beiden Stellen deaktiviert. Keine Versionsnamen oder Wiederherstellungsbestätigung. Bearbeiten und Speichern lassen das letzte Resultat ohne Arbeitsstandshinweis stehen; der ausgeführte Code bleibt in den Laufdetails. „SQL-Datei öffnen“ und „SQL-Datei herunterladen“ stehen unter Weitere Aktionen. Fehler beim Dateilesen erscheinen im vorhandenen Dialog; der unveränderte Speicherpunkt vermittelt Speicherfehler und Wiederholung.

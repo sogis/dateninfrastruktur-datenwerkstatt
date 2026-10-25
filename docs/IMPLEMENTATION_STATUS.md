@@ -2346,3 +2346,37 @@ Versionssammlung, UI, Services, Typen, Validator-/Unveränderlichkeits-/Remappin
 **Tatsächliche Checks:** Typecheck, Lint/Modulgrenzen und Build jeweils **Exit 0**. **34/34 Unitfälle**, **acht unterschiedliche Chromiumfälle bestanden**, einschliesslich echter DuckDB/IndexedDB und Archiv mit aufbewahrten Ergebnissen. Nach berichtigt getesteter wortweiser Undo-Semantik gezielter Einzelfall **Exit 0**; verstärkte Dokument-/Dateifälle für Cursor, Autosave und Filter **2/2, Exit 0**. Zwischenfehler, genaue Befehle/Logs und Screenshots im [Prüfbericht](verification/sql-documents/README.md).
 
 **Nicht ausgeführt:** vollständige Suiten/Verify, Browser-/Deploymentmatrix, nativer Safari-Pilot und Benchmarks. Nur geänderte Dokument-/Datei-/Formatpfade und direkte Abhängigkeiten geprüft; keine neue V1-Abnahme. Bestehende Chunkgrössenwarnung bleibt. Kein bekannter Blocker im beauftragten Umfang. Nächster Nutzungsschritt: SQL-Dokument über Laden öffnen oder über Weitere Aktionen eine SQL-Datei öffnen. Kein Commit oder Push.
+
+
+## SQL-Dokumente: Neu und Öffnen — geliefert (25. Oktober 2026)
+
+REQ-019/034/036/062/067/068; AT-005/007/054/055/058. Basisrevision `10683d7` plus
+[Dateifingerabdruck](verification/sql-new-open/source-sha256.txt), Änderungen im Arbeitsbaum.
+Neu verwendet den bestehenden Namensdialog mit Trim/Validierung, Abbrechen/Erstellen
+und der vorhandenen atomaren Analyseerstellung. Es öffnet ein unabhängiges Dokument
+mit SQL-Starttext und leeren Parametern/Inputs; die vorige Analyse bleibt erhalten.
+Öffnen ersetzt Laden, markiert das aktuelle Dokument und erklärt den Zustand ohne
+weitere SQL-Dokumente. Die Neu-Aktion ist auch im Öffnen-Dialog erreichbar. Neu und
+Speichern bleiben im Lesemodus deaktiviert; Auswahl/Download bleiben möglich.
+Die Ergebnismeldung zum geänderten Arbeitsstand wurde ohne Ersatz entfernt;
+Ergebnis und eingefrorener Code bleiben bis zur nächsten Ausführung erhalten.
+Keine Format-, Domain-/Speicherschnittstellen- oder Dependencyänderung.
+
+Relevante Dateien: `src/features/sql/SqlWorkbench.tsx`, `SqlDocuments.tsx` und die
+drei betroffenen E2E-Dateien; SPEC, Abnahmen, Implementierungsplan und Designsystem
+nachgeführt. Historische Nachweise bleiben erhalten.
+
+**Tatsächliche Checks:** `npm run typecheck`, `npm run lint` einschliesslich
+Modulgrenzen und `npm run build` jeweils **Exit 0**; gezielter Chromium-Aufruf
+**5/5 Fälle, Exit 0**. Neu/Abbrechen/Escape/Validierung, unabhängige Editorzustände,
+Speichern/Autosave/Reload, Ergebnisstabilität ohne Hinweis, vorhandene
+Kürzungs-/Exportdialoge und echter Multitab-Lesemodus geprüft. Dialoge und
+Werkzeugleiste visuell geprüft. Genaue Befehle, Ergebnisse und Screenshots im
+[Prüfbericht](verification/sql-new-open/README.md).
+
+**Nicht ausgeführt:** Unit- oder vollständige Testsuiten/Verify,
+Browser-/Deploymentmatrix, nativer Safari-Pilot und Benchmarks. Auswahl auf die
+geänderten UI-Pfade und direkten Abhängigkeiten begrenzt. Bekannte
+Chunkgrössenwarnung bleibt; kein bekannter Blocker im beauftragten Umfang.
+Nächster Nutzungsschritt: mit Neu eine benannte SQL-Analyse erstellen und über
+Öffnen zwischen Dokumenten wechseln. Kein Commit oder Push für diese Änderung.

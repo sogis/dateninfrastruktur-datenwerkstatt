@@ -10,18 +10,28 @@ export function SqlDocuments({
   session,
   currentId,
   onOpen,
+  onNew,
   onClose,
 }: {
   session: EditingSession;
   currentId: AnalysisId;
   onOpen(id: AnalysisId): void;
+  onNew(): void;
   onClose(): void;
 }) {
   const documents = Object.values(session.document.analyses).filter(
     (item) => item.kind === 'sql' && !item.archivedAt,
   );
   return (
-    <Modal title="SQL-Analyse laden" onClose={onClose}>
+    <Modal
+      title="SQL-Analyse öffnen"
+      onClose={onClose}
+      footer={
+        <Button icon="plus-lg" disabled={session.readOnly} onClick={onNew}>
+          Neu
+        </Button>
+      }
+    >
       <ul className="sql-document-list">
         {documents.map((item) => (
           <li key={item.id}>
@@ -36,6 +46,9 @@ export function SqlDocuments({
           </li>
         ))}
       </ul>
+      {!documents.some((item) => item.id !== currentId) && (
+        <p>Keine weiteren SQL-Analysen vorhanden.</p>
+      )}
     </Modal>
   );
 }

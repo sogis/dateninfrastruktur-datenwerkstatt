@@ -98,12 +98,16 @@ for (const kind of ['sql', 'r'] as const) {
     await readerFor(page, reader, url);
     await expect(reader.locator('.monaco-editor')).toBeVisible();
     if (kind === 'sql') {
-      await reader.getByRole('button', {name: 'Laden', exact: true}).click();
+      await expect(reader.getByRole('button', {name: 'Neu', exact: true})).toBeDisabled();
+      await reader.getByRole('button', {name: 'Öffnen', exact: true}).click();
+      await expect(
+        reader.getByRole('dialog').getByRole('button', {name: 'Neu', exact: true}),
+      ).toBeDisabled();
       await reader
         .getByRole('button', {name: 'Analyse Lesbares Dokument öffnen', exact: true})
         .click();
       await expect(reader.locator('.monaco-editor')).toContainText('SELECT 8');
-      await reader.getByRole('button', {name: 'Laden', exact: true}).click();
+      await reader.getByRole('button', {name: 'Öffnen', exact: true}).click();
       await reader
         .getByRole('button', {name: 'Analyse Gesicherte Analyse öffnen', exact: true})
         .click();
@@ -156,6 +160,8 @@ for (const kind of ['sql', 'r'] as const) {
     await expect(reader.getByRole('button', {name: retryName, exact: true})).toHaveCount(0);
     expect(reader.url()).toBe(url);
     await expect(editControl).toBeEnabled();
+    if (kind === 'sql')
+      await expect(reader.getByRole('button', {name: 'Neu', exact: true})).toBeEnabled();
     await expect(reader.locator('.sidebar')).toHaveCSS('width', '212px');
     const after = await sessionSnapshot(reader);
     expect(after.readOnly).toBe(false);
