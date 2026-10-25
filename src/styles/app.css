@@ -853,12 +853,12 @@ main {
 .sql-schema details {
   margin-block: 12px;
 }
-.sql-version-list {
+.sql-document-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-.sql-version-list li {
+.sql-document-list li {
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -14,7 +14,7 @@
 - PostMessage-Cancel beendet die R-Runtime und verliert ungesicherte Objekte. Isoliertes auto/SAB unterbricht nachweislich ohne Workerreset; `interactive:true` ist dazu in webR 0.6.0 nötig (ADR-008). Skripte können über `interactive()` den Profilunterschied erkennen. Kein Eingabedialog/REPL, keine Mehrbenutzersandbox.
 - Die exakt versionierte webR-Workerantwort benötigt eine eng begrenzte `unsafe-eval`-CSP-Ausnahme (ADR-006). Die Dokument-CSP erlaubt diese Ausnahme nicht. SQLRooms 0.28.0 erhält einen hashgeprüften Init-Freigabepatch (ADR-007); unbekannte Quellversionen brechen die Installation ab. Kein stilles Majorupgrade.
 - Monaco wird lazy geladen. Initialer App-Chunk etwa 914 kB, Editor etwa 3,63 MB unkomprimiert; die Buildwarnung bleibt sichtbar. Das sind keine Gesamtladezeit- oder Speicherzusagen. 40 kuratierte R-Pakete und Runtimeassets werden lokal mit festen Versionen/Hashes ausgeliefert; kein Service Worker, kein Offline-Neustart-Versprechen.
-- Projektformat 2 ist der einzige unterstützte Workspacevertrag. Bestehende Format-1-Projekte und -Archive sind nach ausdrücklicher Nutzerentscheidung inkompatibel; sie werden nicht migriert oder automatisch gelöscht. Andere Metadatenformate werden ebenfalls abgewiesen; eine separate echte Dexie-Testvorgängerversion beweist Daten-/Schema-Rollback und erfolgreichen Migrationsretry (AT-007). Daraus wird keine Unterstützung beliebiger Altformate behauptet.
+- Projektformat 3 ist der einzige unterstützte Workspacevertrag. Bestehende Format-1-/Format-2-Projekte und -Archive sind nach ausdrücklicher Nutzerentscheidung inkompatibel; sie werden nicht migriert oder automatisch gelöscht. Andere Metadatenformate werden ebenfalls abgewiesen; eine separate echte Dexie-Testvorgängerversion beweist Daten-/Schema-Rollback und erfolgreichen Migrationsretry (AT-007). Daraus wird keine Unterstützung beliebiger Altformate behauptet.
 - `npm audit` meldet im P8-Lauf 0 bekannte Befunde. Das Buildinventar enthält 400 npm-Lockeinträge/40 R-Pakete mit Lizenzhinweisen. Originalbranding ist übernommen, kantonale Fonts werden nicht verteilt. Vor externer Distribution sind Lizenz-/Quellbereitstellungspflichten anhand der exakten Artefakte zu erfüllen; es wurde nichts veröffentlicht.
 
 
@@ -35,3 +35,8 @@ und danach beziehungsweise bei Abbruch beendet. Browser können den Abschluss
 eines vom Nutzer später abgebrochenen Betriebssystem-Downloads nicht sicher
 zurückmelden; die App behauptet hierfür keinen bestätigten Dateierhalt.
 Details und Enginebegründung: [ADR-010](adr/010-xlsx-export-worker.md).
+
+
+## SQL-Dokumentdateien
+
+Öffnen unterstützt UTF-8-.sql-Dateien bis 1 MiB und legt eine neue Analyse an; nur der Text wird übernommen. Projektparameter und Eingabebindungen sind Teil des Projektarchivs und werden nicht in .sql-Dateien mitgegeben. Laden im Projekt öffnet aktuelle Analysen; es gibt keine separate SQL-Versionshistorie.

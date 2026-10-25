@@ -4,7 +4,7 @@
   "exportedAt": "2026-10-03T12:00:00Z",
   "mode": "recipe",
   "project": {
-    "formatVersion": 2,
+    "formatVersion": 3,
     "revision": 0,
     "workspace": {
       "id": "907cc4f8-eeb2-5864-8347-289c2851abf0",
@@ -304,8 +304,7 @@
     "runs": {},
     "results": {},
     "visualizations": {},
-    "artifacts": {},
-    "sqlVersions": {}
+    "artifacts": {}
   },
   "files": [],
   "omissions": [

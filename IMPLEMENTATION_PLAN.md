@@ -199,11 +199,11 @@ echte CSV-/Persistenz-/Archivtests und zugängliche responsive UI → verify und
 Chromium-/Firefox-/WebKit-Importmatrix. Keine neue Dependency oder Veröffentlichung.
 Tatsächliche Befehle, Zwischenfehler, Screenshots und Grenzen im Implementierungsstatus.
 
-## SQL-Aufräumen und explizite Versionen — 24. Oktober 2026
+## SQL-Aufräumen — 24. Oktober, Dokumentmodell aktualisiert am 25. Oktober 2026
 
-1. Projektformat 2, unveränderliche SQL-Versionen, Remapping/Archiv und strikte Ablehnung anderer Formate. Keine Migration oder Altbereinigung.
+1. Projektformat 3 und aktuelle SQL-Dokumente nach der Nutzerentscheidung vom 25. Oktober; Remapping/Archiv und strikte Ablehnung anderer Formate. Keine Migration oder Altbereinigung.
 2. SQL-Arbeitsläufe beim nächsten Run ersetzen; Referenzgraph, Commitgrenze und vollständige Leseleases schützen benötigte Ergebnisse.
-3. Umbenennen auf Übersicht, SQL-Name als Text, nichtmodales Tabellen-/Spaltenpanel, Parameter und bewusste Versionen über klare Aktionen; zentrale Tertiary-Hoverkorrektur.
+3. Umbenennen auf Übersicht, SQL-Name als Text, nichtmodales Tabellen-/Spaltenpanel, Parameter sowie Speichern/Laden aktueller SQL-Dokumente über klare Aktionen; zentrale Tertiary-Hoverkorrektur.
 4. Nur technisch notwendige Typecheck-/Lint-/Build- und gezielte Unit-/Chromium-Engine-/UI-Prüfungen; tatsächliche Resultate und Grenzen im Implementierungsstatus.
 
 
@@ -212,3 +212,8 @@ Tatsächliche Befehle, Zwischenfehler, Screenshots und Grenzen im Implementierun
 Vertikaler Anschluss an SQL-Aufräumen: kompakte Ergebnisaktionen mit Fusszeile, kontextuelle Exportdialoge, Sodata-Tabellenrendering und modellgebundene Monaco-Completion; Schema-/Resultatsplitter mit separatem Ansichtsstatus. Konstanter Speicherpunkt für alle geöffneten Projektseiten ersetzt wechselnde Autosavebänder. Projektformat und Dependencies bleiben unverändert.
 
 Abnahme gezielt auf Completion, SQL-Tabelle/Paging/Export, Panelgeometrie, Splitbutton-Höhe und Speicherfehlerwiederholung begrenzt; Typecheck, Lint und Build abschliessend. Aktueller Prüfstand unter `docs/IMPLEMENTATION_STATUS.md`.
+
+
+## SQL-Dokumente statt Versionen — 25. Oktober 2026
+
+Versionensammlung vollständig entfernen, Projektformat 3 und aktualisierte Fixtures/Archivprüfung. Speichern/Cmd+S und Autosave sichern aktuelle Analysen; Laden öffnet vorhandene SQL-Dokumente. Zusätzliche SQL-Dateiein-/ausgabe mit UTF-8-Prüfung/1-MiB-Limit und Schutz vor verspäteten Dateileeseantworten. Lesemodus lässt Auswahl und Download zu. Gezielt Dokument-/Archiv-/Format-/Fehlerfälle, Typecheck, Lint und Build prüfen; Status und tatsächliche Exitcodes in `docs/IMPLEMENTATION_STATUS.md`.

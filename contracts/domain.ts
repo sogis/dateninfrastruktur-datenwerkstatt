@@ -8,7 +8,6 @@ export type WorkspaceId = Id<'workspace'>;
 export type DatasetId = Id<'dataset'>;
 export type DatasetVersionId = Id<'dataset-version'>;
 export type AnalysisId = Id<'analysis'>;
-export type SqlAnalysisVersionId = Id<'sql-analysis-version'>;
 export type RunId = Id<'run'>;
 export type ResultId = Id<'result'>;
 export type ArtifactId = Id<'artifact'>;
@@ -146,16 +145,6 @@ export interface RAnalysis extends AnalysisBase {
   randomSeed?: number;
 }
 export type Analysis = SqlAnalysis | RAnalysis;
-/** Bewusst gespeicherter SQL-Stand; Ergebnisdaten werden separat aufbewahrt. */
-export interface SqlAnalysisVersion {
-  id: SqlAnalysisVersionId;
-  workspaceId: WorkspaceId;
-  analysisId: AnalysisId;
-  name: string;
-  createdAt: IsoDateTime;
-  code: string;
-  parameters: Record<string, ParameterValue>;
-}
 export type ResolvedTableInput =
   | {
       kind: 'dataset-version';
@@ -265,13 +254,12 @@ export interface Artifact {
   createdAt: IsoDateTime;
 }
 export interface WorkspaceDocument {
-  formatVersion: 2;
+  formatVersion: 3;
   revision: number;
   workspace: Workspace;
   datasets: Record<DatasetId, Dataset>;
   datasetVersions: Record<DatasetVersionId, DatasetVersion>;
   analyses: Record<AnalysisId, Analysis>;
-  sqlVersions: Record<SqlAnalysisVersionId, SqlAnalysisVersion>;
   runs: Record<RunId, ExecutionRun>;
   results: Record<ResultId, Result>;
   visualizations: Record<VisualizationId, Visualization>;

@@ -33,7 +33,7 @@ afterEach(() => vi.useRealTimers());
 describe('AT-004 / AT-007 strict workspace boundary', () => {
   it('accepts supplied fixtures and rejects unknown fields/format', () => {
     expect(parseWorkspace(empty).workspace.name).toBe(empty.workspace.name);
-    expect(parseWorkspace(recipe).formatVersion).toBe(2);
+    expect(parseWorkspace(recipe).formatVersion).toBe(3);
     expect(() => parseWorkspace({...empty, formatVersion: 99})).toThrow(
       expect.objectContaining({code: 'FORMAT_UNSUPPORTED'}),
     );
@@ -122,7 +122,7 @@ describe('AT-005 / AT-006 analysis and history', () => {
       engineId: 'webr-local',
       revision: 0,
     });
-    expect(session.document.formatVersion).toBe(2);
+    expect(session.document.formatVersion).toBe(3);
     expect(session.document.revision).toBe(1);
     await session.close();
   });

@@ -1,0 +1,63 @@
+[WebServer] (node:65186) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:65187) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/sql-documents.spec.ts:26:1 › SQL documents: failed saves retain text for download and retry; invalid files add no analyses (3.4s)
+  ✓  2 [chromium] › tests/e2e/sql-documents.spec.ts:105:1 › SQL documents: a late file read after project navigation never creates a document (1.7s)
+  ✘  3 [chromium] › tests/e2e/sql-workbench.spec.ts:34:1 › SQL documents: save and load independent editor texts and undo without running; kept results and reload (13.3s)
+(node:65213) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [chromium] › tests/e2e/sql-workbench.spec.ts:127:1 › SQL cleanup: overview rename commits only on submit and schema stays nonmodal at wide/narrow widths (4.5s)
+  ✓  5 [chromium] › tests/e2e/write-access.spec.ts:73:3 › AT-012: held retry keeps the SQL reader view and keyboard promotion loads the latest project (2.1s)
+  ✓  6 [chromium] › tests/integration/sql-workbench.spec.ts:3:1 › SQL workbench: SQL documents, bounded runs, atomic retirement, persistence and archives (1.6s)
+  ✓  7 [chromium] › tests/integration/sql-workbench.spec.ts:212:3 › SQL format break 1: old IndexedDB rows do not block listing, creating or abandoned-file cleanup (314ms)
+  ✓  8 [chromium] › tests/integration/sql-workbench.spec.ts:212:3 › SQL format break 2: old IndexedDB rows do not block listing, creating or abandoned-file cleanup (299ms)
+
+
+  1) [chromium] › tests/e2e/sql-workbench.spec.ts:34:1 › SQL documents: save and load independent editor texts and undo without running; kept results and reload
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.monaco-editor')
+    Expected substring: "SELECT 7 AS wert"
+    Received string:    "1SELECT 9 AS"
+    Timeout: 10000ms
+
+    Call log:
+      - Expect "toContainText" locator('.monaco-editor') with timeout 10000ms
+      - waiting for locator('.monaco-editor')
+        - locator resolved to <div role="code" class="monaco-editor no-user-select mac  showUnused showDeprecated vs focused" data-uri="inmemory://datenwerkstatt/8505e55a-c517-4fdc-af41-dc7284962171/4e879d85-b26c-4480-ad74-0e378254ad62">…</div>
+        - unexpected value "1SELECT 9 AS wert"
+        23 × locator resolved to <div role="code" class="monaco-editor no-user-select mac  showUnused showDeprecated vs focused" data-uri="inmemory://datenwerkstatt/8505e55a-c517-4fdc-af41-dc7284962171/4e879d85-b26c-4480-ad74-0e378254ad62">…</div>
+           - unexpected value "1SELECT 9 AS"
+
+
+      84 |   await page.locator('.monaco-editor').click();
+      85 |   await page.getByRole('textbox', {name: 'Analysecode'}).press('ControlOrMeta+z');
+    > 86 |   await expect(page.locator('.monaco-editor')).toContainText('SELECT 7 AS wert');
+         |                                                ^
+      87 |   const afterLoad = await state(page);
+      88 |   expect(Object.keys(afterLoad.runs)).toEqual(Object.keys(beforeLoad.runs));
+      89 |   expect(afterLoad.analyses[firstId as keyof typeof afterLoad.analyses]).toEqual(
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/sql-workbench.spec.ts:86:48
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/sql-documents/e2e-sql-workbench-SQL-docu-b180a-ing-kept-results-and-reload-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/sql-documents/e2e-sql-workbench-SQL-docu-b180a-ing-kept-results-and-reload-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/sql-documents/e2e-sql-workbench-SQL-docu-b180a-ing-kept-results-and-reload-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/sql-documents/e2e-sql-workbench-SQL-docu-b180a-ing-kept-results-and-reload-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/sql-workbench.spec.ts:34:1 › SQL documents: save and load independent editor texts and undo without running; kept results and reload
+  7 passed (28.0s)

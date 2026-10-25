@@ -24,7 +24,14 @@ async function state(page: Page) {
     return structuredClone(session.document);
   });
 }
-test('SQL cleanup: explicit versions restore editor and parameters without running; current result and reload', async ({
+async function loadDocument(page: Page, name: string) {
+  await page.getByRole('button', {name: 'Laden', exact: true}).click();
+  const dialog = page.getByRole('dialog', {name: 'SQL-Analyse laden', exact: true});
+  await dialog.getByRole('button', {name: `Analyse ${name} öffnen`, exact: true}).click();
+  await expect(dialog).toHaveCount(0);
+}
+
+test('SQL documents: save and load independent editor texts and undo without running; kept results and reload', async ({
   page,
 }, info) => {
   const errors: string[] = [];
@@ -44,50 +51,75 @@ test('SQL cleanup: explicit versions restore editor and parameters without runni
   await page.getByLabel('Parameter 1 Typ', {exact: true}).selectOption('number');
   await page.getByLabel('Parameter 1 Wert', {exact: true}).fill('2025');
   await page.getByRole('button', {name: 'Parameter übernehmen', exact: true}).click();
+  await page.getByRole('button', {name: 'Speichern', exact: true}).click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await expect(page.getByRole('button', {name: 'Parameter (1)', exact: true})).toBeVisible();
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.result-grid tbody td')).toHaveText('2025');
-  expect(Object.keys((await state(page)).sqlVersions)).toHaveLength(0);
-  await page.getByRole('button', {name: 'Version speichern', exact: true}).click();
-  await page.getByLabel('Versionsname', {exact: true}).fill('Basis');
-  await page
-    .getByRole('dialog')
-    .getByRole('button', {name: 'Version speichern', exact: true})
-    .click();
-  await expect(page.getByRole('dialog')).toHaveCount(0);
-  await editor(page, 'SELECT 7 AS wert');
+  const first = await state(page);
+  const firstId = Object.keys(first.analyses)[0]!;
+  await page.getByRole('button', {name: 'Weitere Aktionen', exact: true}).click();
+  const chooser = page.waitForEvent('filechooser');
+  await page.getByRole('menuitem', {name: 'SQL-Datei öffnen', exact: true}).click();
+  await (
+    await chooser
+  ).setFiles({
+    name: 'Zweite.sql',
+    mimeType: 'application/sql',
+    buffer: Buffer.from('SELECT 7 AS wert'),
+  });
+  await expect(page.locator('.analysis-name-text')).toHaveText('Analysename: Zweite');
+  await expect(page.locator('.monaco-editor')).toContainText('SELECT 7 AS wert');
+  await expect(page.getByRole('button', {name: 'Parameter (1)', exact: true})).toHaveCount(0);
+  expect(Object.keys((await state(page)).runs)).toEqual(Object.keys(first.runs));
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.result-grid tbody td')).toHaveText('7');
-  const before = await state(page);
-  expect(Object.keys(before.sqlVersions)).toHaveLength(1);
-  expect(Object.keys(before.runs)).toHaveLength(1);
-  await page.getByRole('button', {name: 'Weitere Aktionen', exact: true}).click();
-  await page.getByRole('menuitem', {name: 'Versionen', exact: true}).click();
-  await page.getByRole('button', {name: 'Version Basis in Editor laden', exact: true}).click();
-  await page.getByRole('button', {name: 'Abbrechen', exact: true}).click();
-  await page.getByRole('button', {name: 'Version Basis in Editor laden', exact: true}).click();
-  await page.getByRole('button', {name: 'Arbeitsstand ersetzen', exact: true}).click();
-  await expect(page.getByRole('dialog')).toHaveCount(0);
+  // Edit one character so Undo has one operation, independent of word-wise typing groups.
+  const input = page.getByRole('textbox', {name: 'Analysecode'});
+  await page.locator('.monaco-editor').click();
+  await input.press('Home');
+  for (let i = 0; i < 7; i++) await input.press('ArrowRight');
+  await input.press('Shift+ArrowRight');
+  await page.keyboard.insertText('9');
+  await input.press('ControlOrMeta+s');
+  await expect(page.locator('.monaco-editor')).toContainText('SELECT 9 AS wert');
+  const cursor = () =>
+    page.evaluate(async () => {
+      const path = '/src/infrastructure/monaco/runtime.ts';
+      const {monaco} = (await import(
+        path
+      )) as typeof import('../../src/infrastructure/monaco/runtime');
+      return monaco.editor.getEditors()[0]!.getPosition();
+    });
+  const savedCursor = await cursor();
+  const beforeLoad = await state(page);
+  await loadDocument(page, 'Neue SQL-Abfrage');
   await expect(page.locator('.monaco-editor')).toContainText('CAST($jahr AS INTEGER)');
-  await expect(page.locator('.result-grid tbody td')).toHaveText('7');
-  await expect(page.getByText(/Der aktuelle Arbeitsstand wurde geändert/)).toBeVisible();
-  expect(Object.keys((await state(page)).runs)).toEqual(Object.keys(before.runs));
+  await expect(page.getByRole('button', {name: 'Parameter (1)', exact: true})).toBeVisible();
+  await expect(page.locator('.result-grid tbody td')).toHaveText('2025');
+  await loadDocument(page, 'Zweite');
+  await expect(page.locator('.monaco-editor')).toContainText('SELECT 9 AS wert');
+  expect(await cursor()).toEqual(savedCursor);
   await page.locator('.monaco-editor').click();
   await page.getByRole('textbox', {name: 'Analysecode'}).press('ControlOrMeta+z');
   await expect(page.locator('.monaco-editor')).toContainText('SELECT 7 AS wert');
-  await page.getByRole('textbox', {name: 'Analysecode'}).press('ControlOrMeta+Shift+z');
-  await expect(page.locator('.monaco-editor')).toContainText('CAST($jahr AS INTEGER)');
+  const afterLoad = await state(page);
+  expect(Object.keys(afterLoad.runs)).toEqual(Object.keys(beforeLoad.runs));
+  expect(afterLoad.analyses[firstId as keyof typeof afterLoad.analyses]).toEqual(
+    first.analyses[firstId as keyof typeof first.analyses],
+  );
+  expect(afterLoad).not.toHaveProperty('sqlVersions');
   await page.getByRole('button', {name: 'Aufbewahren', exact: true}).click();
   await expect(page.getByRole('button', {name: 'Aufbewahren', exact: true})).toBeDisabled();
+  await editor(page, 'SELECT 70 AS wert');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
-  await expect(page.locator('.result-grid tbody td')).toHaveText('2025');
+  await expect(page.locator('.result-grid tbody td')).toHaveText('70');
   await page.getByRole('button', {name: 'Weitere Aktionen', exact: true}).click();
   await page.getByRole('menuitem', {name: 'Aufbewahrte Ergebnisse', exact: true}).click();
   await page.getByRole('button', {name: 'Ergebnis anzeigen', exact: true}).click();
   await expect(page.locator('.result-grid tbody td')).toHaveText('7');
   await page.getByRole('button', {name: 'Zum aktuellen Ergebnis', exact: true}).click();
-  await expect(page.locator('.result-grid tbody td')).toHaveText('2025');
+  await expect(page.locator('.result-grid tbody td')).toHaveText('70');
   for (const viewport of [
     {width: 1440, height: 900},
     {width: 1280, height: 800},
@@ -96,17 +128,16 @@ test('SQL cleanup: explicit versions restore editor and parameters without runni
     const editorBox = (await page.locator('.code-editor').boundingBox())!;
     const resultBox = (await page.getByRole('region', {name: 'SQL-Resultat'}).boundingBox())!;
     const hostBox = (await page.locator('.sql-panel-host').boundingBox())!;
-    const toolbarBox = (await page.locator('.analysis-toolbar').boundingBox())!;
-    expect(toolbarBox.height).toBeLessThanOrEqual(88);
+    expect((await page.locator('.analysis-toolbar').boundingBox())!.height).toBeLessThanOrEqual(88);
     expect(hostBox.height).toBeGreaterThanOrEqual(viewport.height * 0.75);
     expect(hostBox.width).toBeGreaterThanOrEqual((viewport.width - 52) * 0.9);
     expect(editorBox.height).toBeGreaterThanOrEqual(180);
     expect(resultBox.height).toBeGreaterThanOrEqual(220);
   }
-  await page.screenshot({path: info.outputPath('sql-current.png')});
+  await page.screenshot({path: info.outputPath('sql-documents.png')});
   const saved = await state(page);
   await page.reload();
-  await expect(page.locator('.monaco-editor')).toContainText('CAST($jahr AS INTEGER)');
+  await expect(page.locator('.monaco-editor')).toContainText('SELECT 70 AS wert');
   expect(Object.keys((await state(page)).runs)).toEqual(Object.keys(saved.runs));
   await expect(page.locator('.analysis-toolbar')).not.toContainText(/Revision \d/);
   expect(errors).toEqual([]);
@@ -228,7 +259,7 @@ test('SQL cleanup: overview rename commits only on submit and schema stays nonmo
   }
   const after = await state(page);
   expect(Object.keys(after.runs)).toEqual(Object.keys(before.runs));
-  expect(Object.keys(after.sqlVersions)).toHaveLength(0);
+  expect(after).not.toHaveProperty('sqlVersions');
 });
 
 test('SQL results: compact actions, typed table headers, row numbers and sort without a new run', async ({

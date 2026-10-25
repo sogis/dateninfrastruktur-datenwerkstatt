@@ -13,7 +13,7 @@ test('P8 AT-007: separate predecessor upgrade rolls back schema and data, then m
   expect(proof.afterFailure).toEqual(proof.predecessor);
   expect(proof.versionAfterFailure).toBe(1);
   expect(proof.tablesAfterFailure).toEqual(['projects']);
-  expect(proof.migrated.formatVersion).toBe(2);
+  expect(proof.migrated.formatVersion).toBe(3);
   expect(proof.migrated.workspace.name).toBe(proof.predecessor.oldName);
   expect(proof.legacyCount).toBe(0);
 });

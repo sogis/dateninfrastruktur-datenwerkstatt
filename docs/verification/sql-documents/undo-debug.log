@@ -1,0 +1,117 @@
+[WebServer] (node:65411) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:65412) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+before switch {
+  models: [
+    {
+      uri: 'inmemory://datenwerkstatt/4cc22f45-a790-4fc5-aba1-cb6b94fc7a2a/5e2e426e-e00c-4636-8b14-aa76728eb6b1',
+      code: 'SELECT CAST($jahr AS INTEGER) AS jahr',
+      undo: true,
+      version: 38
+    },
+    {
+      uri: 'inmemory://datenwerkstatt/4cc22f45-a790-4fc5-aba1-cb6b94fc7a2a/a59158bb-30af-4e7a-b5c2-e9651fe52ff1',
+      code: 'SELECT 9 AS wert',
+      undo: true,
+      version: 17
+    }
+  ],
+  editors: [
+    {
+      focus: true,
+      uri: 'inmemory://datenwerkstatt/4cc22f45-a790-4fc5-aba1-cb6b94fc7a2a/a59158bb-30af-4e7a-b5c2-e9651fe52ff1'
+    }
+  ]
+}
+before undo {
+  models: [
+    {
+      uri: 'inmemory://datenwerkstatt/4cc22f45-a790-4fc5-aba1-cb6b94fc7a2a/5e2e426e-e00c-4636-8b14-aa76728eb6b1',
+      code: 'SELECT CAST($jahr AS INTEGER) AS jahr',
+      undo: true,
+      version: 38
+    },
+    {
+      uri: 'inmemory://datenwerkstatt/4cc22f45-a790-4fc5-aba1-cb6b94fc7a2a/a59158bb-30af-4e7a-b5c2-e9651fe52ff1',
+      code: 'SELECT 9 AS wert',
+      undo: true,
+      version: 17
+    }
+  ],
+  editors: [
+    {
+      focus: true,
+      uri: 'inmemory://datenwerkstatt/4cc22f45-a790-4fc5-aba1-cb6b94fc7a2a/a59158bb-30af-4e7a-b5c2-e9651fe52ff1'
+    }
+  ]
+}
+after undo {
+  models: [
+    {
+      uri: 'inmemory://datenwerkstatt/4cc22f45-a790-4fc5-aba1-cb6b94fc7a2a/5e2e426e-e00c-4636-8b14-aa76728eb6b1',
+      code: 'SELECT CAST($jahr AS INTEGER) AS jahr',
+      undo: true,
+      version: 38
+    },
+    {
+      uri: 'inmemory://datenwerkstatt/4cc22f45-a790-4fc5-aba1-cb6b94fc7a2a/a59158bb-30af-4e7a-b5c2-e9651fe52ff1',
+      code: 'SELECT 9 AS',
+      undo: true,
+      version: 12
+    }
+  ],
+  editors: [
+    {
+      focus: true,
+      uri: 'inmemory://datenwerkstatt/4cc22f45-a790-4fc5-aba1-cb6b94fc7a2a/a59158bb-30af-4e7a-b5c2-e9651fe52ff1'
+    }
+  ]
+}
+  ✘  1 [chromium] › tests/e2e/sql-workbench.spec.ts:34:1 › SQL documents: save and load independent editor texts and undo without running; kept results and reload (13.6s)
+
+
+  1) [chromium] › tests/e2e/sql-workbench.spec.ts:34:1 › SQL documents: save and load independent editor texts and undo without running; kept results and reload
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.monaco-editor')
+    Expected substring: "SELECT 7 AS wert"
+    Received string:    "1SELECT 9 AS"
+    Timeout: 10000ms
+
+    Call log:
+      - Expect "toContainText" locator('.monaco-editor') with timeout 10000ms
+      - waiting for locator('.monaco-editor')
+        24 × locator resolved to <div role="code" class="monaco-editor no-user-select mac  showUnused showDeprecated vs focused" data-uri="inmemory://datenwerkstatt/4cc22f45-a790-4fc5-aba1-cb6b94fc7a2a/a59158bb-30af-4e7a-b5c2-e9651fe52ff1">…</div>
+           - unexpected value "1SELECT 9 AS"
+
+
+      92 |   await page.getByRole('textbox', {name: 'Analysecode'}).press('ControlOrMeta+z');
+      93 |   console.log('after undo', await diagnostics());
+    > 94 |   await expect(page.locator('.monaco-editor')).toContainText('SELECT 7 AS wert');
+         |                                                ^
+      95 |   const afterLoad = await state(page);
+      96 |   expect(Object.keys(afterLoad.runs)).toEqual(Object.keys(beforeLoad.runs));
+      97 |   expect(afterLoad.analyses[firstId as keyof typeof afterLoad.analyses]).toEqual(
+        at /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt/tests/e2e/sql-workbench.spec.ts:94:48
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/sql-documents-undo-debug/e2e-sql-workbench-SQL-docu-b180a-ing-kept-results-and-reload-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/sql-documents-undo-debug/e2e-sql-workbench-SQL-docu-b180a-ing-kept-results-and-reload-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/sql-documents-undo-debug/e2e-sql-workbench-SQL-docu-b180a-ing-kept-results-and-reload-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/sql-documents-undo-debug/e2e-sql-workbench-SQL-docu-b180a-ing-kept-results-and-reload-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/sql-workbench.spec.ts:34:1 › SQL documents: save and load independent editor texts and undo without running; kept results and reload

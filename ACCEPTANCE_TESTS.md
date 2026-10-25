@@ -711,9 +711,9 @@ Abschlussblocker: Verlust gespeicherter Daten, falsche Werte/Typen, Phantom-Erfo
 
 Diese Nutzerentscheidung ersetzt für SQL die bisherige automatische Laufauswahl und die Inline-Umbenennung (REQ-011/013–016/019/034–036/041/044/062/066–068; AT-005/006/007/025/026/027/032/054/055/058/059).
 
-- Nur Projektformat 2; alte Projekte/Archive kontrolliert ablehnen, keine Migration. Alte Rows dürfen Projektliste, Neuerstellung und Restebereinigung nicht blockieren; ihre Bytes bleiben unangetastet.
+- Nur Projektformat 3; alte Projekte/Archive kontrolliert ablehnen, keine Migration. Alte Rows dürfen Projektliste, Neuerstellung und Restebereinigung nicht blockieren; ihre Bytes bleiben unangetastet.
 - Übersicht: Umbenennen mit lokalem Dialogentwurf, Trim/Validierung, Abbrechen/Escape und atomarem Speichern. SQL zeigt den Namen als Text.
-- Autosave/Ausführen/Cmd+S erzeugen keine Version; „Version speichern“ hält Code und Parameter unveränderlich fest. Laden aktualisiert sichtbaren Editor und Parameter nach Bestätigung, ohne Ausführung. Code-Undo, Reload und Archiv-/Duplikationsreferenzen prüfen.
+- SQL-Analysen sind aktuelle benannte Dokumente. Speichern/Cmd+S und Autosave sichern denselben Text. Laden wechselt zur gewählten aktiven SQL-Analyse mit ihrem eigenen Undo-/Cursorzustand und ohne Ausführung; Archiv und Duplikation erhalten aktuelle Inhalte.
 - Wiederholungsläufe entfernen nur ersetzte ungeschützte SQL-Arbeitsläufe. Aufbewahren, Datasetherkunft, Analyseinputs, Diagramme und R-Herkunft schützen transitiv. Commitfehler erhalten alte Daten/Handles. Mehrseitige Leser und materialisierte Exporte bleiben vollständig. R-Historie bleibt erhalten.
 - Tabellen/Spalten nichtmodal und per Tastatur erreichbar; Editor bleibt bedienbar. Parameterdialog mit Beispiel/Übernehmen/Abbrechen, keine leere Zeile im Editor. Aufbewahrte Ergebnisse bleiben gezielt erreichbar.
 - Tertiary-Hover auf Weiss und grauer Toolbar unterscheidbar; Pressed, Disabled, Auswahl und Fokus prüfen. Standardgeometrie sowie schmale Ansicht gezielt messen.
@@ -734,3 +734,15 @@ REQ-019/034/041/044/046/048/062/066/067; Ergänzung zu AT-005/007/027/032/049/05
 - Split-Hauptbutton, Pfeil und benachbarte Controls gleich hoch, kompakt 32 px und auf Touch mindestens 44 px.
 
 Gezielte Unit-/Chromium-Fälle sowie Typecheck, Lint/Modulgrenzen und Build genügen für diese Änderung; keine erneute vollständige V1-Abnahme.
+
+
+## SQL-Dokumente — 25. Oktober 2026
+
+REQ-016/019/034/062/067/068; AT-005/007/054/055/058/059. Ersetzt den bisherigen SQL-Versionenvertrag.
+
+- Speichern/Cmd+S sichern aktuellen Editortext ohne Namensdialog. Autosave und Reload erhalten denselben Text. Projekt-/Archivformat 3 enthält keine SQL-Versionssammlung. Alte Formate 1 und 2 kontrolliert ablehnen; Liste/Restebereinigung bleiben nutzbar und alte Bytes unverändert.
+- Laden wählt eine aktive SQL-Analyse des geöffneten Projekts; Namen, Texte, Parameter und Undo-Zustände bleiben getrennt. Kein impliziter Run.
+- UTF-8-.sql bis 1 MiB öffnet ein neues Dokument mit Dateiname/Code, leeren Parametern/Inputs und ohne Ausführung. Ungültige/zu grosse Dateien und verspätetes Einlesen nach Navigation erzeugen keinen Eintrag.
+- Herunterladen erhält Unicode und Text auch bei Speicherfehlern. Speichern erneut versuchen erhält diesen Text. Leser dürfen vorhandene SQL-Dokumente öffnen/herunterladen; Schreiben/Dateiimport bleibt deaktiviert.
+
+Prüfauswahl: gezielte Dokument-/Archiv-/Format-Unitfälle und echte Chromiumfälle für Editorwechsel, Dateiein-/ausgabe, Speicherfehler und Lesemodus; Typecheck, Lint und Build. Keine neue vollständige Abnahme.

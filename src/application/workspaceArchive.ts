@@ -87,7 +87,7 @@ export class WorkspaceArchive {
         .safeParse(raw);
       if (
         versions.success &&
-        (versions.data.archiveVersion !== 1 || versions.data.project.formatVersion !== 2)
+        (versions.data.archiveVersion !== 1 || versions.data.project.formatVersion !== 3)
       )
         throw new AppFailure('FORMAT_UNSUPPORTED', 'Unbekannte Archiv- oder Projektversion.');
       const m = manifestSchema.parse(raw),
@@ -147,8 +147,7 @@ export class WorkspaceArchive {
           missingSources: missing + external,
           containsExecutableCode:
             Object.values(project.analyses).some((a) => !!a.code) ||
-            Object.values(project.runs).some((r) => !!r.snapshot.code) ||
-            Object.values(project.sqlVersions).some((v) => !!v.code),
+            Object.values(project.runs).some((r) => !!r.snapshot.code),
           warnings: [
             ...m.omissions.map((o) => o.reason),
             ...(external

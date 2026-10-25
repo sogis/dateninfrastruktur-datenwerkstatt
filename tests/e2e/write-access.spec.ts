@@ -84,6 +84,8 @@ for (const kind of ['sql', 'r'] as const) {
         name: 'Gesicherte Analyse',
         code: kind === 'sql' ? 'SELECT 7 AS wert;' : 'wert <- 7',
       });
+      if (kind === 'sql')
+        session.createAnalysis('sql', {name: 'Lesbares Dokument', code: 'SELECT 8 AS wert;'});
       await session.flush();
       return id;
     }, kind);
@@ -91,10 +93,30 @@ for (const kind of ['sql', 'r'] as const) {
     const reader = await context.newPage();
     const editControl =
       kind === 'sql'
-        ? reader.getByRole('button', {name: 'Version speichern', exact: true})
+        ? reader.getByRole('button', {name: 'Speichern', exact: true})
         : reader.getByLabel('Analysename', {exact: true});
     await readerFor(page, reader, url);
     await expect(reader.locator('.monaco-editor')).toBeVisible();
+    if (kind === 'sql') {
+      await reader.getByRole('button', {name: 'Laden', exact: true}).click();
+      await reader
+        .getByRole('button', {name: 'Analyse Lesbares Dokument öffnen', exact: true})
+        .click();
+      await expect(reader.locator('.monaco-editor')).toContainText('SELECT 8');
+      await reader.getByRole('button', {name: 'Laden', exact: true}).click();
+      await reader
+        .getByRole('button', {name: 'Analyse Gesicherte Analyse öffnen', exact: true})
+        .click();
+      await expect(reader.locator('.monaco-editor')).toContainText('SELECT 7');
+      await reader.getByRole('button', {name: 'Weitere Aktionen', exact: true}).click();
+      await expect(
+        reader.getByRole('menuitem', {name: 'SQL-Datei öffnen', exact: true}),
+      ).toHaveAttribute('aria-disabled', 'true');
+      const pending = reader.waitForEvent('download');
+      await reader.getByRole('menuitem', {name: 'SQL-Datei herunterladen', exact: true}).click();
+      const download = await pending;
+      expect(await readFile((await download.path())!, 'utf8')).toBe('SELECT 7 AS wert;');
+    }
     await reader
       .getByRole('navigation', {name: 'Hauptnavigation'})
       .getByRole('button', {name: 'Navigation ausklappen', exact: true})
@@ -217,7 +239,7 @@ test('AT-012: delayed successful promotion preserves focus intentionally moved t
     allow();
   });
   await expect(reader.getByText(successText, {exact: true})).toBeVisible();
-  await expect(reader.getByRole('button', {name: 'Version speichern', exact: true})).toBeEnabled();
+  await expect(reader.getByRole('button', {name: 'Speichern', exact: true})).toBeEnabled();
   await expect(reader.locator('.monaco-editor')).toBeVisible();
   expect((await sessionSnapshot(reader)).readOnly).toBe(false);
   await expect(settings).toBeFocused();

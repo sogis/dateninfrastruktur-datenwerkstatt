@@ -18,7 +18,7 @@ describe('CSV text delimiter boundaries', () => {
       const {document, options} = recipeWithCharacters(quote);
       expect(csvImportOptionsSchema.parse(options)).toEqual(options);
       const parsed = parseWorkspace(document);
-      expect(parsed.formatVersion).toBe(2);
+      expect(parsed.formatVersion).toBe(3);
       expect(Object.values(parsed.datasetVersions)[0]!.origin).toEqual(
         Object.values(document.datasetVersions)[0]!.origin,
       );

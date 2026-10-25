@@ -1007,7 +1007,7 @@ Anwendung über den Viewport hinaus aufweiten.
 
 Die Reihenfolge bleibt:
 
-**SQL: Analysename als Text → Ausführen/Abbrechen → Version speichern → Tabellen & Spalten → Weitere Aktionen.**
+**SQL: Analysename als Text → Ausführen/Abbrechen → Speichern → Laden → Tabellen & Spalten → Weitere Aktionen.**
 
 R behält Analysename → Ausführen/Abbrechen → Speichern → Ansichtsaktionen → Weitere Aktionen.
 
@@ -1539,3 +1539,8 @@ Der SQL-Analysename verwendet normales Schriftgewicht. Im SQL-Editor keine Hervo
 Panelgriffe sind sichtbar, fokussierbar und mit Pfeiltasten bedienbar. Breiter Schema-/Spaltenbereich und Resultathöhe bleiben verstellbar; schmale Ansichten ordnen das Schema über dem Editor an.
 
 Ein kleiner Speicherpunkt mit konstanter Bedienfläche steht unten links im geöffneten Projekt. Grün bedeutet lokal gespeichert; orange ungespeichert, Speichern läuft, Fehler oder nur Sitzungsmodus. Keine Animation und keine wechselnde Textzeile im Inhaltsfluss. Tooltip, zugänglicher Zustandsname und Dialog vermitteln dieselbe Information ohne Farberkennung. Speicherfehleraktionen stehen im Statusdialog.
+
+
+### SQL-Dokumente (25. Oktober 2026)
+
+Speichern ist eine direkte Aktion ohne Dialog und verwendet denselben Pfad wie Cmd/Strg+S. Laden öffnet eine kompakte Liste aktiver SQL-Analysen: Name, Kennzeichnung des geöffneten Dokuments und Öffnen-Aktion. Keine Versionsnamen oder Wiederherstellungsbestätigung. „SQL-Datei öffnen“ und „SQL-Datei herunterladen“ stehen unter Weitere Aktionen. Fehler beim Dateilesen erscheinen im vorhandenen Dialog; der unveränderte Speicherpunkt vermittelt Speicherfehler und Wiederholung.

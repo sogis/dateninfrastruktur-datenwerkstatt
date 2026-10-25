@@ -4,9 +4,9 @@ import {useFormValidation} from '../../ui/useFormValidation';
 import {displayNameError, sqlNameError} from '../../domain/fieldValidation';
 import {ActionMenu, SplitButton} from '../../ui/ActionMenu';
 import {Modal} from '../../ui/Modal';
-import {NameDialog} from '../../ui/NameDialog';
 import {latestSqlRun} from '../../domain/sqlRetention';
-import {SqlVersions} from './SqlVersions';
+import {SqlDocuments, SqlFileInput} from './SqlDocuments';
+import {useNavigate} from '@tanstack/react-router';
 import {failureMessage} from '../../application/errors';
 import {
   tableExportMediaType,
@@ -18,6 +18,7 @@ import {useEffect, useId, useRef, useState, useSyncExternalStore} from 'react';
 import {Panel, PanelGroup, PanelResizeHandle} from 'react-resizable-panels';
 import type {
   Analysis,
+  AnalysisId,
   ExecutionRun,
   SqlAnalysis,
   TableResult,
@@ -83,11 +84,21 @@ export function SqlWorkbench({
   const narrow = useMediaQuery('(max-width: 900px)');
   const schemaId = useId();
   const schemaTrigger = useRef<HTMLButtonElement>(null);
-  const [dialog, setDialog] = useState<'save-version' | 'versions' | 'parameters' | 'results'>();
+  const sqlFileInput = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+  const [dialog, setDialog] = useState<'documents' | 'parameters' | 'results'>();
   const save = () => {
     if (!session.readOnly) void session.flush().catch((error: unknown) => report(error, session));
   };
   const [selectedResult, setSelectedResult] = useState<TableResult['id']>();
+  const openDocument = (id: AnalysisId) => {
+    setDialog(undefined);
+    setSelectedResult(undefined);
+    void navigate({
+      to: '/projects/$workspaceId/sql/$analysisId',
+      params: {workspaceId: session.document.workspace.id, analysisId: id},
+    }).catch((error: unknown) => report(error, session));
+  };
   const latest = latestSqlRun(session.document, analysis.id);
   const savedResult = selectedResult ? session.document.results[selectedResult] : undefined;
   const run = savedResult ? session.document.runs[savedResult.runId] : latest;
@@ -172,12 +183,11 @@ export function SqlWorkbench({
               Abbrechen
             </Button>
           )}
-          <Button
-            icon="floppy"
-            disabled={session.readOnly}
-            onClick={() => setDialog('save-version')}
-          >
-            Version speichern
+          <Button icon="floppy" disabled={session.readOnly} onClick={save}>
+            Speichern
+          </Button>
+          <Button icon="folder2-open" onClick={() => setDialog('documents')}>
+            Laden
           </Button>
         </ActionGroup>
         <Button
@@ -197,7 +207,21 @@ export function SqlWorkbench({
         <ActionMenu
           label="Weitere Aktionen"
           actions={[
-            {label: 'Versionen', onSelect: () => setDialog('versions')},
+            {
+              label: 'SQL-Datei öffnen',
+              disabled: session.readOnly,
+              onSelect: () => sqlFileInput.current?.click(),
+            },
+            {
+              label: 'SQL-Datei herunterladen',
+              onSelect: () => {
+                void downloadStream(
+                  new Blob([analysis.code], {type: 'application/sql;charset=utf-8'}).stream(),
+                  `${analysis.name}.sql`,
+                  'application/sql;charset=utf-8',
+                ).catch((error: unknown) => report(error, session));
+              },
+            },
             {label: `Parameter (${parameterCount})`, onSelect: () => setDialog('parameters')},
             {
               label: 'Aufbewahrte Ergebnisse',
@@ -215,25 +239,26 @@ export function SqlWorkbench({
           ]}
         />
       </Toolbar>
-      {dialog === 'save-version' && (
-        <NameDialog
-          title="SQL-Version speichern"
-          label="Versionsname"
-          initialName={`Version ${Object.values(session.document.sqlVersions).filter((v) => v.analysisId === analysis.id).length + 1}`}
-          submitLabel="Version speichern"
-          onSubmit={(value) => session.saveSqlVersion(analysis.id, value)}
+      <SqlFileInput
+        key={`${session.sessionId}/${analysis.id}`}
+        session={session}
+        inputRef={sqlFileInput}
+        onOpen={openDocument}
+      />
+      {dialog === 'documents' && (
+        <SqlDocuments
+          session={session}
+          currentId={analysis.id}
+          onOpen={openDocument}
           onClose={() => setDialog(undefined)}
         />
-      )}
-      {dialog === 'versions' && (
-        <SqlVersions analysis={analysis} session={session} onClose={() => setDialog(undefined)} />
       )}
       {dialog === 'parameters' && (
         <Parameters analysis={analysis} session={session} onClose={() => setDialog(undefined)} />
       )}
       {dialog === 'results' && (
         <Modal title="Aufbewahrte Ergebnisse" onClose={() => setDialog(undefined)}>
-          <ul className="sql-version-list">
+          <ul className="sql-document-list">
             {keptResults.map((item) => (
               <li key={item.id}>
                 <div>

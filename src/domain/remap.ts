@@ -13,7 +13,6 @@ export function remapWorkspace(
     'datasets',
     'datasetVersions',
     'analyses',
-    'sqlVersions',
     'runs',
     'results',
     'visualizations',
@@ -28,8 +27,6 @@ export function remapWorkspace(
   };
   d.workspace = {...d.workspace, id: workspaceId, createdAt: now, updatedAt: now};
   d.revision = 0;
-  for (const version of Object.values(d.sqlVersions))
-    version.analysisId = ref('analyses', version.analysisId);
   for (const a of Object.values(d.analyses))
     for (const input of a.inputs) {
       const s = input.source;

@@ -131,7 +131,7 @@ test('Neutral UI: real project navigation, aligned tables, optional fields and e
   await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   await expect(page.locator('.monaco-editor')).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
-  const save = page.getByRole('button', {name: 'Version speichern', exact: true});
+  const save = page.getByRole('button', {name: 'Speichern', exact: true});
   const run = page.getByRole('button', {name: 'Ausführen', exact: true});
   await expect(page.locator('.analysis-name-text')).toBeVisible();
   await aligned(save, run);

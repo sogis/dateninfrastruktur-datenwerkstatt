@@ -1,0 +1,12 @@
+
+> datenwerkstatt@0.1.0 test:unit
+> vitest run tests/unit/sql-document.test.ts tests/unit/sql-workbench.test.ts tests/unit/archive.test.ts tests/unit/workspace.test.ts tests/unit/csv-import-options.test.ts
+
+
+ RUN  v4.1.11 /Users/stefan/sources/dateninfrastruktur/dateninfrastruktur-datenwerkstatt
+
+
+ Test Files  5 passed (5)
+      Tests  34 passed (34)
+   Start at  16:28:19
+   Duration  275ms (transform 318ms, setup 0ms, import 606ms, tests 123ms, environment 0ms)

@@ -74,74 +74,71 @@ function addRun(d: WorkspaceDocument, analysisId: AnalysisId) {
   };
   return {run, result: d.results[resultId]!};
 }
-it('only explicit versions survive draft edits; restore, rename and duplication preserve their contracts', async () => {
+it('SQL documents save their current text; rename, duplication and remapping preserve document contents', async () => {
   const {session: s, repository} = await setup();
   try {
-    const id = s.createAnalysis('sql');
-    s.updateAnalysis(id, {code: 'SELECT $jahr', parameters: {jahr: 2025}});
+    const id = s.createAnalysis('sql', {name: '  Basis  ', code: 'SELECT $jahr'});
+    s.updateAnalysis(id, {parameters: {jahr: 2025}});
     await s.flush();
-    expect(Object.keys(s.document.sqlVersions)).toHaveLength(0);
-    const versionId = await s.saveSqlVersion(id, '  Basis  ');
-    const version = structuredClone(s.document.sqlVersions[versionId]!);
-    s.updateAnalysis(id, {code: 'SELECT 2', parameters: {jahr: 2026}});
-    await s.flush();
-    expect(s.document.sqlVersions[versionId]).toEqual(version);
     const revision = s.document.analyses[id]!.revision;
     await s.renameAnalysis(id, 'Öffentliche Analyse');
     expect(s.document.analyses[id]!.revision).toBe(revision);
-    await s.restoreSqlVersion(versionId);
-    expect(s.document.analyses[id]).toMatchObject({
-      name: 'Öffentliche Analyse',
-      code: 'SELECT $jahr',
-      parameters: {jahr: 2025},
-    });
-    expect(Object.keys(s.document.runs)).toHaveLength(0);
-    const copy = s.duplicateAnalysis(id);
+    s.updateAnalysis(id, {code: 'SELECT 2', parameters: {jahr: 2026}});
     await s.flush();
-    expect(Object.values(s.document.sqlVersions).some((v) => v.analysisId === copy)).toBe(false);
+    expect(s.document).not.toHaveProperty('sqlVersions');
+    expect((await repository.load(s.document.workspace.id))!.analyses[id]).toMatchObject({
+      name: 'Öffentliche Analyse',
+      code: 'SELECT 2',
+      parameters: {jahr: 2026},
+    });
+    const copy = s.duplicateAnalysis(id);
+    expect(s.document.analyses[copy]!.code).toBe('SELECT 2');
     const cloned = remapWorkspace(s.document, new Map(), newId, now());
-    const clonedVersion = Object.values(cloned.sqlVersions)[0]!;
-    expect(clonedVersion.id).not.toBe(versionId);
-    expect(clonedVersion.analysisId).not.toBe(id);
-    expect(cloned.analyses[clonedVersion.analysisId]!.code).toBe(version.code);
-    expect(clonedVersion.name).toBe('Basis');
+    const document = Object.values(cloned.analyses).find(
+      (item) => item.name === 'Öffentliche Analyse',
+    )!;
+    expect(document.id).not.toBe(id);
+    expect(document.code).toBe('SELECT 2');
+    expect(document.parameters).toEqual({jahr: 2026});
     s.archiveAnalysis(id);
     await s.flush();
-    expect((await repository.load(s.document.workspace.id))!.sqlVersions[versionId]).toEqual(
-      version,
-    );
-    const bad = structuredClone(s.document);
-    bad.sqlVersions[versionId]!.code = 'SELECT 999';
-    expect(() => assertImmutableHistory(s.document, bad)).toThrow();
-    await expect(s.restoreSqlVersion(versionId)).rejects.toThrow();
+    expect((await repository.load(s.document.workspace.id))!.analyses[id]!.archivedAt).toBe(now());
+    expect(Object.keys(s.document.runs)).toHaveLength(0);
   } finally {
     await s.close();
   }
 });
-it('version publication freezes the clicked draft; commit errors publish neither versions nor renamed/restored drafts', async () => {
+it('initial name and code are one mutation; failed saves retain the editor text for retry', async () => {
   const {session: s, repository} = await setup();
   try {
-    const id = s.createAnalysis('sql');
+    const generation = s.persistence.generation;
+    expect(() => s.createAnalysis('sql', {name: '', code: 'SELECT 999'})).toThrow();
+    expect(s.persistence.generation).toBe(generation);
+    expect(Object.keys(s.document.analyses)).toHaveLength(0);
+    const id = s.createAnalysis('sql', {name: 'Datei', code: '-- Import\nSELECT 1;'});
+    expect(s.persistence.generation).toBe(generation + 1);
+    expect(s.document.analyses[id]).toMatchObject({
+      name: 'Datei',
+      code: '-- Import\nSELECT 1;',
+      parameters: {},
+      inputs: [],
+      revision: 0,
+    });
     await s.flush();
     const commit = vi.spyOn(repository, 'commit');
-    commit.mockRejectedValueOnce(Error('disk full'));
-    await expect(s.saveSqlVersion(id, 'Basis')).rejects.toThrow('disk full');
-    expect(s.document.sqlVersions).toEqual({});
-    const versionId = await s.saveSqlVersion(id, 'Basis');
-    s.updateAnalysis(id, {code: 'SELECT 99'});
-    await s.flush();
     const before = structuredClone(s.document);
     commit.mockRejectedValueOnce(Error('disk full'));
     await expect(s.renameAnalysis(id, 'Anders')).rejects.toThrow('disk full');
     expect(s.document).toEqual(before);
+    s.updateAnalysis(id, {code: 'SELECT 99'});
     commit.mockRejectedValueOnce(Error('disk full'));
-    await expect(s.restoreSqlVersion(versionId)).rejects.toThrow('disk full');
-    expect(s.document).toEqual(before);
-    const pending = s.saveSqlVersion(id, 'Geklickter Stand');
-    s.updateAnalysis(id, {code: 'SELECT 100'});
-    const captured = await pending;
-    expect(s.document.sqlVersions[captured]!.code).toBe('SELECT 99');
-    expect(s.document.analyses[id]!.code).toBe('SELECT 100');
+    await expect(s.flush()).rejects.toThrow('disk full');
+    expect(s.document.analyses[id]!.code).toBe('SELECT 99');
+    expect((await repository.load(s.document.workspace.id))!.analyses[id]!.code).toBe(
+      '-- Import\nSELECT 1;',
+    );
+    await s.flush();
+    expect((await repository.load(s.document.workspace.id))!.analyses[id]!.code).toBe('SELECT 99');
   } finally {
     await s.close();
   }
@@ -233,20 +230,24 @@ it.each(['kept', 'artifact', 'dataset', 'analysis', 'chart'] as const)(
     }
   },
 );
-it('rejects format 1 with no migration/default versions collection', () => {
-  const d = emptyWorkspace(newId<'workspace'>(), 'New', now());
-  expect(() => parseWorkspace({...d, formatVersion: 1})).toThrow(
-    expect.objectContaining({code: 'FORMAT_UNSUPPORTED'}),
-  );
-  const {sqlVersions: _versions, ...incomplete} = d;
-  expect(() => parseWorkspace(incomplete)).toThrow();
-});
+it.each([1, 2])(
+  'rejects project format %s without migration or a versions collection',
+  (formatVersion) => {
+    const d = emptyWorkspace(newId<'workspace'>(), 'New', now());
+    expect(d.formatVersion).toBe(3);
+    expect(d).not.toHaveProperty('sqlVersions');
+    expect(() => parseWorkspace({...d, formatVersion})).toThrow(
+      expect.objectContaining({code: 'FORMAT_UNSUPPORTED'}),
+    );
+    expect(() => parseWorkspace({...d, sqlVersions: {}})).toThrow();
+  },
+);
 
-it('read-only sessions can inspect versions but cannot rename, save or restore them', async () => {
+it('read-only sessions can inspect documents but cannot create, edit or rename them', async () => {
   const {session: writer, repository} = await setup();
   try {
-    const id = writer.createAnalysis('sql');
-    const version = await writer.saveSqlVersion(id, 'Basis');
+    const id = writer.createAnalysis('sql', {name: 'Basis', code: 'SELECT 1'});
+    await writer.flush();
     const before = structuredClone(writer.document);
     const reader = new WorkspaceEditingSession(
       before,
@@ -268,15 +269,16 @@ it('read-only sessions can inspect versions but cannot rename, save or restore t
       },
     );
     try {
+      expect(reader.document.analyses[id]!.code).toBe('SELECT 1');
       await expect(reader.renameAnalysis(id, 'Anders')).rejects.toMatchObject({
         code: 'READ_ONLY_WORKSPACE',
       });
-      await expect(reader.saveSqlVersion(id, 'Weitere')).rejects.toMatchObject({
-        code: 'READ_ONLY_WORKSPACE',
-      });
-      await expect(reader.restoreSqlVersion(version)).rejects.toMatchObject({
-        code: 'READ_ONLY_WORKSPACE',
-      });
+      expect(() => reader.createAnalysis('sql', {name: 'Datei', code: 'SELECT 2'})).toThrow(
+        expect.objectContaining({code: 'READ_ONLY_WORKSPACE'}),
+      );
+      expect(() => reader.updateAnalysis(id, {code: 'SELECT 3'})).toThrow(
+        expect.objectContaining({code: 'READ_ONLY_WORKSPACE'}),
+      );
       expect(reader.document).toEqual(before);
     } finally {
       await reader.close();

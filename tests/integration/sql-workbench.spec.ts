@@ -1,6 +1,6 @@
 import {test, expect} from '../persistentBrowser';
 
-test('SQL workbench: explicit versions, bounded runs, atomic retirement, persistence and archives', async ({
+test('SQL workbench: SQL documents, bounded runs, atomic retirement, persistence and archives', async ({
   page,
 }) => {
   await page.goto('/tests/spike/index.html');
@@ -20,7 +20,12 @@ test('SQL workbench: explicit versions, bounded runs, atomic retirement, persist
         firstResult = session.document.runs[firstRun]!.resultIds[0]!;
       await sql.keep(firstResult);
       await sql.asDataset(firstResult, 'Gesichert', 'gesichert');
-      const versionId = await session.saveSqlVersion(id, 'Basis');
+      const basisId = session.createAnalysis('sql', {
+        name: 'Basis',
+        code: 'SELECT CAST($jahr AS INTEGER) AS jahr',
+      });
+      session.updateAnalysis(basisId, {parameters: {jahr: 2025}});
+      await session.flush();
       session.updateAnalysis(id, {code: 'SELECT 42 AS wert', parameters: {}});
       for (let i = 0; i < 30; i++) await sql.run(id);
       const bounded = Object.keys(session.document.runs).length;
@@ -38,7 +43,8 @@ test('SQL workbench: explicit versions, bounded runs, atomic retirement, persist
       }
       repository.commit = commit;
       const intact = await sql.page(currentResult, {offset: 0, size: 100, sort: []}, signal);
-      await session.restoreSqlVersion(versionId);
+      const basis = session.document.analyses[basisId]!;
+      session.updateAnalysis(id, {code: basis.code, parameters: basis.parameters});
       const restoredRuns = Object.keys(session.document.runs).length;
       const next = await sql.run(id);
       const rows = await sql.page(
@@ -53,7 +59,7 @@ test('SQL workbench: explicit versions, bounded runs, atomic retirement, persist
       );
       const candidate = await service.getArchive().inspect(exported.blob, signal);
       const imported = await service.importArchive(candidate.id, signal);
-      const importedVersion = Object.values(imported.sqlVersions)[0]!;
+      const importedBasis = Object.values(imported.analyses).find((item) => item.name === 'Basis')!;
       const importedKept = Object.values(imported.results).find(
         (result) => result.retention === 'kept',
       )!;
@@ -68,11 +74,10 @@ test('SQL workbench: explicit versions, bounded runs, atomic retirement, persist
         intact: intact.rows,
         restoredRuns,
         rows: rows.rows,
-        versionCount: Object.keys(imported.sqlVersions).length,
-        version: importedVersion,
-        originalVersionId: versionId,
+        importedBasis,
+        originalBasisId: basisId,
         originalAnalysisId: id,
-        importedCode: imported.analyses[importedVersion.analysisId]!.code,
+        importedCode: importedBasis.code,
         format: imported.formatVersion,
         preserved: preserved.rows,
         runCountBeforeReopen: Object.keys(imported.runs).length,
@@ -87,12 +92,11 @@ test('SQL workbench: explicit versions, bounded runs, atomic retirement, persist
   expect(proof.intact).toEqual([['42']]);
   expect(proof.restoredRuns).toBe(2);
   expect(proof.rows).toEqual([['2025']]);
-  expect(proof.versionCount).toBe(1);
-  expect(proof.version.name).toBe('Basis');
-  expect(proof.version.id).not.toBe(proof.originalVersionId);
-  expect(proof.version.analysisId).not.toBe(proof.originalAnalysisId);
-  expect(proof.importedCode).toBe(proof.version.code);
-  expect(proof.format).toBe(2);
+  expect(proof.importedBasis.id).not.toBe(proof.originalBasisId);
+  expect(proof.importedBasis.id).not.toBe(proof.originalAnalysisId);
+  expect(proof.importedCode).toBe('SELECT CAST($jahr AS INTEGER) AS jahr');
+  expect(proof.importedBasis.parameters).toEqual({jahr: 2025});
+  expect(proof.format).toBe(3);
   expect(proof.preserved).toEqual([['2025']]);
   expect(proof.runCountAfterReopen).toBe(proof.runCountBeforeReopen);
 });
@@ -204,84 +208,94 @@ test('SQL workbench: replacing a result waits for whole payload/chart readers; m
   expect(proof.runs).toBe(1);
 });
 
-test('SQL format break: old IndexedDB rows do not block listing, creating or abandoned-file cleanup', async ({
-  page,
-}) => {
-  await page.goto('/tests/spike/index.html');
-  const proof = await page.evaluate(async () => {
-    const rp = '/src/infrastructure/storage/workspaceRepository.ts',
-      dp = '/src/domain/workspace.ts';
-    const ap = '/src/infrastructure/storage/artifactStore.ts',
-      cp = '/src/application/recoveryService.ts';
-    const {WorkspaceDatabase, DexieWorkspaceRepository} = (await import(
-      rp
-    )) as typeof import('../../src/infrastructure/storage/workspaceRepository');
-    const {checkedId, emptyWorkspace} = (await import(
-      dp
-    )) as typeof import('../../src/domain/workspace');
-    const {MemoryArtifactStore} = (await import(
-      ap
-    )) as typeof import('../../src/infrastructure/storage/artifactStore');
-    const {RecoveryService} = (await import(
-      cp
-    )) as typeof import('../../src/application/recoveryService');
-    const db = new WorkspaceDatabase(`format-break-${crypto.randomUUID()}`),
-      repo = new DexieWorkspaceRepository(db);
-    const id = () => checkedId<'workspace'>(crypto.randomUUID()),
-      signal = new AbortController().signal;
-    const oldId = id(),
-      current = emptyWorkspace(id(), 'Aktuell', new Date().toISOString());
-    const old = {...emptyWorkspace(oldId, 'Alt', new Date().toISOString()), formatVersion: 1};
-    const artifacts = new MemoryArtifactStore(1024);
-    try {
-      await db.workspaces.add({
-        id: oldId,
-        name: 'Alt',
-        updatedAt: old.workspace.updatedAt,
-        document: old,
-      });
-      await repo.create(current);
-      const listed = await repo.list();
-      let rejected = '';
-      try {
-        await repo.load(oldId);
-      } catch (error) {
-        rejected = String(error);
-      }
-      const oldFile = await artifacts.write(
-        oldId,
-        new Blob(['old']).stream(),
-        'text/plain',
-        signal,
-      );
-      const orphan = await artifacts.write(
-        id(),
-        new Blob(['orphan']).stream(),
-        'text/plain',
-        signal,
-      );
-      const cleanup = await new RecoveryService(artifacts).cleanAbandoned(
-        repo,
-        {acquire: async (workspaceId) => ({workspaceId, mode: 'writer', release: async () => {}})},
-        signal,
-      );
-      return {
-        listed: listed.map((item) => item.name),
-        rejected,
-        oldUnchanged: (await db.workspaces.get(oldId))?.document,
-        old,
-        oldFilePreserved: await artifacts.exists(oldFile),
-        orphanRemoved: !(await artifacts.exists(orphan)),
-        removed: cleanup.removed.length,
+for (const oldFormat of [1, 2])
+  test(`SQL format break ${oldFormat}: old IndexedDB rows do not block listing, creating or abandoned-file cleanup`, async ({
+    page,
+  }) => {
+    await page.goto('/tests/spike/index.html');
+    const proof = await page.evaluate(async (oldFormat) => {
+      const rp = '/src/infrastructure/storage/workspaceRepository.ts',
+        dp = '/src/domain/workspace.ts';
+      const ap = '/src/infrastructure/storage/artifactStore.ts',
+        cp = '/src/application/recoveryService.ts';
+      const {WorkspaceDatabase, DexieWorkspaceRepository} = (await import(
+        rp
+      )) as typeof import('../../src/infrastructure/storage/workspaceRepository');
+      const {checkedId, emptyWorkspace} = (await import(
+        dp
+      )) as typeof import('../../src/domain/workspace');
+      const {MemoryArtifactStore} = (await import(
+        ap
+      )) as typeof import('../../src/infrastructure/storage/artifactStore');
+      const {RecoveryService} = (await import(
+        cp
+      )) as typeof import('../../src/application/recoveryService');
+      const db = new WorkspaceDatabase(`format-break-${crypto.randomUUID()}`),
+        repo = new DexieWorkspaceRepository(db);
+      const id = () => checkedId<'workspace'>(crypto.randomUUID()),
+        signal = new AbortController().signal;
+      const oldId = id(),
+        current = emptyWorkspace(id(), 'Aktuell', new Date().toISOString());
+      const old = {
+        ...emptyWorkspace(oldId, 'Alt', new Date().toISOString()),
+        formatVersion: oldFormat,
       };
-    } finally {
-      await db.delete();
-    }
+      const artifacts = new MemoryArtifactStore(1024);
+      try {
+        await db.workspaces.add({
+          id: oldId,
+          name: 'Alt',
+          updatedAt: old.workspace.updatedAt,
+          document: old,
+        });
+        await repo.create(current);
+        const listed = await repo.list();
+        let rejected = '';
+        try {
+          await repo.load(oldId);
+        } catch (error) {
+          rejected = String(error);
+        }
+        const oldFile = await artifacts.write(
+          oldId,
+          new Blob(['old']).stream(),
+          'text/plain',
+          signal,
+        );
+        const orphan = await artifacts.write(
+          id(),
+          new Blob(['orphan']).stream(),
+          'text/plain',
+          signal,
+        );
+        const cleanup = await new RecoveryService(artifacts).cleanAbandoned(
+          repo,
+          {
+            acquire: async (workspaceId) => ({
+              workspaceId,
+              mode: 'writer',
+              release: async () => {},
+            }),
+          },
+          signal,
+        );
+        return {
+          listed: listed.map((item) => item.name),
+          rejected,
+          oldUnchanged: (await db.workspaces.get(oldId))?.document,
+          old,
+          oldFilePreserved: await artifacts.exists(oldFile),
+          orphanRemoved: !(await artifacts.exists(orphan)),
+          removed: cleanup.removed.length,
+        };
+      } finally {
+        await db.delete();
+      }
+    }, oldFormat);
+    expect(proof.listed).toEqual(['Aktuell']);
+    expect(proof.rejected).toContain('Projektformat nicht unterstützt');
+    expect(proof.oldUnchanged).toEqual(proof.old);
+    expect(proof.oldFilePreserved).toBe(true);
+    expect(proof.orphanRemoved).toBe(true);
+    expect(proof.removed).toBe(1);
   });
-  expect(proof.listed).toEqual(['Aktuell']);
-  expect(proof.rejected).toContain('Projektformat nicht unterstützt');
-  expect(proof.oldUnchanged).toEqual(proof.old);
-  expect(proof.oldFilePreserved).toBe(true);
-  expect(proof.orphanRemoved).toBe(true);
-  expect(proof.removed).toBe(1);
-});

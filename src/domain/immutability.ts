@@ -21,11 +21,6 @@ export function assertImmutableHistory(before: WorkspaceDocument, after: Workspa
       results: {...before.results, ...after.results},
     }),
   );
-  for (const [id, version] of Object.entries(before.sqlVersions))
-    require(same(
-      version,
-      after.sqlVersions[id as keyof typeof after.sqlVersions],
-    ), `sqlVersions.${id}`);
   for (const [id, version] of Object.entries(before.datasetVersions))
     require(same(
       version,

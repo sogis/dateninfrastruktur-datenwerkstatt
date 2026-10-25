@@ -5,14 +5,7 @@ import type {ArchiveCodec} from './archivePorts';
 import type {ArtifactReferenceCheck} from './ports';
 import {RService} from './rService';
 import type {ManagedREngine, RLimits} from './rPorts';
-import type {
-  Analysis,
-  AnalysisId,
-  SqlAnalysisVersionId,
-  WorkspaceId,
-  WorkspaceDocument,
-  Id,
-} from '../domain/model';
+import type {Analysis, AnalysisId, WorkspaceId, WorkspaceDocument, Id} from '../domain/model';
 import {checkedId, emptyWorkspace, nameSchema, parseWorkspace} from '../domain/workspace';
 import type {
   WorkspaceRepository,
@@ -337,14 +330,17 @@ export class WorkspaceEditingSession {
       d.workspace.description = description;
     });
   }
-  createAnalysis(kind: 'sql' | 'r'): AnalysisId {
+  createAnalysis(kind: 'sql' | 'r', initial?: {name: string; code: string}): AnalysisId {
+    const initialName = initial ? nameSchema.parse(initial.name) : undefined;
     const id = this.deps.newId<'analysis'>();
     const now = this.deps.now();
     const common = {
       id,
       workspaceId: this.document.workspace.id,
-      name: kind === 'sql' ? 'Neue SQL-Abfrage' : 'Neues R-Skript',
-      code: kind === 'sql' ? 'SELECT 1 AS wert;' : '# R-Code wird nur nach Ausführen gestartet.\n',
+      name: initialName ?? (kind === 'sql' ? 'Neue SQL-Abfrage' : 'Neues R-Skript'),
+      code:
+        initial?.code ??
+        (kind === 'sql' ? 'SELECT 1 AS wert;' : '# R-Code wird nur nach Ausführen gestartet.\n'),
       revision: 0,
       inputs: [],
       parameters: {},
@@ -405,47 +401,6 @@ export class WorkspaceEditingSession {
       if (!analysis || analysis.archivedAt)
         throw new AppFailure('REFERENCE_INVALID', 'Analyse nicht gefunden.');
       analysis.name = validated;
-      analysis.updatedAt = now;
-      d.workspace.updatedAt = now;
-    });
-  }
-  async saveSqlVersion(id: AnalysisId, name: string) {
-    this.assertWriter();
-    const analysis = this.document.analyses[id];
-    if (!analysis || analysis.kind !== 'sql' || analysis.archivedAt)
-      throw new AppFailure('REFERENCE_INVALID', 'SQL-Analyse nicht gefunden.');
-    const version = {
-      id: this.deps.newId<'sql-analysis-version'>(),
-      workspaceId: this.document.workspace.id,
-      analysisId: id,
-      name: nameSchema.parse(name),
-      createdAt: this.deps.now(),
-      code: analysis.code,
-      parameters: structuredClone(analysis.parameters),
-    };
-    await this.persistence.publish((d) => {
-      d.sqlVersions[version.id] = version;
-      d.workspace.updatedAt = version.createdAt;
-    });
-    return version.id;
-  }
-  async restoreSqlVersion(id: SqlAnalysisVersionId) {
-    this.assertWriter();
-    const version = this.document.sqlVersions[id];
-    if (!version) throw new AppFailure('REFERENCE_INVALID', 'Version nicht gefunden.');
-    const now = this.deps.now();
-    await this.persistence.publish((d) => {
-      const analysis = d.analyses[version.analysisId];
-      if (!analysis || analysis.archivedAt)
-        throw new AppFailure('REFERENCE_INVALID', 'SQL-Analyse nicht gefunden.');
-      if (
-        analysis.code !== version.code ||
-        JSON.stringify(analysis.parameters) !== JSON.stringify(version.parameters)
-      ) {
-        analysis.code = version.code;
-        analysis.parameters = structuredClone(version.parameters);
-        analysis.revision++;
-      }
       analysis.updatedAt = now;
       d.workspace.updatedAt = now;
     });
