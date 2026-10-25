@@ -2380,3 +2380,133 @@ geänderten UI-Pfade und direkten Abhängigkeiten begrenzt. Bekannte
 Chunkgrössenwarnung bleibt; kein bekannter Blocker im beauftragten Umfang.
 Nächster Nutzungsschritt: mit Neu eine benannte SQL-Analyse erstellen und über
 Öffnen zwischen Dokumenten wechseln. Kein Commit oder Push für diese Änderung.
+
+## Parameter: stabile Felder und Validierung beim Typwechsel (25. Oktober 2026)
+
+**Status: implementiert und gezielt geprüft.** REQ-035/067, Parameter-UI und
+AT-055. Verifizierter Stand: Basisrevision
+`e3e5e8c1306eb6d09779ac6a16f39c386e377dfc` plus uncommittierte Änderungen;
+[Dateifingerabdrücke](verification/parameter-fields/source-sha256.txt).
+Der Arbeitsbaum war vor dieser Korrektur sauber.
+
+Der gemeinsame SQL-/R-Parametereditor setzt beim Typwechsel ausschliesslich
+Fehler, Bearbeitungsstatus und ausstehende Blur-Validierung des betroffenen
+Wertfelds zurück. Fehler anderer Felder und sämtliche eingegebenen Werte bleiben
+erhalten. Ohne neue Werteingabe erzeugt blosses Fokussieren/Verlassen keinen
+erneuten Fehler; nach Bearbeitung und Blur oder bei „Parameter übernehmen“ wird
+gegen den aktuellen Typ geprüft. Ein leerer Decimal-Wert bleibt ungültig;
+String-Leerwert, NULL und exakte Decimal-Textwerte behalten ihre Verträge.
+
+Parameterzellen sind oben ausgerichtet. Eingaben, Typauswahl und Entfernen haben
+dieselbe, mit der Textgrösse wachsende Höhe. Nur der SQL-Parameterdialog verwendet
+einen festen oberen Abstand von 24 px, bei schmalem Viewport 16 px; neue Fehler
+verschieben ihn nicht durch vertikale Neuzentrierung. Die Tabelle behält feste
+Spalten und eine Mindestbreite; bei schmaler Ansicht oder grosser Schrift wird
+innerhalb der Tabelle horizontal gescrollt. Viele Zeilen bleiben im Dialog
+vertikal erreichbar.
+
+Implementierte Dateien: `src/ui/useFormValidation.ts`,
+`src/features/sql/SqlWorkbench.tsx`, `src/styles/app.css`.
+Regressionen: `tests/unit/form-validation.test.ts` und
+`tests/e2e/parameters.spec.ts`.
+
+**Tatsächlich ausgeführte Checks** mit Node 22.23.1, npm 11.18.0,
+Playwright 1.63.0 und Chromium 153.0.8010.12:
+
+- `npx vitest run tests/unit/form-validation.test.ts tests/unit/field-validation.test.ts`:
+  **9/9, Exit 0**. Nach Verstärkung der Prüfung zum erhaltenen Bearbeitungsstatus
+  `npx vitest run tests/unit/form-validation.test.ts`: **4/4, Exit 0**.
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/parameters.spec.ts`:
+  erster Lauf **4/5, Exit 1**. Die Messung bei 200 % Textgrösse fand 4 px Versatz
+  sowie zu knappe Feldhöhen; CSS korrigiert, keine Testtoleranz erhöht.
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/parameters.spec.ts -g 'Parameters geometry'`:
+  nach der Höhen-/Ausrichtungskorrektur **3/3, Exit 0**.
+- Abschliessend nach stabilen Spalten, Mindestbreite und ergänztem Scrollnachweis:
+  `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/parameters.spec.ts tests/e2e/required-fields.spec.ts tests/e2e/optional-labels.spec.ts tests/e2e/action-feedback.spec.ts -g 'Parameters|parameter values are required|conditional parameter values|dismissing a parameter-apply error'`:
+  **8/8, Exit 0**. SQL/R-Typwechsel, isoliertes Fehlerrücksetzen, erneute
+  Validierung, exakte Übernahme und bestehende Pflicht-/Optional-/Aktionsfehlerfälle
+  geprüft. Geometrie bei 1440×900, 390×900 und 1280×900 mit 200 % CSS-Textgrösse:
+  Feldoberkanten unverändert (Toleranz 1 px), Kontrollen gleich hoch/ausgerichtet,
+  mehrzeilige Fehler unter dem Feld, kein horizontaler Seitenüberlauf; zehn
+  Parameter bei grosser Schrift weiterhin scrollbar erreichbar.
+- `npm run typecheck`, `npm run lint` einschliesslich Modulgrenzen: jeweils
+  **Exit 0**, nach den finalen Code-/Teständerungen erneut ausgeführt.
+- `npx prettier --check src/ui/useFormValidation.ts src/features/sql/SqlWorkbench.tsx src/styles/app.css tests/unit/form-validation.test.ts tests/e2e/parameters.spec.ts`
+  und `git diff --check`: jeweils **Exit 0**.
+
+Screenshots visuell geprüft:
+[Desktop](verification/parameter-fields/desktop-decimal.png),
+[390 px](verification/parameter-fields/narrow-decimal.png),
+[200 % Text](verification/parameter-fields/large-text-decimal.png).
+Der bereits laufende Vite-Prozess im Zielrepository wurde weiterverwendet.
+
+**Nicht ausgeführt:** vollständige Suiten, `npm run verify`, Produktionsbuild,
+Browser-/Deploymentmatrix und nativer Safari-/Browserzoomtest. Die Auswahl deckt
+die geänderten Formularzustände, verzögerte Validierung und gemeinsame
+SQL-/R-Darstellung ab; keine Engine-/Speicher-/Dependencyänderung und keine neue
+V1-Gesamtabnahme. Kein bekannter Blocker. Nächster konkreter Schritt: lokale
+Durchsicht der Parameterdialoge; die beauftragte Korrektur ist abgeschlossen.
+Kein Commit oder Push.
+
+## Parameter: native Select-Darstellung und Weissraum (25. Oktober 2026)
+
+**Status: implementiert und gezielt geprüft.** REQ-067 / AT-055.
+Verifizierter Stand: Basisrevision `e3e5e8c1306eb6d09779ac6a16f39c386e377dfc`
+plus erhaltene vorherige Änderungen und diese Ergänzung;
+[Dateifingerabdrücke](verification/parameter-spacing/source-sha256.txt).
+
+Der Parametereditor verwendet die native Select-Darstellung ohne eigene
+Höhenvorgabe; der direkte Browservergleich mit der tatsächlichen
+Editor-Schriftgrössenauswahl in den Einstellungen bestätigt dieselbe Höhe,
+Appearance, Schrift, Innenabstände und Rundung. Ein eigener Container zentriert
+die Typauswahl zur Eingabehöhe, unabhängig von darunterstehenden Fehlern.
+Zellpadding schafft 16 px zwischen den Kontrollen; der Scrollcontainer erhält
+8 px Innenabstand sowie Scrollabstände. Lokales `scrollIntoView` bei Fokus
+berücksichtigt diesen Rand auch bei automatischem horizontalem Scrollen.
+Die gleichen Regeln gelten für SQL und R. Gemeinsame Select-Komponente,
+Einstellungen, Parameterwerte und Typwechselvalidierung wurden nicht geändert.
+Die vorherige Forderung gleicher Höhen gilt nun für Eingaben/Entfernen; die
+native Typauswahl ist wie vom Nutzer gewählt mittig und darf niedriger sein.
+
+Relevante Dateien: `src/features/sql/SqlWorkbench.tsx`, `src/styles/app.css` und
+`tests/e2e/parameters.spec.ts`. Vorherige uncommittierte Arbeit und historische
+Nachweise bleiben erhalten. Diese Ergänzung ersetzt die frühere Aussage zur
+erzwungenen Select-Höhe im Abschnitt oben, nicht dessen historische Prüfergebnisse.
+
+**Tatsächlich ausgeführte Checks:**
+
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/parameters.spec.ts`:
+  erster Lauf **5/6, Exit 1**. Der neue Tastaturtest belegte bei 390 px, dass
+  natives Fokusscrollen den äusseren Ring trotz CSS-Abständen abschneidet.
+  Lokales Fokusscrollen ergänzt; Prüftoleranz nicht erhöht.
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/parameters.spec.ts -g 'native select and focus'`:
+  **1/1, Exit 0**, nach dieser Korrektur.
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/parameters.spec.ts -g 'type changes|Parameters geometry' --output=test-results/parameter-spacing-chromium`:
+  **5/5, Exit 0**. Zusammen sechs unterschiedliche Chromiumfälle am finalen Stand.
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=webkit tests/e2e/parameters.spec.ts -g 'native select and focus' --output=test-results/parameter-spacing-webkit`:
+  **1/1, Exit 0**. Ein gezielter WebKit-Fall, keine vollständige Browsermatrix.
+- `npm run typecheck`, `npm run lint` einschliesslich Modulgrenzen und
+  `npx prettier --check src/features/sql/SqlWorkbench.tsx src/styles/app.css tests/e2e/parameters.spec.ts`:
+  jeweils **Exit 0**, nach finaler Codeänderung. `git diff --check`: **Exit 0**.
+
+Geprüft bei 1440×900, 390×900 und 1280×900 mit 200 % CSS-Textgrösse: mindestens
+16 px Abstand, native Typauswahl wie Einstellungen, stabile Eingabepositionen
+mit mehrzeiligen Fehlern, zwei Parameterzeilen vollständig per Tastatur
+erreichbar. Für jede Eingabe, Typauswahl und Entfernen-Aktion vor und nach
+Validierung wurde der 5 px auskragende sichtbare Fokusring gegen Viewport und
+alle beschneidenden Vorfahren gemessen, auch nach horizontalem Scrollen.
+SQL-/R-Typwechsel und exakte Übernahme bleiben geprüft. Laufzeit: Node 22.23.1,
+npm 11.18.0, Playwright 1.63.0, Chromium 153.0.8010.12, WebKit 26.6.
+
+Visuell geprüft:
+[native Auswahl Desktop](verification/parameter-spacing/webkit-desktop-clean-focus.png),
+[schmal mit Fehlern](verification/parameter-spacing/webkit-narrow-errors-focus.png),
+[200 % Text](verification/parameter-spacing/webkit-large-text-errors-focus.png),
+[Chromium mit Decimal-Fehler](verification/parameter-spacing/chromium-desktop-decimal.png).
+
+**Nicht ausgeführt:** Unit-Tests (keine Validierungslogik geändert), vollständige
+Suiten/Verify, Produktionsbuild, Browser-/Deploymentmatrix und nativer Safari-
+oder Browserzoomtest. Gezielte Auswahl auf Markup, native Darstellung,
+Fokus-/Scrollgrenzen und bestehende Parameterregressionen beschränkt. Kein
+bekannter Blocker. Nächster konkreter Schritt: lokale Durchsicht des gelockerten
+Parametereditors; der beauftragte Umfang ist abgeschlossen. Kein Commit/Push.

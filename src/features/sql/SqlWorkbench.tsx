@@ -475,7 +475,10 @@ export function Parameters({
   const [dirty, setDirty] = useState(false);
   const content = (
     <div className="parameters-editor">
-      <div className="parameter-table-scroll">
+      <div
+        className="parameter-table-scroll"
+        onFocus={(event) => event.target.scrollIntoView({block: 'nearest', inline: 'nearest'})}
+      >
         <table>
           <thead>
             <tr>
@@ -517,37 +520,36 @@ export function Parameters({
                   </FormField>
                 </td>
                 <td>
-                  <Select
-                    required
-                    aria-label={`Parameter ${i + 1} Typ`}
-                    disabled={session.readOnly}
-                    value={row.type}
-                    onChange={(e) => {
-                      setDirty(true);
-                      form.change(
-                        `value-${i}`,
-                        parameterValueError(e.target.value as ParameterType, row.value),
-                      );
-                      setRows(
-                        rows.map((r, j) =>
-                          j === i ? {...r, type: e.target.value as ParameterType} : r,
-                        ),
-                      );
-                    }}
-                  >
-                    {[
-                      'string',
-                      'number',
-                      'boolean',
-                      'null',
-                      'int64',
-                      'decimal',
-                      'date',
-                      'timestamp',
-                    ].map((t) => (
-                      <option key={t}>{t}</option>
-                    ))}
-                  </Select>
+                  <div className="parameter-type-control">
+                    <Select
+                      required
+                      aria-label={`Parameter ${i + 1} Typ`}
+                      disabled={session.readOnly}
+                      value={row.type}
+                      onChange={(e) => {
+                        setDirty(true);
+                        form.resetField(`value-${i}`);
+                        setRows(
+                          rows.map((r, j) =>
+                            j === i ? {...r, type: e.target.value as ParameterType} : r,
+                          ),
+                        );
+                      }}
+                    >
+                      {[
+                        'string',
+                        'number',
+                        'boolean',
+                        'null',
+                        'int64',
+                        'decimal',
+                        'date',
+                        'timestamp',
+                      ].map((t) => (
+                        <option key={t}>{t}</option>
+                      ))}
+                    </Select>
+                  </div>
                 </td>
                 <td>
                   <FormField
@@ -632,7 +634,7 @@ export function Parameters({
     </div>
   );
   return onClose ? (
-    <Modal title="Parameter" onClose={onClose} showClose={false}>
+    <Modal title="Parameter" onClose={onClose} showClose={false} className="parameter-dialog">
       <p>
         Parameter sind wechselnde Einzelwerte für dieselbe Abfrage, zum Beispiel{' '}
         <code>WHERE jahr = $jahr</code>. Tabellen- und Spaltennamen bleiben Teil des SQL-Codes.

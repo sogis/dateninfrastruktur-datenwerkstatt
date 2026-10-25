@@ -870,7 +870,40 @@ main {
 }
 .parameter-table-scroll {
   max-width: 100%;
+  padding: 8px;
   overflow: auto;
+  scroll-padding: 8px;
+}
+.parameter-table-scroll table {
+  width: 100%;
+  min-width: 40rem;
+  table-layout: fixed;
+  border-spacing: 0;
+}
+.parameter-dialog {
+  margin-block: 24px auto;
+}
+.parameters-editor :is(th, td) {
+  padding: 8px;
+  vertical-align: top;
+}
+.parameters-editor td :is(.dw-input, .dw-button) {
+  height: max(var(--dw-control-height), calc(1.5em + var(--dw-control-padding-y) * 2 + 2px));
+}
+.parameter-type-control {
+  display: flex;
+  align-items: center;
+  min-height: max(
+    var(--dw-control-height),
+    calc(var(--dw-control-font) * 1.5 + var(--dw-control-padding-y) * 2 + 2px)
+  );
+}
+.parameters-editor td :is(.dw-input, .dw-select, .dw-button) {
+  scroll-margin: 8px;
+}
+.parameters-editor td.actions .dw-button {
+  display: flex;
+  white-space: nowrap;
 }
 .parameters-editor > .dw-actions {
   margin-block: 16px;
@@ -1131,6 +1164,9 @@ main > [aria-label='Browser-Speicher'] {
   .dw-dialog {
     width: calc(100vw - 32px);
     max-height: calc(100dvh - 32px);
+  }
+  .parameter-dialog {
+    margin-block-start: 16px;
   }
 }
 @media (max-width: 600px) {

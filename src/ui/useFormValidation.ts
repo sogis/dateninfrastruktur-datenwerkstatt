@@ -11,7 +11,7 @@ export function useFormValidation(checks: FieldChecks) {
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
   const [focus, setFocus] = useState<{key: string}>();
   const pointerDown = useRef(false);
-  const pendingBlur = useRef<(() => void) | undefined>(undefined);
+  const pendingBlur = useRef<Record<string, string | undefined> | undefined>(undefined);
   const blurFrame = useRef<number | undefined>(undefined);
   useEffect(() => {
     // A collision may be resolved by editing the other field. Only clear existing errors.
@@ -30,8 +30,9 @@ export function useFormValidation(checks: FieldChecks) {
       pointerDown.current = false;
       if (pendingBlur.current)
         blurFrame.current = requestAnimationFrame(() => {
-          pendingBlur.current?.();
+          const next = pendingBlur.current;
           pendingBlur.current = undefined;
+          if (next) setErrors((previous) => ({...previous, ...next}));
         });
     };
     document.addEventListener('pointerdown', down, true);
@@ -59,7 +60,7 @@ export function useFormValidation(checks: FieldChecks) {
     const next = Object.fromEntries(keys.map((key) => [key, checks[key]?.()]));
     const showErrors = () => setErrors((previous) => ({...previous, ...next}));
     // Do not move a clicked button between pointerdown (blur) and click.
-    if (!focusFirst && pointerDown.current) pendingBlur.current = showErrors;
+    if (!focusFirst && pointerDown.current) pendingBlur.current = next;
     else {
       pendingBlur.current = undefined;
       if (blurFrame.current !== undefined) cancelAnimationFrame(blurFrame.current);
@@ -79,6 +80,12 @@ export function useFormValidation(checks: FieldChecks) {
     dirty.current.clear();
     setErrors({});
   };
+  const resetField = (key: string) => {
+    dirty.current.delete(key);
+    // A pointer-triggered blur may still hold an error for the previous field type.
+    if (pendingBlur.current) delete pendingBlur.current[key];
+    setErrors((previous) => ({...previous, [key]: undefined}));
+  };
   return {
     errors,
     id,
@@ -86,6 +93,7 @@ export function useFormValidation(checks: FieldChecks) {
     blur,
     change,
     reset,
+    resetField,
     control: (key: string) => ({
       id: id(key),
       onBlur: () => {
