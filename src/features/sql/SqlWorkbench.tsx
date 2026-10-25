@@ -373,7 +373,9 @@ export function SqlWorkbench({
                   <PanelResizeHandle
                     className="panel-handle horizontal-handle sql-schema-handle"
                     aria-label="Breite von Tabellen & Spalten ändern"
-                  />
+                  >
+                    <span aria-hidden="true" />
+                  </PanelResizeHandle>
                   <Panel
                     id="sql-schema"
                     order={2}

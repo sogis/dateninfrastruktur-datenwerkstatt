@@ -2626,3 +2626,55 @@ weitere Browser und Deploymenttests. Die gezielte Auswahl deckt die geänderte
 Ergebnisdarstellung und angrenzende Tabellenfunktionen ab. Kein bekannter
 Blocker; beauftragter Abschnitt abgeschlossen, keine weitere Phase in diesem
 Auftrag. Kein Commit/Push.
+
+## UI — Einheitliche SQL-Divider mit 6 px (25. Oktober 2026)
+
+**Geliefert und gezielt geprüft: REQ-062/066/067, Regression zu AT-054/055/058.**
+Verifizierte Basisrevision `94eb5e0689468c781f59c3470508b2a8cf7d02ad` mit
+uncommittierten Änderungen. Vorhandene Tabellenkorrekturen und parallel
+entstandene Änderungen an der Ergebnisfusszeile bleiben erhalten.
+
+`src/styles/app.css`: Der horizontale Editor-/Resultatdivider ist inklusive
+Rahmen 6 px hoch; der vertikale Editor-/Schemadivider ist 6 px breit. Beide
+verwenden gemeinsame Regeln für neutrale Fläche, Zentrierung und Griff sowie
+die vorhandenen Hover-/Fokus-/Dragfarben. Griffe: 36 × 3 px horizontal und
+3 × 36 px vertikal, Radius 2 px. Der zusätzliche linke Schemarahmen entfällt,
+weil der vertikale Divider diese Kante bereits zeichnet.
+`src/features/sql/SqlWorkbench.tsx` ergänzt den dekorativen vertikalen Griff
+mit `aria-hidden="true"`. R-Divider, Bibliotheks-Ziehbereiche, Tastatursteuerung,
+Grössenlimits und separate Layoutspeicherung bleiben unverändert. Keine neuen
+Schnittstellen, Dependencies oder Datenformatänderungen.
+
+**Tatsächliche Checks** (Node 22.23.1, npm 11.18.0):
+
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/sql-workbench.spec.ts -g 'SQL cleanup: overview rename commits only on submit and schema stays nonmodal' --output=test-results/sql-dividers --reporter=list`:
+  **1/1 bestanden, Exit 0**. Bestehender Schemafall mit echtem CSV-/DuckDB-Import,
+  Pfeiltaste, Mausziehen, Grössenlimits, separatem Ansichtsstatus, Reload und
+  Layoutreset; breite und schmale Ansichten eingeschlossen.
+- `npm run typecheck`: **Exit 0**.
+- `npx prettier --check src/features/sql/SqlWorkbench.tsx src/styles/app.css`
+  und `git diff --check`: jeweils **Exit 0**.
+- Zusätzliche UI-Prüfung über `cua_repl` im In-App-Browser bei **1440×900** und
+  **1280×800**: beide Divider in Ruhe, bei Hover und Tastaturfokus sowie beim
+  Mausziehen kontrolliert; Pfeiltasten ändern die Aufteilung in beiden
+  Richtungen. DOM-Messungen bestätigen 6 px einschliesslich Rahmen, zentrierte
+  Griffe mit vereinbarten Massen, gleiche Farben/Rundung und ausgeblendete
+  dekorative Griffe. Eine anschliessende Node-Auswertung der Messdaten
+  (`node --input-type=module`, Inlineprüfung über stdin) prüfte **15 Zustände,
+  Exit 0**. Temporäre Browsergrösse zurückgesetzt und Prüf-Tab geschlossen.
+
+Nachweise unter [sql-dividers](verification/sql-dividers/):
+[Messdaten](verification/sql-dividers/measurements.json),
+[Ruhe 1440](verification/sql-dividers/rest-1440.png),
+[Ruhe 1280](verification/sql-dividers/rest-1280.png),
+[horizontaler Hover](verification/sql-dividers/horizontal-hover-1440.png),
+[vertikaler Hover](verification/sql-dividers/vertical-hover-1280.png),
+[horizontaler Fokus](verification/sql-dividers/horizontal-focus-1440.png),
+[vertikaler Fokus](verification/sql-dividers/vertical-focus-1280.png).
+Weitere Hover-/Fokusbilder für beide Grössen liegen im selben Verzeichnis.
+
+**Nicht ausgeführt:** Build, Lint, Unit-Tests, vollständige Suiten/Verify,
+weitere Playwright-Browser und Deploymenttests. Die gezielte Auswahl deckt
+Darstellung, Bedienung und die unmittelbar betroffene Layoutspeicherung ab.
+Kein bekannter Blocker; dieser Korrekturabschnitt ist abgeschlossen, keine
+weitere Implementierungsphase in diesem Auftrag. Kein Commit/Push.

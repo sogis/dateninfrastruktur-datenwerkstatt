@@ -480,17 +480,22 @@ main {
 .panel-handle[data-resize-handle-active] {
   background: var(--dw-focus-ring);
 }
-.sql-result-handle {
+.sql-result-handle,
+.sql-schema-handle {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 10px;
-  border-block: 1px solid var(--dw-border-subtle);
   background: var(--dw-surface-neutral);
 }
-.sql-result-handle > span {
+.sql-result-handle {
+  height: 6px;
+  border-block: 1px solid var(--dw-border-subtle);
+}
+.sql-result-handle > span,
+.sql-schema-handle > span {
   width: 36px;
   height: 3px;
+  flex-shrink: 0;
   border-radius: 2px;
   background: var(--dw-border-control);
 }
@@ -841,7 +846,6 @@ main {
   overflow: auto;
   overflow-wrap: anywhere;
   padding: 12px;
-  border-left: 1px solid var(--dw-border-subtle);
 }
 .sql-schema-heading {
   position: sticky;
@@ -858,7 +862,12 @@ main {
   margin: 0;
 }
 .sql-schema-handle {
+  width: 6px;
   border-inline: 1px solid var(--dw-border-subtle);
+}
+.sql-schema-handle > span {
+  width: 3px;
+  height: 36px;
 }
 .sql-schema details {
   margin-block: 12px;
