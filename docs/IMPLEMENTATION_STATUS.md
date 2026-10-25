@@ -2510,3 +2510,60 @@ oder Browserzoomtest. Gezielte Auswahl auf Markup, native Darstellung,
 Fokus-/Scrollgrenzen und bestehende Parameterregressionen beschränkt. Kein
 bekannter Blocker. Nächster konkreter Schritt: lokale Durchsicht des gelockerten
 Parametereditors; der beauftragte Umfang ist abgeschlossen. Kein Commit/Push.
+
+
+## UI — Tertiäre Buttons auf grauen Flächen (25. Oktober 2026)
+
+**Geliefert und gezielt geprüft: REQ-065/067, Regression zu AT-054/055/058.**
+Verifizierte Basisrevision `c2ff93cfcc1b4fb67d7debfba73dd6118da6612c` mit den
+hier beschriebenen uncommittierten Änderungen. Die vorher vorhandenen
+Tabellen-/Sticky-Kantenänderungen bleiben erhalten.
+
+`src/styles/tokens.css` definiert `--dw-tertiary-hover: #d9dfe5` und
+`--dw-tertiary-pressed: #cdd5dd`. `src/styles/components.css` verwendet beide
+Rollen zentral für normale tertiäre Buttons einschliesslich Iconbuttons.
+Danger, Auswahl, Disabled und Fokus behalten ihre eigenen Regeln.
+`docs/DESIGN_SYSTEM.md` und `docs/DESIGN_SYSTEM_NEUTRAL_v1.4.md` führen
+Tokenliste, CSS-Referenz und Zustandstabelle nach. Keine API- oder
+Dependencyänderung.
+
+`tests/e2e/design-system.spec.ts` prüft die neuen Farben, unveränderte
+Geometrie und bestehende Sonderzustände. Die vorhandene allgemeine
+Komponentenprüfung vergleicht weiterhin alle drei Buttonvarianten in beiden
+Bedeutungen einschliesslich Hover/Pressed. Der Menüauslöser benötigt jetzt
+einen exakten Namen; der zusätzliche Iconfall wird vor der Positionsmessung
+ins Bild gescrollt.
+
+**Tatsächliche Checks:**
+
+- Erster `npx prettier --check src/styles/tokens.css src/styles/components.css tests/e2e/design-system.spec.ts`:
+  **Exit 1**, Formatierung des erweiterten Tests korrigiert.
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/design-system.spec.ts -g 'UI components:|UI tertiary hover:' --output=test-results/tertiary-hover --reporter=list`:
+  **Exit 1**, zwei Locator-/Scrollprobleme; kein Farbfehler. Exakte Menüauswahl
+  und Scrollen vor Geometriemessung korrigiert, keine Assertions entfernt.
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/design-system.spec.ts -g 'UI components:|UI tertiary hover:' --output=test-results/tertiary-hover-final --reporter=list`:
+  **2/2 bestanden, Exit 0**.
+- Einmaliger `node --input-type=module`-Smoke mit Playwright per Heredoc:
+  **Exit 0**, frisches persistentes Chromium-Profil; echte DuckDB-Abfrage mit
+  350 Zeilen, Aufbewahren und Anzeigen des gespeicherten Resultats.
+  „Zum aktuellen Ergebnis“ hat in der grauen SQL-Ergebnisleiste bei Hover
+  `rgb(217, 223, 229)` und beim Drücken `rgb(205, 213, 221)`.
+  Ergebnis: [SQL-Nachweis](verification/tertiary-hover/sql-proof.json).
+- `npx prettier --check src/styles/tokens.css src/styles/components.css tests/e2e/design-system.spec.ts`,
+  `npx eslint tests/e2e/design-system.spec.ts` und `git diff --check`:
+  jeweils **Exit 0** am finalen Code-/Teststand.
+
+Screenshots visuell geprüft: [weisser Hintergrund](verification/tertiary-hover/tertiary-white-hover.png),
+[graue Toolbar](verification/tertiary-hover/tertiary-toolbar-hover.png),
+[Toolbar gedrückt](verification/tertiary-hover/tertiary-toolbar-pressed.png),
+[Iconbutton](verification/tertiary-hover/tertiary-icon-hover.png),
+[SQL Hover](verification/tertiary-hover/sql-hover.png) und
+[SQL gedrückt](verification/tertiary-hover/sql-pressed.png).
+Hover hebt sich von der Toolbar ab; Pressed ist dunkler. Chromium
+153.0.8010.12, SQL-Ansicht 1440×900; Komponentenansicht 1280×720.
+
+**Nicht ausgeführt:** Typecheck, Produktionsbuild, Unit-Tests, vollständige
+Suiten/Verify, weitere Browser und Deploymenttests. Die gezielte Auswahl deckt
+die geänderten Buttonfarben und unmittelbar betroffene Zustände ab.
+Kein bekannter Blocker; der Korrekturabschnitt ist abgeschlossen, keine
+weitere Implementierungsphase in diesem Auftrag. Kein Commit/Push.

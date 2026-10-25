@@ -44,7 +44,8 @@
 }
 .dw-button--tertiary {
   --dw-button-bg: transparent;
-  --dw-button-hover: var(--dw-surface-neutral);
+  --dw-button-hover: var(--dw-tertiary-hover);
+  --dw-button-pressed: var(--dw-tertiary-pressed);
   --dw-button-border: transparent;
 }
 .dw-button--tone-danger {

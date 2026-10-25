@@ -1,7 +1,7 @@
 # Designsystem Datenwerkstatt – neutrale Oberfläche
 
 **Version:** 1.4
-**Stand:** 23. Oktober 2026
+**Stand:** 25. Oktober 2026
 **Standardtheme:** `neutral-blue`
 **Status:** Verbindliche aktuelle Projektfassung; abgestimmte Konventionen sind Bestandteil dieses Designsystems. Umsetzungs- und Prüfnachweise stehen separat im Implementierungsstatus.
 
@@ -104,6 +104,8 @@ produktbezogen, aber unabhängig von einer bestimmten Organisation.
 | `--dw-surface-neutral`      | Neutrale Statuslabels und zurückgesetzte Bereiche                 | `#EEF1F4` |
 | `--dw-surface-hover`        | Hover neutraler Bedienelemente                                    | `#F3F5F7` |
 | `--dw-surface-pressed`      | Gedrückter Zustand neutraler Bedienelemente                       | `#E7EBEF` |
+| `--dw-tertiary-hover`       | Hover normaler tertiärer Buttons, auch auf grauen Flächen         | `#D9DFE5` |
+| `--dw-tertiary-pressed`     | Gedrückter Zustand normaler tertiärer Buttons                     | `#CDD5DD` |
 | `--dw-text`                 | Haupttext                                                         | `#25313C` |
 | `--dw-text-secondary`       | Hilfetext, Metadaten, nachgeordnete Beschriftung                  | `#5B6673` |
 | `--dw-border-subtle`        | Gliedernde Trennlinien                                            | `#D9DFE5` |
@@ -432,7 +434,7 @@ bestehende Aufrufer vorübergehend kompatibel halten.
 | --------- | ------------------------------------------------------- | --------------------------------------- | ------------------- |
 | Primary   | `action-bg`, Text/Icon `action-fg`, transparente Kontur | `action-bg-hover`                       | `action-bg-pressed` |
 | Secondary | `surface`, Text/Icon `text`, Kontur `border-control`    | `surface-hover`, Kontur bleibt sichtbar | `surface-pressed`   |
-| Tertiary  | Transparent, Text/Icon `text`, transparente Kontur      | `surface-neutral`                         | `surface-pressed`   |
+| Tertiary  | Transparent, Text/Icon `text`, transparente Kontur      | `tertiary-hover`                         | `tertiary-pressed`  |
 
 Die Rollen in den Tabellen bezeichnen jeweils das gleichnamige `--dw-`-Token.
 Text und Icons einer Schaltfläche verwenden dieselbe Vordergrundrolle.
@@ -1186,6 +1188,8 @@ Theme-Overrides gehören ebenfalls an eine zentrale Stelle.
   --dw-surface-neutral: #eef1f4;
   --dw-surface-hover: #f3f5f7;
   --dw-surface-pressed: #e7ebef;
+  --dw-tertiary-hover: #d9dfe5;
+  --dw-tertiary-pressed: #cdd5dd;
   --dw-text: #25313c;
   --dw-text-secondary: #5b6673;
   --dw-border-subtle: #d9dfe5;
@@ -1529,7 +1533,7 @@ normative WCAG-2.2-Spezifikation steht unter <https://www.w3.org/TR/WCAG22/>.
 
 ### Ergänzung SQL / Tertiary-Hover, 24. Oktober 2026
 
-Normale tertiäre Buttons verwenden zentral `surface-neutral` (#EEF1F4) für Hover statt des mit der Toolbar identischen `surface-hover`. Pressed bleibt #E7EBEF; Danger-, Auswahl-, Disabled- und Fokusregeln bleiben erhalten. Keine neue Farbrolle oder Abhängigkeit.
+Seit der Nachbesserung vom 25. Oktober 2026 verwenden normale tertiäre Buttons einschliesslich Iconbuttons eigene Farbrollen: `tertiary-hover` (#D9DFE5) und `tertiary-pressed` (#CDD5DD). Hover hebt sich damit auch von grauen Arbeitsflächen ab; Drücken bleibt sichtbar dunkler. Dies ersetzt den bisherigen Hover mit `surface-neutral` (#EEF1F4). Danger-, Auswahl-, Disabled- und Fokusregeln bleiben erhalten. Keine neue Abhängigkeit.
 
 
 ### SQL-Arbeitsfläche und Speicherpunkt (24. Oktober 2026)

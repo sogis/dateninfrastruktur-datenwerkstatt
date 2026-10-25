@@ -1,0 +1,14 @@
+{
+  "browser": "153.0.8010.12",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "sql": "SELECT i::INTEGER AS wert FROM range(350) t(i) ORDER BY i",
+  "rowCount": 350,
+  "button": "Zum aktuellen Ergebnis",
+  "hover": "#D9DFE5",
+  "pressed": "#CDD5DD",
+  "surface": "#F3F5F7",
+  "status": "passed"
+}

@@ -71,7 +71,7 @@ test('UI components: labels, native submit, checkbox, errors, busy state, menu a
     'aria-busy',
     'true',
   );
-  const trigger = page.getByRole('button', {name: 'Weitere Aktionen'});
+  const trigger = page.getByRole('button', {name: 'Weitere Aktionen', exact: true});
   await trigger.focus();
   await trigger.press('ArrowUp');
   await expect(page.getByRole('menuitem', {name: 'Letzte Aktion'})).toBeFocused();
@@ -142,7 +142,7 @@ test('UI components: labels, native submit, checkbox, errors, busy state, menu a
   const roles = {
     primary: ['--dw-action-bg', '--dw-action-bg-hover', '--dw-action-bg-pressed'],
     secondary: ['--dw-surface', '--dw-surface-hover', '--dw-surface-pressed'],
-    tertiary: [null, '--dw-surface-neutral', '--dw-surface-pressed'],
+    tertiary: [null, '--dw-tertiary-hover', '--dw-tertiary-pressed'],
   } as const;
   const token = (name: string) =>
     page.evaluate((property) => {
@@ -720,15 +720,23 @@ test('UI tertiary hover: white and toolbar backgrounds, pressed, disabled, selec
   await page.goto('/tests/design-system/');
   const plain = page.getByRole('button', {name: 'tertiary default', exact: true});
   const toolbar = page.getByRole('button', {name: 'Weitere Aktionen Referenz', exact: true});
-  for (const button of [plain, toolbar]) {
+  const icon = page.getByRole('button', {name: 'Aktionen für Beispiel', exact: true});
+  for (const [name, button] of [
+    ['white', plain],
+    ['toolbar', toolbar],
+    ['icon', icon],
+  ] as const) {
+    await button.scrollIntoViewIfNeeded();
     await page.mouse.move(0, 0);
     await expect(button).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
     const before = await button.boundingBox();
     await button.hover();
-    await expect(button).toHaveCSS('background-color', 'rgb(238, 241, 244)');
+    await expect(button).toHaveCSS('background-color', 'rgb(217, 223, 229)');
     expect(await button.boundingBox()).toEqual(before);
+    await page.screenshot({path: info.outputPath(`tertiary-${name}-hover.png`)});
     await page.mouse.down();
-    await expect(button).toHaveCSS('background-color', 'rgb(231, 235, 239)');
+    await expect(button).toHaveCSS('background-color', 'rgb(205, 213, 221)');
+    await page.screenshot({path: info.outputPath(`tertiary-${name}-pressed.png`)});
     await page.mouse.up();
   }
   await expect(toolbar.locator('..')).toHaveCSS('background-color', 'rgb(243, 245, 247)');
