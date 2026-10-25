@@ -43,6 +43,13 @@ import type {ImperativePanelGroupHandle} from 'react-resizable-panels';
 import {Chart} from './chart';
 import {RunDetails, RunStatus, runTimeText} from '../results/RunDetails';
 
+function formatDuration(durationMs: number): string {
+  if (durationMs < 1000) {
+    return `${Math.max(1, Math.round(durationMs))} ms`;
+  }
+  return `${(durationMs / 1000).toFixed(1)} s`;
+}
+
 export function SqlWorkbench({
   session,
   analysis,
@@ -968,10 +975,13 @@ function TableView({
         <ChartControls result={result} session={session} />
       )}
       <Toolbar className="result-toolbar result-footer">
-        <span role="status" aria-live="polite">
-          {result.rowCount} {result.rowCount === '1' ? 'Zeile' : 'Zeilen'}
-          {run?.durationMs === undefined ? '' : ` · ${run.durationMs} ms`}
-        </span>
+        <div className="result-summary" role="status" aria-live="polite">
+          <span>
+            {BigInt(result.rowCount).toLocaleString('de-CH')}{' '}
+            {result.rowCount === '1' ? 'Zeile' : 'Zeilen'}
+          </span>
+          {run?.durationMs !== undefined && <span>{formatDuration(run.durationMs)}</span>}
+        </div>
         {view === 'table' && (
           <ActionGroup className="result-paging">
             <Button disabled={offset === 0 || loading} onClick={() => setOffset(offset - 100)}>

@@ -281,9 +281,23 @@ test('SQL results: compact actions, typed table headers, row numbers and sort wi
   await expect(page.locator('.result-actions')).toHaveCount(1);
   await expect(page.locator('.result-actions .dw-meta-list')).toHaveCount(0);
   await expect(page.locator('.result-footer')).toContainText('350');
-  await expect(page.locator('.result-footer [role="status"]')).toHaveText(
-    /^350 Zeilen · [\d.]+ ms$/,
-  );
+  const summary = page.locator('.result-footer [role="status"]');
+  await expect(summary.locator('span')).toHaveText(['350 Zeilen', /^(?:[1-9]\d* ms|\d+\.\d s)$/]);
+  await expect(summary).toHaveCSS('display', 'flex');
+  await expect(summary).toHaveCSS('flex-wrap', 'wrap');
+  await expect(summary).toHaveCSS('gap', '9.6px');
+  await expect(summary).toHaveCSS('font-size', '12px');
+  await expect(summary).toHaveCSS('font-weight', '400');
+  const summaryStyle = await summary.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      color: style.color,
+      fontFamily: style.fontFamily,
+      expectedFont: style.getPropertyValue('--dw-font-code').trim(),
+    };
+  });
+  expect(summaryStyle.color).toBe('rgb(91, 102, 115)');
+  expect(summaryStyle.fontFamily.replaceAll('"', "'")).toBe(summaryStyle.expectedFont);
   await expect(page.locator('.result-footer')).not.toContainText(
     /Vollständig|Temporär|Aufbewahrung|Umfang/,
   );

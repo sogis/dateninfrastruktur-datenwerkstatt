@@ -698,6 +698,16 @@ main {
   border-block: 1px solid var(--dw-border-subtle);
   font-size: 0.75rem;
 }
+.result-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  min-width: 0;
+  color: var(--dw-text-secondary);
+  font-family: var(--dw-font-code);
+  font-size: 12px;
+  font-weight: 400;
+}
 .result-paging {
   margin-inline-start: auto;
   font-size: 0.75rem;

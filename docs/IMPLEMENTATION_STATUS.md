@@ -2567,3 +2567,62 @@ Suiten/Verify, weitere Browser und Deploymenttests. Die gezielte Auswahl deckt
 die geänderten Buttonfarben und unmittelbar betroffene Zustände ab.
 Kein bekannter Blocker; der Korrekturabschnitt ist abgeschlossen, keine
 weitere Implementierungsphase in diesem Auftrag. Kein Commit/Push.
+
+## UI — SQL-Fusszeile ohne Trennpunkt (25. Oktober 2026)
+
+**Bestanden: REQ-062, gezielte Regression zu AT-055.**
+`src/features/sql/SqlWorkbench.tsx` zeigt Zeilenzahl und Laufzeit mit einem
+Leerzeichen, beispielsweise `43 Zeilen 253 ms`. Die bestehende Textprüfung in
+`tests/e2e/sql-workbench.spec.ts` folgt der angeforderten Darstellung.
+Verifizierte Basisrevision: `c2ff93c` mit vorhandenen und diesen uncommittierten
+Änderungen; bestehende Nutzeränderungen erhalten.
+
+**Tatsächliche Checks:**
+
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/sql-workbench.spec.ts -g 'SQL results: compact actions' --reporter=list`:
+  **1/1 bestanden, Exit 0**. Der vorhandene Chromium-Test prüft die Fusszeile
+  mit echtem DuckDB-Ergebnis sowie die unmittelbar betroffene Tabellenansicht.
+- Erneuter lokaler Baselineabruf über `git -C /Users/stefan/sources/datenportal-sodata show 6b45fc4e22116fba8fc00bd48175e347aa740562:src/main/frontend/explore/package.json`:
+  **Exit 128**, dokumentierter Quellpfad nicht vorhanden; bestehender Prüfstand
+  in `docs/BASELINE.md` gelesen. Keine Herauslösung oder Versionsänderung.
+
+**Nicht ausgeführt:** Typecheck, Build, Unit-Tests, vollständige Suiten/Verify,
+weitere Browser und Deploymenttests. Die einzelne Textänderung ist durch den
+bestehenden gezielten Browserfall abgedeckt. Kein Funktionsblocker, keine weitere
+Phase in diesem Auftrag; kein Commit/Push.
+
+## UI — SQL-Ergebnisangaben wie Sodata (25. Oktober 2026)
+
+**Bestanden: REQ-062/067, gezielte Regression zu AT-055.**
+Nachfolgekorrektur zur Entfernung des Trennpunkts: `SqlWorkbench.tsx` rendert
+Zeilenzahl und optionale Laufzeit als getrennte Spans in einer gemeinsamen
+Live-Region. `src/styles/app.css` übernimmt Flex-Wrapping, `0.6rem` Abstand,
+12-px-Monospace und Schriftgewicht 400 aus Sodata; Schrift und dezente Farbe
+verwenden die vorhandenen Werkstatt-Tokens. Zeilenzahlen werden mit `de-CH`
+ohne Number-Präzisionsverlust formatiert. Laufzeiten entsprechen Sodata:
+gerundete Millisekunden (mindestens 1 ms), ab 1000 ms Sekunden mit einer
+Nachkommastelle. Vorlage gelesen aus
+`/Users/stefan/sources/datenportal/datenportal-sodata`, Revision `9466ade`,
+`src/main/frontend/explore/src/results/ResultPanel.tsx` und
+`src/main/frontend/explore/src/styles/explore.css`.
+
+Verifizierte Ziel-Basisrevision: `b3620461524cc048aa7b24552e8cc9c19f423ab5`
+mit vorhandenen und diesen uncommittierten Änderungen. Keine Änderungen im
+Quellportal, keine neue Dependency. `tests/e2e/sql-workbench.spec.ts` prüft
+getrennte Angaben, Zeitformat, Abstand, Wrapping, Schrift und Farbe im
+bestehenden echten DuckDB-Tabellenfall.
+
+**Tatsächliche Checks:**
+
+- `npm run typecheck`: **Exit 0**.
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/sql-workbench.spec.ts -g 'SQL results: compact actions' --reporter=list`:
+  **1/1 bestanden, Exit 0**. Screenshot `sql-table-rest-1440.png` im zugehörigen
+  `test-results`-Verzeichnis visuell geprüft: beide Angaben getrennt lesbar.
+- `npx prettier --check src/features/sql/SqlWorkbench.tsx src/styles/app.css tests/e2e/sql-workbench.spec.ts`:
+  zunächst **Exit 1** (Testformatierung), nach Formatkorrektur **Exit 0**.
+
+**Nicht ausgeführt:** Build, Lint, Unit-Tests, vollständige Suiten/Verify,
+weitere Browser und Deploymenttests. Die gezielte Auswahl deckt die geänderte
+Ergebnisdarstellung und angrenzende Tabellenfunktionen ab. Kein bekannter
+Blocker; beauftragter Abschnitt abgeschlossen, keine weitere Phase in diesem
+Auftrag. Kein Commit/Push.
