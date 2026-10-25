@@ -371,10 +371,12 @@ test('SQL cleanup: overview rename commits only on submit and schema stays nonmo
 test('SQL results: compact actions, typed table headers, row numbers and sort without a new run', async ({
   page,
 }, info) => {
+  await page.setViewportSize({width: 1440, height: 900});
   await create(page);
+  const extraColumns = Array.from({length: 24}, (_, i) => `m${i + 1}`);
   await editor(
     page,
-    'SELECT i::INTEGER AS wert, CASE WHEN i=1 THEN NULL ELSE i::INTEGER END AS optional FROM range(350) t(i) ORDER BY i DESC',
+    `SELECT i::INTEGER AS wert, CASE WHEN i=1 THEN NULL ELSE i::INTEGER END AS optional, ${extraColumns.map((name) => `i::INTEGER AS ${name}`).join(', ')} FROM range(350) t(i) ORDER BY i DESC`,
   );
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.result-grid tbody tr')).toHaveCount(100);
@@ -429,14 +431,136 @@ test('SQL results: compact actions, typed table headers, row numbers and sort wi
     /Vollständig|Temporär|Aufbewahrung|Umfang/,
   );
   await expect(page.locator('.export-note')).toHaveCount(0);
-  await expect(page.locator('.result-column-name')).toHaveText(['wert', 'optional']);
-  await expect(page.locator('.result-column-type')).toHaveText(['INTEGER', 'INTEGER']);
+  await expect(page.locator('.result-column-name')).toHaveText([
+    'wert',
+    'optional',
+    ...extraColumns,
+  ]);
+  await expect(page.locator('.result-column-type')).toHaveText(
+    Array(extraColumns.length + 2).fill('INTEGER'),
+  );
   await expect(page.locator('.result-grid table')).toHaveCSS('font-size', '12px');
   await expect(page.locator('.result-grid thead th').first()).toHaveCSS('font-size', '12px');
   await expect(page.locator('.result-grid tbody tr').first().getByRole('rowheader')).toHaveText(
     '1',
   );
   const before = await state(page);
+  const grid = page.locator('.result-grid');
+  const body = grid.locator('tbody');
+  const corner = grid.locator('thead .result-row-number');
+  const coveredCells = grid.locator('td, thead th:not(.result-row-number)');
+  async function expectSingleBorder(clip: {x: number; y: number; width: number; height: number}) {
+    const screenshot = await page.screenshot({clip, scale: 'css'});
+    const borderPixels = await page.evaluate(async (encoded) => {
+      const bytes = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));
+      const bitmap = await createImageBitmap(new Blob([bytes], {type: 'image/png'}));
+      try {
+        const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
+        const context = canvas.getContext('2d');
+        if (!context) throw new Error('Canvas context unavailable for border measurement');
+        context.drawImage(bitmap, 0, 0);
+        const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+        context.fillStyle = getComputedStyle(
+          document.querySelector('.result-actions')!,
+        ).borderBottomColor;
+        context.fillRect(0, 0, 1, 1);
+        const border = context.getImageData(0, 0, 1, 1).data;
+        let count = 0;
+        for (let offset = 0; offset < pixels.length; offset += 4) {
+          if (border.every((channel, i) => pixels[offset + i] === channel)) count++;
+        }
+        return count;
+      } finally {
+        bitmap.close();
+      }
+    }, screenshot.toString('base64'));
+    expect(borderPixels, `Single shared border at ${clip.x}/${clip.y}`).toBe(1);
+  }
+  await page.mouse.move(0, 0);
+  for (const viewport of [
+    {width: 1440, height: 900},
+    {width: 1280, height: 800},
+  ]) {
+    await page.setViewportSize(viewport);
+    const headHeight = Math.ceil((await grid.locator('thead').boundingBox())!.height);
+    for (const [top, left] of [
+      [0, 0],
+      [headHeight + 15, 120],
+      [headHeight + 29, 0],
+      [headHeight + 43, 240],
+    ] as const) {
+      await grid.evaluate((element, scroll) => element.scrollTo(scroll), {top, left});
+      await expect.poll(() => grid.evaluate((element) => element.scrollTop)).toBe(top);
+      await expect.poll(() => grid.evaluate((element) => element.scrollLeft)).toBe(left);
+      const gridBox = (await grid.boundingBox())!;
+      const cornerBox = (await corner.boundingBox())!;
+      await expectSingleBorder({
+        x: Math.floor(gridBox.x + cornerBox.width + 20),
+        y: Math.floor(gridBox.y) - 3,
+        width: 1,
+        height: 7,
+      });
+      await expectSingleBorder({
+        x: Math.floor(gridBox.x) - 3,
+        y: Math.floor(gridBox.y) + 12,
+        width: 7,
+        height: 1,
+      });
+      // Covered cells must not affect pixels at either sticky edge or the corner.
+      for (const edge of [
+        {
+          name: 'header',
+          cells: body,
+          clip: {
+            x: gridBox.x,
+            y: gridBox.y,
+            width: await grid.evaluate((element) => element.clientWidth),
+            height: 8,
+          },
+        },
+        {
+          name: 'left',
+          cells: coveredCells,
+          clip: {
+            x: gridBox.x,
+            y: gridBox.y,
+            width: 8,
+            height: await grid.evaluate((element) => element.clientHeight),
+          },
+        },
+      ]) {
+        const visible = await page.screenshot({clip: edge.clip});
+        await edge.cells.evaluateAll((cells) => {
+          for (const cell of cells) (cell as HTMLElement).style.visibility = 'hidden';
+        });
+        const hidden = await page.screenshot({clip: edge.clip});
+        await edge.cells.evaluateAll((cells) => {
+          for (const cell of cells) (cell as HTMLElement).style.removeProperty('visibility');
+        });
+        if (!visible.equals(hidden)) {
+          await info.attach(`${edge.name}-with-cells`, {body: visible, contentType: 'image/png'});
+          await info.attach(`${edge.name}-without-cells`, {body: hidden, contentType: 'image/png'});
+        }
+        expect(
+          visible.equals(hidden),
+          `Opaque ${edge.name} at ${viewport.width}px, scroll ${top}/${left}`,
+        ).toBe(true);
+      }
+      expect(cornerBox.x).toBeCloseTo(gridBox.x, 1);
+      expect(cornerBox.y).toBeCloseTo(gridBox.y, 1);
+      expect((await grid.locator('tbody .result-row-number').first().boundingBox())!.x).toBeCloseTo(
+        gridBox.x,
+        1,
+      );
+      if (top === 0) {
+        await page.screenshot({path: info.outputPath(`sql-table-rest-${viewport.width}.png`)});
+      }
+    }
+    await page.screenshot({path: info.outputPath(`sql-table-scrolled-${viewport.width}.png`)});
+  }
+  await expect(grid.locator('table')).toHaveCSS('border-collapse', 'collapse');
+  await grid.evaluate((element) => element.scrollTo(0, 0));
+  expect(await state(page)).toEqual(before);
   // Delay delivery of the real DuckDB page to observe the loading controls deterministically.
   await page.evaluate(async () => {
     const path = '/tests/spike/appServices.ts';

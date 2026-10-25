@@ -2511,6 +2511,112 @@ Fokus-/Scrollgrenzen und bestehende Parameterregressionen beschränkt. Kein
 bekannter Blocker. Nächster konkreter Schritt: lokale Durchsicht des gelockerten
 Parametereditors; der beauftragte Umfang ist abgeschlossen. Kein Commit/Push.
 
+## UI — Spalt am fixierten SQL-Tabellenkopf (25. Oktober 2026)
+
+**Historischer erster Versuch, ersetzt durch „Collapse-Rahmen ohne doppelte
+Kanten“ unten.** REQ-046/062, Regression zu AT-027/054/058.
+Verifizierte Basisrevision `c2ff93cfcc1b4fb67d7debfba73dd6118da6612c` mit den
+hier beschriebenen uncommittierten Änderungen. In `src/styles/app.css` verwendet
+ausschliesslich die SQL-Ergebnistabelle separate Zellrahmen ohne Abstand.
+Einseitige rechte/untere Rahmen sowie linke und obere Aussenkanten erhalten
+1-px-Linien. Deckende Flächen und bestehende Sticky-Ebenen bleiben erhalten.
+Keine Änderungen an Daten, Schnittstellen oder Dependencies.
+
+`tests/e2e/sql-workbench.spec.ts` erweitert den vorhandenen SQL-Tabellenfall um
+eine breite echte DuckDB-Ausgabe, drei kombinierte Scrollpositionen bei jeweils
+1440×900 und 1280×800, bündige fixierte Eckzelle/Zeilennummern sowie einen
+Bildvergleich der oberen acht Kopfzeilenpixel mit sichtbaren und ausgeblendeten
+Datenzeilen. Die Scrollpositionen berücksichtigen die tatsächliche Kopfhöhe,
+damit Daten unter der oberen Kante liegen. Scrollen verändert das Dokument
+nicht; bestehende Prüfungen für Paging und numerische Sortierung ohne neuen
+Lauf bleiben erhalten. Die kleine Testauswahl deckt damit den CSS-Fehler und
+die direkt betroffenen Tabellenfunktionen ab.
+
+**Tatsächliche Checks** (Node 22.23.1, npm 11.18.0, Chromium 153.0.8010.12):
+
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/sql-workbench.spec.ts -g 'SQL results: compact actions' --output=test-results/sticky-header-final --reporter=list`:
+  **1/1, Exit 0** am finalen Stand; echte DuckDB, sechs Scrollpositionen,
+  Pixelvergleich, Paging und Sortierung bestanden.
+- Derselbe gezielte Test wurde während der Vorbereitung mit
+  `--output=test-results/sticky-header-before`, `sticky-header-before-pixels`
+  und `sticky-header-before-wide` jeweils **Exit 1** ausgeführt: bestehender
+  0,5-px-Versatz der Eckzelle. Mit `sticky-header-before-scrolled` **Exit 1**:
+  Testdaten erzeugten zunächst keinen horizontalen Überlauf; durch zusätzliche
+  synthetische Spalten korrigiert. Mit `sticky-header-after` nach CSS-Korrektur
+  **1/1, Exit 0**; danach Scrolltiefe an die Kopfhöhe gebunden und mit dem oben
+  genannten finalen Lauf erneut geprüft.
+- `npx prettier --check src/styles/app.css tests/e2e/sql-workbench.spec.ts`,
+  `npx eslint tests/e2e/sql-workbench.spec.ts` und `git diff --check`:
+  jeweils **Exit 0** am finalen Code-/Teststand.
+
+Visuell geprüfte Screenshots:
+[1440×900, gescrollt](verification/sticky-header/scroll-1440.png),
+[1280×800, gescrollt](verification/sticky-header/scroll-1280.png).
+Diese Ausschnitte zeigten geschlossene Sticky-Kanten. Sie enthielten jedoch
+nicht die angrenzende Sidebar und Aktionsleiste; deren Linien wurden zusammen
+mit den zusätzlichen Tabellenrahmen doppelt gezeichnet. Die frühere Aussage
+„ohne doppelte Rahmen“ ist deshalb korrigiert; dieser Lieferstand ist ersetzt.
+
+**Nicht ausgeführt:** Typecheck, Produktionsbuild, Unit-Tests, vollständige
+Suiten/Verify, weitere Browser oder Deploymenttests. Der Auftrag ist auf diese
+CSS-Korrektur und den gezielten Chromium-Nachweis begrenzt. Kein bekannter
+Blocker; keine weitere Implementierungsphase in diesem Auftrag. Kein Commit/Push.
+
+## UI — Collapse-Rahmen ohne doppelte Kanten (25. Oktober 2026)
+
+**Geliefert und gezielt geprüft: REQ-046/062, Regression zu AT-027/054/058.**
+Verifizierte Basisrevision `c2ff93cfcc1b4fb67d7debfba73dd6118da6612c` mit den
+hier beschriebenen uncommittierten Änderungen. Dieser Stand ersetzt den
+vorherigen Versuch mit separaten Tabellenrahmen.
+
+`src/styles/app.css`: Die SQL-Tabelle verwendet wieder das gemeinsame
+`border-collapse: collapse`. Eigene obere/linke Tabellenrahmen entfallen;
+Aktionsleiste und Sidebar zeichnen diese Kanten bereits. Untere Kopf- und
+rechte Zeilennummernrahmen werden mit `border-style: hidden` unterdrückt und
+durch innenliegende 1-px-Linien ersetzt. Die Eckzelle kombiniert beide Linien.
+Deckende Hintergründe, Sticky-Positionen und Ebenen bleiben erhalten. Keine
+Änderungen an Schnittstellen, Daten, Engines oder Dependencies.
+
+`tests/e2e/sql-workbench.spec.ts`: Der vorhandene echte DuckDB-Tabellenfall prüft
+bei 1440×900 und 1280×800 jeweils den Ruhezustand und drei kombinierte
+Scrollpositionen. PNG-Pixel werden über Browser-Canvas ohne neue Dependency
+ausgelesen: je ein 1-px-Querschnitt an der gemeinsamen oberen und linken
+Aussenkante muss genau ein Pixel der Rahmenfarbe enthalten. Die Screenshots
+für diese Messung werden in CSS-Pixeln erzeugt. Bildvergleiche mit ausgeblendeten
+überdeckten Zellen prüfen die obere und linke Sticky-Kante einschliesslich der
+Eckzelle. Dazu unveränderte Dokumente nach Scrollen, `collapse` als berechneter
+Stil sowie bestehendes Paging und numerische Sortierung ohne neuen SQL-Lauf.
+
+**Tatsächliche Checks:**
+
+- Vor der CSS-Korrektur:
+  `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/sql-workbench.spec.ts -g 'SQL results: compact actions' --output=test-results/collapsed-edges-before --reporter=list`:
+  **Exit 1**, erwarteter Regressionsnachweis: **2 statt 1** Rahmenpixel an der
+  oberen gemeinsamen Kante. [Screenshot vor der Korrektur](verification/collapsed-edges/before.png).
+- Am finalen Code-/Teststand:
+  `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/sql-workbench.spec.ts -g 'SQL results: compact actions' --output=test-results/collapsed-edges-final --reporter=list`:
+  **1/1, Exit 0**, 8 Ruhe-/Scrollzustände mit insgesamt 16 Messungen der
+  Rahmenbreite und 16 Bildvergleichen für deckende Sticky-Kanten. Echte DuckDB,
+  Paging und Sortierung bestanden.
+- `npx prettier --check src/styles/app.css tests/e2e/sql-workbench.spec.ts`,
+  `npx eslint tests/e2e/sql-workbench.spec.ts` und `git diff --check`:
+  jeweils **Exit 0** am finalen Stand.
+
+Vollständige Screenshots einschliesslich Sidebar und Aktionsleiste visuell
+geprüft: [1440 Ruhe](verification/collapsed-edges/rest-1440.png),
+[1440 gescrollt](verification/collapsed-edges/scroll-1440.png),
+[1280 Ruhe](verification/collapsed-edges/rest-1280.png),
+[1280 gescrollt](verification/collapsed-edges/scroll-1280.png).
+Obere und linke Aussenkante sind einfach gezeichnet; kein durchscheinender
+Datentext an den fixierten Kanten. Laufzeit: Node 22.23.1, npm 11.18.0,
+Playwright 1.63.0, Chromium 153.0.8010.12.
+
+**Nicht ausgeführt:** Typecheck, Produktionsbuild, Unit-Tests, vollständige
+Suiten/Verify, weitere Browser und Deploymenttests. Die gezielte Auswahl
+deckt die geänderten CSS-Kanten und unmittelbar betroffene Tabellenfunktionen
+ab. Kein bekannter Blocker; der beauftragte Korrekturabschnitt ist abgeschlossen.
+Keine weitere Implementierungsphase in diesem Auftrag. Kein Commit/Push.
+
 
 ## UI — Tertiäre Buttons auf grauen Flächen (25. Oktober 2026)
 
@@ -2749,7 +2855,6 @@ Browsermatrix und Deploymenttests. Die gezielte Auswahl deckt die angeforderte
 Ergebnisnavigation und direkt angrenzende Tabellenfunktionen ab. Kein bekannter
 Blocker; der Abschnitt ist abgeschlossen, keine weitere Phase in diesem Auftrag.
 Kein Commit/Push.
-
 
 ## SQL-Tabellenkopf: rechter Abstand am Typ-Badge — 25. Oktober 2026
 
