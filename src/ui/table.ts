@@ -4,3 +4,11 @@ export function numericColumn(logicalType: string | undefined): boolean {
     logicalType ?? '',
   );
 }
+
+export function schemaTypeCategory(logicalType: string): 'numeric' | 'text' | 'boolean' | 'other' {
+  const type = logicalType.trim().toUpperCase();
+  if (numericColumn(type)) return 'numeric';
+  if (/^(?:VARCHAR|CHAR|BPCHAR|TEXT|STRING)(?:\(\d+\))?$/.test(type)) return 'text';
+  if (/^(?:BOOLEAN|BOOL)$/.test(type)) return 'boolean';
+  return 'other';
+}

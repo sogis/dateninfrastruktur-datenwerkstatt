@@ -1,4 +1,5 @@
-import {numericColumn} from '../../ui/table';
+import {numericColumn, schemaTypeCategory} from '../../ui/table';
+import {Icon} from '../../ui/Icon';
 import {
   Button,
   IconButton,
@@ -166,18 +167,26 @@ export function SqlWorkbench({
       {Object.values(session.document.datasets)
         .filter((d) => !d.removedAt)
         .map((d) => (
-          <details key={d.id}>
-            <summary>{d.sqlName}</summary>
-            <dl className="dw-meta-list schema-columns">
+          <details key={d.id} className="schema-table">
+            <summary>
+              <Icon name="chevron-right" size={16} className="schema-table-chevron" />
+              <Icon name="table" size={16} className="schema-table-icon" />
+              <span>{d.sqlName}</span>
+            </summary>
+            <ul className="schema-columns" aria-label={`Spalten von ${d.sqlName}`}>
               {session.document.datasetVersions[d.currentVersionId]!.schema.columns.map(
                 (column) => (
-                  <div key={column.name}>
-                    <dt>{column.name}</dt>
-                    <dd>{column.logicalType}</dd>
-                  </div>
+                  <li key={column.name}>
+                    <span
+                      className={`schema-type schema-type--${schemaTypeCategory(column.logicalType)}`}
+                    >
+                      {column.logicalType}
+                    </span>
+                    <span className="schema-column-name">{column.name}</span>
+                  </li>
                 ),
               )}
-            </dl>
+            </ul>
           </details>
         ))}
     </aside>

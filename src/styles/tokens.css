@@ -24,6 +24,15 @@
   --dw-disabled-bg: #eceff2;
   --dw-disabled-text: #626d79;
 
+  --dw-type-numeric-fg: #166534;
+  --dw-type-numeric-bg: #dcfce7;
+  --dw-type-text-fg: #1d4ed8;
+  --dw-type-text-bg: #e8f1ff;
+  --dw-type-boolean-fg: #9f1239;
+  --dw-type-boolean-bg: #fee2e2;
+  --dw-type-other-fg: #475569;
+  --dw-type-other-bg: #f1f5f9;
+
   --dw-action-bg: #2b5c8a;
   --dw-action-bg-hover: #234e75;
   --dw-action-bg-pressed: #1d4162;

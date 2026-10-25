@@ -152,6 +152,9 @@ test('SQL documents: save and load independent editor texts and undo without run
 test('SQL cleanup: overview rename commits only on submit and schema stays nonmodal at wide/narrow widths', async ({
   page,
 }, info) => {
+  const longColumn = 'Attribut_mit_einem_sehr_langen_ungetrennten_Namen_fuer_den_Umbruch';
+  const names = ['wert', 'bezeichnung', 'aktiv', 'zeitpunkt', longColumn, 'betrag'];
+  const types = ['INTEGER', 'VARCHAR', 'BOOLEAN', 'DATE', 'VARCHAR', 'DECIMAL(38,18)'];
   await create(page);
   const link = await openAnalysisRename(page);
   const name = page.getByLabel('Analysename', {exact: true});
@@ -174,14 +177,29 @@ test('SQL cleanup: overview rename commits only on submit and schema stays nonmo
   await page
     .getByRole('dialog')
     .locator('input[type=file]')
-    .setInputFiles({name: 'zahlen.csv', mimeType: 'text/csv', buffer: Buffer.from('wert\n1\n')});
+    .setInputFiles({
+      name: 'zahlen.csv',
+      mimeType: 'text/csv',
+      buffer: Buffer.from(`${names.join(';')}\n1;Olten;true;2026-10-25;lang;123.4567\n`),
+    });
+  await page.getByRole('button', {name: 'Vorschau laden', exact: true}).click();
+  await expect(page.getByRole('dialog').getByRole('combobox', {name: /^Typ \d+$/})).toHaveCount(6);
+  for (const [index, type] of types.entries()) {
+    await page
+      .getByRole('dialog')
+      .getByRole('combobox', {name: `Typ ${index + 1}`, exact: true})
+      .selectOption(type);
+  }
   await page.getByRole('button', {name: 'Vorschau laden', exact: true}).click();
   await page.getByRole('button', {name: 'Import bestätigen', exact: true}).click();
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.getByRole('link', {name: 'Ölten', exact: true}).click();
   const before = await state(page);
+  const importedColumns = Object.values(before.datasetVersions)[0]!.schema.columns;
+  expect(importedColumns.map((column) => column.name)).toEqual(names);
+  expect(importedColumns.map((column) => column.logicalType)).toEqual(types);
   for (const width of [1440, 1280, 390]) {
-    await page.setViewportSize({width, height: width === 390 ? 700 : 900});
+    await page.setViewportSize({width, height: width === 1440 ? 900 : width === 1280 ? 800 : 700});
     await page.getByRole('button', {name: 'Tabellen & Spalten', exact: true}).click();
     const schema = page.getByRole('complementary', {name: 'Tabellen & Spalten'});
     await expect(schema).toBeVisible();
@@ -249,8 +267,75 @@ test('SQL cleanup: overview rename commits only on submit and schema stays nonmo
         .toBeCloseTo(0.45, 2);
       expect(await state(page)).toEqual(beforeResize);
     }
-    await schema.locator('summary').focus();
+    const table = schema.locator('details.schema-table');
+    const summary = table.locator('summary');
+    await summary.hover();
+    await expect(summary).toHaveCSS('background-color', 'rgb(243, 245, 247)');
+    await expect(summary).toHaveCSS('font-size', '14px');
+    await expect(summary).toHaveCSS('min-height', '32px');
+    await expect(summary.locator('.schema-table-icon')).toHaveCSS('color', 'rgb(43, 92, 138)');
+    await expect(summary.locator('svg')).toHaveCount(2);
+    await expect(summary.locator('svg').first()).toHaveAttribute('aria-hidden', 'true');
+    await page.keyboard.press('Tab');
+    await summary.focus();
+    await expect(summary).toBeFocused();
+    await expect(summary).toHaveCSS('outline-style', 'solid');
     await page.keyboard.press('Enter');
+    await expect(table).toHaveAttribute('open', '');
+    await expect(summary.locator('.schema-table-chevron')).toHaveCSS(
+      'transform',
+      'matrix(0, 1, -1, 0, 0, 0)',
+    );
+    const columns = schema.getByRole('list', {name: 'Spalten von zahlen', exact: true});
+    await expect(columns.getByRole('listitem')).toHaveCount(6);
+    await summary.press('Space');
+    await expect(columns).toBeHidden();
+    await expect(summary.locator('.schema-table-chevron')).toHaveCSS('transform', 'none');
+    await summary.press('Space');
+    await expect(columns).toBeVisible();
+    const categories = ['numeric', 'text', 'boolean', 'other', 'text', 'numeric'];
+    const colors = {
+      numeric: {color: 'rgb(22, 101, 52)', background: 'rgb(220, 252, 231)'},
+      text: {color: 'rgb(29, 78, 216)', background: 'rgb(232, 241, 255)'},
+      boolean: {color: 'rgb(159, 18, 57)', background: 'rgb(254, 226, 226)'},
+      other: {color: 'rgb(71, 85, 105)', background: 'rgb(241, 245, 249)'},
+    };
+    for (const [index, column] of importedColumns.entries()) {
+      const row = columns.getByRole('listitem').nth(index);
+      const badge = row.locator('.schema-type');
+      const label = row.locator('.schema-column-name');
+      const category = categories[index] as keyof typeof colors;
+      await expect(row.locator(':scope > :first-child')).toHaveClass(
+        `schema-type schema-type--${category}`,
+      );
+      await expect(badge).toHaveText(column.logicalType);
+      await expect(label).toHaveText(column.name);
+      await expect(badge).toHaveCSS('width', '88px');
+      await expect(badge).toHaveCSS('border-radius', '4px');
+      await expect(badge).toHaveCSS('color', colors[category].color);
+      await expect(badge).toHaveCSS('background-color', colors[category].background);
+      for (const element of [badge, label]) {
+        await expect(element).toHaveCSS('font-family', /JetBrains Mono/);
+        await expect(element).toHaveCSS('font-size', '12px');
+        await expect(element).toHaveCSS('font-weight', '400');
+      }
+      const listBox = (await columns.boundingBox())!;
+      const badgeBox = (await badge.boundingBox())!;
+      const nameBox = (await label.boundingBox())!;
+      expect(badgeBox.x - listBox.x).toBe(24);
+      expect(nameBox.x - (badgeBox.x + badgeBox.width)).toBe(8);
+      expect((await row.boundingBox())!.height).toBeGreaterThanOrEqual(28);
+    }
+    expect((await columns.getByRole('listitem').last().boundingBox())!.height).toBeGreaterThan(28);
+    expect(await schema.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(
+      true,
+    );
+    expect(
+      await columns
+        .locator('.schema-column-name')
+        .nth(4)
+        .evaluate((element) => element.scrollWidth <= element.clientWidth),
+    ).toBe(true);
     await expect(schema).toContainText('wert');
     await expect(schema).toContainText('INTEGER');
     await editor(page, 'SELECT wert FROM zahlen');
@@ -260,6 +345,12 @@ test('SQL cleanup: overview rename commits only on submit and schema stays nonmo
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
+    await summary.focus();
+    await summary.press('Escape');
+    await expect(schema).toHaveCount(0);
+    await expect(page.getByRole('button', {name: 'Tabellen & Spalten', exact: true})).toBeFocused();
+    await page.getByRole('button', {name: 'Tabellen & Spalten', exact: true}).click();
+    await expect(schema).toBeVisible();
     await schema.getByRole('button', {name: 'Schliessen', exact: true}).click();
     await expect(page.getByRole('button', {name: 'Tabellen & Spalten', exact: true})).toBeFocused();
   }

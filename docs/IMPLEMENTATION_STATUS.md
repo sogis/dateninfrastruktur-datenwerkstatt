@@ -2826,3 +2826,78 @@ Vollansichten bei 1440×900 liegen im selben Nachweisverzeichnis.
 deckt die begrenzte CSS-Anpassung und unmittelbar betroffenes Statusverhalten ab.
 Keine bekannten Blocker; Abschnitt abgeschlossen, keine weitere Phase in diesem
 Auftrag. Kein Commit/Push.
+## UI — Tabellen und Spalten im Sodata-Explorer-Stil (25. Oktober 2026)
+
+**Geliefert und gezielt geprüft: REQ-062/067, Regression zu AT-054/055/058.**
+Verifizierte Basisrevision `76d450689bae6514d36f79e5ac6d786d5f6f755e` mit
+diesen und bereits vorhandenen uncommittierten Änderungen. Vorhandene
+Tabellenrahmenänderungen bleiben erhalten. Referenz gelesen aus dem lokalen
+Sodata-Explorer (`SchemaExplorerPanel.tsx`, `explore.css`, Revision `9466ade`);
+dokumentierte Paketbaseline `6b45fc4e22116fba8fc00bd48175e347aa740562` erneut
+gelesen. Keine Änderungen am Quellportal oder an Dependencies.
+
+`src/features/sql/SqlWorkbench.tsx` behält native `details`/`summary`-Elemente
+bei und zeigt Chevron sowie blaues Tabellenicon vor dem SQL-Namen. Die
+Attribute stehen als semantische Liste mit dem Typ vor dem Namen. Beide
+Texte bleiben exakt wie im Schema. `src/ui/table.ts` ergänzt eine reine
+UI-Klassifikation anhand des vollständigen skalaren Typs; bestehende
+Tabellenausrichtung und Domainverträge sind unverändert. Datum/Zeit, komplexe
+und unbekannte Typen bleiben neutral, auch wenn ihr Typtext `INT` enthält.
+
+`src/styles/app.css`: Tabellenköpfe mit 14-px-UI-Schrift, dezentem Hover und
+geerbtem sichtbarem Fokus; Mindesthöhe 32 px, bei Touch 44 px. Attribute sind
+24 px eingerückt, die Badge-Spalte ist 88 px breit, der Abstand zum Namen
+beträgt 8 px. Zeilen sind mindestens 28 px hoch und verwenden JetBrains Mono
+mit 12 px/400. Lange Namen und Typen brechen innerhalb ihrer Spalte um.
+`src/styles/tokens.css` definiert acht eigene Typfarbtokens für Zahl/Text/
+Boolean/Weitere, getrennt von Statusrollen. `docs/DESIGN_SYSTEM.md` enthält
+Farbrollen, Kontraste, aktualisierte CSS-Referenz und den Schemaflächenvertrag.
+
+Der bestehende Schemafall in `tests/e2e/sql-workbench.spec.ts` importiert
+sechs echte CSV-Spalten mit INTEGER, VARCHAR, BOOLEAN, DATE und
+DECIMAL(38,18), einschliesslich langem Attributnamen. Er prüft gespeicherte
+Typen/Namen, Badge-Reihenfolge und -farben, 24/88/8-px-Geometrie, Schrift,
+Mindesthöhen, Umbruch, Hover, native Enter-/Leertastenbedienung, Chevronzustand
+und Escape-/Button-Fokusrückgabe. Bestehende Rename-, Resize-, Reload- und
+Layoutreset-Prüfungen sowie unveränderte Laufanzahl bleiben erhalten.
+
+**Tatsächliche Checks:**
+
+- `npm run typecheck`: **Exit 0**.
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/sql-workbench.spec.ts -g 'SQL cleanup: overview rename commits only on submit and schema stays nonmodal' --output=test-results/schema-explorer --reporter=list`:
+  **Exit 1**, Testtimeout beim zweiten Typfeld: Die neue synthetische CSV
+  nutzte Kommas statt des bestehenden Semikolon-Defaults. Fixture korrigiert
+  und Anzahl der Typfelder vor Auswahl explizit geprüft; kein Importpatch.
+- Derselbe Befehl mit `--output=test-results/schema-explorer-final`:
+  **1/1 bestanden, Exit 0**. Anschliessend den 1280-px-Prüfviewport auf die
+  vereinbarte Höhe 800 statt der zuvor bestehenden Höhe 900 geändert.
+- Derselbe Befehl mit `--output=test-results/schema-explorer-viewports`:
+  **1/1 bestanden, Exit 0** am finalen Stand bei 1440×900, 1280×800 und
+  390×700; echte DuckDB-/CSV-Daten, keine gefälschten Engineergebnisse.
+- `node --experimental-strip-types --input-type=module` über stdin:
+  **Exit 0**, 13 direkte Prüfungen der UI-Typklassifikation, darunter
+  `INTERVAL`, `INTEGER[]`, `VARCHAR[]`, `STRUCT(value INTEGER)`,
+  `MAP(VARCHAR, BIGINT)`, `POINT` und ein unbekannter Typ mit `INTEGER` im
+  Namen. Nur vollständige bekannte skalare Typen erhalten eine Typfarbe.
+- Weitere Inline-Playwrightprüfung mit demselben Node-Aufruf:
+  **Exit 0**, frisches persistentes Touchprofil, echte CSV-Einbindung und
+  Tippen zum Öffnen/Schliessen. Gemessene Summary-Höhe **44 px** bei aktivem
+  `(pointer: coarse)` und 1280×800. Prüfprofil anschliessend entfernt.
+- Erster `npx prettier --check src/ui/table.ts src/features/sql/SqlWorkbench.tsx src/styles/tokens.css src/styles/app.css`:
+  **Exit 1**, JSX-Zeilenformat korrigiert.
+  `npx prettier --write tests/e2e/sql-workbench.spec.ts`: **Exit 0**.
+  Abschliessend `npx prettier --check src/ui/table.ts src/features/sql/SqlWorkbench.tsx src/styles/tokens.css src/styles/app.css tests/e2e/sql-workbench.spec.ts`:
+  **Exit 0**. `git diff --check`: **Exit 0**.
+
+Node 22.23.1, npm 11.18.0, Chromium 153.0.8010.12. Visuell geprüfte Nachweise:
+[1440×900](verification/schema-explorer/schema-1440.png),
+[1280×800](verification/schema-explorer/schema-1280.png),
+[schmale Ansicht](verification/schema-explorer/schema-390.png),
+[Touch-Panel](verification/schema-explorer/touch-panel.png),
+[Touch-Messungen](verification/schema-explorer/touch-measurements.json).
+
+**Nicht ausgeführt:** Build, Lint, vollständige Unit-/E2E-Suiten,
+`npm run verify`, Browsermatrix und Deploymenttests. Die gezielte Auswahl deckt
+die Schemaanzeige und deren direkt betroffene Navigation/Layouts ab. Keine
+bekannten Blocker; Abschnitt abgeschlossen, keine weitere Phase in diesem
+Auftrag. Kein Commit/Push.

@@ -196,6 +196,23 @@ Berechnete Farbpaare sind im Anhang dokumentiert. Sie ersetzen keine Prüfung
 der zusammengesetzten Komponenten, ihrer Zustände und des tatsächlichen
 Hintergrunds.
 
+### 3.5 Schema-Typfarben
+
+Diese Rollen kennzeichnen Datentypen im Bereich „Tabellen & Spalten“. Sie sind
+von Statusfarben getrennt; der ausgeschriebene Typ bleibt immer sichtbar.
+
+| Typgruppe | Vordergrund-Token / Wert | Hintergrund-Token / Wert |
+| --- | --- | --- |
+| Numerisch | `--dw-type-numeric-fg`: `#166534` | `--dw-type-numeric-bg`: `#DCFCE7` |
+| Text | `--dw-type-text-fg`: `#1D4ED8` | `--dw-type-text-bg`: `#E8F1FF` |
+| Boolean | `--dw-type-boolean-fg`: `#9F1239` | `--dw-type-boolean-bg`: `#FEE2E2` |
+| Weitere Typen | `--dw-type-other-fg`: `#475569` | `--dw-type-other-bg`: `#F1F5F9` |
+
+Die Textkontraste auf der jeweiligen Badge-Fläche betragen 6.49:1, 5.89:1,
+6.56:1 und 6.92:1. Datum/Zeit, komplexe und unbekannte Typen sind neutral.
+Die Zuordnung prüft den vollständigen skalaren Typ; ein enthaltenes `INT`
+innerhalb eines komplexen Typs ist kein Zahlenkriterium.
+
 ## 4. Typografie
 
 ### 4.1 UI-Schrift und Auslieferung
@@ -1198,6 +1215,15 @@ Theme-Overrides gehören ebenfalls an eine zentrale Stelle.
   --dw-disabled-bg: #eceff2;
   --dw-disabled-text: #626d79;
 
+  --dw-type-numeric-fg: #166534;
+  --dw-type-numeric-bg: #dcfce7;
+  --dw-type-text-fg: #1d4ed8;
+  --dw-type-text-bg: #e8f1ff;
+  --dw-type-boolean-fg: #9f1239;
+  --dw-type-boolean-bg: #fee2e2;
+  --dw-type-other-fg: #475569;
+  --dw-type-other-bg: #f1f5f9;
+
   --dw-action-bg: #2b5c8a;
   --dw-action-bg-hover: #234e75;
   --dw-action-bg-pressed: #1d4162;
@@ -1543,6 +1569,18 @@ Seit der Nachbesserung vom 25. Oktober 2026 verwenden normale tertiäre Buttons 
 Der SQL-Analysename verwendet normales Schriftgewicht. Im SQL-Editor keine Hervorhebung oder Umrahmung der aktuellen Zeile. Die kompakte SQL-Ergebnistabelle verwendet lokal JetBrains Mono mit 12 px wie Sodata, dezente Zelllinien, fixierten Kopf und fixierte Zeilennummern. Name und logischer Typ stehen im Tabellenkopf. Ergebnisaktionen stehen in einer Zeile, Zeilenzahl/Laufzeit/Paging in der Fusszeile; technische Metadaten bleiben in Details. Der Split-Pfeil übernimmt das vertikale Control-Padding seiner Grösse.
 
 Panelgriffe sind sichtbar, fokussierbar und mit Pfeiltasten bedienbar. Breiter Schema-/Spaltenbereich und Resultathöhe bleiben verstellbar; schmale Ansichten ordnen das Schema über dem Editor an.
+
+„Tabellen & Spalten“ verwendet aufklappbare Tabellenköpfe mit Chevron, blauem
+Tabellenicon, 14-px-UI-Schrift, dezentem Hover und sichtbarem Tastaturfokus.
+Die Mindesthöhe beträgt 32 px, bei Touch 44 px. Native `details`/`summary`-
+Bedienung mit Enter und Leertaste bleibt erhalten.
+Die Attributliste ist 24 px eingerückt. Jede mindestens 28 px hohe Zeile zeigt
+zuerst einen 88 px breiten farbigen Typ-Badge mit 4 px Radius, dann mit 8 px
+Abstand den Attributnamen. Beide verwenden JetBrains Mono mit 12 px und
+normalem Gewicht. Lange Namen und Typen brechen in ihrer Spalte um; sie werden
+nicht abgeschnitten oder umbenannt. Typangaben bleiben exakt wie im Schema.
+Die Farbrollen stehen in Abschnitt 3.5. Es entstehen keine zusätzlichen
+Katalogebenen oder Aktionen an den Schemaeinträgen.
 
 Die SQL-Ergebnisfusszeile zeigt rechts den aktuellen Zeilenbereich, beispielsweise
 `1–100 von 350`, gefolgt von zwei tertiären Chevron-Iconbuttons für die vorherige

@@ -1,0 +1,15 @@
+{
+  "browser": "153.0.8010.12",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "measurement": {
+    "coarse": true,
+    "x": 986.5,
+    "y": 184,
+    "width": 281.5,
+    "height": 44
+  },
+  "tapOpensAndCloses": true
+}
