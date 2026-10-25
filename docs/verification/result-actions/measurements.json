@@ -1,0 +1,49 @@
+{
+  "browser": "153.0.8010.12",
+  "measurements": [
+    {
+      "width": 1440,
+      "dialog": "Als Datensatz übernehmen",
+      "box": {
+        "x": 340,
+        "y": 183,
+        "width": 760,
+        "height": 534
+      },
+      "horizontalOverflow": false
+    },
+    {
+      "width": 1440,
+      "dialog": "Laufdetails",
+      "box": {
+        "x": 340,
+        "y": 24,
+        "width": 760,
+        "height": 852
+      },
+      "horizontalOverflow": false
+    },
+    {
+      "width": 390,
+      "dialog": "Als Datensatz übernehmen",
+      "box": {
+        "x": 17,
+        "y": 74,
+        "width": 356,
+        "height": 552
+      },
+      "horizontalOverflow": false
+    },
+    {
+      "width": 390,
+      "dialog": "Laufdetails",
+      "box": {
+        "x": 19,
+        "y": 16,
+        "width": 352,
+        "height": 668
+      },
+      "horizontalOverflow": false
+    }
+  ]
+}

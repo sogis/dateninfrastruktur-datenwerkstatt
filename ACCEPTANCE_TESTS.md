@@ -747,3 +747,16 @@ REQ-016/019/034/062/067/068; AT-005/007/054/055/058/059. Ersetzt den bisherigen 
 - Herunterladen erhält Unicode und Text auch bei Speicherfehlern. Speichern erneut versuchen erhält diesen Text. Leser dürfen vorhandene SQL-Dokumente öffnen/herunterladen; Neu, Speichern und Dateiimport bleiben deaktiviert.
 
 Prüfauswahl: gezielte Dokument-/Archiv-/Format-Unitfälle und echte Chromiumfälle für Editorwechsel, Dateiein-/ausgabe, Speicherfehler und Lesemodus; Typecheck, Lint und Build. Keine neue vollständige Abnahme.
+
+
+## SQL-Ergebnisaktionen und bündiger Resultatbereich — 25. Oktober 2026
+
+REQ-044/045/046/062/066/067; Ergänzung zu AT-006/027/032/040/055/058.
+
+- Oberhalb des Ergebnisses bleiben „Nach R übernehmen“, Export und Tabelle/Diagramm direkt erreichbar. Das Menü „Weitere Ergebnisaktionen“ enthält „Aufbewahren“, „Als Datensatz übernehmen …“ und „Laufdetails …“ in dieser Reihenfolge. Schreibschutz, laufende Speicherung, bereits aufbewahrte und nicht verfügbare Ergebnisse berücksichtigen; lesende Laufdetails bleiben erreichbar.
+- Datensatzdialog: Name, SQL-Name und Ergebnisschema; Öffnen/Abbrechen/Escape verändern kein Dokument und erzeugen keinen Lauf. Ungültige Eingaben verhindern Speicherung. Speicherfehler erhalten beide Felder und zeigen den Fehler im Dialog; erfolgreicher Retry übernimmt alle 350 Zeilen trotz 100-Zeilen-Gridseite, sichert den Stand und schliesst den Dialog.
+- Laufdetails zeigen den eingefrorenen Code und Herkunft des angezeigten, auch historischen Ergebnisses. Auch nach Reload nicht verfügbare Ergebnisse sowie fehlgeschlagene Läufe ohne Tabelle besitzen lesende Laufdetails. R behält die bisherige Detailsdarstellung.
+- Beide Dialoge per Tastatur erreichbar; Laufdetails starten mit sichtbarem, fokussiertem Titel statt nach unten gescrollt. Tab bleibt im Dialog einschliesslich technischer Details, Escape und Schliessen geben den Fokus an den Menübutton zurück. Panelgrössen und Grid-Scrollposition bleiben erhalten.
+- Unterhalb der Resultat-Fusszeile stehen keine Aufklappbereiche. Resultat und Fusszeile schliessen bei Desktop, schmaler Ansicht und vergrössertem Text am unteren Rand ab; Tabelle/Diagramm scrollen innerhalb ihres Bereichs. Leere Ergebnisse und sichtbare Fehler berücksichtigen.
+
+Gezielte Chromiumfälle mit echten DuckDB-/webR-Daten, Herkunfts-Unitfälle, Typecheck, Lint und Build; keine vollständige Testsuite oder Browsermatrix.

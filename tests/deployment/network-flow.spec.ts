@@ -76,9 +76,12 @@ test('P7 AT-056 AT-068: static public/local → SQL → R → SQL → PNG/archiv
     );
     await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
     await expect(page.locator('.result-grid tbody td')).toHaveText(['001', '20', '002', '40']);
-    await page.getByRole('button', {name: 'In R', exact: true}).click();
+    await page.getByRole('button', {name: 'Nach R übernehmen', exact: true}).click();
     await page.getByRole('button', {name: 'Transfer prüfen', exact: true}).click();
-    await page.getByRole('button', {name: 'In R übernehmen', exact: true}).click();
+    await page
+      .getByRole('dialog', {name: 'Resultat nach R übernehmen', exact: true})
+      .getByRole('button', {name: 'Nach R übernehmen', exact: true})
+      .click();
     await expect(page.locator('.r-workbench')).toBeVisible();
     await code(
       page,

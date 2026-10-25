@@ -51,7 +51,7 @@ import {useStore} from 'zustand';
 import {useMediaQuery, usePanelHeight} from '../../ui/PanelLayout';
 import type {ImperativePanelGroupHandle} from 'react-resizable-panels';
 import {Chart} from './chart';
-import {RunDetails, RunStatus, runTimeText} from '../results/RunDetails';
+import {RunDetailsContent, RunStatus, runTimeText} from '../results/RunDetails';
 
 const RESULT_PAGE_SIZE = 100;
 
@@ -111,6 +111,8 @@ export function SqlWorkbench({
     if (!session.readOnly) void session.flush().catch((error: unknown) => report(error, session));
   };
   const [selectedResult, setSelectedResult] = useState<TableResult['id']>();
+  const [detailsRunId, setDetailsRunId] = useState<ExecutionRun['id']>();
+  const detailsRun = detailsRunId ? session.document.runs[detailsRunId] : undefined;
   const openDocument = (id: AnalysisId) => {
     setDialog(undefined);
     setSelectedResult(undefined);
@@ -325,6 +327,20 @@ export function SqlWorkbench({
         </Modal>
       )}
       {narrow && schemaPanel}
+      {detailsRun && (
+        <Modal title="Laufdetails" focusTitle onClose={() => setDetailsRunId(undefined)}>
+          <RunDetailsContent
+            run={detailsRun}
+            workspaceDocument={session.document}
+            availability={{
+              mode: session.mode,
+              missingArtifacts: session.integrity?.missing,
+              integrity: session.integrity,
+              hashesChecked: session.hashesChecked,
+            }}
+          />
+        </Modal>
+      )}
       <div className="sql-panel-host" ref={panelHost}>
         <PanelGroup
           ref={panels}
@@ -420,6 +436,13 @@ export function SqlWorkbench({
               {result?.kind !== 'table' && (
                 <Toolbar className="result-toolbar">
                   <RunStatus run={run} />
+                  {run && (
+                    <ActionMenu
+                      label="Weitere Ergebnisaktionen"
+                      contextKey={run.id}
+                      actions={[{label: 'Laufdetails …', onSelect: () => setDetailsRunId(run.id)}]}
+                    />
+                  )}
                 </Toolbar>
               )}
               {run?.error && (
@@ -441,19 +464,8 @@ export function SqlWorkbench({
                   result={result}
                   session={session}
                   run={run}
+                  onDetails={() => setDetailsRunId(run?.id)}
                   {...(savedResult ? {onCurrent: () => setSelectedResult(undefined)} : {})}
-                />
-              )}
-              {run && (
-                <RunDetails
-                  run={run}
-                  workspaceDocument={session.document}
-                  availability={{
-                    mode: session.mode,
-                    missingArtifacts: session.integrity?.missing,
-                    integrity: session.integrity,
-                    hashesChecked: session.hashesChecked,
-                  }}
                 />
               )}
             </section>
@@ -685,14 +697,17 @@ function TableView({
   session,
   run,
   onCurrent,
+  onDetails,
 }: {
   result: TableResult;
   session: EditingSession;
   run: ExecutionRun | undefined;
   onCurrent?: () => void;
+  onDetails(): void;
 }) {
   const service = session.getAnalyses();
   const [transfer, setTransfer] = useState(false);
+  const [datasetDialog, setDatasetDialog] = useState(false);
   const [offset, setOffset] = useState(0);
   const totalRows = BigInt(result.rowCount);
   const firstRow = totalRows === 0n ? 0n : BigInt(offset) + 1n;
@@ -704,13 +719,6 @@ function TableView({
   const [loading, setLoading] = useState(false);
   const [view, setView] = useState<'table' | 'chart'>('table');
   const [exportFormat, setExportFormat] = useState<TableExportFormat>();
-  const [datasetName, setDatasetName] = useState(result.name);
-  const [sqlName, setSqlName] = useState('ergebnis');
-  const occupied = Object.values(session.document.datasets).map((d) => d.sqlName);
-  const datasetForm = useFormValidation({
-    name: () => displayNameError(datasetName, 'Datensatznamen'),
-    sqlName: () => sqlNameError(sqlName, occupied),
-  });
   const busy = useSyncExternalStore(session.scheduler.subscribe, session.scheduler.getSnapshot);
   const pending = useRef(false);
   const live = useRef(true);
@@ -809,31 +817,12 @@ function TableView({
             Zum aktuellen Ergebnis
           </Button>
         )}
-        <ActionGroup>
-          <Button
-            disabled={
-              !!busy ||
-              !!busyAction ||
-              unavailable ||
-              session.readOnly ||
-              result.retention === 'kept'
-            }
-            busy={busyAction === 'keep'}
-            busyLabel="Resultat wird aufbewahrt …"
-            onClick={() => {
-              if (unavailable || session.readOnly || result.retention === 'kept') return;
-              act('keep', () => service.keep(result.id));
-            }}
-          >
-            Aufbewahren
-          </Button>
-          <Button
-            disabled={!!busy || !!busyAction || unavailable || session.readOnly}
-            onClick={() => setTransfer(true)}
-          >
-            In R
-          </Button>
-        </ActionGroup>
+        <Button
+          disabled={!!busy || !!busyAction || unavailable || session.readOnly}
+          onClick={() => setTransfer(true)}
+        >
+          Nach R übernehmen
+        </Button>
         <SplitButton
           label="CSV exportieren"
           menuLabel="Weitere Exportformate"
@@ -870,7 +859,42 @@ function TableView({
         >
           {view === 'table' ? 'Diagramm' : 'Tabelle'}
         </Button>
+        <ActionMenu
+          label="Weitere Ergebnisaktionen"
+          contextKey={result.id}
+          actions={[
+            {
+              label: 'Aufbewahren',
+              disabled:
+                !!busy ||
+                !!busyAction ||
+                unavailable ||
+                session.readOnly ||
+                result.retention === 'kept',
+              busy: busyAction === 'keep',
+              busyLabel: 'Resultat wird aufbewahrt …',
+              onSelect: () => {
+                if (unavailable || session.readOnly || result.retention === 'kept') return;
+                act('keep', () => service.keep(result.id));
+              },
+            },
+            {
+              label: 'Als Datensatz übernehmen …',
+              disabled: !!busy || !!busyAction || unavailable || session.readOnly,
+              onSelect: () => setDatasetDialog(true),
+            },
+            {label: 'Laufdetails …', disabled: !run, onSelect: onDetails},
+          ]}
+        />
       </Toolbar>
+      {busyAction === 'keep' && <p role="status">Resultat wird aufbewahrt …</p>}
+      {datasetDialog && (
+        <ResultDatasetDialog
+          result={result}
+          session={session}
+          onClose={() => setDatasetDialog(false)}
+        />
+      )}
       {exportFormat && (
         <Modal
           title={`${exportFormat === 'parquet' ? 'Parquet' : exportFormat.toUpperCase()} exportieren`}
@@ -1030,59 +1054,137 @@ function TableView({
           </ActionGroup>
         )}
       </Toolbar>
-      <details className="result-data">
-        <summary>Als Datensatz übernehmen und Schema ansehen</summary>
-        <p>
-          Das vollständige Resultat wird zuerst aufbewahrt und als neue Dateneinbindung gespeichert.
-        </p>
-        <FormField label={<>Datensatzname</>} error={datasetForm.errors.name}>
-          <Input
-            {...datasetForm.control('name')}
-            required
-            maxLength={120}
-            value={datasetName}
-            onChange={(e) => {
-              setDatasetName(e.target.value);
-              datasetForm.change('name', displayNameError(e.target.value, 'Datensatznamen'));
-            }}
-          />
-        </FormField>
-        <FormField label={<>SQL-Name</>} error={datasetForm.errors.sqlName}>
-          <Input
-            {...datasetForm.control('sqlName')}
-            required
-            value={sqlName}
-            onChange={(e) => {
-              setSqlName(e.target.value);
-              datasetForm.change('sqlName', sqlNameError(e.target.value, occupied));
-            }}
-          />
-        </FormField>
-        <Button
-          variant="primary"
-          disabled={!!busy || !!busyAction || session.readOnly || unavailable}
-          busy={busyAction === 'dataset'}
-          busyLabel="Datensatz wird gespeichert …"
-          onClick={() => {
-            if (session.readOnly || unavailable || !datasetForm.validate()) return;
-            act('dataset', () => service.asDataset(result.id, datasetName, sqlName));
+    </>
+  );
+}
+function ResultDatasetDialog({
+  result,
+  session,
+  onClose,
+}: {
+  result: TableResult;
+  session: EditingSession;
+  onClose(): void;
+}) {
+  const [name, setName] = useState(result.name);
+  const [sqlName, setSqlName] = useState('ergebnis');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const pending = useRef(false);
+  const live = useRef(true);
+  const busy = useSyncExternalStore(session.scheduler.subscribe, session.scheduler.getSnapshot);
+  const occupied = Object.values(session.document.datasets).map((dataset) => dataset.sqlName);
+  const form = useFormValidation({
+    name: () => displayNameError(name, 'Datensatznamen'),
+    sqlName: () => sqlNameError(sqlName, occupied),
+  });
+  useEffect(() => {
+    live.current = true;
+    return () => {
+      live.current = false;
+    };
+  }, []);
+  const close = () => {
+    if (!pending.current) onClose();
+  };
+  const save = async () => {
+    if (
+      pending.current ||
+      session.scheduler.getSnapshot() ||
+      session.readOnly ||
+      result.materialization.kind === 'unavailable' ||
+      !form.validate()
+    )
+      return;
+    pending.current = true;
+    setSaving(true);
+    setError('');
+    try {
+      await session.getAnalyses().asDataset(result.id, name, sqlName);
+      if (live.current) onClose();
+    } catch (cause) {
+      if (live.current) setError(failureMessage(cause));
+    } finally {
+      pending.current = false;
+      if (live.current) setSaving(false);
+    }
+  };
+  return (
+    <Modal
+      title="Als Datensatz übernehmen"
+      onClose={close}
+      showClose={false}
+      footer={
+        <>
+          <Button disabled={saving} onClick={close}>
+            Abbrechen
+          </Button>
+          <Button
+            variant="primary"
+            disabled={
+              saving || !!busy || session.readOnly || result.materialization.kind === 'unavailable'
+            }
+            busy={saving}
+            busyLabel="Datensatz wird gespeichert …"
+            onClick={() => void save()}
+          >
+            Als Datensatz speichern
+          </Button>
+        </>
+      }
+    >
+      <p>
+        Das vollständige Resultat mit {result.rowCount} Zeilen wird zuerst aufbewahrt und als neue
+        Dateneinbindung gespeichert.
+      </p>
+      {error && <Notice tone="danger">{error}</Notice>}
+      <FormField label={<>Datensatzname</>} error={form.errors.name}>
+        <Input
+          {...form.control('name')}
+          required
+          maxLength={120}
+          disabled={saving}
+          value={name}
+          onChange={(event) => {
+            setName(event.target.value);
+            form.change('name', displayNameError(event.target.value, 'Datensatznamen'));
           }}
-        >
-          Als Datensatz speichern
-        </Button>
+        />
+      </FormField>
+      <FormField label={<>SQL-Name</>} error={form.errors.sqlName}>
+        <Input
+          {...form.control('sqlName')}
+          required
+          disabled={saving}
+          value={sqlName}
+          onChange={(event) => {
+            setSqlName(event.target.value);
+            form.change('sqlName', sqlNameError(event.target.value, occupied));
+          }}
+        />
+      </FormField>
+      <h3>Ergebnisschema</h3>
+      <div className="table-scroll">
         <table>
+          <thead>
+            <tr>
+              <th scope="col">Spalte</th>
+              <th scope="col">Typ</th>
+              <th scope="col">NULL</th>
+            </tr>
+          </thead>
           <tbody>
-            {result.schema.columns.map((c) => (
-              <tr key={c.name}>
-                <td>{c.name}</td>
-                <td>{c.logicalType}</td>
-                <td>{c.nullable ? 'NULL möglich' : ''}</td>
+            {result.schema.columns.map((column) => (
+              <tr key={column.name}>
+                <th scope="row">{column.name}</th>
+                <td>{column.logicalType}</td>
+                <td>{column.nullable ? 'NULL möglich' : ''}</td>
               </tr>
             ))}
           </tbody>
         </table>
-      </details>
-    </>
+      </div>
+    </Modal>
   );
 }
 function ChartControls({result, session}: {result: TableResult; session: EditingSession}) {

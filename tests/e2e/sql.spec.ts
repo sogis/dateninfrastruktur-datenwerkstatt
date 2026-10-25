@@ -1,4 +1,4 @@
-import {openSqlParameters} from '../ui/sqlActions';
+import {keepSqlResult, expectSqlKeepDisabled, openSqlParameters} from '../ui/sqlActions';
 import {expect, test} from '../persistentBrowser';
 import type {Page} from '@playwright/test';
 import {readFile} from 'node:fs/promises';
@@ -38,8 +38,8 @@ test('P3 / AT-022 AT-027 AT-032 AT-049 AT-055 AT-058: SQL, paging, keep, exports
   await expect(page.locator('.result-grid tbody tr').first()).toHaveText(first, {
     useInnerText: true,
   });
-  await page.getByRole('button', {name: 'Aufbewahren', exact: true}).click();
-  await expect(page.getByRole('button', {name: 'Aufbewahren', exact: true})).toBeDisabled();
+  await keepSqlResult(page);
+  await expectSqlKeepDisabled(page);
   const pending = page.waitForEvent('download');
   await page.getByRole('button', {name: 'CSV exportieren'}).click();
   const exportDialog = page.getByRole('dialog', {name: 'CSV exportieren', exact: true});
@@ -68,7 +68,7 @@ test('P3 / AT-022 AT-027 AT-032 AT-049 AT-055 AT-058: SQL, paging, keep, exports
   await info.attach('sql-workspace', {body: await page.screenshot(), contentType: 'image/png'});
   await page.reload();
   await expect(page.locator('.result-footer')).toContainText('350 Zeilen');
-  await expect(page.getByRole('button', {name: 'Aufbewahren', exact: true})).toBeDisabled();
+  await expectSqlKeepDisabled(page);
   await expect(page.locator('.result-grid tbody tr').first()).toHaveText(first, {
     useInnerText: true,
   });

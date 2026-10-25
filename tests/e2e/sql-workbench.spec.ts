@@ -1,6 +1,12 @@
+import {
+  keepSqlResult,
+  expectSqlKeepDisabled,
+  openSqlRunDetails,
+  openAnalysisRename,
+  openSqlParameters,
+} from '../ui/sqlActions';
 import {test, expect} from '../persistentBrowser';
 import type {Page} from '@playwright/test';
-import {openAnalysisRename, openSqlParameters} from '../ui/sqlActions';
 async function create(page: Page) {
   await page.goto('/projects');
   await page.getByLabel('Name des neuen Projekts', {exact: true}).fill('SQL aufgeräumt');
@@ -85,9 +91,12 @@ test('SQL documents: save and load independent editor texts and undo without run
   await expect(page.locator('.monaco-editor')).toContainText('SELECT 9 AS wert');
   await expect(page.locator('.result-grid tbody td')).toHaveText('7');
   await expect(page.getByText(/Das Ergebnis gehört zur letzten Ausführung/)).toHaveCount(0);
-  await page.getByText('Laufdetails und eingefrorener Code', {exact: true}).click();
-  await expect(page.locator('.run-details')).toContainText('SELECT 7 AS wert');
-  await page.getByText('Laufdetails und eingefrorener Code', {exact: true}).click();
+  await openSqlRunDetails(page);
+  await expect(page.locator('.run-details-body')).toContainText('SELECT 7 AS wert');
+  await page
+    .getByRole('dialog', {name: 'Laufdetails', exact: true})
+    .getByRole('button', {name: 'Schliessen', exact: true})
+    .click();
   const cursor = () =>
     page.evaluate(async () => {
       const path = '/src/infrastructure/monaco/runtime.ts';
@@ -114,8 +123,8 @@ test('SQL documents: save and load independent editor texts and undo without run
     first.analyses[firstId as keyof typeof first.analyses],
   );
   expect(afterLoad).not.toHaveProperty('sqlVersions');
-  await page.getByRole('button', {name: 'Aufbewahren', exact: true}).click();
-  await expect(page.getByRole('button', {name: 'Aufbewahren', exact: true})).toBeDisabled();
+  await keepSqlResult(page);
+  await expectSqlKeepDisabled(page);
   await editor(page, 'SELECT 70 AS wert');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.result-grid tbody td')).toHaveText('70');

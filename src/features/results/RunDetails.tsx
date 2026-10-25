@@ -241,15 +241,26 @@ function InputDescription({
 }
 
 /** Read-only presentation of the existing workspaceDocument; expanding never starts an engine operation. */
-export function RunDetails({
-  run,
-  workspaceDocument,
-  availability = uncheckedAvailability,
-}: {
+export function RunDetails(props: RunDetailsProps) {
+  return (
+    <details className="run-details">
+      <summary>Laufdetails und eingefrorener Code</summary>
+      <RunDetailsContent {...props} />
+    </details>
+  );
+}
+
+interface RunDetailsProps {
   run: ExecutionRun;
   workspaceDocument: WorkspaceDocument;
   availability?: DatasetAvailabilityContext;
-}) {
+}
+
+export function RunDetailsContent({
+  run,
+  workspaceDocument,
+  availability = uncheckedAvailability,
+}: RunDetailsProps) {
   const analysis = run.snapshot.analysisId
     ? workspaceDocument.analyses[run.snapshot.analysisId]
     : undefined;
@@ -258,220 +269,215 @@ export function RunDetails({
     run.resultIds.includes(visualization.tableResultId),
   );
   return (
-    <details className="run-details">
-      <summary>Laufdetails und eingefrorener Code</summary>
-      <div className="run-details-body">
-        <dl className="run-metadata">
-          <dt>Analyse</dt>
-          <dd>
-            {analysis ? (
-              <>
-                {analysis.name}
-                {analysis.archivedAt ? ' (archiviert)' : ''}
-              </>
-            ) : run.trigger === 'r-object-capture' ? (
-              'Direkte R-Objektübernahme ohne gespeicherte Analyse'
-            ) : (
-              'Analyse nicht mehr verfügbar'
-            )}
-          </dd>
-          {run.snapshot.language !== 'sql' && (
+    <div className="run-details-body">
+      <dl className="run-metadata">
+        <dt>Analyse</dt>
+        <dd>
+          {analysis ? (
             <>
-              <dt>Analyserevision beim Start</dt>
-              <dd>
-                {run.snapshot.analysisRevision ?? 'Nicht angegeben'}
-                {analysis &&
-                  run.snapshot.analysisRevision !== undefined &&
-                  analysis.revision !== run.snapshot.analysisRevision &&
-                  ` (aktuelle Analyse: Revision ${analysis.revision})`}
-              </dd>
+              {analysis.name}
+              {analysis.archivedAt ? ' (archiviert)' : ''}
             </>
+          ) : run.trigger === 'r-object-capture' ? (
+            'Direkte R-Objektübernahme ohne gespeicherte Analyse'
+          ) : (
+            'Analyse nicht mehr verfügbar'
           )}
-          <dt>Status</dt>
-          <dd>{runStatusText(run)}</dd>
-          <dt>Eingereiht</dt>
-          <dd>
-            <time dateTime={run.queuedAt}>{runTimeText(run.queuedAt)}</time>
-          </dd>
-          <dt>Gestartet</dt>
-          <dd>
-            {run.startedAt ? (
-              <time dateTime={run.startedAt}>{runTimeText(run.startedAt)}</time>
-            ) : (
-              'Noch nicht gestartet'
-            )}
-          </dd>
-          <dt>Beendet</dt>
-          <dd>
-            {run.finishedAt ? (
-              <time dateTime={run.finishedAt}>{runTimeText(run.finishedAt)}</time>
-            ) : (
-              'Noch nicht beendet'
-            )}
-          </dd>
-          <dt>Dauer</dt>
-          <dd>{run.durationMs === undefined ? 'Noch nicht erfasst' : `${run.durationMs} ms`}</dd>
-          {run.stopReason && (
-            <>
-              <dt>Beendigungsgrund</dt>
-              <dd>
+        </dd>
+        {run.snapshot.language !== 'sql' && (
+          <>
+            <dt>Analyserevision beim Start</dt>
+            <dd>
+              {run.snapshot.analysisRevision ?? 'Nicht angegeben'}
+              {analysis &&
+                run.snapshot.analysisRevision !== undefined &&
+                analysis.revision !== run.snapshot.analysisRevision &&
+                ` (aktuelle Analyse: Revision ${analysis.revision})`}
+            </dd>
+          </>
+        )}
+        <dt>Status</dt>
+        <dd>{runStatusText(run)}</dd>
+        <dt>Eingereiht</dt>
+        <dd>
+          <time dateTime={run.queuedAt}>{runTimeText(run.queuedAt)}</time>
+        </dd>
+        <dt>Gestartet</dt>
+        <dd>
+          {run.startedAt ? (
+            <time dateTime={run.startedAt}>{runTimeText(run.startedAt)}</time>
+          ) : (
+            'Noch nicht gestartet'
+          )}
+        </dd>
+        <dt>Beendet</dt>
+        <dd>
+          {run.finishedAt ? (
+            <time dateTime={run.finishedAt}>{runTimeText(run.finishedAt)}</time>
+          ) : (
+            'Noch nicht beendet'
+          )}
+        </dd>
+        <dt>Dauer</dt>
+        <dd>{run.durationMs === undefined ? 'Noch nicht erfasst' : `${run.durationMs} ms`}</dd>
+        {run.stopReason && (
+          <>
+            <dt>Beendigungsgrund</dt>
+            <dd>
+              {
                 {
-                  {
-                    user: 'Abbruch durch Nutzer',
-                    timeout: 'Zeitlimit',
-                    'workspace-close': 'Projekt geschlossen',
-                    'runtime-crash': 'Laufzeit abgestürzt',
-                  }[run.stopReason]
-                }
-              </dd>
-            </>
-          )}
-        </dl>
-        {run.trigger === 'r-object-capture' && (
-          <p>
-            Dieser Lauf erfasst den aktuellen Stand eines R-Sitzungsobjekts. Er führt das Skript
-            nicht erneut aus und ordnet den Objektstand keiner früheren Skriptausführung zu.
-          </p>
+                  user: 'Abbruch durch Nutzer',
+                  timeout: 'Zeitlimit',
+                  'workspace-close': 'Projekt geschlossen',
+                  'runtime-crash': 'Laufzeit abgestürzt',
+                }[run.stopReason]
+              }
+            </dd>
+          </>
         )}
+      </dl>
+      {run.trigger === 'r-object-capture' && (
         <p>
-          Herkunft:{' '}
-          {
-            {
-              'declared-inputs': 'Deklarierte Eingaben',
-              'session-dependent':
-                'Sitzungsabhängig; weiterer R-Zustand kann verwendet worden sein',
-              'untracked-sources': 'Weitere Quellen wurden nicht protokolliert',
-            }[run.snapshot.provenance]
-          }
-          .
-          {run.snapshot.environmentMode && (
-            <>
-              {' '}
-              R-Umgebung:{' '}
-              {run.snapshot.environmentMode === 'workspace-session'
-                ? 'Projektsitzung'
-                : 'Frisches Environment'}
-              .
-            </>
-          )}
-          {run.snapshot.randomSeed !== undefined && <> Zufallsseed: {run.snapshot.randomSeed}.</>}
+          Dieser Lauf erfasst den aktuellen Stand eines R-Sitzungsobjekts. Er führt das Skript nicht
+          erneut aus und ordnet den Objektstand keiner früheren Skriptausführung zu.
         </p>
-        {run.trigger !== 'r-object-capture' &&
-          run.snapshot.notes.map((note, index) => <p key={index}>{note}</p>)}
-        <h3>Eingefrorener Code</h3>
-        <pre>{run.snapshot.code || '(kein Code)'}</pre>
-        <h3>Parameter</h3>
-        {parameters.length ? (
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Typ</th>
-                <th scope="col">Wert</th>
+      )}
+      <p>
+        Herkunft:{' '}
+        {
+          {
+            'declared-inputs': 'Deklarierte Eingaben',
+            'session-dependent': 'Sitzungsabhängig; weiterer R-Zustand kann verwendet worden sein',
+            'untracked-sources': 'Weitere Quellen wurden nicht protokolliert',
+          }[run.snapshot.provenance]
+        }
+        .
+        {run.snapshot.environmentMode && (
+          <>
+            {' '}
+            R-Umgebung:{' '}
+            {run.snapshot.environmentMode === 'workspace-session'
+              ? 'Projektsitzung'
+              : 'Frisches Environment'}
+            .
+          </>
+        )}
+        {run.snapshot.randomSeed !== undefined && <> Zufallsseed: {run.snapshot.randomSeed}.</>}
+      </p>
+      {run.trigger !== 'r-object-capture' &&
+        run.snapshot.notes.map((note, index) => <p key={index}>{note}</p>)}
+      <h3>Eingefrorener Code</h3>
+      <pre>{run.snapshot.code || '(kein Code)'}</pre>
+      <h3>Parameter</h3>
+      {parameters.length ? (
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Typ</th>
+              <th scope="col">Wert</th>
+            </tr>
+          </thead>
+          <tbody>
+            {parameters.map(([name, value]) => (
+              <tr key={name}>
+                <th scope="row">{name}</th>
+                <td>{parameterType(value)}</td>
+                <td>
+                  <code>{parameterText(value)}</code>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {parameters.map(([name, value]) => (
-                <tr key={name}>
-                  <th scope="row">{name}</th>
-                  <td>{parameterType(value)}</td>
-                  <td>
-                    <code>{parameterText(value)}</code>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>Keine Parameter.</p>
-        )}
-        <h3>Eingefrorene Eingaben</h3>
-        {run.snapshot.inputScope === 'workspace-snapshot' && (
-          <p>
-            SQL-Projektsnapshot: Hier sind die beim Start verfügbaren Quellen aufgeführt.
-            „Möglicherweise verwendet“ bedeutet nicht, dass die Abfrage diese Quelle tatsächlich
-            gelesen hat.
-          </p>
-        )}
-        {run.snapshot.inputScope === 'session-capture' && (
-          <p>
-            Aufnahme aus einer R-Sitzung; die ursprünglichen Eingaben des Objektstands sind nicht
-            vollständig protokolliert.
-          </p>
-        )}
-        {run.snapshot.resolvedInputs.length ? (
-          <ul className="run-inputs">
-            {run.snapshot.resolvedInputs.map((input, index) => (
-              <li key={index}>
-                <InputDescription
-                  input={input}
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p>Keine Parameter.</p>
+      )}
+      <h3>Eingefrorene Eingaben</h3>
+      {run.snapshot.inputScope === 'workspace-snapshot' && (
+        <p>
+          SQL-Projektsnapshot: Hier sind die beim Start verfügbaren Quellen aufgeführt.
+          „Möglicherweise verwendet“ bedeutet nicht, dass die Abfrage diese Quelle tatsächlich
+          gelesen hat.
+        </p>
+      )}
+      {run.snapshot.inputScope === 'session-capture' && (
+        <p>
+          Aufnahme aus einer R-Sitzung; die ursprünglichen Eingaben des Objektstands sind nicht
+          vollständig protokolliert.
+        </p>
+      )}
+      {run.snapshot.resolvedInputs.length ? (
+        <ul className="run-inputs">
+          {run.snapshot.resolvedInputs.map((input, index) => (
+            <li key={index}>
+              <InputDescription
+                input={input}
+                workspaceDocument={workspaceDocument}
+                availability={availability}
+              />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Keine Tabelleneingaben protokolliert.</p>
+      )}
+      <h3>Ergebnisse dieses Laufes</h3>
+      {run.resultIds.length ? (
+        <ul className="run-results">
+          {run.resultIds.map((id) => (
+            <li key={id}>
+              {workspaceDocument.results[id] ? (
+                <ResultDescription
+                  result={workspaceDocument.results[id]}
                   workspaceDocument={workspaceDocument}
                   availability={availability}
                 />
+              ) : (
+                'Ergebnismetadaten nicht verfügbar'
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Keine Ergebnisse.</p>
+      )}
+      {visualizations.length > 0 && (
+        <>
+          <h3>Gespeicherte Diagramme</h3>
+          <ul>
+            {visualizations.map((visualization) => (
+              <li key={visualization.id}>
+                <strong>{visualization.name}</strong>
+                <p>
+                  Tabellenergebnis:{' '}
+                  {workspaceDocument.results[visualization.tableResultId]?.name ??
+                    'nicht verfügbar'}
+                </p>
               </li>
             ))}
           </ul>
-        ) : (
-          <p>Keine Tabelleneingaben protokolliert.</p>
+        </>
+      )}
+      <details className="run-technical">
+        <summary>Technische IDs, Laufzeit und Rohdaten</summary>
+        {run.snapshot.language === 'sql' && (
+          <p>
+            Interne Analyserevision beim Start: {run.snapshot.analysisRevision ?? 'Nicht angegeben'}
+          </p>
         )}
-        <h3>Ergebnisse dieses Laufes</h3>
-        {run.resultIds.length ? (
-          <ul className="run-results">
-            {run.resultIds.map((id) => (
-              <li key={id}>
-                {workspaceDocument.results[id] ? (
-                  <ResultDescription
-                    result={workspaceDocument.results[id]}
-                    workspaceDocument={workspaceDocument}
-                    availability={availability}
-                  />
-                ) : (
-                  'Ergebnismetadaten nicht verfügbar'
-                )}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>Keine Ergebnisse.</p>
-        )}
-        {visualizations.length > 0 && (
-          <>
-            <h3>Gespeicherte Diagramme</h3>
-            <ul>
-              {visualizations.map((visualization) => (
-                <li key={visualization.id}>
-                  <strong>{visualization.name}</strong>
-                  <p>
-                    Tabellenergebnis:{' '}
-                    {workspaceDocument.results[visualization.tableResultId]?.name ??
-                      'nicht verfügbar'}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-        <details className="run-technical">
-          <summary>Technische IDs, Laufzeit und Rohdaten</summary>
-          {run.snapshot.language === 'sql' && (
-            <p>
-              Interne Analyserevision beim Start:{' '}
-              {run.snapshot.analysisRevision ?? 'Nicht angegeben'}
-            </p>
+        <pre>
+          {JSON.stringify(
+            {
+              run,
+              results: run.resultIds.map((id) => workspaceDocument.results[id]),
+              visualizations,
+            },
+            null,
+            2,
           )}
-          <pre>
-            {JSON.stringify(
-              {
-                run,
-                results: run.resultIds.map((id) => workspaceDocument.results[id]),
-                visualizations,
-              },
-              null,
-              2,
-            )}
-          </pre>
-        </details>
-      </div>
-    </details>
+        </pre>
+      </details>
+    </div>
   );
 }

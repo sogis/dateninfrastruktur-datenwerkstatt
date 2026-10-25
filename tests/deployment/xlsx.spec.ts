@@ -1,3 +1,4 @@
+import {keepSqlResult, expectSqlKeepDisabled} from '../ui/sqlActions';
 import {readFile} from 'node:fs/promises';
 import {strFromU8, unzipSync} from 'fflate';
 import type {Download, Page, TestInfo} from '@playwright/test';
@@ -153,8 +154,8 @@ test('XLSX static SQL: full frozen result, kept reload, lazy local worker and CS
   expect(original.formulas).toBe(0);
   expect(original.rows[0]).not.toContain('__dw_ordinal');
   await audit.verify(info);
-  await page.getByRole('button', {name: 'Aufbewahren', exact: true}).click();
-  await expect(page.getByRole('button', {name: 'Aufbewahren', exact: true})).toBeDisabled();
+  await keepSqlResult(page);
+  await expectSqlKeepDisabled(page);
   await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
     'data-save-state',
     'saved',

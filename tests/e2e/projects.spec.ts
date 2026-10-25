@@ -1,4 +1,9 @@
-import {showKeptSqlResult} from '../ui/sqlActions';
+import {
+  keepSqlResult,
+  expectSqlKeepDisabled,
+  openSqlRunDetails,
+  showKeptSqlResult,
+} from '../ui/sqlActions';
 import {test, expect} from '../persistentBrowser';
 import type {Page, Route} from '@playwright/test';
 import type {WorkspaceDocument} from '../../src/domain/model';
@@ -539,9 +544,9 @@ test('Projects: two SQL run snapshots stay readable and kept results survive edi
     await code(page, text);
     await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
     await expect(page.locator('.result-grid tbody tr')).toHaveCount(100);
-    await page.getByRole('button', {name: 'Aufbewahren', exact: true}).click();
+    await keepSqlResult(page);
     await expect(page.locator('.result-footer')).toContainText('150 Zeilen');
-    await expect(page.getByRole('button', {name: 'Aufbewahren', exact: true})).toBeDisabled();
+    await expectSqlKeepDisabled(page);
   }
   await code(page, 'SELECT 999 AS noch_nicht_ausgefuehrt');
   const before = await documentOf(page);
@@ -550,8 +555,7 @@ test('Projects: two SQL run snapshots stay readable and kept results survive edi
   expect(runs.map((run) => run.snapshot.code)).toEqual([firstCode, secondCode]);
   await showKeptSqlResult(page, 1);
   await expect(page.locator('.result-grid tbody tr').first().locator('td')).toHaveText(['0', '21']);
-  await page.getByText('Laufdetails und eingefrorener Code', {exact: true}).click();
-  const details = page.locator('.run-details');
+  const details = await openSqlRunDetails(page);
   await expect(details).toContainText(firstCode);
   await expect(details).toContainText('SQL-Projektsnapshot');
   await expect(details).toContainText('Möglicherweise verwendet');
@@ -562,6 +566,7 @@ test('Projects: two SQL run snapshots stay readable and kept results survive edi
     path: `${evidence}/${info.project.name}-project-sql-history.png`,
     fullPage: true,
   });
+  await details.getByRole('button', {name: 'Schliessen', exact: true}).click();
   await page.getByRole('button', {name: 'Nächste Seite', exact: true}).click();
   await expect(page.locator('.result-grid tbody tr').first().locator('td')).toHaveText([
     '100',
@@ -570,7 +575,9 @@ test('Projects: two SQL run snapshots stay readable and kept results survive edi
   await page.getByRole('button', {name: 'Vorherige Seite', exact: true}).click();
   await showKeptSqlResult(page, 0);
   await expect(page.locator('.result-grid tbody tr').first().locator('td')).toHaveText(['0', '32']);
+  await openSqlRunDetails(page);
   await expect(details).toContainText(secondCode);
+  await details.getByRole('button', {name: 'Schliessen', exact: true}).click();
   expect((await documentOf(page)).document).toEqual(before.document);
   await page.reload();
   await expect(page.locator('.view-lines')).toContainText(/SELECT\s+999/);
@@ -599,7 +606,7 @@ test('Projects: two SQL run snapshots stay readable and kept results survive edi
   )!;
   expect(firstImportedRun.snapshot.code).toBe(firstCode);
   await showKeptSqlResult(page, 1);
-  await page.getByText('Laufdetails und eingefrorener Code', {exact: true}).click();
+  await openSqlRunDetails(page);
   await expect(page.locator('.run-inputs')).toContainText('messung');
   await expect(page.locator('.run-inputs')).toContainText(
     'Nicht verfügbar, da das Projektarchiv keine Datenbytes enthält.',
@@ -607,6 +614,10 @@ test('Projects: two SQL run snapshots stay readable and kept results survive edi
   await expect(page.locator('.run-results')).toContainText(
     'Nicht verfügbar: Projektdatei enthält keine Ergebnisdaten',
   );
+  await page
+    .getByRole('dialog', {name: 'Laufdetails', exact: true})
+    .getByRole('button', {name: 'Schliessen', exact: true})
+    .click();
   await expect(page.locator('.result-grid tbody tr')).toHaveCount(0);
   await expect(page.getByRole('button', {name: 'CSV exportieren', exact: true})).toBeDisabled();
   expect((await documentOf(page)).document).toEqual(importedBefore.document);

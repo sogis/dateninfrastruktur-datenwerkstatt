@@ -1,3 +1,4 @@
+import {expectSqlKeepDisabled} from '../ui/sqlActions';
 import {test, expect} from '../persistentBrowser';
 import type {Page} from '@playwright/test';
 async function code(page: Page, value: string) {
@@ -29,14 +30,17 @@ test('P5 AT-040 AT-042 AT-046 AT-048: complete UI transfer, lazy worker survives
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.result-grid tbody tr')).toHaveCount(100);
   expect(workers.filter((w) => w.url.includes('webr'))).toHaveLength(0);
-  await page.getByRole('button', {name: 'In R', exact: true}).click();
+  await page.getByRole('button', {name: 'Nach R übernehmen', exact: true}).click();
   await page.getByRole('button', {name: 'Transfer prüfen', exact: true}).click();
   await expect(
     page
       .locator('.dw-dialog .dw-meta-list')
       .filter({hasText: /Zeilen\s*350\s*Geschätzte Datengrösse\s*[\d’'\s]+ Bytes/}),
   ).toBeVisible({timeout: 60000});
-  await page.getByRole('button', {name: 'In R übernehmen', exact: true}).click();
+  await page
+    .getByRole('dialog', {name: 'Resultat nach R übernehmen', exact: true})
+    .getByRole('button', {name: 'Nach R übernehmen', exact: true})
+    .click();
   await expect(page.locator('.r-workbench')).toBeVisible();
   const rUrl = page.url();
   await expect(page.getByRole('button', {name: /daten 350 Zeilen, 1 Spalte/})).toBeEnabled();
@@ -64,7 +68,7 @@ test('P5 AT-040 AT-042 AT-046 AT-048: complete UI transfer, lazy worker survives
   await page.getByRole('link', {name: 'Übersicht', exact: true}).click();
   await page.locator(`a[href="${new URL(sqlUrl).pathname}"]`).click();
   await expect(page.locator('.result-footer')).toContainText('350 Zeilen');
-  await expect(page.getByRole('button', {name: 'Aufbewahren', exact: true})).toBeDisabled();
+  await expectSqlKeepDisabled(page);
   await code(page, 'SELECT n FROM vergleich');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.result-grid tbody td')).toHaveText(['350']);

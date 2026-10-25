@@ -25,25 +25,32 @@ export function Modal({
   children,
   className = 'native-dialog',
   showClose = true,
+  focusTitle = false,
   footer,
 }: {
   title: string;
   footer?: ReactNode;
   className?: string;
   showClose?: boolean;
+  focusTitle?: boolean;
   onClose(): void;
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     const dialog = ref.current!;
     const previous = activator?.isConnected ? activator : document.activeElement;
     dialog.showModal();
+    if (focusTitle) {
+      titleRef.current?.focus({preventScroll: true});
+      dialog.scrollTop = 0;
+    }
     return () => {
       dialog.close();
       if (previous instanceof HTMLElement && previous.isConnected) previous.focus();
     };
-  }, []);
+  }, [focusTitle]);
   return (
     <dialog
       ref={ref}
@@ -54,7 +61,7 @@ export function Modal({
         const dialog = event.currentTarget;
         const focusable = [
           ...dialog.querySelectorAll<HTMLElement>(
-            'button,input,select,textarea,a[href],[tabindex]',
+            'button,input,select,textarea,a[href],summary,[tabindex]',
           ),
         ].filter(
           (el) => el.tabIndex >= 0 && !el.matches(':disabled') && el.getClientRects().length > 0,
@@ -78,7 +85,9 @@ export function Modal({
       }}
     >
       <div className="dw-dialog-header">
-        <h2>{title}</h2>
+        <h2 ref={titleRef} tabIndex={focusTitle ? -1 : undefined}>
+          {title}
+        </h2>
       </div>
       <div className="dw-dialog-body">{children}</div>
       {(footer || showClose) && (

@@ -297,8 +297,8 @@ test('Action feedback: transfer errors dismiss without creating a plan and retry
       throw Error('Gezielter Fehler bei der Transferprüfung');
     };
   });
-  await page.getByRole('button', {name: 'In R', exact: true}).click();
-  const dialog = page.getByRole('dialog', {name: 'Resultat in R übernehmen', exact: true});
+  await page.getByRole('button', {name: 'Nach R übernehmen', exact: true}).click();
+  const dialog = page.getByRole('dialog', {name: 'Resultat nach R übernehmen', exact: true});
   const check = dialog.getByRole('button', {name: 'Transfer prüfen', exact: true});
   await check.click();
   const notice = dialog.getByRole('alert');
@@ -307,7 +307,7 @@ test('Action feedback: transfer errors dismiss without creating a plan and retry
   await expect(notice).toHaveCount(0);
   await expect(check).toBeFocused();
   await expect(dialog.getByLabel('R-Variablenname', {exact: true})).toHaveValue('daten');
-  await expect(dialog.getByRole('button', {name: 'In R übernehmen', exact: true})).toHaveCount(0);
+  await expect(dialog.getByRole('button', {name: 'Nach R übernehmen', exact: true})).toHaveCount(0);
   await check.click();
   await expect(notice).toContainText('Gezielter Fehler bei der Transferprüfung');
 });

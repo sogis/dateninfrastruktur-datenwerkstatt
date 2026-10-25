@@ -1,4 +1,4 @@
-import {openAnalysisRename, openSqlParameters} from '../ui/sqlActions';
+import {openAnalysisRename, openSqlParameters, openSqlDatasetDialog} from '../ui/sqlActions';
 import {test, expect} from '../persistentBrowser';
 import type {Page} from '@playwright/test';
 import {setupPortal, portalConfig} from '../portal/setup';
@@ -303,13 +303,13 @@ test('Required fields: SQL dataset and R transfer validate before keeping result
   await runCode(page, 'SELECT 1::INTEGER AS wert');
   await expect(page.locator('.result-grid tbody tr')).toHaveCount(1);
   const before = await snapshot(page, true);
-  const result = page.locator('.result-data');
-  await result.locator('summary').click();
+  const result = await openSqlDatasetDialog(page);
   await result.getByLabel('Datensatzname', {exact: true}).fill('');
   await result.getByRole('button', {name: 'Als Datensatz speichern', exact: true}).click();
   await expect(result.getByLabel('Datensatzname', {exact: true})).toBeFocused();
   expect(await snapshot(page)).toEqual(before);
-  await page.getByRole('button', {name: 'In R', exact: true}).click();
+  await result.getByRole('button', {name: 'Abbrechen', exact: true}).click();
+  await page.getByRole('button', {name: 'Nach R übernehmen', exact: true}).click();
   const dialog = page.getByRole('dialog');
   const variable = dialog.getByLabel('R-Variablenname', {exact: true});
   await variable.fill('params');
@@ -319,10 +319,10 @@ test('Required fields: SQL dataset and R transfer validate before keeping result
   expect(await snapshot(page)).toEqual(before);
   await variable.fill('daten');
   await dialog.getByRole('button', {name: 'Transfer prüfen', exact: true}).click();
-  await expect(dialog.getByRole('button', {name: 'In R übernehmen', exact: true})).toBeVisible({
+  await expect(dialog.getByRole('button', {name: 'Nach R übernehmen', exact: true})).toBeVisible({
     timeout: 60000,
   });
-  await dialog.getByRole('button', {name: 'In R übernehmen', exact: true}).click();
+  await dialog.getByRole('button', {name: 'Nach R übernehmen', exact: true}).click();
   await expect(page.locator('.r-workbench')).toBeVisible();
   await expect(page.locator('.run-status')).toContainText('Bereit', {timeout: 60000});
   await runCode(page, 'vergleich <- data.frame(wert=1L)');
@@ -356,7 +356,7 @@ test('Required fields: SQL dataset and R transfer validate before keeping result
   await expect(technicalName).toHaveValue('neuer_entwurf');
   await dialog.getByRole('button', {name: 'Schliessen', exact: true}).click();
   await page.getByRole('button', {name: 'SQL', exact: true}).click();
-  await page.getByRole('button', {name: 'In R', exact: true}).click();
+  await page.getByRole('button', {name: 'Nach R übernehmen', exact: true}).click();
   await dialog.getByRole('button', {name: 'Transfer prüfen', exact: true}).click();
   const approval = dialog.getByRole('checkbox', {
     name: /Vorhandene Variable daten ausdrücklich ersetzen/,
@@ -364,14 +364,14 @@ test('Required fields: SQL dataset and R transfer validate before keeping result
   await expect(approval).toBeVisible({timeout: 60000});
   await expect(approval).toHaveAttribute('required');
   const approvalBefore = await snapshot(page, true);
-  await dialog.getByRole('button', {name: 'In R übernehmen', exact: true}).click();
+  await dialog.getByRole('button', {name: 'Nach R übernehmen', exact: true}).click();
   await expect(approval).toBeFocused();
   await expect(approval).toHaveAccessibleDescription(/Bitte bestätige/);
   expect(await snapshot(page)).toEqual(approvalBefore);
   await capture(page, 'transfer-approval-error');
   await approval.check();
   await expect(approval).not.toHaveAttribute('aria-invalid', 'true');
-  await dialog.getByRole('button', {name: 'In R übernehmen', exact: true}).click();
+  await dialog.getByRole('button', {name: 'Nach R übernehmen', exact: true}).click();
   await expect(dialog).toHaveCount(0);
 });
 

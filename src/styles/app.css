@@ -459,7 +459,7 @@ main {
 }
 .sql-panel-host {
   flex: 1;
-  min-height: 410px;
+  min-height: 0;
   position: relative;
 }
 .sql-panels {
@@ -679,7 +679,8 @@ main {
 }
 .result-section {
   height: 100%;
-  overflow: auto;
+  min-height: 0;
+  overflow: hidden;
   font-size: 0.875rem;
   display: flex;
   flex-direction: column;
@@ -696,7 +697,20 @@ main {
   font-size: 0.75rem;
 }
 .result-actions {
+  min-height: 0;
+  max-height: 40%;
+  flex-shrink: 1;
+  overflow: auto;
   border-bottom: 1px solid var(--dw-border-subtle);
+}
+.result-actions > .dw-menu:last-child {
+  margin-inline-start: auto;
+}
+.result-section > .dw-notice,
+.result-section > .result-error {
+  flex: 0 0 auto;
+  max-height: 40%;
+  overflow: auto;
 }
 .result-footer {
   gap: 6px 16px;
@@ -727,7 +741,7 @@ main {
 }
 .result-grid {
   overflow: auto;
-  min-height: 100px;
+  min-height: 0;
   flex: 1;
 }
 .result-grid table {
@@ -802,20 +816,17 @@ main {
   padding: 1px 4px;
   border-radius: 2px;
 }
-.run-details,
-.result-data {
+.run-details {
   padding: 8px 12px;
 }
-.run-details pre {
+.run-details-body pre {
   max-height: 240px;
   overflow: auto;
 }
-.result-data {
-  display: grid;
-  gap: 16px;
-}
-.result-data .dw-field {
-  max-width: 360px;
+.chart-area {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
 }
 .result-error,
 .result-empty {
@@ -1287,6 +1298,17 @@ main > [aria-label='Browser-Speicher'] {
     height: 450px;
     flex: none;
   }
+  #root:has(.sql-panel-host) {
+    height: 100dvh;
+    min-height: 0;
+  }
+  .analysis-area:has(.sql-panel-host) {
+    min-height: 0;
+  }
+  .sql-panel-host {
+    height: auto;
+    flex: 1;
+  }
 }
 .run-status .parameters {
   padding: 0;
@@ -1313,6 +1335,11 @@ main > [aria-label='Browser-Speicher'] {
   margin-bottom: 0;
 }
 @media (max-width: 750px) {
+  .analysis-area:has(.sql-panel-host) > .analysis-toolbar {
+    min-height: 0;
+    max-height: 25dvh;
+    overflow: auto;
+  }
   .analysis-toolbar .dw-actions {
     flex-wrap: wrap;
   }

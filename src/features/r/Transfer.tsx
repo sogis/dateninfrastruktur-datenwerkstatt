@@ -126,7 +126,7 @@ export function TransferToR({
   };
   return (
     <Modal
-      title="Resultat in R übernehmen"
+      title="Resultat nach R übernehmen"
       onClose={() => {
         if (!busy) onClose();
       }}
@@ -176,7 +176,7 @@ export function TransferToR({
                 });
               }}
             >
-              In R übernehmen
+              Nach R übernehmen
             </Button>
           )}
         </>

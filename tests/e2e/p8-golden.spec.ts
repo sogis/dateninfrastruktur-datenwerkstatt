@@ -1,5 +1,4 @@
-import {renameAnalysis} from '../ui/sqlActions';
-import {openSqlParameters} from '../ui/sqlActions';
+import {renameAnalysis, openSqlParameters} from '../ui/sqlActions';
 import {test, expect, type BrowserContext, type Page} from '@playwright/test';
 import {mkdir, mkdtemp, readFile, rm, writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
@@ -179,7 +178,7 @@ test('P8 AT-072: portal population + local CSV, unchanged Golden SQL/R, process 
     expect(await tableRows(page, '.result-grid tbody tr', [2, 3, 4, 5])).toEqual(
       expectedRows(files['golden/sql-2024.json']!),
     );
-    await page.getByRole('button', {name: 'In R', exact: true}).click();
+    await page.getByRole('button', {name: 'Nach R übernehmen', exact: true}).click();
     await page.getByRole('button', {name: 'Transfer prüfen', exact: true}).click();
     await expect(
       page
@@ -188,7 +187,10 @@ test('P8 AT-072: portal population + local CSV, unchanged Golden SQL/R, process 
     ).toBeVisible({timeout: 60000});
     for (const checkbox of await page.getByRole('dialog').getByRole('checkbox').all())
       await checkbox.check();
-    await page.getByRole('button', {name: 'In R übernehmen', exact: true}).click();
+    await page
+      .getByRole('dialog', {name: 'Resultat nach R übernehmen', exact: true})
+      .getByRole('button', {name: 'Nach R übernehmen', exact: true})
+      .click();
     await expect(page.locator('.r-workbench')).toBeVisible();
     await editor(page, files['02-vergleich.R']!, 'Golden R');
     await page.getByRole('button', {name: 'Ausführen', exact: true}).click();

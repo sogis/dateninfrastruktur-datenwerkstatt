@@ -1,4 +1,4 @@
-import {renameAnalysis} from '../ui/sqlActions';
+import {openSqlRunDetails, renameAnalysis} from '../ui/sqlActions';
 import {test, expect} from '../persistentBrowser';
 import type {Page} from '@playwright/test';
 
@@ -114,12 +114,16 @@ test('UI texts: real SQL status hierarchy, empty results and original text survi
   await run("SELECT '001 · Original' AS wert");
   await expect(page.locator('.result-grid tbody td')).toHaveText('001 · Original');
   await expect(page.locator('.analysis-toolbar')).not.toContainText(/Revision \d+/);
-  await expect(page.locator('.result-footer')).toContainText(/1 Zeile · [\d.]+ ms/);
+  await expect(page.locator('.result-summary > span').first()).toHaveText('1 Zeile');
+  await expect(page.locator('.result-summary > span').nth(1)).toHaveText(/[\d.]+ ms/);
   const before = await documentText(page);
-  await page.getByText('Laufdetails und eingefrorener Code', {exact: true}).click();
-  await expect(page.locator('.run-details')).toContainText("SELECT '001 · Original' AS wert");
+  await openSqlRunDetails(page);
+  await expect(page.locator('.run-details-body')).toContainText("SELECT '001 · Original' AS wert");
   expect(await documentText(page)).toBe(before);
-  await page.getByText('Laufdetails und eingefrorener Code', {exact: true}).click();
+  await page
+    .getByRole('dialog', {name: 'Laufdetails', exact: true})
+    .getByRole('button', {name: 'Schliessen', exact: true})
+    .click();
   for (const size of [
     {width: 1440, height: 900},
     {width: 1280, height: 800},

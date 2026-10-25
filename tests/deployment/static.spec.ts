@@ -1,3 +1,4 @@
+import {keepSqlResult, expectSqlKeepDisabled} from '../ui/sqlActions';
 import {test, expect} from './fixture';
 import type {Page} from '@playwright/test';
 async function code(page: Page, value: string) {
@@ -60,9 +61,9 @@ test('P7 AT-066–068: arbitrary UID static container, deep routes, MIME/cache/C
   await code(page, 'SELECT 42 AS wert');
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.result-grid tbody td')).toHaveText(['42']);
-  await page.getByRole('button', {name: 'Aufbewahren', exact: true}).click();
+  await keepSqlResult(page);
   await expect(page.locator('.result-footer')).toContainText('1 Zeile');
-  await expect(page.getByRole('button', {name: 'Aufbewahren', exact: true})).toBeDisabled();
+  await expectSqlKeepDisabled(page);
   await expect(page.locator('.workspace-content[data-save-state]')).toHaveAttribute(
     'data-save-state',
     'saved',

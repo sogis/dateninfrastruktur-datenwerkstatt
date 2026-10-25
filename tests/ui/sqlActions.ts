@@ -1,5 +1,29 @@
 import {expect, type Page} from '@playwright/test';
 
+export async function openSqlResultActions(page: Page) {
+  await page.getByRole('button', {name: 'Weitere Ergebnisaktionen', exact: true}).click();
+  return page.getByRole('menu', {name: 'Weitere Ergebnisaktionen', exact: true});
+}
+export async function expectSqlKeepDisabled(page: Page) {
+  const menu = await openSqlResultActions(page);
+  await expect(menu.getByRole('menuitem', {name: 'Aufbewahren', exact: true})).toBeDisabled();
+  await page.keyboard.press('Escape');
+}
+export async function keepSqlResult(page: Page) {
+  const menu = await openSqlResultActions(page);
+  await menu.getByRole('menuitem', {name: 'Aufbewahren', exact: true}).click();
+}
+export async function openSqlRunDetails(page: Page) {
+  const menu = await openSqlResultActions(page);
+  await menu.getByRole('menuitem', {name: 'Laufdetails …', exact: true}).click();
+  return page.getByRole('dialog', {name: 'Laufdetails', exact: true});
+}
+export async function openSqlDatasetDialog(page: Page) {
+  const menu = await openSqlResultActions(page);
+  await menu.getByRole('menuitem', {name: 'Als Datensatz übernehmen …', exact: true}).click();
+  return page.getByRole('dialog', {name: 'Als Datensatz übernehmen', exact: true});
+}
+
 export async function openSqlParameters(page: Page) {
   await page.getByRole('button', {name: 'Weitere Aktionen', exact: true}).click();
   await page.getByRole('menuitem', {name: /^Parameter \(/}).click();
@@ -30,8 +54,7 @@ export async function showKeptSqlResult(page: Page, newestFirstIndex: number) {
   await page.getByRole('menuitem', {name: 'Aufbewahrte Ergebnisse', exact: true}).click();
   await page
     .getByRole('dialog', {name: 'Aufbewahrte Ergebnisse', exact: true})
-    .locator('.sql-version-list li')
-    .nth(newestFirstIndex)
     .getByRole('button', {name: 'Ergebnis anzeigen', exact: true})
+    .nth(newestFirstIndex)
     .click();
 }
