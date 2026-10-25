@@ -1327,10 +1327,10 @@ main > [aria-label='Browser-Speicher'] {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--dw-warning-fg);
+  background: var(--dw-save-indicator-warning);
 }
 .workspace-save-indicator[data-tone='success'] .workspace-save-dot {
-  background: var(--dw-success-fg);
+  background: var(--dw-save-indicator-success);
 }
 @media (pointer: coarse) {
   .sidebar-footer {

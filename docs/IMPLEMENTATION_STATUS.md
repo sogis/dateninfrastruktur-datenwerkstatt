@@ -2787,3 +2787,42 @@ der geometrische Abstand ist in beiden Ansichten 6 px.
 prüft die reine CSS-Korrektur und unmittelbar betroffenes Tabellenverhalten.
 Keine bekannten Einschränkungen oder Blocker; Abschnitt abgeschlossen, keine
 weitere Phase in diesem Auftrag. Kein Commit/Push.
+
+## Hellere Speicherpunktfarben — 25. Oktober 2026
+
+**REQ-067, Status: bestanden.** Der 10-px-Speicherpunkt verwendet eigene Tokens
+`--dw-save-indicator-success: #28A745` und
+`--dw-save-indicator-warning: #E07800`. Textfarben, Geometrie, Tooltip und
+Speicherverhalten bleiben unverändert. Dateien: `src/styles/tokens.css`,
+`src/styles/app.css`, `docs/DESIGN_SYSTEM.md`. Bestehende lokale Änderungen
+bleiben erhalten; keine neuen Dependencies, Schnittstellen oder Tests.
+
+**Verifizierter Stand:** `931959711567d0fb4e3460054f1434d7bf5149e1` plus
+vorhandene lokale Änderungen und diese Farbanpassung. Node 22.23.1,
+npm 11.18.0, Chromium 153.0.8010.12.
+
+**Tatsächliche Checks:**
+
+- `DW_REUSE_DEV_SERVER=1 npx playwright test --project=chromium tests/e2e/projects.spec.ts -g 'Projects: save indicator stays bottom left without moving the SQL editor while saving' --output=test-results/save-indicator-colors --reporter=list`:
+  **1/1 bestanden, Exit 0**. Prüft Statuswechsel, feste Position und Bedienfläche,
+  unveränderte Editorgeometrie, Tastatur, Tooltip und Statusdialog.
+- `node --experimental-strip-types --input-type=module` über stdin:
+  **Exit 0**, isolierte persistente Chromium-Profile, gespeichertes Projekt und
+  expliziter temporärer Modus. Berechnete Browserfarben entsprechen den Tokens;
+  beide Punkte exakt 10×10 px bei identischer Position. Kontrast auf Weiss:
+  Grün **3.13:1**, Orange **3.06:1**. Dunkle Status-Texttokens unverändert.
+  Beide Detail-Screenshots bei tatsächlicher Grösse visuell geprüft;
+  Profile und test-eigene OPFS-Verzeichnisse danach entfernt.
+- `npx prettier --check src/styles/tokens.css src/styles/app.css`: **Exit 0**.
+- `git diff --check`: **Exit 0**.
+
+Nachweise: [Grün](verification/save-indicator-colors/success-detail.png),
+[Orange](verification/save-indicator-colors/warning-detail.png),
+[Browsermessungen](verification/save-indicator-colors/measurements.json).
+Vollansichten bei 1440×900 liegen im selben Nachweisverzeichnis.
+
+**Nicht ausgeführt:** Typecheck, Lint, Build, Unit-Tests, vollständige Suiten,
+`npm run verify`, weitere Browser und Deploymenttests. Die gezielte Auswahl
+deckt die begrenzte CSS-Anpassung und unmittelbar betroffenes Statusverhalten ab.
+Keine bekannten Blocker; Abschnitt abgeschlossen, keine weitere Phase in diesem
+Auftrag. Kein Commit/Push.

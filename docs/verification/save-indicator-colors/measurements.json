@@ -1,0 +1,28 @@
+[
+  {
+    "tone": "success",
+    "width": 10,
+    "height": 10,
+    "x": 21,
+    "y": 867,
+    "color": "rgb(40, 167, 69)",
+    "background": "rgb(255, 255, 255)",
+    "successText": "#276749",
+    "warningText": "#8a5700",
+    "contrastOnWhite": 3.1326245466675084,
+    "browser": "153.0.8010.12"
+  },
+  {
+    "tone": "warning",
+    "width": 10,
+    "height": 10,
+    "x": 21,
+    "y": 867,
+    "color": "rgb(224, 120, 0)",
+    "background": "rgb(255, 255, 255)",
+    "successText": "#276749",
+    "warningText": "#8a5700",
+    "contrastOnWhite": 3.0629894924146903,
+    "browser": "153.0.8010.12"
+  }
+]

@@ -1215,6 +1215,8 @@ Theme-Overrides gehören ebenfalls an eine zentrale Stelle.
   --dw-success-bg: #ebf5ef;
   --dw-warning-fg: #8a5700;
   --dw-warning-bg: #fff4db;
+  --dw-save-indicator-success: #28a745;
+  --dw-save-indicator-warning: #e07800;
   --dw-error-fg: #b42318;
   --dw-error-bg: #fef3f2;
   --dw-danger-bg: #b42318;
@@ -1558,6 +1560,12 @@ Ladens sind sie deaktiviert. Keine Seitennummern, direkte Seiteneingabe oder
 Seitengrössenauswahl.
 
 Ein kleiner Speicherpunkt mit konstanter Bedienfläche steht unten links im geöffneten Projekt. Grün bedeutet lokal gespeichert; orange ungespeichert, Speichern läuft, Fehler oder nur Sitzungsmodus. Keine Animation und keine wechselnde Textzeile im Inhaltsfluss. Tooltip, zugänglicher Zustandsname und Dialog vermitteln dieselbe Information ohne Farberkennung. Speicherfehleraktionen stehen im Statusdialog.
+
+Der 10-px-Speicherpunkt verwendet eigene, hellere Farbtokens:
+`--dw-save-indicator-success: #28A745` und
+`--dw-save-indicator-warning: #E07800`. Der Kontrast gegen den weissen
+Hintergrund beträgt 3.13:1 beziehungsweise 3.06:1. Die bestehenden dunkleren
+Status-Textfarben bleiben unverändert; die Punktfarben sind nicht für Text bestimmt.
 
 
 ### SQL-Dokumente (25. Oktober 2026)
