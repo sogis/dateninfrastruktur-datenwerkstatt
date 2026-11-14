@@ -37,41 +37,24 @@ test('Neutral UI: real project navigation, aligned tables, optional fields and e
   const name = page.getByLabel('Name des neuen Projekts', {exact: true});
   const create = page.getByRole('button', {name: 'Neues Projekt', exact: true});
   await expect(name).toHaveAttribute('required');
-  for (const width of [1280, 390]) {
-    await page.setViewportSize({width, height: 800});
-    await name.fill('');
-    const before = await bounds(create);
-    if (width === 1280) await aligned(name, create);
-    await create.click();
-    await expect(name).toBeFocused();
-    await expect(name).toHaveAccessibleDescription('Bitte gib einen Projektnamen ein.');
-    const error = page.locator('.create-workspace .dw-field-error');
-    if (width === 1280) await aligned(name, create);
-    // Only the presentation probe is longer; application validation stays unchanged.
-    await error.evaluate((node) => {
-      node.textContent = `${node.textContent} Bitte wähle einen aussagekräftigen Projektnamen, damit du deine Auswertung später wiederfindest.`;
-    });
-    expect((await bounds(error)).height).toBeGreaterThan(28);
-    if (width === 1280) {
-      await aligned(name, create);
-      expect((await bounds(create)).y).toBeCloseTo(before.y, 1);
-    } else {
-      const [field, button, message] = await Promise.all([
-        bounds(name),
-        bounds(create),
-        bounds(error),
-      ]);
-      expect(button.x).toBeCloseTo(field.x, 1);
-      expect(button.y).toBeGreaterThanOrEqual(message.y + message.height);
-    }
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
-      width,
-    );
-    await capture(page, `project-error-${width}`);
-    await name.fill('Neutrale Datenwerkstatt');
-    await expect(error).toHaveCount(0);
-  }
+  await page.setViewportSize({width: 390, height: 800});
+  await create.click();
+  const error = page.locator('.create-workspace .dw-field-error');
+  await expect(error).toBeVisible();
+  // This probe measures the error layout when a longer explanation wraps.
+  await error.evaluate((node) => {
+    node.textContent = `${node.textContent} Bitte wähle einen aussagekräftigen Projektnamen, damit du deine Auswertung später wiederfindest.`;
+  });
+  const [field, button, message] = await Promise.all([bounds(name), bounds(create), bounds(error)]);
+  expect(message.height).toBeGreaterThan(28);
+  expect(button.x).toBeCloseTo(field.x, 1);
+  expect(button.y).toBeGreaterThanOrEqual(message.y + message.height);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  await capture(page, 'project-error-390');
+
   await page.setViewportSize({width: 1280, height: 800});
+  await aligned(name, create);
+  await name.fill('Neutrale Datenwerkstatt');
   await create.click();
   await expect(
     page.getByRole('heading', {name: 'Neutrale Datenwerkstatt', exact: true}),

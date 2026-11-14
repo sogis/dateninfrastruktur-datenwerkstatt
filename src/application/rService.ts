@@ -23,7 +23,8 @@ import type {
   ArtifactStore,
   TableTransferService,
 } from './ports';
-import type {ManagedREngine, RLimits, RTableExportService, TableExportFormat} from './rPorts';
+import type {ManagedREngine, RLimits, RTableExportService} from './rPorts';
+import type {TableExportFormat} from './tableExport';
 import type {AnalysisService} from './analysisService';
 import type {ResultSqlEngine} from './sqlPorts';
 import type {WorkspaceScheduler} from './scheduler';

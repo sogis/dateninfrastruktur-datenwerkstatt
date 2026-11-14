@@ -49,3 +49,28 @@ aus den Arrow-Vektoren. REQ-038, REQ-042–045 und AT-025/027–032. Der
 gezielte Chromium-Lauf für exakte Darstellung, Limits und echte
 Worker-Beendigung bestand 2/2. Die Messung für breite Seiten und die
 unabhängige Abnahme von R1 stehen als eigener Phasenabschluss aus.
+
+R1 wurde unabhängig für `3d3855855f4a38a979e7069d7eceb423f703da23`
+abgenommen. Bei 100 × 200 Zellen sank der gemessene Median vom
+Paging-Klick bis zur sichtbaren Seite von 2 685 ms auf 287 ms.
+Die bisherige Byteprüfung bleibt nach einer isolierten
+`send()`-Probe mit unbestätigter früher Beendigung im Einsatz.
+
+## DW-R1, R2
+
+Für `d94ba8f150dae2c2b8c029baca1bb4a98500434f` unabhängig abgenommen.
+Die native Ergebnistabelle bleibt nach vier Prototypen im Einsatz.
+Sticky-Kopf und Zeilennummern decken WebKit-Lücken ab. REQ-043/044/066/067,
+AT-027/029/054/055. Gezielte Matrix je 9/9 in zwei Läufen, Chromium,
+Firefox und WebKit, Exit 0. Typisierte Sortierung, breite Tabelle und
+zuletzt angeforderte Seite sind durch echte Browser-/Engine-Tests belegt.
+
+## DW-R1, R3 in Arbeit
+
+Die Architekturprüfung entfernte die aufruflosen Arrow-IPC-Adapter,
+einen zweiten ungenutzten Import-Factory-Weg und historische
+Unit-Tests gegen abgelöste Implementierungen. Die produktiven
+Codec-, Worker-, Persistenz- und Importtests bleiben im Prüfumfang.
+Der Paketprüfer verwendet Format 3 und das aktuelle Font-Inventar.
+`python3 tools/verify-package.py` Exit 0. Die vollständige Abnahme
+und das unabhängige Review folgen.

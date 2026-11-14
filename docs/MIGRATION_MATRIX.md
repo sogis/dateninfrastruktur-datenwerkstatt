@@ -6,12 +6,12 @@ Alle Quellpfade relativ zu `src/main/frontend/explore/` des in [BASELINE.md](BAS
 |---|---|---|
 | package.json / package-lock.json | Baselineversionen beibehalten, Paketbestand reduziert; ein npm-Projekt | Lockfile, Installation und Build; zusätzliche Dependencies in DEPENDENCIES.md |
 | src/duckdb/createExploreRoomStore.ts | Selektive BaseRoom-/DuckDB-Slices in src/infrastructure/sqlrooms/room.ts | Session-eigener gemeinsamer Connector für Import, SQL, Resultate und R-Tabellentransfer; P3/P5 geprüft |
-| src/duckdb/executeDuckDbQuery.ts | Unveränderte Kopie und Tests in tests/baseline/duckdb | cancelSent + reale Termination/Reset-Epoch im P3-Scheduler; ADR-001/003 |
-| src/app/ExploreContext.ts | Unveränderte Referenz unter tests/baseline/app | Strikter v4-Adapter unter infrastructure/catalog mit realen HTTP-/DuckDB-Tests; P4 geprüft |
+| src/duckdb/executeDuckDbQuery.ts | Ursprüngliche Kopie und Tests im Git-Stand 87b25af unter tests/baseline/duckdb | cancelSent + reale Termination/Reset-Epoch im P3-Scheduler; ADR-001/003 |
+| src/app/ExploreContext.ts | Historische Referenz im Git-Stand 87b25af unter tests/baseline/app | Strikter v4-Adapter unter infrastructure/catalog mit realen HTTP-/DuckDB-Tests; P4 geprüft |
 | src/app/ExploreContextLoader.ts | Portal-Loader nicht als globale Runtimekonfiguration übernehmen | Eigene Provider-/Originprüfung, Current-Auflösung und Deep-Link; P4 geprüft |
 | src/webr/WebRRuntime.ts | Installierte APIs geprüft, lokaler Browser-Spike | Session-eigene produktive Runtime/Scopes, native Typmasken und echter PostMessage-Stop; P5 geprüft |
 | src/webr/WebRBridge.ts | Kein unveränderter Transfer des bisherigen Row-Objektwegs | Spaltenorientierter Codec mit Missing-Masken, exakten Textrepräsentationen und atomarer Übernahme; P5 geprüft |
-| src/webr/DuckDbToWebRTypeMapper.ts | Unverändert samt Tests in tests/baseline/webr | Unveränderte Baselineregression; neuer Codec zusätzlich mit NaN/Inf, NULL, Integer-/Decimal-/Zeitgrenzen geprüft |
+| src/webr/DuckDbToWebRTypeMapper.ts | Historische Kopie und Tests im Git-Stand 87b25af unter tests/baseline/webr | Produktiver Codec und Real-Engine-Tests mit NaN/Inf, NULL, Integer-/Decimal-/Zeitgrenzen geprüft |
 | src/webr/RPanel.tsx | Panel-Lifecycle nicht übernehmen | Eigene R-Workbench; Sitzungsobjekte bleiben über Routen, Reset/Close beendet Runtime; P5 geprüft |
 | src/results/arrowResult.ts / sqlResultSnapshot.ts | Arrow-/Resultatverwendung gelesen | Eigenes P3-Ergebnisregister, private Relation/Ordinale, numerisches Paging und Parquet-Wiederherstellung geprüft |
 | ResultPanel / ResultExport / Diagramme | Produkt-UI nach eigenem Flächenvertrag bauen | P3: vollständiger CSV-/Parquetexport, Bar/Line/Scatter, gespeicherte Konfiguration/PNG und Grenzen geprüft; XLSX-Erweiterung gemäss ADR-010 verwendet bestehende Tabellenhandles statt SQL erneut auszuführen |
