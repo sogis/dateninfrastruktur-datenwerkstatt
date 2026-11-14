@@ -203,7 +203,7 @@ for (const mode of ['cancel', 'timeout'] as const)
       async ({raw, mode}) => {
         const path = '/tests/spike/sqlHarness.ts';
         const {sqlHarness} = (await import(path)) as typeof import('../spike/sqlHarness');
-        const {service, session} = await sqlHarness(
+        const {service, session, rLimits} = await sqlHarness(
           30000,
           undefined,
           raw as unknown as import('../../contracts/runtime-config').RuntimeConfig,
@@ -234,6 +234,9 @@ for (const mode of ['cancel', 'timeout'] as const)
             clearTimeout(timer);
           }
           const stopped = r.epoch > epoch;
+          // The forced 1 s budget applies to the blocked reader. Recovery uses normal limits.
+          if (!rLimits) throw new Error('Missing R test limits');
+          rLimits.timeoutMs = raw.limits.rTimeoutMs;
           session.updateAnalysis(id, {code: 'x <- data.frame(a=7L)'});
           await r.run(id);
           const plan = await r.planExport(

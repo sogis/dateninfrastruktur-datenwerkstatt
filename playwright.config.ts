@@ -23,6 +23,7 @@ export default defineConfig({
   webServer: [
     {
       command: 'npm run dev',
+      env: {DW_PLAYWRIGHT: '1'},
       url: 'http://127.0.0.1:4173',
       // Only for explicitly started, identical candidate builds during local verification.
       reuseExistingServer: process.env.DW_REUSE_DEV_SERVER === '1',

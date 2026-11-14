@@ -58,7 +58,10 @@ test('Action buttons v1.3: menu, split, overflow, keyboard, busy and dialog focu
   await menu.click();
   await page.getByRole('heading', {name: 'Komponentenreferenz'}).click();
   await expect(page.getByRole('menu')).toHaveCount(0);
-  await page.getByRole('button', {name: 'Aktionen für Beispiel'}).focus();
+  const example = page.getByRole('button', {name: 'Aktionen für Beispiel'});
+  await page.getByRole('button', {name: 'Ohne Alternativen', exact: true}).focus();
+  await page.keyboard.press('Tab');
+  await expect(example).toBeFocused();
   await expect(page.getByRole('tooltip', {name: 'Aktionen für Beispiel'})).toBeVisible();
 });
 
