@@ -399,7 +399,9 @@ test('SQL results: compact actions, typed table headers, row numbers and sort wi
     };
   });
   expect(summaryStyle.color).toBe('rgb(91, 102, 115)');
-  expect(summaryStyle.fontFamily.replaceAll('"', "'")).toBe(summaryStyle.expectedFont);
+  const fontFamilies = (value: string) =>
+    value.split(',').map((family) => family.trim().replace(/^['"]|['"]$/g, ''));
+  expect(fontFamilies(summaryStyle.fontFamily)).toEqual(fontFamilies(summaryStyle.expectedFont));
   const paging = page.locator('.result-paging');
   const range = paging.locator('.result-paging-range');
   const previous = paging.getByRole('button', {name: 'Vorherige Seite', exact: true});
@@ -576,6 +578,8 @@ test('SQL results: compact actions, typed table headers, row numbers and sort wi
       return result;
     };
   });
+  const table = await grid.locator('table').elementHandle();
+  if (!table) throw Error('Table is unavailable before paging.');
   await next.focus();
   await page.keyboard.press('Enter');
   await expect(previous).toBeDisabled();
@@ -589,6 +593,9 @@ test('SQL results: compact actions, typed table headers, row numbers and sort wi
   await expect(page.locator('.result-grid tbody tr').first().getByRole('rowheader')).toHaveText(
     '101',
   );
+  expect(
+    await table.evaluate((node) => node === document.querySelector('.result-grid table')),
+  ).toBe(true);
   await expect(range).toHaveText('101–200 von 350');
   await expect(previous).toBeEnabled();
   await expect(next).toBeEnabled();
@@ -637,7 +644,7 @@ test('SQL results: 200 columns preserve wide text, exact values and native table
     `SELECT i::BIGINT + 9007199254740993 AS "__proto__",
       123456789012345678.1234::DECIMAL(22,4) AS "Wert ä",
       repeat('Grüezi', 50) AS Text, '' AS "constructor", NULL::VARCHAR AS leer,
-      ${extra.join(', ')} FROM range(101) t(i)`,
+      ${extra.join(', ')} FROM range(101) t(i)`.replace(/\s+/g, ' '),
   );
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   const grid = page.locator('.result-grid');
@@ -660,6 +667,44 @@ test('SQL results: 200 columns preserve wide text, exact values and native table
   await page.getByRole('button', {name: 'Nächste Seite', exact: true}).click();
   await expect(grid.locator('tbody tr')).toHaveCount(1);
   await expect(cells.nth(0)).toHaveText('9007199254741093');
+  const table = await grid.getByRole('table').elementHandle();
+  if (!table) throw Error('Table is unavailable before sorting.');
+  const beforeScroll = await grid.evaluate((element) => element.scrollLeft);
+  await page.evaluate(async () => {
+    const path = '/tests/spike/appServices.ts';
+    const {services} = (await import(path)) as typeof import('../spike/appServices');
+    const session = await services.workspaces.open(location.pathname.split('/')[2]!);
+    const analyses = session.getAnalyses();
+    const original = analyses.page;
+    const gate = new Promise<void>((resolve) => Reflect.set(window, '__releaseOlderPage', resolve));
+    analyses.page = async (...args) => {
+      analyses.page = original;
+      const result = await original.apply(analyses, args);
+      await gate;
+      return result;
+    };
+  });
+  await page.getByRole('button', {name: 'Vorherige Seite', exact: true}).click();
+  await expect(grid).toHaveAttribute('aria-busy', 'true');
+  await header.press('Enter');
+  await expect(grid.getByRole('columnheader').last()).toHaveAttribute('aria-sort', 'descending');
+  await expect(cells.nth(0)).toHaveText('9007199254741093');
+  await expect(grid).toHaveAttribute('aria-busy', 'false');
+  await page.evaluate(async () => {
+    const release: unknown = Reflect.get(window, '__releaseOlderPage');
+    if (typeof release !== 'function') throw Error('Older page release is unavailable.');
+    release();
+    Reflect.deleteProperty(window, '__releaseOlderPage');
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+    );
+  });
+  await expect(cells.nth(0)).toHaveText('9007199254741093');
+  await expect.poll(() => grid.evaluate((element) => element.scrollLeft)).toBe(beforeScroll);
+  await expect(header).toBeFocused();
+  expect(
+    await table.evaluate((node) => node === document.querySelector('.result-grid table')),
+  ).toBe(true);
 });
 
 test('SQL exports: CSV/XLSX notes are deferred and limited Parquet requires review before download', async ({

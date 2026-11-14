@@ -113,6 +113,22 @@ test('P3 / AT-022 AT-025 AT-027 AT-028 AT-029: real SQL result limits, bindings,
         `SELECT '' AS "__proto__", NULL::VARCHAR AS "constructor", DATE '2024-01-02' AS "Datum ä",
           TIMESTAMP '2024-01-02 03:04:05' AS "a""b", '0007' AS id`,
       );
+      const typedSort = await execute(
+        `SELECT * FROM (VALUES
+          (10, 9007199254740993::BIGINT, 123456789012345678.1235::DECIMAL(22,4), '2'),
+          (2, 9007199254740992::BIGINT, 123456789012345678.1234::DECIMAL(22,4), '10'),
+          (NULL, NULL, NULL, NULL)) AS t(i, b, d, v)`,
+      );
+      const orders = await Promise.all(
+        ['i', 'b', 'd', 'v'].map(async (column) => {
+          const sorted = await engine.readPage(
+            typedSort.table,
+            {offset: 0, size: 3, sort: [{column, direction: 'asc'}]},
+            signal,
+          );
+          return sorted.rows.map((row) => row[0]);
+        }),
+      );
       const random = await execute('SELECT i, random() AS r FROM range(350) AS t(i)');
       const first = await engine.readPage(random.table, {offset: 0, size: 100, sort: []}, signal);
       await engine.readPage(
@@ -150,6 +166,7 @@ test('P3 / AT-022 AT-025 AT-027 AT-028 AT-029: real SQL result limits, bindings,
         one: await engine.readPage(one.table, {offset: 0, size: 100, sort: []}, signal),
         exact: await engine.readPage(exact.table, {offset: 0, size: 100, sort: []}, signal),
         special: await engine.readPage(special.table, {offset: 0, size: 100, sort: []}, signal),
+        orders,
         warnings: exact.warnings,
         first,
         again,
@@ -175,6 +192,7 @@ test('P3 / AT-022 AT-025 AT-027 AT-028 AT-029: real SQL result limits, bindings,
     ],
   ]);
   expect(result.special.rows).toEqual([['', null, '2024-01-02', '2024-01-02 03:04:05', '0007']]);
+  expect(result.orders).toEqual(Array.from({length: 4}, () => ['2', '10', null]));
   expect(result.warnings).toHaveLength(1);
   expect(result.first).toEqual(result.again);
   expect(result.first).toEqual(result.restoredPage);
