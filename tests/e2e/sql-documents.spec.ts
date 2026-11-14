@@ -15,6 +15,18 @@ async function create(page: Page) {
     await (await services.workspaces.open(location.pathname.split('/')[2]!)).flush();
   });
 }
+async function replaceCode(page: Page, text: string) {
+  const editor = page.getByRole('textbox', {name: 'Analysecode'});
+  await editor.press('ControlOrMeta+a');
+  // Send line breaks as keystrokes so Firefox does not submit multiline text as a composition.
+  const [first = '', ...lines] = text.split('\n');
+  await page.keyboard.insertText(first);
+  for (const line of lines) {
+    await editor.press('Enter');
+    if (line) await page.keyboard.insertText(line);
+  }
+}
+
 async function document(page: Page) {
   return page.evaluate(async () => {
     const path = '/tests/spike/appServices.ts';
@@ -148,9 +160,7 @@ test('SQL documents: failed saves retain text for download and retry; invalid fi
   });
   const text = "-- Grüezi 👋\nSELECT '001', '<script>';\n";
   try {
-    await page.locator('.monaco-editor').click();
-    await page.getByRole('textbox', {name: 'Analysecode'}).press('ControlOrMeta+a');
-    await page.keyboard.insertText(text);
+    await replaceCode(page, text);
     await page.getByRole('button', {name: 'Speichern', exact: true}).click();
     await expect(page.locator('.workspace-save-indicator')).toHaveAttribute(
       'data-save-state',
@@ -198,9 +208,7 @@ test('SQL documents: failed saves retain text for download and retry; invalid fi
   await page.reload();
   await expect(page.locator('.monaco-editor')).toContainText('Grüezi 👋');
   expect(Object.values((await document(page)).analyses)[0]!.code).toBe(text);
-  await page.locator('.monaco-editor').click();
-  await page.getByRole('textbox', {name: 'Analysecode'}).press('ControlOrMeta+a');
-  await page.keyboard.insertText(`${text}-- Autosave\n`);
+  await replaceCode(page, `${text}-- Autosave\n`);
   await expect(page.locator('.workspace-save-indicator')).toHaveAttribute(
     'data-save-state',
     'saved',

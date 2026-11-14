@@ -2,7 +2,9 @@ import {test, expect} from '../persistentBrowser';
 
 test('Action buttons v1.3: menu, split, overflow, keyboard, busy and dialog focus', async ({
   page,
+  browserName,
 }) => {
+  const tab = browserName === 'webkit' && process.platform === 'darwin' ? 'Alt+Tab' : 'Tab';
   await page.goto('/tests/design-system/');
   const menu = page.getByRole('button', {name: 'Daten hinzufügen', exact: true});
   const status = page.getByLabel('Aktionsstatus');
@@ -22,7 +24,7 @@ test('Action buttons v1.3: menu, split, overflow, keyboard, busy and dialog focu
   await expect(menu).toBeFocused();
   await expect(page.getByRole('menu')).toHaveCount(0);
   await menu.press('Enter');
-  await page.keyboard.press('Tab');
+  await page.keyboard.press(tab);
   await expect(page.getByRole('button', {name: 'CSV exportieren', exact: true})).toBeFocused();
   await expect(page.getByRole('menu')).toHaveCount(0);
   const main = page.getByRole('button', {name: 'CSV exportieren', exact: true});
@@ -60,7 +62,7 @@ test('Action buttons v1.3: menu, split, overflow, keyboard, busy and dialog focu
   await expect(page.getByRole('menu')).toHaveCount(0);
   const example = page.getByRole('button', {name: 'Aktionen für Beispiel'});
   await page.getByRole('button', {name: 'Ohne Alternativen', exact: true}).focus();
-  await page.keyboard.press('Tab');
+  await page.keyboard.press(tab);
   await expect(example).toBeFocused();
   await expect(page.getByRole('tooltip', {name: 'Aktionen für Beispiel'})).toBeVisible();
 });
