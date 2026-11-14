@@ -1486,11 +1486,10 @@ Lesbarkeit und Umbruch. Sie werden ausdrücklich nicht als native
 Browserzoom-Abnahme bezeichnet.
 
 Tatsächliche Befehle, Exitcodes, geprüfte Revision, Screenshots und verbleibende
-Grenzen werden im Implementierungsstatus dokumentiert. Nicht ausgeführte
-Prüfungen werden benannt. Die Buttonerweiterung v1.3 verwendet `verification/buttons-v1.3/`; historische
-Nachweise der neutralen Migration unter `verification/neutral-v1.2/` werden nicht überschrieben.
-Die abgestimmten Regeln sind in dieser Projektfassung und der nachgeführten
-Referenz `DESIGN_SYSTEM_NEUTRAL_v1.4.md` enthalten.
+Grenzen werden im Implementierungsstatus dokumentiert. Historische Belege
+zur neutralen Migration und zur Buttonerweiterung sind im
+[Archiv zur Basisrevision](https://github.com/sogis/dateninfrastruktur-datenwerkstatt/tree/87b25af0f05171166483da2b44e11b88e3b3301d/docs/verification)
+einsehbar.
 
 ## 16. Anhang: rechnerische Farbprüfung
 

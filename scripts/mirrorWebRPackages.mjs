@@ -1,5 +1,7 @@
 import {createHash} from 'node:crypto';
-import {readFile, mkdir, rm, writeFile} from 'node:fs/promises';
+import {readFile, mkdir, readdir, rm, writeFile} from 'node:fs/promises';
+import {join, relative, sep} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {gzipSync} from 'node:zlib';
 
 const outputRoot = new URL('../public/vendor/webr-packages/', import.meta.url);
@@ -64,6 +66,21 @@ export async function mirrorWebRPackages(targetRoot = outputRoot) {
   ) {
     throw Error('webR package lock and checksum paths differ');
   }
+  const packageDir = new URL(`${lock.targetPath}/`, targetRoot);
+  await mkdir(packageDir, {recursive: true});
+  const parts = lock.targetPath.split('/');
+  const directories = new Set(parts.map((_, i) => parts.slice(0, i + 1).join('/')));
+  // R prefers an existing RDS index to PACKAGES.gz. Remove the previous live-index cache.
+  await rm(new URL(`${lock.targetPath}/PACKAGES.rds`, targetRoot), {force: true});
+  // Vite serves everything under public/, so reject untracked mirror content.
+  for (const entry of await readdir(targetRoot, {recursive: true, withFileTypes: true})) {
+    const path = relative(fileURLToPath(targetRoot), join(entry.parentPath, entry.name))
+      .split(sep)
+      .join('/');
+    if (entry.isDirectory() && directories.has(path)) continue;
+    if (entry.isFile() && assets.has(path)) continue;
+    throw Error(`Unexpected webR mirror entry: ${path}`);
+  }
   for (const [path, load] of assets) {
     const dest = new URL(path, targetRoot);
     const cached = await readFile(dest).catch((error) => {
@@ -79,8 +96,6 @@ export async function mirrorWebRPackages(targetRoot = outputRoot) {
       await writeFile(dest, bytes);
     }
   }
-  // R prefers an existing RDS index to PACKAGES.gz. Remove the previous live-index cache.
-  await rm(new URL(`${lock.targetPath}/PACKAGES.rds`, targetRoot), {force: true});
   console.log('Pinned local R package mirror verified.');
 }
 
