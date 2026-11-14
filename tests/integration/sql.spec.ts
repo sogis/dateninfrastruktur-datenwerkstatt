@@ -115,15 +115,22 @@ test('P3 / AT-022 AT-025 AT-027 AT-028 AT-029: real SQL result limits, bindings,
       );
       const typedSort = await execute(
         `SELECT * FROM (VALUES
-          (10, 9007199254740993::BIGINT, 123456789012345678.1235::DECIMAL(22,4), '2'),
-          (2, 9007199254740992::BIGINT, 123456789012345678.1234::DECIMAL(22,4), '10'),
+          (10, 9007199254740992::BIGINT, 123456789012345678.1235::DECIMAL(22,4), '10'),
+          (2, 9007199254740993::BIGINT, 123456789012345678.1234::DECIMAL(22,4), '2'),
           (NULL, NULL, NULL, NULL)) AS t(i, b, d, v)`,
       );
       const orders = await Promise.all(
-        ['i', 'b', 'd', 'v'].map(async (column) => {
+        (
+          [
+            ['i', 'asc'],
+            ['b', 'asc'],
+            ['d', 'desc'],
+            ['v', 'asc'],
+          ] as const
+        ).map(async ([column, direction]) => {
           const sorted = await engine.readPage(
             typedSort.table,
-            {offset: 0, size: 3, sort: [{column, direction: 'asc'}]},
+            {offset: 0, size: 3, sort: [{column, direction}]},
             signal,
           );
           return sorted.rows.map((row) => row[0]);
@@ -192,7 +199,12 @@ test('P3 / AT-022 AT-025 AT-027 AT-028 AT-029: real SQL result limits, bindings,
     ],
   ]);
   expect(result.special.rows).toEqual([['', null, '2024-01-02', '2024-01-02 03:04:05', '0007']]);
-  expect(result.orders).toEqual(Array.from({length: 4}, () => ['2', '10', null]));
+  expect(result.orders).toEqual([
+    ['2', '10', null],
+    ['10', '2', null],
+    ['10', '2', null],
+    ['10', '2', null],
+  ]);
   expect(result.warnings).toHaveLength(1);
   expect(result.first).toEqual(result.again);
   expect(result.first).toEqual(result.restoredPage);

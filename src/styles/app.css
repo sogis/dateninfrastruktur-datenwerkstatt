@@ -757,12 +757,19 @@ main {
 .result-grid tr > :first-child {
   border-left: 0;
 }
+/* A continuous background covers the collapsed-border gaps between sticky cells. */
+.result-grid thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--dw-surface-subtle);
+}
 .result-grid thead th {
   border-top: 0;
   /* Collapsed borders scroll with the table; paint this divider inside the sticky cell. */
   border-bottom-style: hidden;
   box-shadow: inset 0 -1px 0 var(--dw-border-subtle);
-  z-index: 2;
+  top: auto;
   vertical-align: bottom;
 }
 .result-grid td {
@@ -816,6 +823,10 @@ main {
 .result-grid tbody .result-row-number {
   top: auto;
   z-index: 1;
+  /* Cover the horizontal gap between adjacent sticky row numbers. */
+  box-shadow:
+    inset -1px 0 0 var(--dw-border-subtle),
+    0 1px 0 var(--dw-surface-subtle);
 }
 .table-scroll .numeric,
 .result-grid .numeric {
