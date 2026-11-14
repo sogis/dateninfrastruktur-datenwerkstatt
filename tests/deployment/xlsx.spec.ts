@@ -24,11 +24,16 @@ async function inspectDownload(page: Page, download: Download) {
   return page.evaluate(inspectXlsxXml, xml);
 }
 
-async function exportXlsx(page: Page) {
+async function exportXlsx(page: Page, sql = false) {
   await expect(page.getByRole('button', {name: 'CSV exportieren', exact: true})).toBeEnabled();
   await page.getByRole('button', {name: 'Weitere Exportformate', exact: true}).click();
   const pending = page.waitForEvent('download');
   await page.getByRole('menuitem', {name: 'XLSX exportieren', exact: true}).click();
+  if (sql) {
+    const dialog = page.getByRole('dialog', {name: 'XLSX exportieren', exact: true});
+    await expect(dialog).toContainText('XLSX:');
+    await dialog.getByRole('button', {name: 'Herunterladen', exact: true}).click();
+  }
   const download = await pending;
   expect(download.suggestedFilename()).toMatch(/\.xlsx$/);
   const workbook = await inspectDownload(page, download);
@@ -142,9 +147,9 @@ test('XLSX static SQL: full frozen result, kept reload, lazy local worker and CS
   );
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.result-grid tbody tr')).toHaveCount(100);
-  await expect(page.locator('.export-note')).toContainText('XLSX:');
+  await expect(page.locator('.export-note')).toHaveCount(0);
   expect(audit.xlsxWorkers()).toEqual([]);
-  const original = await exportXlsx(page);
+  const original = await exportXlsx(page, true);
   expect(original.sheet).toBe('Daten');
   expect(original.rows).toHaveLength(351);
   expect(original.rows[0]).toEqual(['id', 'text', 'zufall']);
@@ -162,10 +167,14 @@ test('XLSX static SQL: full frozen result, kept reload, lazy local worker and CS
   );
   await page.reload();
   await expect(page.locator('.result-grid tbody tr')).toHaveCount(100);
-  const reopened = await exportXlsx(page);
+  const reopened = await exportXlsx(page, true);
   expect(reopened.rows).toEqual(original.rows);
   const csvPending = page.waitForEvent('download');
   await page.getByRole('button', {name: 'CSV exportieren', exact: true}).click();
+  await page
+    .getByRole('dialog', {name: 'CSV exportieren', exact: true})
+    .getByRole('button', {name: 'Herunterladen', exact: true})
+    .click();
   const csv = await csvPending;
   expect(csv.suggestedFilename()).toMatch(/\.csv$/);
   expect((await readFile((await csv.path())!, 'utf8')).trimEnd().split('\n')).toHaveLength(351);

@@ -1,10 +1,10 @@
-# Releaseprüfung V1
+# Historische Releaseprüfung V1 (P8)
 
-Stand: 4. Oktober 2026. **Technische Abnahme im dokumentierten Testprofil bestanden; keine Produktionsfreigabe.** P7 ist bestanden. P8 hat den gemischten Golden Path in Chromium, Firefox und Playwright-WebKit nachgewiesen; die abgeschlossenen Gesamtläufe werden in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) protokolliert. Der tatsächliche Safari-Pilot einschliesslich vollständigem Prozessneustart ist bestanden. Keine Veröffentlichung vorgenommen.
+Prüfstand vom 4. Oktober 2026. Der aktuelle Stand von DW-R1 steht im [Implementierungsstatus](IMPLEMENTATION_STATUS.md). **Technische Abnahme im dokumentierten Testprofil bestanden; keine Produktionsfreigabe.** P7 ist bestanden. P8 hat den gemischten Golden Path in Chromium, Firefox und Playwright-WebKit nachgewiesen; die abgeschlossenen Gesamtläufe werden in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) protokolliert. Der tatsächliche Safari-Pilot einschliesslich vollständigem Prozessneustart ist bestanden. Keine Veröffentlichung vorgenommen.
 
 ## Identität des Kandidaten
 
-- Git-Basis: `0535d2fd54f14e347cb3b488c3d47767923d1b2f`; Änderungen liegen uncommittiert im autorisierten Zielrepository.
+- Git-Basis: `0535d2fd54f14e347cb3b488c3d47767923d1b2f`; Die damaligen Änderungen lagen uncommittiert im autorisierten Zielrepository.
 - Frischer Git-Tree-Export: `f044f1ef6142a3d1121fa93829e0c784d5232c46`, ohne kopierte Dependencies/Runtimeassets. Temporärer Index; Benutzerindex/Branch unverändert. [Exportbeleg](https://github.com/sogis/dateninfrastruktur-datenwerkstatt/blob/87b25af0f05171166483da2b44e11b88e3b3301d/docs/verification/clean-source-p8.json).
 - SHA-256 über 193 Datei-Hashes: `4537f64c4b0acea0c763d52ca73b10172f5ebaa80b4bf294651e6495f12996f3`. [Einzeldateien und Verfahren](https://github.com/sogis/dateninfrastruktur-datenwerkstatt/blob/87b25af0f05171166483da2b44e11b88e3b3301d/docs/verification/code-fingerprint-p8.json). Die 193 inventarisierten Dateien stimmen weiterhin mit dem frischen Kandidaten überein. Anschliessend wurden Berichtsdokumente und die separaten nativen Safari-Tests unter `tests/safari/` ergänzt; keine Produktänderung.
 - Vollständiges Linux-Image: `sha256:690098f7010ca608e1896c32bdc0c9059b52a1f8d3964e3b194fdfa646ef99b2`, `/lab/`, PostMessage, Build-ID `p8-f044f1ef`. [Buildlog](https://github.com/sogis/dateninfrastruktur-datenwerkstatt/blob/87b25af0f05171166483da2b44e11b88e3b3301d/docs/verification/p8-clean-docker-build.log), [UID-/HTTP-Beleg](https://github.com/sogis/dateninfrastruktur-datenwerkstatt/blob/87b25af0f05171166483da2b44e11b88e3b3301d/docs/verification/p8-clean-image.json).
