@@ -8,11 +8,11 @@ Der genaue Stand, tatsächliche Befehle/Fehlläufe und offene Abnahmen stehen in
 
 Der Einstieg liegt unter `/projects`. Ein Projekt enthält Datensätze mit unveränderlichen Datenständen und gespeicherte SQL-/R-Analysen. Die Übersicht zeigt Projektangaben, Analysen und eine kompakte Datenliste; die Datenseite bietet Import und Verwaltung sowie eingeklappte Datenstände und Herkunft. SQL/R zeigen lesbare eingefrorene Läufe mit ihren Eingaben und konkreten Ergebnissen. Alte `/workspaces`-URLs entfallen ohne Weiterleitung. Bestehende IDs, Browserdaten und Projektdateien bleiben erhalten.
 
-Die neuen Prüfbelege stehen im [Bericht zu Projekten und Beziehungen](docs/verification/projects/README.md).
+Die historischen Prüfbelege stehen im [Bericht zu Projekten und Beziehungen](https://github.com/sogis/dateninfrastruktur-datenwerkstatt/blob/87b25af0f05171166483da2b44e11b88e3b3301d/docs/verification/projects/README.md).
 
 ## Designsystem
 
-[Das Designsystem](docs/DESIGN_SYSTEM.md) legt Farben und Hintergründe, Typografie, Formularlabels, Abstände, SVG-Icons und Komponenten verbindlich fest. Die Umsetzung steht im [Implementierungsstatus](docs/IMPLEMENTATION_STATUS.md), die aktuellen Screenshots und Prüfungen im [UI-Abnahmebericht](docs/verification/design-system/README.md).
+[Das Designsystem](docs/DESIGN_SYSTEM.md) legt Farben und Hintergründe, Typografie, Formularlabels, Abstände, SVG-Icons und Komponenten verbindlich fest. Die Umsetzung steht im [Implementierungsstatus](docs/IMPLEMENTATION_STATUS.md), die damaligen Screenshots und Prüfungen im [UI-Abnahmebericht](https://github.com/sogis/dateninfrastruktur-datenwerkstatt/blob/87b25af0f05171166483da2b44e11b88e3b3301d/docs/verification/design-system/README.md).
 
 ## Lokaler Entwicklungsstart
 

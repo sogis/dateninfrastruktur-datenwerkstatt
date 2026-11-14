@@ -15,7 +15,7 @@ Diese Matrix bewertet Szenarien, nicht lediglich Testdateinamen. **P0–P8 sind 
 | AT-009 | REQ-025, REQ-076 | Bestanden | 200-Zeilen-Vorschau; voller Import scheitert am späten Fehler mit Spalten-/Wertangabe. |
 | AT-010 | REQ-017, REQ-024, REQ-026 | Bestanden | Echte Fixture-Parquetdatei, Prozessneustart, Originaldatei unverändert und danach entfernt. |
 | AT-011 | REQ-019 | Bestanden | Unit: Generationenrace, Debounce/Maxwait; E2E Save/Reload. |
-| AT-012 | REQ-020, REQ-076 | Bestanden | P6: echter Lauf im Writer, zweiter Tab sichtbar lesend ohne Runstart; nach Tabende Reacquire/Reload, kept Resultat lesbar. Reale IndexedDB-CAS-Konflikte überschreiben nichts. Ergänzung zum Schreibschutz mit expliziten Prüfergebnissen, erhaltener Ansicht und Navigation: [Prüfbericht](verification/write-access/README.md). |
+| AT-012 | REQ-020, REQ-076 | Bestanden | P6: echter Lauf im Writer, zweiter Tab sichtbar lesend ohne Runstart; nach Tabende Reacquire/Reload, kept Resultat lesbar. Reale IndexedDB-CAS-Konflikte überschreiben nichts. Ergänzung zum Schreibschutz mit expliziten Prüfergebnissen, erhaltener Ansicht und Navigation: [Prüfbericht](https://github.com/sogis/dateninfrastruktur-datenwerkstatt/blob/87b25af0f05171166483da2b44e11b88e3b3301d/docs/verification/write-access/README.md). |
 | AT-013 | REQ-018, REQ-022, REQ-076 | Bestanden | Realer Import mit OPFS-Quota im UI; SQL→R-Keep mit injizierter Quota, kein neuer Input/kept-Stand. Alter Stand nutzbar, expliziter Retry und Recipe-Export bestehen; Commitfehler separat geprüft. |
 | AT-014 | REQ-018, REQ-021 | Bestanden | Echte OPFS-Datei ohne Metadaten nach Tabende; Cleanup unter Writer-Lock, fremde Datei erhalten. |
 | AT-015 | REQ-021, REQ-037 | Bestanden | P6: Tab mitten in echter langer DuckDB-Query beendet; neuer Writer normalisiert zu interrupted ohne Wiederholung, vorher aufbewahrtes Resultat bleibt lesbar. |
@@ -68,7 +68,7 @@ Diese Matrix bewertet Szenarien, nicht lediglich Testdateinamen. **P0–P8 sind 
 | AT-062 | REQ-052, REQ-054, REQ-055 | Bestanden | P5: Warnschwelle 10001 erfordert Freigabe, 100001 blockiert, Unsupported-/Darstellungswarnungen und versionsgebundene Pläne; keine Teilübernahme. |
 | AT-063 | REQ-015, REQ-023, REQ-069 | Bestanden | P6 UI: Golden-Projekt dupliziert, Original bestätigt gelöscht, Kopie mit neuen IDs/Bytes weiter lesbar. Unit: anderes Projekt exakt unverändert, stale Revision blockiert, Löschreste nach Verzeichnisfehler sicher bereinigbar. |
 | AT-064 | REQ-018, REQ-069, REQ-070 | Bestanden | P6: echte OPFS-Extraktion mit anschliessendem injiziertem Metadata-Createfehler; kein halbes Projekt, Original gültig. Cleanup unter Lock entfernt nur neue Reste, fremde Datei bleibt. Gleichzeitige Importcommits gesperrt. |
-| AT-065 | REQ-020, REQ-022, REQ-076 | Bestanden | P6 UI mit navigator.locks deaktiviert: bestehendes Projekt nur lesend, Mutationen deaktiviert, Archivexport möglich. Expliziter neuer Sitzungsmodus mit richtigem Status und eigener Projektliste. Konkreter Sperrgrund ohne wirkungslosen Retry: [Prüfbericht](verification/write-access/README.md). |
+| AT-065 | REQ-020, REQ-022, REQ-076 | Bestanden | P6 UI mit navigator.locks deaktiviert: bestehendes Projekt nur lesend, Mutationen deaktiviert, Archivexport möglich. Expliziter neuer Sitzungsmodus mit richtigem Status und eigener Projektliste. Konkreter Sperrgrund ohne wirkungslosen Retry: [Prüfbericht](https://github.com/sogis/dateninfrastruktur-datenwerkstatt/blob/87b25af0f05171166483da2b44e11b88e3b3301d/docs/verification/write-access/README.md). |
 | AT-066 | REQ-074 | Bestanden | P7: vollständiger frischer Linux-Build; UID 1000870000:0, read-only, cap-drop ALL/no-new-privileges. Echte Caddycontainer in Dreiermatrix. |
 | AT-067 | REQ-060, REQ-073, REQ-074 | Bestanden | P7: Root/lab tiefe Reloads, MIME/Range/Cache/echte 404, ungültige Betreiberconfig fail-closed; 36 Deploymentfälle bestanden. |
 | AT-068 | REQ-005, REQ-033, REQ-071, REQ-072, REQ-075 | Bestanden | P7: 9 Profile (3 Browser × Root/lab PostMessage/lab auto) mit öffentlichem/lokalem Import, SQL→R→SQL, PNG, Chart und Archiv unter CSP; nur lokale Assets/konfigurierte Fixture-Origin, keine CSP-Verletzung/Service Worker. |
@@ -89,7 +89,7 @@ JetBrains Mono lokal ausgeliefert, mit Systemfonts als Ladefehler-Fallback.
 `npm run verify` Exit 0: 40 Unit-, 43 Integrations- und 26 Chromium-E2E-Tests.
 Vollständige E2E-Suite zusätzlich 26/26 in Firefox und 26/26 in WebKit; 27 statische
 Deploymentprüfungen bestanden. Nativer Safari-UI-Smoke separat dokumentiert.
-[Aktueller Kandidat, Befehle, Screenshots, Messwerte und Grenzen](verification/design-system/README.md).
+[Aktueller Kandidat, Befehle, Screenshots, Messwerte und Grenzen](https://github.com/sogis/dateninfrastruktur-datenwerkstatt/blob/87b25af0f05171166483da2b44e11b88e3b3301d/docs/verification/design-system/README.md).
 
 
 ## Neutrales Designsystem v1.2 — 21. Oktober 2026
@@ -101,7 +101,7 @@ vereinbarten Chromium-Szenarien bestanden: Komponenten, Tooltip, reale Ansichten
 bestehender SQL-/R-Geometriefall und lokale Assets unter `/lab/`.
 Die korrigierten Zwischenläufe und Prüfgrenzen sind im
 [Implementierungsstatus](IMPLEMENTATION_STATUS.md) und in
-[checks.json](verification/neutral-v1.2/checks.json) dokumentiert.
+[checks.json](https://github.com/sogis/dateninfrastruktur-datenwerkstatt/blob/87b25af0f05171166483da2b44e11b88e3b3301d/docs/verification/neutral-v1.2/checks.json) dokumentiert.
 Keine erneute Vollabnahme der gesamten AT-Matrix; vollständige Suiten,
 Firefox/WebKit, Docker-Deploymentmatrix und Safari wurden auf ausdrücklichen
 Nutzerwunsch nicht ausgeführt.
@@ -115,7 +115,7 @@ NULL-/Leertextwerte, tatsächlicher Browserneustart und Archiv-Rundlauf.
 gezielte Dreiermatrix Exit 0 (78/78, je 26 in Chromium/Firefox/WebKit).
 Darstellung/Tastaturbedienung bei 390/1280/1440 px und 200 % Text geprüft.
 Zwischenfehler und begründete Korrekturen zweier veralteter Testannahmen sind im
-[Prüfbericht](verification/csv-import-options/README.md) dokumentiert.
+[Prüfbericht](https://github.com/sogis/dateninfrastruktur-datenwerkstatt/blob/87b25af0f05171166483da2b44e11b88e3b3301d/docs/verification/csv-import-options/README.md) dokumentiert.
 Keine erneute vollständige Safari-/Deployment-/Releaseabnahme.
 
 ## Ergänzung — Einstellungen im Projektkontext (24. Oktober 2026)
@@ -127,6 +127,6 @@ und Folgeausführung, stabile Resultate/Scopes/Modelle/Undo/Cursor sowie
 Multitab/Bereinigung sind in Chromium/Firefox/WebKit nachgewiesen (**15/15**).
 Statische Root-/lab-Profile einschliesslich isoliertem Profil: **18/18**.
 `npm run verify`: **Exit 0**, 110 Unit-, 67 Integrations- und 90 UI-Fälle.
-[Quellstand, tatsächliche Befehle, Logs, Zwischenfehler und Grenzen](verification/project-settings/README.md).
+[Quellstand, tatsächliche Befehle, Logs, Zwischenfehler und Grenzen](https://github.com/sogis/dateninfrastruktur-datenwerkstatt/blob/87b25af0f05171166483da2b44e11b88e3b3301d/docs/verification/project-settings/README.md).
 Kein neuer nativer Safari-/VoiceOver-Nachweis und keine neue vollständige
 Firefox-/WebKit- oder V1-Releaseabnahme.

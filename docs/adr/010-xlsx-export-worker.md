@@ -21,7 +21,7 @@ Mit laufendem `npm run dev` reproduziert `node scripts/prove-native-xlsx.mjs`
 den Fehler. Das Skript lädt ausschliesslich die beiden hashgepinnten offiziellen
 Excel-WASM-Dateien in den Speicher und beantwortet damit den Testrequest; weder
 Vendorassets noch Projektspeicher werden verändert. Der Test liefert Exit 0 nur
-bei der dokumentierten Fehlerreproduktion. Nachweis: [Log](../verification/xlsx/native-proof.log).
+bei der dokumentierten Fehlerreproduktion. Nachweis: [Log](https://github.com/sogis/dateninfrastruktur-datenwerkstatt/blob/87b25af0f05171166483da2b44e11b88e3b3301d/docs/verification/xlsx/native-proof.log).
 
 Quellen: [DuckDB-Fehler 24779](https://github.com/duckdb/duckdb/issues/24779),
 [Upstreamfix 92](https://github.com/duckdb/duckdb-excel/pull/92),

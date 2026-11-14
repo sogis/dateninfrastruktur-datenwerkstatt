@@ -38,4 +38,5 @@ for (const platform of ['wasm_mvp', 'wasm_eh'])
   }
 await writeFile(new URL('asset-checksums.json', vendor), JSON.stringify(checksums, null, 2) + '\n');
 console.log(`Local webR 0.6.0 and ${extensions.length} DuckDB extensions prepared.`);
-await import('./prepare-r-packages.mjs');
+const {mirrorWebRPackages} = await import('./mirrorWebRPackages.mjs');
+await mirrorWebRPackages();

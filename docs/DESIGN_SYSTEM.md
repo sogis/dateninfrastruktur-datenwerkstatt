@@ -23,8 +23,7 @@ führt keine neuen fachlichen Validierungsregeln ein.
 fachlichen oder gestalterischen Grund. „DARF“ bezeichnet eine zulässige Option.
 
 **Massgebliche Fassung:** Diese Datei (`DESIGN_SYSTEM.md`) ist die aktuelle
-Gestaltungsreferenz für die Anwendung. `DESIGN_SYSTEM_NEUTRAL_v1.4.md` enthält
-die nachgeführte Referenzfassung; `DESIGN_SYSTEM_NEUTRAL.md` ist historisch.
+Gestaltungsreferenz für die Anwendung. Die neutralen Zwischenfassungen sind in Git archiviert.
 Die am 21. Oktober 2026 abgestimmten Regeln sind nachfolgend direkt eingearbeitet
 und benötigen bei der Umsetzung keine erneute Ausnahme oder Übersteuerung.
 
