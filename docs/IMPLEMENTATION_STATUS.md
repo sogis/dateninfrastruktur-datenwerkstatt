@@ -65,15 +65,14 @@ AT-027/029/054/055. Gezielte Matrix je 9/9 in zwei Läufen, Chromium,
 Firefox und WebKit, Exit 0. Typisierte Sortierung, breite Tabelle und
 zuletzt angeforderte Seite sind durch echte Browser-/Engine-Tests belegt.
 
-## DW-R1, R3 in Arbeit
+## DW-R1, R3
 
 Die Architekturprüfung entfernte die aufruflosen Arrow-IPC-Adapter,
 einen zweiten ungenutzten Import-Factory-Weg und historische
 Unit-Tests gegen abgelöste Implementierungen. Die produktiven
 Codec-, Worker-, Persistenz- und Importtests bleiben im Prüfumfang.
 Der Paketprüfer verwendet Format 3 und das aktuelle Font-Inventar.
-`python3 tools/verify-package.py` Exit 0. Die vollständige Abnahme
-und das unabhängige Review folgen.
+`python3 tools/verify-package.py` Exit 0. Die Resultate der lokalen Abnahme stehen unten.
 
 ### R3 Nachprüfung am Kandidaten `afaf8ba`
 
@@ -92,5 +91,27 @@ und das Wegfallen der Initialisierungsaktion. Die UI-Abnahmetests
 `tests/e2e/p7-ui.spec.ts` und `tests/e2e/workspaces.spec.ts` prüfen
 die Platzierung der SQL-Ergebniszusammenfassung und die konkrete
 Speicherbestätigung. `git diff --check` Exit 0. Verify, Browser- und
-Deploymentmatrix, Ressourcenprüfung und endgültiges unabhängiges
-Review stehen für diesen Kandidaten noch aus.
+Deploymentmatrix, Ressourcenprüfung und unabhängiges
+Review sind unten dokumentiert.
+
+### Lokale Abnahme auf `d5ee80a897a3e7e967fc8d9f02187db8fbb186d8`
+
+- `npm run verify` Exit 0. Typecheck, Lint, Build, 119 Unit-Tests,
+  71 Chromium-Integrationstests und 111 Chromium-E2E-Tests.
+- `npm run test:browser-matrix -- --project=firefox --project=webkit`
+  Exit 0, 142/142 zusätzlich zur Chromium-Integration aus Verify.
+- `npm run test:deployment` Exit 0, 99/99 über drei Browser und drei
+  statische Containerprofile. Alle Firefox-SQL/R-XLSX-Fälle bestanden.
+- `npm run test:resources` Exit 0, AT-071. In 20 realen Workspace-/SQL/R-
+  Zyklen blieben nach jedem Schliessen null Worker und null Handles.
+  Die Transfers mit 10’000 und 100’000 Zeilen bestanden.
+- `npx playwright test tests/e2e/p8-golden.spec.ts tests/e2e/p7-ui.spec.ts --project=firefox --project=webkit --output=/tmp/dw-r3-golden-ui --reporter=list`
+  Exit 0, 10/10. Golden Path mit Prozessneustart und frischem Archivprofil
+  sowie UI-Flächenvertrag, Fokus, Bedienung und Speicherung.
+- Unabhängiges R3.14-Review für diesen lokalen Prüfumfang: abgenommen.
+
+Die zusätzliche vollständige Firefox-/WebKit-E2E-Suite läuft separat.
+Der entfernte CI-Lauf wurde nicht ausgeführt. Der native Safari-Pilot
+prüfte diese Änderungen mit Tab-Reopen, Persistenz, Archiv und Cancel.
+Ein kompletter nativer Safari-Prozessneustart wurde für diesen
+Kandidaten nicht wiederholt. Kein Push oder Merge.
