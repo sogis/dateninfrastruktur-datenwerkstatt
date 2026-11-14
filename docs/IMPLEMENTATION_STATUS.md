@@ -74,3 +74,23 @@ Codec-, Worker-, Persistenz- und Importtests bleiben im Prüfumfang.
 Der Paketprüfer verwendet Format 3 und das aktuelle Font-Inventar.
 `python3 tools/verify-package.py` Exit 0. Die vollständige Abnahme
 und das unabhängige Review folgen.
+
+### R3 Nachprüfung am Kandidaten `afaf8ba`
+
+Die sechs Firefox-XLSX-Fehler der vorherigen Deploymentmatrix betrafen
+die URL-Auswertung im Testmonitor nach dem Download. Der Monitor löst
+relative Worker-URLs gegen die Seitennavigation auf. Der isolierte
+Firefox-R-XLSX-Deploymenttest auf `582ae55` bestand mit Exit 0
+(14,4 Sekunden Testdauer). Unter früherer paralleler Last wurde
+auch ein echter Initialisierungstimeout beobachtet. Drei isolierte Kaltstarts auf `afaf8ba` bestanden (Exit 0, je
+13,3–15,3 Sekunden einschliesslich XLSX-Prüfung) mit
+`npm run test:deployment -- --project=firefox-1 tests/deployment/xlsx.spec.ts -g 'static R' --repeat-each=3 --reporter=list`.
+Das Laufzeitlimit blieb bei 60 Sekunden.
+
+`tests/deployment/xlsx.spec.ts` prüft vor dem R-Lauf den Leerlaufstatus
+und das Wegfallen der Initialisierungsaktion. Die UI-Abnahmetests
+`tests/e2e/p7-ui.spec.ts` und `tests/e2e/workspaces.spec.ts` prüfen
+die Platzierung der SQL-Ergebniszusammenfassung und die konkrete
+Speicherbestätigung. `git diff --check` Exit 0. Verify, Browser- und
+Deploymentmatrix, Ressourcenprüfung und endgültiges unabhängiges
+Review stehen für diesen Kandidaten noch aus.
