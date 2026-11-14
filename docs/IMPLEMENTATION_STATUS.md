@@ -110,7 +110,13 @@ Review sind unten dokumentiert.
   sowie UI-Flächenvertrag, Fokus, Bedienung und Speicherung.
 - Unabhängiges R3.14-Review für diesen lokalen Prüfumfang: abgenommen.
 
-Die zusätzliche vollständige Firefox-/WebKit-E2E-Suite läuft separat.
+Die vollständige Firefox-/WebKit-E2E-Suite auf `c0ed8db` bestand
+mit Exit 0, je 111/111 Fällen. Der Erstlauf endete mit Exit 1
+und 219/222. Die Nacharbeit betrifft die browsergerechte Eingabe in
+`tests/e2e/sql-documents.spec.ts`, `tests/e2e/action-buttons.spec.ts`
+und `tests/e2e/projects.spec.ts`. Alle drei korrigierten Fälle bestanden
+auch gezielt in Chromium. `npm run typecheck`, `npm run lint` und
+`git diff --check` Exit 0.
 Der entfernte CI-Lauf wurde nicht ausgeführt. Der native Safari-Pilot
 prüfte diese Änderungen mit Tab-Reopen, Persistenz, Archiv und Cancel.
 Ein kompletter nativer Safari-Prozessneustart wurde für diesen
