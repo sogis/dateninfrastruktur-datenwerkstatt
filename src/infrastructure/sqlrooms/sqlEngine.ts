@@ -254,12 +254,18 @@ export class SqlRoomsSqlEngine implements ResultSqlEngine {
       const page = await c.query(
         `SELECT ${projection} FROM ${relation} AS r ORDER BY ${order.join(',')} LIMIT ${request.size} OFFSET ${request.offset}`,
       );
+      const columns = table.schema.columns.map((_, index) => {
+        const vector = page.getChildAt(index);
+        if (!vector) throw new AppFailure('SQL_ERROR', 'Resultatspalte fehlt.');
+        return vector;
+      });
       return {
         totalRows: table.rowCount,
-        rows: page.toArray().map((row) =>
-          table.schema.columns.map((col) => {
-            const data = z.record(z.string(), z.unknown()).parse(row.toJSON());
-            return data[col.name];
+        rows: Array.from({length: page.numRows}, (_, row) =>
+          columns.map((column) => {
+            const value: unknown = column.get(row);
+            if (value === null || typeof value === 'string') return value;
+            throw new AppFailure('SQL_ERROR', 'Resultatspalte enthält einen unerwarteten Wert.');
           }),
         ),
       };

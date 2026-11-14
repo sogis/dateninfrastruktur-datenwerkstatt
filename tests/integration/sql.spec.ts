@@ -109,6 +109,10 @@ test('P3 / AT-022 AT-025 AT-027 AT-028 AT-029: real SQL result limits, bindings,
         67108864,
         {text: "'; ATTACH 'evil'; --", exact: {type: 'int64', value: '9007199254740993'}},
       );
+      const special = await execute(
+        `SELECT '' AS "__proto__", NULL::VARCHAR AS "constructor", DATE '2024-01-02' AS "Datum ä",
+          TIMESTAMP '2024-01-02 03:04:05' AS "a""b", '0007' AS id`,
+      );
       const random = await execute('SELECT i, random() AS r FROM range(350) AS t(i)');
       const first = await engine.readPage(random.table, {offset: 0, size: 100, sort: []}, signal);
       await engine.readPage(
@@ -145,6 +149,7 @@ test('P3 / AT-022 AT-025 AT-027 AT-028 AT-029: real SQL result limits, bindings,
       return {
         one: await engine.readPage(one.table, {offset: 0, size: 100, sort: []}, signal),
         exact: await engine.readPage(exact.table, {offset: 0, size: 100, sort: []}, signal),
+        special: await engine.readPage(special.table, {offset: 0, size: 100, sort: []}, signal),
         warnings: exact.warnings,
         first,
         again,
@@ -169,6 +174,7 @@ test('P3 / AT-022 AT-025 AT-027 AT-028 AT-029: real SQL result limits, bindings,
       '3',
     ],
   ]);
+  expect(result.special.rows).toEqual([['', null, '2024-01-02', '2024-01-02 03:04:05', '0007']]);
   expect(result.warnings).toHaveLength(1);
   expect(result.first).toEqual(result.again);
   expect(result.first).toEqual(result.restoredPage);

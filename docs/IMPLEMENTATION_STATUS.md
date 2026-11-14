@@ -34,3 +34,18 @@ gehören zur abschliessenden Abnahme.
 Nächster Schritt ist das unabhängige Review von R0. Der veröffentlichte
 Actions-Lauf zur Basisrevision war fehlgeschlagen. Ergebnisse eines
 Remote-Laufs für den Kandidaten stehen aus.
+
+R0 wurde für `4bdbdff8d5f29125ed823422a4228a3131f13a86` unabhängig
+abgenommen. Der Linux-Containerbuild und drei gezielte Chromium-
+Deploymentfälle unter `/lab/` bestanden mit Exit 0. Die
+Nacharbeit weist zusätzliche Dateien im webR-Spiegel zurück.
+Der alte Fixtureprüfer erwartet auf Basis und Kandidat Format 1
+und scheitert deshalb nach erfolgreicher Anforderungs- und Linkprüfung.
+
+## DW-R1, R1 in Arbeit
+
+`SqlRoomsSqlEngine.readPage` liest die VARCHAR-Projektion positionsgenau
+aus den Arrow-Vektoren. REQ-038, REQ-042–045 und AT-025/027–032. Der
+gezielte Chromium-Lauf für exakte Darstellung, Limits und echte
+Worker-Beendigung bestand 2/2. Die Messung für breite Seiten und die
+unabhängige Abnahme von R1 stehen als eigener Phasenabschluss aus.
