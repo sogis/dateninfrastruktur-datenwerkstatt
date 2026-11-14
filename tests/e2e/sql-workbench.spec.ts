@@ -626,6 +626,42 @@ test('SQL results: compact actions, typed table headers, row numbers and sort wi
   await expect(next).toBeDisabled();
 });
 
+test('SQL results: 200 columns preserve wide text, exact values and native table navigation', async ({
+  page,
+}) => {
+  await page.setViewportSize({width: 390, height: 800});
+  await create(page);
+  const extra = Array.from({length: 195}, (_, i) => `i AS c${i}`);
+  await editor(
+    page,
+    `SELECT i::BIGINT + 9007199254740993 AS "__proto__",
+      123456789012345678.1234::DECIMAL(22,4) AS "Wert ä",
+      repeat('Grüezi', 50) AS Text, '' AS "constructor", NULL::VARCHAR AS leer,
+      ${extra.join(', ')} FROM range(101) t(i)`,
+  );
+  await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
+  const grid = page.locator('.result-grid');
+  const row = grid.locator('tbody tr').first();
+  const cells = row.getByRole('cell');
+  await expect(cells).toHaveCount(200);
+  await expect(cells.nth(0)).toHaveText('9007199254740993');
+  await expect(cells.nth(1)).toHaveText('123456789012345678.1234');
+  await expect(cells.nth(2)).toHaveText('Grüezi'.repeat(50));
+  await expect(cells.nth(3)).toHaveText('');
+  await expect(cells.nth(4)).toHaveText('NULL');
+  await expect(grid.getByRole('columnheader')).toHaveCount(201);
+  const header = grid.getByRole('button', {name: 'Nach c194 sortieren', exact: true});
+  await header.focus();
+  await expect(header).toBeFocused();
+  await expect.poll(() => grid.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
+  await header.press('Enter');
+  await expect(grid.getByRole('columnheader').last()).toHaveAttribute('aria-sort', 'ascending');
+  await expect(header).toBeFocused();
+  await page.getByRole('button', {name: 'Nächste Seite', exact: true}).click();
+  await expect(grid.locator('tbody tr')).toHaveCount(1);
+  await expect(cells.nth(0)).toHaveText('9007199254741093');
+});
+
 test('SQL exports: CSV/XLSX notes are deferred and limited Parquet requires review before download', async ({
   page,
 }) => {
