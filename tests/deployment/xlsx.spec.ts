@@ -192,7 +192,10 @@ test('XLSX static R: complete checked dataframe, literal strings and unchanged p
   await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
   await page.getByRole('menuitem', {name: 'Neues R-Skript', exact: true}).click();
-  await expect(page.locator('.run-status')).toContainText('Bereit', {timeout: 90000});
+  const status = page.locator('.run-status').getByRole('status');
+  await expect(status).toHaveText('Bereit', {timeout: 90000});
+  // Idle is also shown after an initialization failure. A live scope removes the retry action.
+  await expect(page.getByRole('button', {name: 'R initialisieren', exact: true})).toHaveCount(0);
   await code(
     page,
     'x <- data.frame(id=seq_len(350L), text=rep("001",350L), formula=rep("=1+1",350L)); cat("XLSX bereit")',
