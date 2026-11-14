@@ -58,7 +58,7 @@ async function monitorStaticExport(page: Page, baseURL: string) {
   });
   page.on('pageerror', (error) => errors.push(error.message));
   page.on('worker', (worker) => {
-    const record = {url: worker.url(), closed: false};
+    const record = {url: new URL(worker.url(), page.url()).href, closed: false};
     workers.push(record);
     worker.on('close', () => {
       record.closed = true;
