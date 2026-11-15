@@ -1,4 +1,5 @@
 import {defineConfig} from '@playwright/test';
+import {linuxWebKitUserAgent} from './tests/browserUserAgent';
 export default defineConfig({
   testDir: './tests',
   testMatch: '**/*.spec.ts',
@@ -19,11 +20,14 @@ export default defineConfig({
     {name: 'chromium', use: {browserName: 'chromium'}},
     {
       name: 'firefox',
-      use: {browserName: 'firefox', headless: process.env.DW_VIRTUAL_DISPLAY !== '1'},
+      use: {browserName: 'firefox'},
     },
     {
       name: 'webkit',
-      use: {browserName: 'webkit', headless: process.env.DW_VIRTUAL_DISPLAY !== '1'},
+      use: {
+        browserName: 'webkit',
+        ...(linuxWebKitUserAgent ? {userAgent: linuxWebKitUserAgent} : {}),
+      },
     },
   ],
   webServer: [

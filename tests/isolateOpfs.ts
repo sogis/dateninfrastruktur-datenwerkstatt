@@ -27,10 +27,11 @@ export async function isolateOpfs(
     });
   }, directoryName);
   return async () => {
-    // Close only this test's pages first, releasing their workers/native handles.
-    for (const page of context.pages()) await page.close();
+    // Keep a window open in persistent Firefox/WebKit contexts while closing test pages.
+    const pages = context.pages();
     const cleanup = await context.newPage();
     try {
+      for (const page of pages) await page.close();
       // Production URLs would boot the app and create a capability-probe file
       // while removing this same test directory. Use an inert same-origin page.
       await cleanup.route('**/*', (route) =>

@@ -174,8 +174,8 @@ test('P2 / AT-014 AT-017: reload finds true orphans, writer cleanup preserves re
     await writer.close();
     return {workspaceId: doc.workspace.id, path: orphan.path};
   });
-  await page.close();
   const reopened = await context.newPage();
+  await page.close();
   await reopened.goto(`/projects/${setup.workspaceId}/data`);
   await expect(reopened.getByText('1 nicht referenzierte Dateien.', {exact: false})).toBeVisible();
   await reopened.getByRole('button', {name: 'Verwaiste Dateien bereinigen'}).click();
@@ -197,7 +197,7 @@ test('P2 / AT-014 AT-017: reload finds true orphans, writer cleanup preserves re
 test('P2 / AT-010: imported file survives browser process restart and removal of input file', async ({
   playwright,
   browserName,
-  headless,
+  userAgent,
 }) => {
   const {mkdtemp, writeFile, readFile, rm} = await import('node:fs/promises');
   const {join} = await import('node:path');
@@ -206,7 +206,10 @@ test('P2 / AT-010: imported file survives browser process restart and removal of
   const profile = join(folder, 'profile');
   const source = join(folder, 'original.parquet');
   const csvText = await readFile('fixtures/csv-edge-cases.csv', 'utf8');
-  let context = await playwright[browserName].launchPersistentContext(profile, {headless});
+  let context = await playwright[browserName].launchPersistentContext(profile, {
+    headless: true,
+    ...(userAgent ? {userAgent} : {}),
+  });
   const storageKey = crypto.randomUUID();
   let cleanup = await isolateOpfs(context, storageKey);
   try {
@@ -249,7 +252,10 @@ test('P2 / AT-010: imported file survives browser process restart and removal of
     expect(Array.from(await readFile(source))).toEqual(parquet);
     await context.close();
     await rm(source);
-    context = await playwright[browserName].launchPersistentContext(profile, {headless});
+    context = await playwright[browserName].launchPersistentContext(profile, {
+      headless: true,
+      ...(userAgent ? {userAgent} : {}),
+    });
     cleanup = await isolateOpfs(context, storageKey);
     const reopened = await context.newPage();
     await reopened.goto(url);

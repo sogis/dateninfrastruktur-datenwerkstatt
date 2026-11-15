@@ -7,7 +7,7 @@ test('P6 test storage: fresh native OPFS scopes are disjoint across profiles and
   page,
   playwright,
   browserName,
-  headless,
+  userAgent,
 }) => {
   await page.goto('/tests/spike/index.html');
   await page.evaluate(async () => {
@@ -18,7 +18,10 @@ test('P6 test storage: fresh native OPFS scopes are disjoint across profiles and
     await writer.close();
   });
   const profile = await mkdtemp(join(tmpdir(), 'dw-isolation-proof-'));
-  const second = await playwright[browserName].launchPersistentContext(profile, {headless});
+  const second = await playwright[browserName].launchPersistentContext(profile, {
+    headless: true,
+    ...(userAgent ? {userAgent} : {}),
+  });
   const cleanup = await isolateOpfs(second);
   try {
     const next = second.pages()[0] ?? (await second.newPage());

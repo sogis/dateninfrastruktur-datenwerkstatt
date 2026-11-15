@@ -39,15 +39,13 @@ jobs:
       - run: npm run assets:prepare
         id: assets
       - name: Engine and persistence integration
-        run: xvfb-run -a npx playwright test tests/integration --project=${{ matrix.browser }} --output=test-results/integration
+        run: npx playwright test tests/integration --project=${{ matrix.browser }} --output=test-results/integration
         env:
-          DW_VIRTUAL_DISPLAY: '1'
           PLAYWRIGHT_HTML_REPORT: playwright-report/integration
       - name: Browser workflows
         if: "!cancelled() && steps.assets.outcome == 'success'"
-        run: xvfb-run -a npx playwright test tests/e2e --project=${{ matrix.browser }} --output=test-results/e2e
+        run: npx playwright test tests/e2e --project=${{ matrix.browser }} --output=test-results/e2e
         env:
-          DW_VIRTUAL_DISPLAY: '1'
           PLAYWRIGHT_HTML_REPORT: playwright-report/e2e
       - run: npm run test:resources -- --output=test-results/resources
         if: matrix.browser == 'chromium'
@@ -78,9 +76,7 @@ jobs:
       - run: npm ci
       - run: npm run assets:prepare
       - run: npx playwright install --with-deps ${{ matrix.browser }}
-      - run: xvfb-run -a npm run test:deployment -- --project=${{ matrix.browser }}-0 --project=${{ matrix.browser }}-1 --project=${{ matrix.browser }}-2
-        env:
-          DW_VIRTUAL_DISPLAY: '1'
+      - run: npm run test:deployment -- --project=${{ matrix.browser }}-0 --project=${{ matrix.browser }}-1 --project=${{ matrix.browser }}-2
       - run: docker build -f deploy/Dockerfile -t datenwerkstatt:verified .
         if: matrix.browser == 'chromium'
       - uses: actions/upload-artifact@v4

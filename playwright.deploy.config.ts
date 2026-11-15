@@ -1,4 +1,5 @@
 import {defineConfig} from '@playwright/test';
+import {linuxWebKitUserAgent} from './tests/browserUserAgent';
 export default defineConfig({
   testDir: './tests/deployment',
   outputDir: 'test-results-deployment',
@@ -14,7 +15,9 @@ export default defineConfig({
       metadata: {profile},
       use: {
         browserName: browserName as 'chromium' | 'firefox' | 'webkit',
-        headless: browserName === 'chromium' || process.env.DW_VIRTUAL_DISPLAY !== '1',
+        ...(browserName === 'webkit' && linuxWebKitUserAgent
+          ? {userAgent: linuxWebKitUserAgent}
+          : {}),
         baseURL: `http://127.0.0.1:${4180 + profile}${profile ? '/lab/' : '/'}`,
       },
     })),

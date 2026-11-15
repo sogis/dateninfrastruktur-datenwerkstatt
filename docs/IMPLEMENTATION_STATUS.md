@@ -140,3 +140,14 @@ und startet nach dem Merge zusätzlich auf main.
 Lokal: `npm run typecheck`, `npm run lint`, `git diff --check`
 und die sechs gezielten Recovery-/Profilisolationsfälle aller drei
 Browser Exit 0. Linux-Nachweis folgt im PR-Workflow.
+
+Der erste Linux-Nachlauf `43707504424` bestätigte das Chromium-
+Deployment. Firefox und WebKit scheiterten beim OPFS-Aufräumen:
+Der Test schloss erst das letzte Fenster und versuchte danach einen
+neuen Tab zu öffnen. Die Bereinigung öffnet ihren Tab vor dem
+Schliessen der Arbeitsseiten. Der gleiche Fensterwechsel beim
+Import-Recovery wurde korrigiert. Sechs gezielte Fälle bestanden
+damit im Linux-amd64-Playwright-Container ohne virtuellen Display.
+Die CI nutzt wieder Headless. Für WebKit unter Linux bildet der
+Test-User-Agent die Plattform des Runners ab, damit Monacos
+Tastenkürzel zur Linux-Tastatur passen.
