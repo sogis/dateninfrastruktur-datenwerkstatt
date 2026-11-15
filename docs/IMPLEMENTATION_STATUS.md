@@ -180,3 +180,15 @@ macOS-Browserfälle zu SQL-Snapshots, Locks und Portalfehlern
 bestanden. Der Linux-Lauf `43710732694` bestätigte den separaten
 Firefox- und WebKit-Deploymentpfad. Seine Chromium-Spur belegt
 den falschen 404 für einen bestehenden Testdatensatz.
+
+Der Linux-Lauf `43712095707` zeigte einen R-Kaltstart-Timeout im
+isolierten Chromium-Unterpfadprofil mit SharedArrayBuffer. Der
+Browsertrace belegt HTTP 200 und kurze Antwortzeiten für die R-Pakete,
+aber rund 24 Sekunden zwischen dem Download von `stringi` und dem
+nächsten Paket. webR 0.6.0 mountet jetzt die bereits indexierten,
+gepinnten Archive. Paketbytes, Versionsprüfung und 60-Sekunden-Limit
+bleiben unverändert. Die Prüfung lokaler R-Pakete bestand in allen
+drei Browsern, Exit 0 (3/3). Die gezielte statische Matrix aus
+Netzwerk-Golden-Path, SQL-XLSX und R-XLSX bestand in Chromium-2,
+Firefox-1 und WebKit-1, Exit 0 (9/9). Typecheck, Lint und Diff-Prüfung
+Exit 0.

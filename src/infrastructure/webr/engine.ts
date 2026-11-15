@@ -139,7 +139,8 @@ export class WebREngine implements REngine {
               lock.packages.map((p) => p.name),
               {
                 repos: repo,
-                mount: false,
+                // The pinned archives include VFS indexes. Mount them instead of running R untar.
+                mount: true,
                 quiet: true,
               },
             );
