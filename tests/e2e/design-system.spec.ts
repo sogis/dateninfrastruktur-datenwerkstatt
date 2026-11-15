@@ -395,7 +395,9 @@ test('UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmo
   await page.clock.runFor(300);
   await expect(visible).toHaveText('SQL mit DuckDB');
   await visible.hover();
-  await page.getByRole('textbox', {name: 'Projektname', exact: true}).focus();
+  await page
+    .getByRole('textbox', {name: 'Projektname', exact: true})
+    .evaluate((field) => field.focus({preventScroll: true}));
   await page.clock.runFor(300);
   await expect(visible).toHaveText('SQL mit DuckDB');
   await page.mouse.move(600, 100);

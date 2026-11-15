@@ -102,7 +102,7 @@ const server = createServer(async (req, res) => {
     );
     return;
   }
-  if (path.includes('404')) {
+  if (path.split('/').includes('404')) {
     res.writeHead(404);
     res.end('{}');
     return;

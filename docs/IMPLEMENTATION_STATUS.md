@@ -165,3 +165,18 @@ dass lange Auswahltexte den CSV-Dialog bei 200 % Schriftgrösse
 horizontal vergrössern. Der Tooltip-Test prüft Tastaturfokus über
 Vorwärtsnavigation. Die gezielten Linux-Fälle und 24 lokale
 Browserfälle der betroffenen UI-Tests bestanden.
+
+Die Folgeprüfung deckte weitere Testfehler auf. Die Web-Locks-Probe
+überlässt den letzten Tab dem Fixture. Der Portalserver löst den
+404-Fehler nur beim eigenen Pfadsegment aus. Der Golden Path benutzt
+gezielt eine gültige ID mit `404` im Namen. SQL-Snapshot-Tests
+warten auf den Wert des aktuellen Laufs, bevor sie sein Menü öffnen.
+Die Sticky-Table-Aufnahmen blenden die unabhängig animierten
+Scrollleisten für den Pixelvergleich aus. Der Tooltip-Test erhält
+beim programmgesteuerten Fokuswechsel die Scrollposition.
+
+Typecheck, Lint und Diff-Prüfung Exit 0. Die sechs gezielten
+macOS-Browserfälle zu SQL-Snapshots, Locks und Portalfehlern
+bestanden. Der Linux-Lauf `43710732694` bestätigte den separaten
+Firefox- und WebKit-Deploymentpfad. Seine Chromium-Spur belegt
+den falschen 404 für einen bestehenden Testdatensatz.

@@ -531,11 +531,16 @@ test('SQL results: compact actions, typed table headers, row numbers and sort wi
           },
         },
       ]) {
-        const visible = await page.screenshot({clip: edge.clip});
+        const screenshot = {
+          clip: edge.clip,
+          // OS overlay scrollbars fade independently of the sticky table.
+          style: '.result-grid { scrollbar-color: transparent transparent; }',
+        };
+        const visible = await page.screenshot(screenshot);
         await edge.cells.evaluateAll((cells) => {
           for (const cell of cells) (cell as HTMLElement).style.visibility = 'hidden';
         });
-        const hidden = await page.screenshot({clip: edge.clip});
+        const hidden = await page.screenshot(screenshot);
         await edge.cells.evaluateAll((cells) => {
           for (const cell of cells) (cell as HTMLElement).style.removeProperty('visibility');
         });
