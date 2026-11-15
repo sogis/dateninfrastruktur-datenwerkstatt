@@ -30,23 +30,20 @@ export async function isolateOpfs(
     // Keep a window open in persistent Firefox/WebKit contexts while closing test pages.
     const pages = context.pages();
     const cleanup = await context.newPage();
-    try {
-      for (const page of pages) await page.close();
-      // Production URLs would boot the app and create a capability-probe file
-      // while removing this same test directory. Use an inert same-origin page.
-      await cleanup.route('**/*', (route) =>
-        route.fulfill({
-          contentType: 'text/html',
-          body: '<!doctype html><title>Test cleanup</title>',
-        }),
-      );
-      await cleanup.goto(cleanupUrl);
-      await cleanup.evaluate(async () => {
-        const cleanup: unknown = Reflect.get(globalThis, '__datenwerkstattTestCleanup');
-        if (typeof cleanup === 'function') await cleanup();
-      });
-    } finally {
-      await cleanup.close();
-    }
+    for (const page of pages) await page.close();
+    // Production URLs would boot the app and create a capability-probe file
+    // while removing this same test directory. Use an inert same-origin page.
+    await cleanup.route('**/*', (route) =>
+      route.fulfill({
+        contentType: 'text/html',
+        body: '<!doctype html><title>Test cleanup</title>',
+      }),
+    );
+    await cleanup.goto(cleanupUrl);
+    await cleanup.evaluate(async () => {
+      const cleanup: unknown = Reflect.get(globalThis, '__datenwerkstattTestCleanup');
+      if (typeof cleanup === 'function') await cleanup();
+    });
+    // The owning fixture closes the persistent context, including this last tab.
   };
 }

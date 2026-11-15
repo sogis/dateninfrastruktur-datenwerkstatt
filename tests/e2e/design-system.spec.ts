@@ -338,7 +338,7 @@ test('UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmo
   browserName,
 }) => {
   const optionTab = browserName === 'webkit' && process.platform === 'darwin';
-  const backTab = optionTab ? 'Alt+Shift+Tab' : 'Shift+Tab';
+  const tab = optionTab ? 'Alt+Tab' : 'Tab';
   await page.clock.install();
   await page.goto('/tests/design-system/');
   await page.evaluate(() => document.fonts.ready);
@@ -387,7 +387,8 @@ test('UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmo
   await r.click();
   await page.clock.runFor(300);
   await expect(visible).toHaveCount(0);
-  await r.press(backTab);
+  await page.getByRole('button', {name: 'Dialog öffnen', exact: true}).focus();
+  await page.keyboard.press(tab);
   await expect(sql).toBeFocused();
   await expect(visible).toHaveText('SQL mit DuckDB');
   await page.mouse.move(600, 100);
@@ -412,7 +413,8 @@ test('UI tooltips: hover delay, cancellation, keyboard focus, ownership and unmo
   await page.clock.runFor(100);
   await expect(options).toBeVisible();
   await toggle.click();
-  await toggle.press(backTab);
+  await page.getByRole('button', {name: 'tertiary danger', exact: true}).focus();
+  await page.keyboard.press(tab);
   await expect(options).toBeFocused();
   await expect(visible).toHaveText('Optionen der Arbeitsfläche');
   await page.clock.runFor(100);

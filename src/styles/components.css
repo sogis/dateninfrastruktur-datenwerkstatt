@@ -183,6 +183,7 @@
   font: 400 var(--dw-control-font) / 1.5 var(--dw-font-ui);
 }
 .dw-select {
+  height: max(var(--dw-control-height), calc(1.5em + var(--dw-control-padding-y) * 2 + 2px));
   padding-inline-end: 24px;
 }
 .dw-textarea {

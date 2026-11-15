@@ -151,3 +151,17 @@ damit im Linux-amd64-Playwright-Container ohne virtuellen Display.
 Die CI nutzt wieder Headless. Für WebKit unter Linux bildet der
 Test-User-Agent die Plattform des Runners ab, damit Monacos
 Tastenkürzel zur Linux-Tastatur passen.
+
+`f95b9b4`: Alle drei Deploymentjobs des Linux-Laufs `43708878725`
+bestanden. Vier gezielte Linux-Fälle für SQL-Eingabe und Import-Recovery
+bestanden im Playwright-Container. Die OPFS-Bereinigung überlässt
+den letzten Tab dem Eigentümer des Browserkontexts, der ihn zusammen
+mit dem Kontext schliesst.
+
+WebKitGTK gab nativen Auswahlfeldern eine grössere intrinsische Höhe
+als den benachbarten Eingabefeldern. Die gemeinsame CSS-Kontrollhöhe
+gilt jetzt auch für native Auswahlfelder. Paint-Containment verhindert,
+dass lange Auswahltexte den CSV-Dialog bei 200 % Schriftgrösse
+horizontal vergrössern. Der Tooltip-Test prüft Tastaturfokus über
+Vorwärtsnavigation. Die gezielten Linux-Fälle und 24 lokale
+Browserfälle der betroffenen UI-Tests bestanden.
