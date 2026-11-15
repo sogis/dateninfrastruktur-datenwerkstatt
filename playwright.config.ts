@@ -1,4 +1,5 @@
 import {defineConfig} from '@playwright/test';
+import {linuxWebKitUserAgent} from './tests/browserUserAgent';
 export default defineConfig({
   testDir: './tests',
   testMatch: '**/*.spec.ts',
@@ -17,12 +18,22 @@ export default defineConfig({
   },
   projects: [
     {name: 'chromium', use: {browserName: 'chromium'}},
-    {name: 'firefox', use: {browserName: 'firefox'}},
-    {name: 'webkit', use: {browserName: 'webkit'}},
+    {
+      name: 'firefox',
+      use: {browserName: 'firefox'},
+    },
+    {
+      name: 'webkit',
+      use: {
+        browserName: 'webkit',
+        ...(linuxWebKitUserAgent ? {userAgent: linuxWebKitUserAgent} : {}),
+      },
+    },
   ],
   webServer: [
     {
       command: 'npm run dev',
+      env: {DW_PLAYWRIGHT: '1'},
       url: 'http://127.0.0.1:4173',
       // Only for explicitly started, identical candidate builds during local verification.
       reuseExistingServer: process.env.DW_REUSE_DEV_SERVER === '1',

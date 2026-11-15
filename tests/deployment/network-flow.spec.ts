@@ -51,7 +51,8 @@ test('P7 AT-056 AT-068: static public/local → SQL → R → SQL → PNG/archiv
   await expect(page.locator('.result-grid tbody tr')).toHaveCount(2);
   // Prepare the HTTP fixture with real exported Parquet, independently per test.
   const parquetDownload = page.waitForEvent('download');
-  await page.getByRole('button', {name: 'PARQUET exportieren', exact: true}).click();
+  await page.getByRole('button', {name: 'Weitere Exportformate', exact: true}).click();
+  await page.getByRole('menuitem', {name: 'Parquet exportieren', exact: true}).click();
   const bytes = await readFile((await (await parquetDownload).path())!);
   const key = `proof-${crypto.randomUUID()}`;
   expect((await request.post(`http://127.0.0.1:4174/__namedfile/${key}`, {data: bytes})).ok()).toBe(

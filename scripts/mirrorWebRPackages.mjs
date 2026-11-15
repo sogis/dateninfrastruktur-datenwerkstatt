@@ -1,16 +1,11 @@
-import {existsSync} from 'node:fs';
-import {readFile, mkdir, rm, writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {readFile, mkdir, readdir, rm, writeFile} from 'node:fs/promises';
+import {join, relative, sep} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {gzipSync} from 'node:zlib';
-import {dirname, join, relative} from 'node:path';
-import {fileURLToPath, pathToFileURL} from 'node:url';
 
-const moduleFile = import.meta.url.startsWith('file:')
-  ? fileURLToPath(import.meta.url)
-  : join(process.cwd(), 'scripts/mirrorWebRPackages.mjs');
-const rootDir = dirname(dirname(moduleFile));
-const projectDir = rootDir;
-const defaultLockPath = join(rootDir, 'scripts/webr-packages.lock.json');
-const outputRoot = join(projectDir, 'public/vendor/webr-packages');
+const outputRoot = new URL('../public/vendor/webr-packages/', import.meta.url);
+const pinned = new URL('./webr-pinned/', import.meta.url);
 const basePackages = new Set([
   'R',
   'base',
@@ -27,49 +22,87 @@ const basePackages = new Set([
   'tcltk',
   'tools',
   'utils',
-  'webr'
+  'webr',
 ]);
 
-if (isMainModule()) {
-  await mirrorWebRPackages();
+export async function mirrorWebRPackages(targetRoot = outputRoot) {
+  const lock = JSON.parse(await readFile(new URL('./webr-packages.lock.json', import.meta.url)));
+  const checksums = JSON.parse(
+    await readFile(new URL('./webr-package-checksums.json', import.meta.url)),
+  );
+  const index = await readFile(new URL('PACKAGES', pinned));
+  const records = selectLockedRecords(parsePackageIndex(index.toString('utf8')), lock);
+  const compressed = gzipSync(index);
+  compressed[9] = 255; // RFC 1952: use the same OS byte on macOS and Linux.
+  const assets = new Map([
+    [`${lock.targetPath}/PACKAGES`, () => index],
+    [`${lock.targetPath}/PACKAGES.gz`, () => compressed],
+    [
+      'lock.json',
+      () =>
+        Buffer.from(
+          JSON.stringify(
+            {
+              ...lock,
+              packages: records.map((record) => ({name: record.Package, version: record.Version})),
+            },
+            null,
+            2,
+          ),
+        ),
+    ],
+  ]);
+  for (const record of records) {
+    const file = `${record.Package}_${record.Version}.tgz`;
+    assets.set(`${lock.targetPath}/${file}`, () =>
+      file === 'vroom_1.7.1.9000.tgz'
+        ? readFile(new URL(file, pinned))
+        : download(`${lock.repoBaseUrl}/${file}`),
+    );
+  }
+  if (
+    assets.size !== Object.keys(checksums).length ||
+    [...assets.keys()].some((path) => !checksums[path])
+  ) {
+    throw Error('webR package lock and checksum paths differ');
+  }
+  const packageDir = new URL(`${lock.targetPath}/`, targetRoot);
+  await mkdir(packageDir, {recursive: true});
+  const parts = lock.targetPath.split('/');
+  const directories = new Set(parts.map((_, i) => parts.slice(0, i + 1).join('/')));
+  // R prefers an existing RDS index to PACKAGES.gz. Remove the previous live-index cache.
+  await rm(new URL(`${lock.targetPath}/PACKAGES.rds`, targetRoot), {force: true});
+  // Vite serves everything under public/, so reject untracked mirror content.
+  for (const entry of await readdir(targetRoot, {recursive: true, withFileTypes: true})) {
+    const path = relative(fileURLToPath(targetRoot), join(entry.parentPath, entry.name))
+      .split(sep)
+      .join('/');
+    if (entry.isDirectory() && directories.has(path)) continue;
+    if (entry.isFile() && assets.has(path)) continue;
+    throw Error(`Unexpected webR mirror entry: ${path}`);
+  }
+  for (const [path, load] of assets) {
+    const dest = new URL(path, targetRoot);
+    const cached = await readFile(dest).catch((error) => {
+      if (error.code !== 'ENOENT') throw error;
+      return null;
+    });
+    const bytes = cached ?? (await load());
+    if (createHash('sha256').update(bytes).digest('hex') !== checksums[path]) {
+      throw Error(`webR package checksum mismatch: ${path}`);
+    }
+    if (!cached) {
+      await mkdir(new URL('./', dest), {recursive: true});
+      await writeFile(dest, bytes);
+    }
+  }
+  console.log('Pinned local R package mirror verified.');
 }
 
-export async function mirrorWebRPackages({lockPath = defaultLockPath, targetRoot = outputRoot} = {}) {
-  const lock = JSON.parse(await readFile(lockPath, 'utf8'));
-  const repoBaseUrl = trimTrailingSlash(lock.repoBaseUrl);
-  const targetPath = lock.targetPath ?? 'bin/emscripten/contrib/4.6';
-  const packageDir = join(targetRoot, targetPath);
-  const indexText = await fetchText(`${repoBaseUrl}/PACKAGES`);
-  const packageRecords = parsePackageIndex(indexText);
-  const selectedRecords = selectLockedRecords(packageRecords, lock);
-
-  await rm(targetRoot, {force: true, recursive: true});
-  await mkdir(packageDir, {recursive: true});
-  const filteredIndex = formatPackageIndex(selectedRecords);
-  await writeFile(join(packageDir, 'PACKAGES'), filteredIndex, 'utf8');
-  const compressedIndex = gzipSync(filteredIndex);
-  // RFC 1952 OS=255: the generated index must be identical on macOS and Linux.
-  compressedIndex[9] = 255;
-  await writeFile(join(packageDir, 'PACKAGES.gz'), compressedIndex);
-  await downloadPackage(`${repoBaseUrl}/PACKAGES.rds`, join(packageDir, 'PACKAGES.rds'));
-  await writeFile(
-    join(targetRoot, 'lock.json'),
-    JSON.stringify({
-      repoBaseUrl,
-      targetPath,
-      rootPackages: lock.rootPackages,
-      packages: selectedRecords.map((record) => ({name: record.Package, version: record.Version}))
-    }, null, 2),
-    'utf8'
-  );
-
-  for (const record of selectedRecords) {
-    const filename = packageArchiveName(record);
-    await downloadPackage(`${repoBaseUrl}/${filename}`, join(packageDir, filename));
-  }
-
-  console.log(`Mirrored ${selectedRecords.length} WebR packages to ${relative(projectDir, packageDir)}.`);
-  return selectedRecords;
+async function download(url) {
+  const response = await fetch(url);
+  if (!response.ok) throw Error(`Could not fetch ${url}: HTTP ${response.status}`);
+  return Buffer.from(await response.arrayBuffer());
 }
 
 export function parsePackageIndex(text) {
@@ -151,7 +184,9 @@ export function selectLockedRecords(packageRecords, lock) {
     }
     const expectedVersion = lockedVersions.get(packageName);
     if (expectedVersion && record.Version !== expectedVersion) {
-      throw new Error(`Locked WebR package ${packageName} expected ${expectedVersion}, found ${record.Version}.`);
+      throw new Error(
+        `Locked WebR package ${packageName} expected ${expectedVersion}, found ${record.Version}.`,
+      );
     }
     return record;
   });
@@ -168,41 +203,15 @@ export function selectLockedRecords(packageRecords, lock) {
 }
 
 export function formatPackageIndex(records) {
-  return `${records.map((record) => {
-    const keys = record.__fieldOrder?.length ? record.__fieldOrder : Object.keys(record).filter((key) => !key.startsWith('__'));
-    return keys
-      .filter((key) => !key.startsWith('__') && record[key] !== undefined)
-      .map((key) => `${key}: ${record[key]}`)
-      .join('\n');
-  }).join('\n\n')}\n`;
-}
-
-function packageArchiveName(record) {
-  return `${record.Package}_${record.Version}.tgz`;
-}
-
-async function fetchText(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Could not fetch ${url}: HTTP ${response.status}`);
-  }
-  return response.text();
-}
-
-async function downloadPackage(url, target) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Could not fetch ${url}: HTTP ${response.status}`);
-  }
-  await mkdir(dirname(target), {recursive: true});
-  const bytes = new Uint8Array(await response.arrayBuffer());
-  await writeFile(target, bytes);
-}
-
-function trimTrailingSlash(value) {
-  return value.replace(/\/+$/, '');
-}
-
-function isMainModule() {
-  return process.argv[1] && existsSync(process.argv[1]) && import.meta.url === pathToFileURL(process.argv[1]).href;
+  return `${records
+    .map((record) => {
+      const keys = record.__fieldOrder?.length
+        ? record.__fieldOrder
+        : Object.keys(record).filter((key) => !key.startsWith('__'));
+      return keys
+        .filter((key) => !key.startsWith('__') && record[key] !== undefined)
+        .map((key) => `${key}: ${record[key]}`)
+        .join('\n');
+    })
+    .join('\n\n')}\n`;
 }

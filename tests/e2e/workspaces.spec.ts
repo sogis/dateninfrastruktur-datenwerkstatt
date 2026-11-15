@@ -152,7 +152,9 @@ test('AT-054 AT-057 partial: compact chrome and implemented settings persist', a
   await page.getByRole('link', {name: 'Einstellungen', exact: true}).click();
   await page.getByLabel('Editor-Schriftgrösse').selectOption('18');
   await page.getByLabel('Zeilenumbruch', {exact: true}).check();
-  await expect(page.getByRole('status')).toHaveText('Einstellungen gespeichert');
+  await expect(
+    page.getByRole('status').filter({hasText: /^Einstellungen gespeichert$/}),
+  ).toBeVisible();
   await page.reload();
   await expect(page.getByLabel('Editor-Schriftgrösse')).toHaveValue('18');
   await expect(page.getByLabel('Zeilenumbruch', {exact: true})).toBeChecked();

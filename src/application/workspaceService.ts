@@ -29,7 +29,6 @@ interface Dependencies {
   canCreate?: boolean;
   artifacts?: ManagedArtifactStore;
   publicSource?: import('./catalogPorts').PublicSource;
-  createImportEngine?: () => FileImportEngine;
   createEngines?: (
     sessionId: string,
     source: (
@@ -241,20 +240,15 @@ export class WorkspaceEditingSession {
       throw new AppFailure('READ_ONLY_WORKSPACE', 'Sitzung ist nicht schreibbar.');
   }
   getDatasets() {
-    if (!this.deps.artifacts || (!this.deps.createImportEngine && !this.deps.createEngines))
+    if (!this.deps.artifacts || !this.deps.createEngines)
       throw new AppFailure('CAPABILITY_UNAVAILABLE', 'Dateispeicher ist nicht verfügbar.');
     return (this.datasets ??= new DatasetService({
       document: () => this.document,
-      assertWriter: () => {
-        if (this.closed || this.readOnly)
-          throw new AppFailure('READ_ONLY_WORKSPACE', 'Sitzung ist nicht schreibbar.');
-      },
+      assertWriter: () => this.assertWriter(),
       publish: (change) => this.persistence.publish(change),
       flush: this.flush,
       ...(this.deps.publicSource ? {publicSource: this.deps.publicSource} : {}),
-      engine: this.deps.createEngines
-        ? this.ensureEngines().files
-        : this.deps.createImportEngine!(),
+      engine: this.ensureEngines().files,
       scheduler: this.scheduler,
       artifacts: this.deps.artifacts,
       newId: this.deps.newId,

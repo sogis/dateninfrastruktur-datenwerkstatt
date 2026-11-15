@@ -1,13 +1,7 @@
 import {payloadCsv, validatePayload} from '../../application/rTypeCodec';
 import {z} from 'zod';
-import {tableFromIPC, tableToIPC} from 'apache-arrow';
 import type {DatasetVersion, RuntimeFingerprint, RunId, TableSchema} from '../../domain/model';
-import type {
-  ArrowIpcStream,
-  PageRequest,
-  SqlExecutionRequest,
-  TableHandle,
-} from '../../application/ports';
+import type {PageRequest, SqlExecutionRequest, TableHandle} from '../../application/ports';
 import type {ResultSqlEngine} from '../../application/sqlPorts';
 import {AppFailure} from '../../application/errors';
 import {DuckDbRuntime} from './runtime';
@@ -254,12 +248,18 @@ export class SqlRoomsSqlEngine implements ResultSqlEngine {
       const page = await c.query(
         `SELECT ${projection} FROM ${relation} AS r ORDER BY ${order.join(',')} LIMIT ${request.size} OFFSET ${request.offset}`,
       );
+      const columns = table.schema.columns.map((_, index) => {
+        const vector = page.getChildAt(index);
+        if (!vector) throw new AppFailure('SQL_ERROR', 'Resultatspalte fehlt.');
+        return vector;
+      });
       return {
         totalRows: table.rowCount,
-        rows: page.toArray().map((row) =>
-          table.schema.columns.map((col) => {
-            const data = z.record(z.string(), z.unknown()).parse(row.toJSON());
-            return data[col.name];
+        rows: Array.from({length: page.numRows}, (_, row) =>
+          columns.map((column) => {
+            const value: unknown = column.get(row);
+            if (value === null || typeof value === 'string') return value;
+            throw new AppFailure('SQL_ERROR', 'Resultatspalte enthält einen unerwarteten Wert.');
           }),
         ),
       };
@@ -451,49 +451,6 @@ export class SqlRoomsSqlEngine implements ResultSqlEngine {
           await room.connector.getDb().dropFile(file);
           if (!success) await c.query(`DROP TABLE IF EXISTS ${sqlIdentifier(key)}`);
         }
-      }
-    });
-  }
-  async exportArrow(table: TableHandle, signal: AbortSignal): Promise<ArrowIpcStream> {
-    const bytes = await this.runtime.operation(signal, async (_room, c) =>
-      tableToIPC(
-        await c.query(
-          `SELECT ${columnsSql(table.schema)} FROM ${this.require(table)} ORDER BY ${sqlIdentifier(ordinal)}`,
-        ),
-      ),
-    );
-    return {
-      schema: table.schema,
-      chunks: (async function* () {
-        yield bytes;
-      })(),
-    };
-  }
-  async importArrow(data: ArrowIpcStream, signal: AbortSignal) {
-    const chunks: Uint8Array<ArrayBuffer>[] = [];
-    let length = 0;
-    for await (const chunk of data.chunks) {
-      signal.throwIfAborted();
-      length += chunk.byteLength;
-      if (length > 67108864)
-        throw new AppFailure('LIMIT_EXCEEDED', 'Arrow-Transfer überschreitet 64 MiB.');
-      chunks.push(new Uint8Array(chunk));
-    }
-    const table = tableFromIPC(new Uint8Array(await new Blob(chunks).arrayBuffer()));
-    if (table.numRows > 100000)
-      throw new AppFailure('LIMIT_EXCEEDED', 'Arrow-Transfer überschreitet 100000 Zeilen.');
-    return this.runtime.operation(signal, async (room, c) => {
-      const key = fresh();
-      const stage = fresh();
-      try {
-        await c.insertArrowTable(table, {name: stage});
-        await c.query(
-          `CREATE TEMP TABLE ${sqlIdentifier(key)} AS SELECT row_number() OVER () AS ${sqlIdentifier(ordinal)}, * FROM ${sqlIdentifier(stage)}`,
-        );
-        return this.remember(key, data.schema, String(table.numRows));
-      } finally {
-        if (this.runtime.isCurrent(room))
-          await c.query(`DROP TABLE IF EXISTS ${sqlIdentifier(stage)}`);
       }
     });
   }

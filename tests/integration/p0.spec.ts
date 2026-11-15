@@ -154,7 +154,6 @@ test('P0 / AT-012: Web Lock callback holds writer lease across tabs', async ({pa
   expect(await acquire(other)).toBe(false);
   await page.close();
   await expect.poll(() => acquire(other)).toBe(true);
-  await other.close();
 });
 
 test('P0 / AT-023: guard allows analysis and blocks external/dynamic SQL without execution', async ({

@@ -23,8 +23,7 @@ führt keine neuen fachlichen Validierungsregeln ein.
 fachlichen oder gestalterischen Grund. „DARF“ bezeichnet eine zulässige Option.
 
 **Massgebliche Fassung:** Diese Datei (`DESIGN_SYSTEM.md`) ist die aktuelle
-Gestaltungsreferenz für die Anwendung. `DESIGN_SYSTEM_NEUTRAL_v1.4.md` enthält
-die nachgeführte Referenzfassung; `DESIGN_SYSTEM_NEUTRAL.md` ist historisch.
+Gestaltungsreferenz für die Anwendung. Die neutralen Zwischenfassungen sind in Git archiviert.
 Die am 21. Oktober 2026 abgestimmten Regeln sind nachfolgend direkt eingearbeitet
 und benötigen bei der Umsetzung keine erneute Ausnahme oder Übersteuerung.
 
@@ -1487,11 +1486,10 @@ Lesbarkeit und Umbruch. Sie werden ausdrücklich nicht als native
 Browserzoom-Abnahme bezeichnet.
 
 Tatsächliche Befehle, Exitcodes, geprüfte Revision, Screenshots und verbleibende
-Grenzen werden im Implementierungsstatus dokumentiert. Nicht ausgeführte
-Prüfungen werden benannt. Die Buttonerweiterung v1.3 verwendet `verification/buttons-v1.3/`; historische
-Nachweise der neutralen Migration unter `verification/neutral-v1.2/` werden nicht überschrieben.
-Die abgestimmten Regeln sind in dieser Projektfassung und der nachgeführten
-Referenz `DESIGN_SYSTEM_NEUTRAL_v1.4.md` enthalten.
+Grenzen werden im Implementierungsstatus dokumentiert. Historische Belege
+zur neutralen Migration und zur Buttonerweiterung sind im
+[Archiv zur Basisrevision](https://github.com/sogis/dateninfrastruktur-datenwerkstatt/tree/87b25af0f05171166483da2b44e11b88e3b3301d/docs/verification)
+einsehbar.
 
 ## 16. Anhang: rechnerische Farbprüfung
 

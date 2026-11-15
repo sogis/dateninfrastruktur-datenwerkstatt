@@ -67,12 +67,13 @@ async function tableRows(page: Page, selector: string, numeric: number[]) {
 test('P8 AT-072: portal population + local CSV, unchanged Golden SQL/R, process restart and second fresh archive profile', async ({
   playwright,
   browserName,
+  userAgent,
   request,
 }, info) => {
   test.setTimeout(240000);
   const folder = await mkdtemp(join(tmpdir(), 'dw-golden-pilot-'));
   const storageKey = crypto.randomUUID(),
-    key = `proof-${crypto.randomUUID()}`;
+    key = `proof-404-${crypto.randomUUID()}`;
   const names = [
     'bevoelkerung.csv',
     '01-fahrzeuge-pro-1000.sql',
@@ -93,6 +94,7 @@ test('P8 AT-072: portal population + local CSV, unchanged Golden SQL/R, process 
   const open = async (profile: string, opfsKey: ReturnType<typeof crypto.randomUUID>) => {
     context = await playwright[browserName].launchPersistentContext(join(folder, profile), {
       headless: true,
+      ...(userAgent ? {userAgent} : {}),
       baseURL: 'http://127.0.0.1:4173',
       viewport: {width: 1440, height: 900},
       timezoneId: 'UTC',

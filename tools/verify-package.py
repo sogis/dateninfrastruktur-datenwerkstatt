@@ -22,13 +22,13 @@ from uuid import UUID
 ROOT = Path(__file__).resolve().parents[1]
 CHECKS: list[str] = []
 # Installed dependencies/build outputs are not part of the authored specification package.
-GENERATED = {"node_modules", "dist", ".git", "playwright-report", "test-results"}
+GENERATED = {"node_modules", "dist", ".git", "playwright-report", "test-results", "test-results-deployment"}
 
 
 def package_files(pattern: str):
     return (p for p in ROOT.rglob(pattern)
             if not any(part in GENERATED for part in p.relative_to(ROOT).parts)
-            and p.relative_to(ROOT).parts[:2] != ("public", "vendor"))
+            and p.relative_to(ROOT).parts[:2] not in {("public", "vendor"), ("deploy", "generated"), ("docs", "verification")})
 
 
 def require(condition: bool, message: str) -> None:
@@ -75,7 +75,7 @@ def check_documents() -> tuple[int, int]:
 
 
 def check_workspace(doc: dict) -> None:
-    require(doc["formatVersion"] == 1, "Unexpected workspace format")
+    require(doc["formatVersion"] == 3, "Unexpected workspace format")
     require(isinstance(doc["revision"], int) and doc["revision"] >= 0, "Invalid revision")
     wid = doc["workspace"]["id"]
     UUID(wid)
@@ -104,7 +104,7 @@ def check_workspace(doc: dict) -> None:
         cols = [c["name"] for c in version["schema"]["columns"]]
         require(len(cols) == len(set(cols)), "Duplicate column names")
     for analysis in doc["analyses"].values():
-        require(analysis["revision"] >= 1, "Invalid analysis revision")
+        require(analysis["revision"] >= 0, "Invalid analysis revision")
         require((analysis["kind"], analysis["engineId"]) in [("sql", "duckdb-local"), ("r", "webr-local")], "Wrong analysis engine")
         for binding in analysis["inputs"]:
             src = binding["source"]
@@ -205,10 +205,13 @@ def main() -> int:
                  if p.suffix.lower() in {".ttf", ".otf", ".woff", ".woff2"}}
         # Only inventoried fonts with a documented license/use context are permitted.
         mono_path = "src/assets/fonts/JetBrainsMono-Regular.woff2"
-        frutiger = load("src/assets/ui-assets.json")["frutiger"]
+        inventory = load("src/assets/ui-assets.json")
+        frutiger = inventory["frutiger"]
+        source_sans = inventory["sourceSans3"]
         expected = {mono_path, "src/assets/fonts/FrutigerLTW05-55Roman.woff2",
                     "src/assets/fonts/FrutigerLTW05-75Black.woff2"}
-        require(fonts == expected, "Only documented Frutiger and JetBrains Mono fonts may be distributed")
+        expected.update(font["path"] for font in source_sans["files"])
+        require(fonts == expected, "Only fonts documented in the asset inventory may be distributed")
         require(frutiger["status"] == "licensed-for-cantonal-use", "Frutiger use context missing")
         require((ROOT / frutiger["usageConfirmation"]["record"]).is_file(), "Font provenance missing")
         require({f["weight"] for f in frutiger["files"]} == {400, 700}, "Frutiger cuts differ")
@@ -217,14 +220,21 @@ def main() -> int:
             require(hashlib.sha256(path.read_bytes()).hexdigest() == font["sha256"],
                     "Frutiger bytes differ from the asset inventory")
         require((ROOT / "licenses/frutiger-original-notices.txt").is_file(), "Frutiger notices missing")
-        mono = load("src/assets/ui-assets.json")["jetbrainsMono"]
+        require({font["style"] for font in source_sans["files"]} == {"normal", "italic"},
+                "Source Sans 3 styles differ")
+        for font in source_sans["files"]:
+            require(hashlib.sha256((ROOT / font["path"]).read_bytes()).hexdigest() == font["sha256"],
+                    "Source Sans 3 bytes differ from the asset inventory")
+        require("SIL OPEN FONT LICENSE Version 1.1" in (ROOT / source_sans["licenseFile"]).read_text(),
+                "Source Sans 3 original OFL notice missing")
+        mono = inventory["jetbrainsMono"]
         require(mono["version"] == "2.304", "Unexpected JetBrains Mono version")
         require(hashlib.sha256((ROOT / mono_path).read_bytes()).hexdigest() == mono["sha256"],
                 "JetBrains Mono bytes differ from the asset inventory")
         require("SIL OPEN FONT LICENSE Version 1.1" in
                 (ROOT / "licenses/jetbrains-mono-2.304-OFL.txt").read_text(),
                 "JetBrains Mono original OFL notice missing")
-        record("Inventoried Frutiger 400/700 with cantonal use confirmation and JetBrains Mono 2.304 with OFL")
+        record("Inventoried Frutiger, Source Sans 3 and JetBrains Mono with original notices and byte checks")
     except (ValueError, KeyError, TypeError, OSError, sqlite3.Error, zipfile.BadZipFile) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1

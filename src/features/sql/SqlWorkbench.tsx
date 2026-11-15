@@ -780,6 +780,9 @@ function TableView({
       current = false;
     };
   }, [service, result.id, offset, sort]);
+  const columnClasses = result.schema.columns.map((column) =>
+    numericColumn(column.logicalType) ? 'numeric' : undefined,
+  );
   const unavailable = result.materialization.kind === 'unavailable';
   const exportResult = (format: TableExportFormat) => {
     if (unavailable) return;
@@ -950,7 +953,7 @@ function TableView({
                   <th scope="col" className="result-row-number">
                     <span className="visually-hidden">Zeile</span>
                   </th>
-                  {result.schema.columns.map((col) => (
+                  {result.schema.columns.map((col, index) => (
                     <th
                       scope="col"
                       key={col.name}
@@ -961,7 +964,7 @@ function TableView({
                             : 'descending'
                           : 'none'
                       }
-                      className={numericColumn(col.logicalType) ? 'numeric' : undefined}
+                      className={columnClasses[index]}
                     >
                       <Button
                         variant="tertiary"
@@ -1000,14 +1003,7 @@ function TableView({
                       {offset + i + 1}
                     </th>
                     {row.map((value, j) => (
-                      <td
-                        key={j}
-                        className={
-                          numericColumn(result.schema.columns[j]?.logicalType)
-                            ? 'numeric'
-                            : undefined
-                        }
-                      >
+                      <td key={j} className={columnClasses[j]}>
                         {value === null ? (
                           <span className="null-cell">NULL</span>
                         ) : (

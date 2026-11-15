@@ -9,10 +9,11 @@ export const test = base.extend({
     const page = context.pages()[0] ?? (await context.newPage());
     await use(page);
   },
-  context: async ({playwright, browserName}, use) => {
+  context: async ({playwright, browserName, userAgent}, use) => {
     const path = await mkdtemp(join(tmpdir(), 'datenwerkstatt-browser-'));
     const context = await playwright[browserName].launchPersistentContext(path, {
       headless: true,
+      ...(userAgent ? {userAgent} : {}),
       baseURL: 'http://127.0.0.1:4173',
       timezoneId: 'UTC',
     });

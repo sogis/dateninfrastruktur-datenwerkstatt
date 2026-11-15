@@ -1,5 +1,5 @@
 import {test, expect} from '../persistentBrowser';
-import {writeFile} from 'node:fs/promises';
+import {mkdir, writeFile} from 'node:fs/promises';
 
 test('AT-071 P7 prerequisite: 20 workspace/SQL/R-reset cycles and measured 10k/100k transfers', async ({
   page,
@@ -96,8 +96,9 @@ test('AT-071 P7 prerequisite: 20 workspace/SQL/R-reset cycles and measured 10k/1
       workersAlive: workers.filter((w) => !w.closed).length,
     });
   }
+  await mkdir(info.outputDir, {recursive: true});
   await writeFile(
-    `docs/verification/p7-resources-${info.project.name}.json`,
+    info.outputPath('resources.json'),
     JSON.stringify(
       {
         browser: info.project.name,

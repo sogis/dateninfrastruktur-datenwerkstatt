@@ -24,11 +24,16 @@ async function inspectDownload(page: Page, download: Download) {
   return page.evaluate(inspectXlsxXml, xml);
 }
 
-async function exportXlsx(page: Page) {
+async function exportXlsx(page: Page, sql = false) {
   await expect(page.getByRole('button', {name: 'CSV exportieren', exact: true})).toBeEnabled();
   await page.getByRole('button', {name: 'Weitere Exportformate', exact: true}).click();
   const pending = page.waitForEvent('download');
   await page.getByRole('menuitem', {name: 'XLSX exportieren', exact: true}).click();
+  if (sql) {
+    const dialog = page.getByRole('dialog', {name: 'XLSX exportieren', exact: true});
+    await expect(dialog).toContainText('XLSX:');
+    await dialog.getByRole('button', {name: 'Herunterladen', exact: true}).click();
+  }
   const download = await pending;
   expect(download.suggestedFilename()).toMatch(/\.xlsx$/);
   const workbook = await inspectDownload(page, download);
@@ -53,7 +58,7 @@ async function monitorStaticExport(page: Page, baseURL: string) {
   });
   page.on('pageerror', (error) => errors.push(error.message));
   page.on('worker', (worker) => {
-    const record = {url: worker.url(), closed: false};
+    const record = {url: new URL(worker.url(), page.url()).href, closed: false};
     workers.push(record);
     worker.on('close', () => {
       record.closed = true;
@@ -142,9 +147,9 @@ test('XLSX static SQL: full frozen result, kept reload, lazy local worker and CS
   );
   await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
   await expect(page.locator('.result-grid tbody tr')).toHaveCount(100);
-  await expect(page.locator('.export-note')).toContainText('XLSX:');
+  await expect(page.locator('.export-note')).toHaveCount(0);
   expect(audit.xlsxWorkers()).toEqual([]);
-  const original = await exportXlsx(page);
+  const original = await exportXlsx(page, true);
   expect(original.sheet).toBe('Daten');
   expect(original.rows).toHaveLength(351);
   expect(original.rows[0]).toEqual(['id', 'text', 'zufall']);
@@ -162,10 +167,14 @@ test('XLSX static SQL: full frozen result, kept reload, lazy local worker and CS
   );
   await page.reload();
   await expect(page.locator('.result-grid tbody tr')).toHaveCount(100);
-  const reopened = await exportXlsx(page);
+  const reopened = await exportXlsx(page, true);
   expect(reopened.rows).toEqual(original.rows);
   const csvPending = page.waitForEvent('download');
   await page.getByRole('button', {name: 'CSV exportieren', exact: true}).click();
+  await page
+    .getByRole('dialog', {name: 'CSV exportieren', exact: true})
+    .getByRole('button', {name: 'Herunterladen', exact: true})
+    .click();
   const csv = await csvPending;
   expect(csv.suggestedFilename()).toMatch(/\.csv$/);
   expect((await readFile((await csv.path())!, 'utf8')).trimEnd().split('\n')).toHaveLength(351);
@@ -183,7 +192,10 @@ test('XLSX static R: complete checked dataframe, literal strings and unchanged p
   await page.getByRole('button', {name: 'Neues Projekt', exact: true}).click();
   await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
   await page.getByRole('menuitem', {name: 'Neues R-Skript', exact: true}).click();
-  await expect(page.locator('.run-status')).toContainText('Bereit', {timeout: 90000});
+  const status = page.locator('.run-status').getByRole('status');
+  await expect(status).toHaveText('Bereit', {timeout: 90000});
+  // Idle is also shown after an initialization failure. A live scope removes the retry action.
+  await expect(page.getByRole('button', {name: 'R initialisieren', exact: true})).toHaveCount(0);
   await code(
     page,
     'x <- data.frame(id=seq_len(350L), text=rep("001",350L), formula=rep("=1+1",350L)); cat("XLSX bereit")',

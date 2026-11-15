@@ -269,7 +269,9 @@ test('Projects: CSV replacement keeps both immutable versions with current/newes
 
 test('Projects: save indicator stays bottom left without moving the SQL editor while saving', async ({
   page,
+  browserName,
 }) => {
+  const optionTab = browserName === 'webkit' && process.platform === 'darwin';
   await page.setViewportSize({width: 1440, height: 900});
   await createProject(page, 'Ruhiger Speicherstatus');
   await page.getByRole('button', {name: 'Neue Analyse', exact: true}).click();
@@ -332,8 +334,9 @@ test('Projects: save indicator stays bottom left without moving the SQL editor w
     await page.getByRole('button', {name: 'Navigation ausklappen'}).click();
     expect(await indicator.boundingBox()).toEqual(bounds);
     await indicator.focus();
-    await indicator.press('Tab');
-    await page.keyboard.press('Shift+Tab');
+    await indicator.press(optionTab ? 'Alt+Tab' : 'Tab');
+    await expect(indicator).not.toBeFocused();
+    await page.keyboard.press(optionTab ? 'Alt+Shift+Tab' : 'Shift+Tab');
     await expect(indicator).toBeFocused();
     await expect(
       page.getByRole('tooltip', {name: 'Änderungen werden gespeichert …'}),
@@ -540,10 +543,15 @@ test('Projects: two SQL run snapshots stay readable and kept results survive edi
   await page.getByRole('menuitem', {name: 'Neue SQL-Abfrage', exact: true}).click();
   const firstCode = 'SELECT i, wert + 11 AS wert FROM range(150) t(i), data.messung ORDER BY i';
   const secondCode = 'SELECT i, wert + 22 AS wert FROM range(150) t(i), data.messung ORDER BY i';
-  for (const text of [firstCode, secondCode]) {
+  for (const [text, firstValue] of [
+    [firstCode, '21'],
+    [secondCode, '32'],
+  ] as const) {
     await code(page, text);
     await page.getByRole('button', {name: 'Ausführen', exact: true}).click();
-    await expect(page.locator('.result-grid tbody tr')).toHaveCount(100);
+    const rows = page.locator('.result-grid tbody tr');
+    await expect(rows).toHaveCount(100);
+    await expect(rows.first().locator('td')).toHaveText(['0', firstValue]);
     await keepSqlResult(page);
     await expect(page.locator('.result-footer')).toContainText('150 Zeilen');
     await expectSqlKeepDisabled(page);

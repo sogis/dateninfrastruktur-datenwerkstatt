@@ -20,24 +20,25 @@ export async function sqlHarness(
   const rEngines: WebREngine[] = [];
   const sqlEngines: SqlRoomsSqlEngine[] = [];
   const artifacts = artifactStore ?? new MemoryArtifactStore(V1_LIMITS.importFileBytes);
+  const rLimits = rConfig && {
+    timeoutMs: rExecutionTimeoutMs ?? rConfig.limits.rTimeoutMs,
+    warningRows: rConfig.limits.rWarningRows,
+    hardRows: rConfig.limits.rHardRows,
+    transferBytes: rConfig.limits.transferBytes,
+  };
   const service = new WorkspaceService({
     repository,
     archiveCodec: new ZipArchiveCodec(),
     artifacts,
     ...(publicSource ? {publicSource} : {}),
-    ...(rConfig
+    ...(rConfig && rLimits
       ? {
           createR: (sessionId: string) => {
             const engine = new WebREngine(sessionId, rConfig);
             rEngines.push(engine);
             return engine;
           },
-          rLimits: {
-            timeoutMs: rExecutionTimeoutMs ?? rConfig.limits.rTimeoutMs,
-            warningRows: rConfig.limits.rWarningRows,
-            hardRows: rConfig.limits.rHardRows,
-            transferBytes: rConfig.limits.transferBytes,
-          },
+          rLimits,
           encodePlot,
         }
       : {}),
@@ -65,5 +66,5 @@ export async function sqlHarness(
   });
   const document = await service.create('SQL Integration');
   const session = await service.open(document.workspace.id);
-  return {service, session, repository, artifacts, rEngines, sqlEngines};
+  return {service, session, repository, artifacts, rEngines, sqlEngines, rLimits};
 }

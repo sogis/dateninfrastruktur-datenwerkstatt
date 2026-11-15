@@ -7,11 +7,12 @@ export const test = base.extend({
   page: async ({context}, use) => {
     await use(context.pages()[0] ?? (await context.newPage()));
   },
-  context: async ({playwright, browserName, baseURL}, use) => {
+  context: async ({playwright, browserName, baseURL, userAgent}, use) => {
     if (!baseURL) throw Error('Deployment baseURL fehlt.');
     const directory = await mkdtemp(join(tmpdir(), 'datenwerkstatt-deploy-'));
     const context = await playwright[browserName].launchPersistentContext(directory, {
       headless: true,
+      ...(userAgent ? {userAgent} : {}),
       baseURL,
       timezoneId: 'UTC',
     });

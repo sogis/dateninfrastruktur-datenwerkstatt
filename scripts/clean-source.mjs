@@ -29,5 +29,6 @@ const result = {
   checkout,
   note: 'Fresh Git-tree export of the uncommitted candidate; actual branch/index unchanged. No dependencies/assets/results copied.',
 };
+await mkdir('docs/verification', {recursive: true});
 await writeFile(`docs/verification/clean-source-${phase}.json`, JSON.stringify(result, null, 2));
 console.log(JSON.stringify(result));

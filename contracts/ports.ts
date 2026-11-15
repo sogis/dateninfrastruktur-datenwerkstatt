@@ -65,15 +65,12 @@ export interface ResultPage {
   rows: readonly (readonly unknown[])[];
   totalRows: string;
 }
-export interface ArrowIpcStream {schema: TableSchema; chunks: AsyncIterable<Uint8Array>}
 export interface SqlEngine {
   initialize(signal: AbortSignal): Promise<void>;
   fingerprint(): Promise<RuntimeFingerprint>;
   registerDataset(version: DatasetVersion, sqlName: string, signal: AbortSignal): Promise<void>;
   execute(request: SqlExecutionRequest): Promise<SqlExecutionResponse>;
   readPage(table: TableHandle, request: PageRequest, signal: AbortSignal): Promise<ResultPage>;
-  exportArrow(table: TableHandle, signal: AbortSignal): Promise<ArrowIpcStream>;
-  importArrow(data: ArrowIpcStream, signal: AbortSignal): Promise<TableHandle>;
   writeParquet(table: TableHandle, signal: AbortSignal): Promise<ReadableStream<Uint8Array>>;
   release(table: TableHandle): Promise<void>;
   cancel(runId: RunId): Promise<'interrupted' | 'runtime-reset' | 'already-settled'>;

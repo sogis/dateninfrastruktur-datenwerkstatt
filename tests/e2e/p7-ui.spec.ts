@@ -87,11 +87,12 @@ test('P7 AT-054–055 AT-058: measured SQL/R geometry, keyboard splitters, layou
       expect(box.area.width).toBeGreaterThanOrEqual((size.width - box.sidebar.width) * 0.9);
       expect(box.scrollWidth).toBeLessThanOrEqual(size.width);
       expect(box.area.bottom).toBeLessThanOrEqual(size.height + 1);
-      if (kind === 'sql')
-        await expect(page.locator('.analysis-toolbar [role="status"]')).toHaveAttribute(
-          'aria-live',
-          'off',
-        );
+      if (kind === 'sql') {
+        await expect(page.locator('.analysis-toolbar').getByRole('status')).toHaveCount(0);
+        const summary = page.locator('.result-footer').getByRole('status');
+        await expect(summary).toHaveAttribute('aria-live', 'polite');
+        await expect(summary).toContainText('Zeile');
+      }
       if (kind === 'sql' && size.height === 900) {
         expect(box.editor.height).toBeGreaterThanOrEqual(180);
         expect(box.output.height).toBeGreaterThanOrEqual(220);
@@ -193,7 +194,9 @@ test('P7 AT-055–057: native focus trap/return, settings, storage cleanup and d
     'Geschätzter Verbrauch',
   );
   await page.getByLabel('Seitenleiste standardmässig eingeklappt').uncheck();
-  await expect(page.getByRole('status')).toHaveText('Einstellungen gespeichert');
+  await expect(
+    page.getByRole('status').filter({hasText: /^Einstellungen gespeichert$/}),
+  ).toBeVisible();
   await page.reload();
   await expect(page.getByLabel('Seitenleiste standardmässig eingeklappt')).not.toBeChecked();
   const storage = page.getByRole('region', {name: 'Browser-Speicher'});

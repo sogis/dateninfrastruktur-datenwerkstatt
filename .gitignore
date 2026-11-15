@@ -9,3 +9,6 @@ playwright-report/
 deploy/generated/
 dist-*/
 test-results-deployment/
+
+# Generated/manual verification evidence
+docs/verification/
