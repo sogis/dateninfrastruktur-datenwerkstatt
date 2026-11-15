@@ -277,11 +277,12 @@ test('REQ-025 / AT-008: disabling empty-field NULL conversion with no marker pre
 test('REQ-025 / AT-010 AT-051: all text delimiter options and original bytes survive browser restart and archive export/import', async ({
   playwright,
   browserName,
+  headless,
 }) => {
   const folder = await mkdtemp(join(tmpdir(), 'datenwerkstatt-csv-options-'));
   const profile = join(folder, 'profile');
   const storageKey = crypto.randomUUID();
-  let context = await playwright[browserName].launchPersistentContext(profile, {headless: true});
+  let context = await playwright[browserName].launchPersistentContext(profile, {headless});
   let cleanup = await isolateOpfs(context, storageKey);
   try {
     const page = await context.newPage();
@@ -326,7 +327,7 @@ test('REQ-025 / AT-010 AT-051: all text delimiter options and original bytes sur
       return {workspaceId: document.workspace.id, origins};
     }, variants);
     await context.close();
-    context = await playwright[browserName].launchPersistentContext(profile, {headless: true});
+    context = await playwright[browserName].launchPersistentContext(profile, {headless});
     cleanup = await isolateOpfs(context, storageKey);
     const reopened = await context.newPage();
     await reopened.goto('http://127.0.0.1:4173/tests/spike/index.html');

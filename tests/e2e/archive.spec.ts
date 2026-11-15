@@ -7,6 +7,7 @@ test('P6 AT-051 AT-053 AT-063: Golden archive in fresh profile, graph remap, rea
   page,
   playwright,
   browserName,
+  headless,
 }) => {
   await page.goto('/projects');
   await page.getByLabel('Name des neuen Projekts').fill('Archiv Golden');
@@ -37,7 +38,7 @@ test('P6 AT-051 AT-053 AT-063: Golden archive in fresh profile, graph remap, rea
   const bytes = await readFile((await archive.path())!);
   const folder = await mkdtemp(join(tmpdir(), 'dw-fresh-archive-'));
   const fresh = await playwright[browserName].launchPersistentContext(folder, {
-    headless: true,
+    headless,
     baseURL: 'http://127.0.0.1:4173',
   });
   const cleanup = await isolateOpfs(fresh);

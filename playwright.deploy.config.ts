@@ -14,6 +14,7 @@ export default defineConfig({
       metadata: {profile},
       use: {
         browserName: browserName as 'chromium' | 'firefox' | 'webkit',
+        headless: browserName === 'chromium' || process.env.DW_VIRTUAL_DISPLAY !== '1',
         baseURL: `http://127.0.0.1:${4180 + profile}${profile ? '/lab/' : '/'}`,
       },
     })),

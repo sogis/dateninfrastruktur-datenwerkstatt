@@ -17,8 +17,14 @@ export default defineConfig({
   },
   projects: [
     {name: 'chromium', use: {browserName: 'chromium'}},
-    {name: 'firefox', use: {browserName: 'firefox'}},
-    {name: 'webkit', use: {browserName: 'webkit'}},
+    {
+      name: 'firefox',
+      use: {browserName: 'firefox', headless: process.env.DW_VIRTUAL_DISPLAY !== '1'},
+    },
+    {
+      name: 'webkit',
+      use: {browserName: 'webkit', headless: process.env.DW_VIRTUAL_DISPLAY !== '1'},
+    },
   ],
   webServer: [
     {

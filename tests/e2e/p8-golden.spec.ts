@@ -67,6 +67,7 @@ async function tableRows(page: Page, selector: string, numeric: number[]) {
 test('P8 AT-072: portal population + local CSV, unchanged Golden SQL/R, process restart and second fresh archive profile', async ({
   playwright,
   browserName,
+  headless,
   request,
 }, info) => {
   test.setTimeout(240000);
@@ -92,7 +93,7 @@ test('P8 AT-072: portal population + local CSV, unchanged Golden SQL/R, process 
   let context: BrowserContext | undefined, clean: (() => Promise<void>) | undefined;
   const open = async (profile: string, opfsKey: ReturnType<typeof crypto.randomUUID>) => {
     context = await playwright[browserName].launchPersistentContext(join(folder, profile), {
-      headless: true,
+      headless,
       baseURL: 'http://127.0.0.1:4173',
       viewport: {width: 1440, height: 900},
       timezoneId: 'UTC',

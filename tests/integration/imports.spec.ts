@@ -197,6 +197,7 @@ test('P2 / AT-014 AT-017: reload finds true orphans, writer cleanup preserves re
 test('P2 / AT-010: imported file survives browser process restart and removal of input file', async ({
   playwright,
   browserName,
+  headless,
 }) => {
   const {mkdtemp, writeFile, readFile, rm} = await import('node:fs/promises');
   const {join} = await import('node:path');
@@ -205,7 +206,7 @@ test('P2 / AT-010: imported file survives browser process restart and removal of
   const profile = join(folder, 'profile');
   const source = join(folder, 'original.parquet');
   const csvText = await readFile('fixtures/csv-edge-cases.csv', 'utf8');
-  let context = await playwright[browserName].launchPersistentContext(profile, {headless: true});
+  let context = await playwright[browserName].launchPersistentContext(profile, {headless});
   const storageKey = crypto.randomUUID();
   let cleanup = await isolateOpfs(context, storageKey);
   try {
@@ -248,7 +249,7 @@ test('P2 / AT-010: imported file survives browser process restart and removal of
     expect(Array.from(await readFile(source))).toEqual(parquet);
     await context.close();
     await rm(source);
-    context = await playwright[browserName].launchPersistentContext(profile, {headless: true});
+    context = await playwright[browserName].launchPersistentContext(profile, {headless});
     cleanup = await isolateOpfs(context, storageKey);
     const reopened = await context.newPage();
     await reopened.goto(url);

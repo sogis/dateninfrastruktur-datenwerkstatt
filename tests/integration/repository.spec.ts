@@ -73,9 +73,13 @@ test('AT-007 AT-012: actual IndexedDB CAS, invalid load, transaction rollback', 
   expect(result.afterRollback).toEqual(result.afterConflict);
   expect(result.unchanged).toMatchObject({formatVersion: 99});
 });
-test('P0: persistent browser profile OPFS read/write/delete', async ({playwright, browserName}) => {
+test('P0: persistent browser profile OPFS read/write/delete', async ({
+  playwright,
+  browserName,
+  headless,
+}) => {
   const profile = await mkdtemp(join(tmpdir(), 'datenwerkstatt-opfs-'));
-  const context = await playwright[browserName].launchPersistentContext(profile, {headless: true});
+  const context = await playwright[browserName].launchPersistentContext(profile, {headless});
   const cleanup = await isolateOpfs(context);
   try {
     const page = await context.newPage();

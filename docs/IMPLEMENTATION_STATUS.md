@@ -121,3 +121,22 @@ Der entfernte CI-Lauf wurde nicht ausgeführt. Der native Safari-Pilot
 prüfte diese Änderungen mit Tab-Reopen, Persistenz, Archiv und Cancel.
 Ein kompletter nativer Safari-Prozessneustart wurde für diesen
 Kandidaten nicht wiederholt. Kein Push oder Merge.
+
+### Linux-CI-Nacharbeit in PR #1
+
+Auf `97a97aa` bestand der statische Job. Der Chromium-
+Integrationstest AT-012/015/017/061 traf beim ersten manuellen
+Übernahmeversuch noch auf den Writer-Lock. Der Test wartet jetzt
+auf die vom Browser gemeldete Freigabe und prüft dann unverändert
+den manuellen Übernahmeweg und die Wiederherstellung.
+Firefox scheiterte auf Ubuntu vor der Seitennavigation an einem
+fehlenden Browserfenster; WebKit MiniBrowser brach bei der
+Automationsinitialisierung ab. Die CI verwendet für diese Browser
+einen virtuellen X11-Display, auch für direkt gestartete
+persistente Profile. Deploymentfälle laufen seriell pro Browser auf
+getrennten Runnern. Der Workflow prüft Feature-Branches im PR
+und startet nach dem Merge zusätzlich auf main.
+
+Lokal: `npm run typecheck`, `npm run lint`, `git diff --check`
+und die sechs gezielten Recovery-/Profilisolationsfälle aller drei
+Browser Exit 0. Linux-Nachweis folgt im PR-Workflow.

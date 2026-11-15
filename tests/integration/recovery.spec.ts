@@ -174,6 +174,15 @@ test('P6 AT-012 AT-015 AT-017 AT-061: tab death interrupts real query, saved res
   await expect(reader.getByText(/Das Projekt ist hier nur lesbar/)).toBeVisible();
   await expect(reader.getByRole('button', {name: 'Neue Analyse', exact: true})).toBeDisabled();
   await page.close();
+  // Tab closure and Web Locks release arrive separately in other renderer processes.
+  await expect
+    .poll(() =>
+      reader.evaluate(async (workspaceId) => {
+        const {held} = await navigator.locks.query();
+        return held?.some((lock) => lock.name === `datenwerkstatt:${workspaceId}`);
+      }, state.artifact.workspaceId),
+    )
+    .toBe(false);
   await reader.getByRole('button', {name: 'Schreibrecht erneut anfordern'}).click();
   await expect(reader.getByLabel('Beschreibung', {exact: true})).toBeEnabled();
   const recovered = await reader.evaluate(async (state) => {
